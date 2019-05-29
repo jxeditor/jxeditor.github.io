@@ -11,6 +11,16 @@
 - git commit -m "注释" 
 - git push origin 分支
 
+## 解决push总是输入用户名密码
+- ssh-keygen -t rsa -C "账号"
+- 复制~/.ssh/id_rsa.pub内容
+- 添加到GitHub的ssh key
+- 修改git remote的模式
+- git remote -v
+- 将https方式修改成主机:仓库的形式
+- git remote add origin https://github.com/jxeditor/jxeditor.github.io.git
+- git remote add origin git@github.com:jxeditor/jxeditor.github.io.git
+
 ## 为了让本地和远程的分支统一
 本地和远程默认都是master分支
 本地创建和切换分支
