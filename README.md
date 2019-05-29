@@ -24,3 +24,6 @@
 - git add *
 - git commit -m "注释"
 - git push origin 分支
+
+## 本地分支与远程分支不一致，怎么push
+- git push origin 本地分支:远程分支
