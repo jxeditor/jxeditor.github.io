@@ -19,6 +19,7 @@
 - git remote -v
 - 将https方式修改成主机:仓库的形式
 - git remote add origin https://github.com/jxeditor/jxeditor.github.io.git
+- git remote rm origin
 - git remote add origin git@github.com:jxeditor/jxeditor.github.io.git
 
 ## 为了让本地和远程的分支统一
