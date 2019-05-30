@@ -11,6 +11,15 @@
 - git commit -m "注释" 
 - git push origin 分支
 
+## 安装hexo
+- 去官网下载[node.js](https://nodejs.org/en/)
+- npm install -g hexo-cli
+- npm install hexo-deployer-git --save
+- 修改目录配置文件_config.yml的deploy
+- hexo g 生成静态页面
+- hexo s 启动本地服务
+- hexo d 部署到远程
+
 ## 解决push总是输入用户名密码
 - ssh-keygen -t rsa -C "账号"
 - 复制~/.ssh/id_rsa.pub内容
