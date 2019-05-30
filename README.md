@@ -32,6 +32,7 @@
 - git remote add origin git@github.com:jxeditor/jxeditor.github.io.git
 
 ## 当push时项目中含有其他子项目时
+- 删除子项目的.git文件夹
 - git rm --cached file_path
 - git add file_path
 - git commit -m "注释"
