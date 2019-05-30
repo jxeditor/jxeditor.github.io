@@ -31,6 +31,12 @@
 - git remote rm origin
 - git remote add origin git@github.com:jxeditor/jxeditor.github.io.git
 
+## 当push时项目中含有其他子项目时
+- git rm --cached file_path
+- git add file_path
+- git commit -m "注释"
+- git push origin 分支
+
 ## 为了让本地和远程的分支统一
 本地和远程默认都是master分支
 本地创建和切换分支
