@@ -60,6 +60,8 @@ git config --global user.email "you@example.com"
 git config --global user.name "Your Name"
 git init
 git remote add origin https://github.com/jxeditor/jxeditor.github.io.git
+git pull origin 远程分支 # 远程分支没有可以不进行拉取
+# 进行一系列操作
 git add *
 git commit -m "注释"
 git push origin 本地分支:远程分支
