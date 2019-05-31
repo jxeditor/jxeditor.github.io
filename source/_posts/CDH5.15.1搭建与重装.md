@@ -1,0 +1,256 @@
+---
+title: CDH5.15.1搭建与重装
+date: 2019-05-31 21:22:16
+categories: 搭建
+tags: 
+    - CDH
+    - 大数据
+---
+
+## 系统环境[64位]
+- 操作系统: Centos
+- Cloudera Manager: 5.15.1.4
+- CDH: 5.15.1
+
+--- 
+
+<!-- more -->
+
+## 下载地址
+#### Clouder Manager下载地址
+- [Clouder Manager el6 5.15.1](http://archive.cloudera.com/cm5/cm/5/cloudera-manager-el6-cm5.15.1_x86_64.tar.gz)
+
+#### CDH安装包下载地址
+- [CDH el6 5.15.1 ](http://archive.cloudera.com/cdh5/parcels/5.15.1.4/CDH-5.15.1-1.cdh5.15.1.p0.4-el6.parcel)
+- [CDH el6 5.15.1 sha1](http://archive.cloudera.com/cdh5/parcels/5.15.1.4/CDH-5.15.1-1.cdh5.15.1.p0.4-el6.parcel.sha1)
+- [ManiFest.json](http://archive.cloudera.com/cdh5/parcels/5.15.1.4/manifest.json)
+
+#### JDK下载地址
+- 使用1.6,1.7以外版本会警告
+- [新版本下载](https://www.oracle.com/technetwork/java/javase/downloads/index.html)
+- [老版本下载](https://www.oracle.com/technetwork/java/javase/archive-139210.html)
+
+#### MySQL下载地址
+- [MySQL yum仓库地址](https://repo.mysql.com/yum/)
+- [MySQL连接器](https://dev.mysql.com/downloads/connector/j/)
+
+---
+## 环境配置
+#### 1.网络配置
+```
+vi /etc/hosts
+192.168.163.129	hadoop01
+192.168.163.130	hadoop02
+192.168.163.131	hadoop03
+```
+
+#### 2.免密配置
+```
+ssh-keygen -t rsa
+cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+scp ~/.ssh/authorized_keys root@hadoop02:~/.ssh/
+scp ~/.ssh/authorized_keys root@hadoop03:~/.ssh/
+```
+
+#### 3.JDK配置
+```
+rpm -qa | grep java     // 查询
+rpm -e --nodeps 包名    // 卸载
+rpm -ivh 包名           // 安装
+
+echo "JAVA_HOME=/usr/java/latest/" >> /etc/environment
+或者
+echo "export PATH=$PATH:/usr/java/latest/bin" >> /etc/profile
+source /etc/profile
+```
+
+#### 4.MySQL配置
+```
+yum install mysql-server
+chkconfig mysqld on
+service mysqld start
+mysqladmin -u root password '123456'
+mysql -u root password '123456'
+create database hive DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+create database hue DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+create database oozie DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
+grant all privileges on *.* to 'root'@'hadoop01' identified by '123456' with grant option;
+flush privileges;
+```
+
+#### 5.防火墙和SELinux配置
+```
+service iptables stop   // 临时关闭
+chkconfig iptables off  // 重启后永久生效
+
+setenforce 0            // 临时关闭
+vi /etc/selinux/config  // 重启后永久生效
+SELINUX=disabled
+```
+
+#### 6.NTP时间同步
+```
+yum install ntp
+chkconfig ntpd on
+chkconfig --list        // ntpd其中2-5为on状态就代表成功
+
+ntpdate cn.pool.ntp.org
+hwclock --systohc
+
+service ntpd start
+```
+
+---
+
+## 开始安装
+#### 1.安装Cloudera Manager Server 和Agent
+```
+tar xzvf cloudera-manager*.tar.gz
+mv cloudera /opt/
+mv cm-5.15.1 /opt/
+
+// 添加数据库连接
+cp mysql-connector-java-5.1.47-bin.jar /opt/cm-5.15.1/share/cmf/lib/   
+
+// 主节点初始化CM数据库
+/opt/cm-5.15.1/share/cmf/schema/scm_prepare_database.sh mysql cm -hlocalhost -uroot -p123456 --scm-host localhost scm scm scm
+
+// 修改Agent配置,为主节点名
+vi /opt/cm-5.15.1/etc/cloudera-scm-agent/config.ini
+server_host=hadoop01
+
+// 分发到其他节点
+scp -r /opt/cm-5.15.1 root@hadoop02:/opt/
+scp -r /opt/cm-5.15.1 root@hadoop03:/opt/
+
+// 所有节点创建cloudera-scm用户
+useradd --system --home=/opt/cm-5.15.1/run/cloudera-scm-server/ --no-create-home --shell=/bin/false --comment "Cloudera SCM User" cloudera-scm
+```
+
+#### 2.安装CDH
+##### sha1要mv成sha,否则系统会重新下载
+- CDH-5.15.1-1.cdh5.15.1.p0.4-el6.parcel
+- CDH-5.15.1-1.cdh5.15.1.p0.4-el6.parcel.sha1
+- manifest.json.txt
+```
+// 主节点
+/opt/cm-5.15.1/etc/init.d/cloudera-scm-server start
+// 所有节点
+/opt/cm-5.15.1/etc/init.d/cloudera-scm-agent start
+```
+
+#### 3.配置CDH
+##### 访问[http://hadoop01:7180](http://hadoop01:7180)进行配置
+```
+用户名密码均为admin
+选择CM版本
+选择Agent节点
+选择Parcel包
+耐心等待分配
+检查主机正确性
+echo 0 > /proc/sys/vm/swappiness
+echo never > /sys/kernel/mm/transparent_hugepage/defrag
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+选择所有服务
+服务配置一般默认<zk默认只有1个节点可以调整>
+进行数据库设置
+cp mysql-connector-java-5.1.47-bin.jar /opt/cloudera/parcels/CDH-5.15.1-1.cdh5.15.1.p0.4/lib/hive/lib/
+cp mysql-connector-java-5.1.47-bin.jar /var/lib/oozie/
+yum install libxml2-python krb5-devel cyrus-sasl-gssapi cyrus-sasl-deve libxml2-devel libxslt-devel mysql mysql-devel openldap-devel python-devel python-simplejson sqlite-devel
+测试连接
+耐心等待服务启动
+安装完毕
+```
+
+---
+
+## 测试与各端口
+```
+hdfs hadoop jar /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 10 100
+
+CDH
+http://hadoop01:7180
+
+Yarn
+http://hadoop01:8088
+
+Hue
+http://hadoop01:8888
+
+HDFS
+http://hadoop01:50070
+
+JobHistory
+http://hadoop01:19888
+
+HBase
+http://hadoop01:60010
+http://hadoop01:60030
+
+Spark
+http://hadoop01:7077
+http://hadoop01:8080
+http://hadoop01:8081
+http://hadoop01:4040
+```
+
+---
+
+## 重装CDH
+```
+// 删除Agent的UUID
+rm -rf /opt/cm-5.15.1/lib/cloudera-scm-agent/*
+
+// 删除主节点CM数据库
+drop database cm;
+
+// 删除Agent节点namenode和datanode节点信息
+rm -rf /dfs/nn/*
+rm -rf /dfs/dn/*
+
+// 重新初始化CM数据库
+/opt/cm-5.15.1/share/cmf/schema/scm_prepare_database.sh mysql cm -hlocalhost -uroot -p123456 --scm-host localhost scm scm scm
+
+// 执行Server和Agent脚本
+/opt/cm-5.15.1/etc/init.d/cloudera-scm-server start
+/opt/cm-5.15.1/etc/init.d/cloudera-scm-agent start
+
+// 重新安装
+http://hadoop01:7180
+```
+
+---
+
+## 可能出现的问题
+#### HDFS
+```
+1.Permission denied: user=root, access=WRITE, inode="/user":hdfs:supergroup:drwxr-xr-x
+解决:
+echo "export HADOOP_USER_NAME=hdfs" >> .bash_profile
+source .bash_profile
+
+2.WARN hdfs.DFSClient: Caught exception
+解决:
+不影响结果,暂时未找到办法
+```
+#### Hue
+```
+1.Can't Open /opt/cm-5.15.1/run/cloudera-scm-agent/process/65-hue-HUE_LOAD_BALANCER/supervisor.conf权限不足
+解决:
+chown hue:hue supervisor.conf
+chmod 666 supervisor.conf
+
+2./usr/sbin/httpd没有这个命令
+解决:
+yum install httpd.x86_64
+
+3./usr/lib64/httpd/modules/mod_ssl.so没有这个文件
+解决:
+yum -y install mod_ssl
+
+4.Could not start SASL: Error in sasl_client_start (-4) SASL(-4): no mechanism available: No worthy mechs found
+解决:
+yum install cyrus-sasl-plain cyrus-sasl-devel cyrus-sasl-gssapi
+重启Hue
+```
