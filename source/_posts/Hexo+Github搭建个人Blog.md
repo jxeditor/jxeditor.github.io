@@ -10,7 +10,7 @@ tags:
 - 下载Git
 - 下载Node.js
 - 下载HexoEditor
-**注意：**除了git需要自己下载外，Node.js和HexoEditor都已经下载好在[Github](https://github.com/jxeditor/jxeditor.github.io)上
+- **注意：**Git，Node.js和HexoEditor都已经下载好在[Github](https://github.com/jxeditor/jxeditor.github.io)上
 
 <!-- more -->
 ## 2.Hexo安装命令与免密配置
