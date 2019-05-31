@@ -91,3 +91,13 @@ git add *
 git commit -m "注释"
 git push origin 分支
 ```
+
+## 8.Git大文件上传
+```bash
+git lfs install
+git lfs track "*.psd" # 追踪规则，后缀psd文件超过限制
+git add .gitattributes
+git add file.psd
+git commit -m "Add design file"
+git push origin 本地分支:远程分支
+```
