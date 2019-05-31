@@ -1,4 +1,4 @@
-# chan theme configuration
+﻿# chan theme configuration
 
 # site setting
 rss: /atom.xml
@@ -8,7 +8,7 @@ favicon: /images/favicon.ico
 monochrome: true
 
 # view setting
-avatar: https://cn.gravatar.com/avatar/35fef74d731255cd569c2c2b0b9e87e4?s=200
+avatar: https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
 avatarLink: /about
 maxContentWidth: 1000px # set the main content column's max-width property. keep it blank to unlimited the width
 copyright: # the copyright text in the footer, could be richtext
@@ -37,11 +37,11 @@ nav:
       url: /about
   -
     -
-      name: Chan
+      name: 样式
       url: https://github.com/denjones/hexo-theme-chan
     -
       name: Github
-      url: https://github.com/denjones
+      url: https://github.com/jxeditor
     -
       name: RSS
       url: /atom.xml
