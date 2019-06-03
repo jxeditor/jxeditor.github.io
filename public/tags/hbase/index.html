@@ -8,13 +8,13 @@
 
 <title>
   
-    分类: 搭建
+    标签: hbase
   
 </title>
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/categories/搭建/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/hbase/index.html">
 <meta property="og:site_name" content="BlackC">
 <meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
@@ -148,7 +148,7 @@
       
         <div style="max-width: 1000px">
       
-          <h1>搭建</h1>
+          <h1>hbase</h1>
 
 
   
@@ -158,41 +158,46 @@
 
     <div class="post-list-item article">
       <h3 class="article-header">
-        <a href="/2019/05/31/CDH5.15.1搭建与重装/">
-  CDH5.15.1搭建与重装
+        <a href="/2019/06/03/Flink读写Hbase之写/">
+  Flink读写Hbase之写
 </a>
 
       </h3>
       
 
       <div class="article-info">
-        <a href="/2019/05/31/CDH5.15.1搭建与重装/"><span class="article-date">
-  2019-05-31
+        <a href="/2019/06/03/Flink读写Hbase之写/"><span class="article-date">
+  2019-06-03
 </span>
 </a>
         
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/">搭建</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
 	</span>
 
 
         
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CDH/">CDH</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
 	</span>
 
 
       </div>
       <div class="article-entry">
         
-          <h2 id="系统环境-64位"><a href="#系统环境-64位" class="headerlink" title="系统环境[64位]"></a>系统环境[64位]</h2><ul>
-<li>操作系统: Centos</li>
-<li>Cloudera Manager: 5.15.1.4</li>
-<li>CDH: 5.15.1</li>
+          <blockquote>
+<p>主要对Flink写入HBase数据做一个整理,方便快速进行业务代码开发,只针对于具体的方法操作,并不涉及Flink搭建</p>
+</blockquote>
+<hr>
+<h2 id="主要方式-4种"><a href="#主要方式-4种" class="headerlink" title="主要方式(4种)"></a>主要方式(4种)</h2><ul>
+<li>通过env.addSink(new RichSinkFunction)的形式</li>
+<li>通过自定义HBaseUtil操作类的形式</li>
+<li>通过env.output(new OutputFormat)的形式</li>
+<li>通过env.output(new HadoopOutputFormat)的形式</li>
 </ul>
 <hr>
           <p>
-            <a href="/2019/05/31/CDH5.15.1搭建与重装/">
+            <a href="/2019/06/03/Flink读写Hbase之写/">
               阅读全文
             </a>
           </p>
@@ -211,41 +216,44 @@
 
     <div class="post-list-item article">
       <h3 class="article-header">
-        <a href="/2019/05/29/Hexo+Github搭建个人Blog/">
-  Hexo+Github搭建个人Blog
+        <a href="/2019/06/03/Flink读写Hbase之读/">
+  Flink读写Hbase之读
 </a>
 
       </h3>
       
 
       <div class="article-info">
-        <a href="/2019/05/29/Hexo+Github搭建个人Blog/"><span class="article-date">
-  2019-05-29
+        <a href="/2019/06/03/Flink读写Hbase之读/"><span class="article-date">
+  2019-06-03
 </span>
 </a>
         
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/">搭建</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
 	</span>
 
 
         
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hexo/">hexo</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
 	</span>
 
 
       </div>
       <div class="article-entry">
         
-          <h2 id="1-环境安装"><a href="#1-环境安装" class="headerlink" title="1.环境安装"></a>1.环境安装</h2><ul>
-<li>下载Git</li>
-<li>下载Node.js</li>
-<li>下载HexoEditor</li>
-<li><strong>注意：</strong>Git，Node.js和HexoEditor都已经下载好在<a href="https://github.com/jxeditor/jxeditor.github.io" target="_blank" rel="noopener">Github</a>上</li>
+          <blockquote>
+<p>主要对Flink读取HBase数据做一个整理,方便快速进行业务代码开发,只针对于具体的方法操作,并不涉及Flink搭建</p>
+</blockquote>
+<hr>
+<h2 id="主要方式-2种"><a href="#主要方式-2种" class="headerlink" title="主要方式(2种)"></a>主要方式(2种)</h2><ul>
+<li>通过env.addSource(new RichSourceFunction)的形式</li>
+<li>通过env.createInput(new TableInputFormat)的形式</li>
 </ul>
+<hr>
           <p>
-            <a href="/2019/05/29/Hexo+Github搭建个人Blog/">
+            <a href="/2019/06/03/Flink读写Hbase之读/">
               阅读全文
             </a>
           </p>
