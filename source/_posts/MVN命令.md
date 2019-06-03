@@ -31,3 +31,8 @@ mvn install -Dmaven.test.skip=true
 ```
 mvn clear package
 ```
+
+## 3.SpringBoot项目运行
+```
+mvn springboot:run
+```
