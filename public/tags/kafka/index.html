@@ -8,13 +8,13 @@
 
 <title>
   
-    标签: Linux
+    标签: kafka
   
 </title>
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/tags/Linux/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/kafka/index.html">
 <meta property="og:site_name" content="BlackC">
 <meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
@@ -148,7 +148,7 @@
       
         <div style="max-width: 1000px">
       
-          <h1>Linux</h1>
+          <h1>kafka</h1>
 
 
   
@@ -158,36 +158,42 @@
 
     <div class="post-list-item article">
       <h3 class="article-header">
-        <a href="/2019/05/31/Linux防火墙限制/">
-  Linux防火墙限制
+        <a href="/2019/06/04/Kafka使用Debezium监听MySQL/">
+  Kafka使用Debezium监听MySQL
 </a>
 
       </h3>
       
 
       <div class="article-info">
-        <a href="/2019/05/31/Linux防火墙限制/"><span class="article-date">
-  2019-05-31
+        <a href="/2019/06/04/Kafka使用Debezium监听MySQL/"><span class="article-date">
+  2019-06-04
 </span>
 </a>
         
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
 	</span>
 
 
         
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/debezium/">debezium</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/">kafka</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/">mysql</a></li></ul>
 	</span>
 
 
       </div>
       <div class="article-entry">
         
-          <h2 id="防火墙的限制"><a href="#防火墙的限制" class="headerlink" title="防火墙的限制"></a>防火墙的限制</h2><h3 id="1-限制只允许指定IP访问指定端口"><a href="#1-限制只允许指定IP访问指定端口" class="headerlink" title="1. 限制只允许指定IP访问指定端口"></a>1. 限制只允许指定IP访问指定端口</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-A INPUT -m state --state NEW -m tcp -p tcp -s 127.0.0.1 --dport 22,3306,8080 -j ACCEPT</span><br></pre></td></tr></table></figure>
+          <h2 id="理解Kafka-Connect"><a href="#理解Kafka-Connect" class="headerlink" title="理解Kafka Connect"></a>理解Kafka Connect</h2><ul>
+<li>先建立一个Connect,这个Connect可以配置一些参数,确定信息的一些格式</li>
+<li><a href="http://192.168.142.128:8083/" target="_blank" rel="noopener">http://192.168.142.128:8083/</a></li>
+<li>然后在这个Connect的基础上建立一系列的Connector,可以确定数据源,以及一系列对数据的变更</li>
+<li>PUT <a href="http://192.168.142.128:8083/connectors/c_name/config" target="_blank" rel="noopener">http://192.168.142.128:8083/connectors/c_name/config</a></li>
+</ul>
+<hr>
           <p>
-            <a href="/2019/05/31/Linux防火墙限制/">
+            <a href="/2019/06/04/Kafka使用Debezium监听MySQL/">
               阅读全文
             </a>
           </p>

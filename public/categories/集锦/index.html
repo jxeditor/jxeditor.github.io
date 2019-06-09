@@ -8,13 +8,13 @@
 
 <title>
   
-    标签: Linux
+    分类: 集锦
   
 </title>
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/tags/Linux/index.html">
+<meta property="og:url" content="http://yoursite.com/categories/集锦/index.html">
 <meta property="og:site_name" content="BlackC">
 <meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
@@ -148,7 +148,7 @@
       
         <div style="max-width: 1000px">
       
-          <h1>Linux</h1>
+          <h1>集锦</h1>
 
 
   
@@ -158,39 +158,91 @@
 
     <div class="post-list-item article">
       <h3 class="article-header">
-        <a href="/2019/05/31/Linux防火墙限制/">
-  Linux防火墙限制
+        <a href="/2019/06/04/一些出现在业务需求上的小点子/">
+  一些出现在业务需求上的小点子
 </a>
 
       </h3>
       
 
       <div class="article-info">
-        <a href="/2019/05/31/Linux防火墙限制/"><span class="article-date">
-  2019-05-31
+        <a href="/2019/06/04/一些出现在业务需求上的小点子/"><span class="article-date">
+  2019-06-04
 </span>
 </a>
         
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/集锦/">集锦</a></li></ul>
 	</span>
 
 
         
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Linux/">Linux</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sql/">sql</a></li></ul>
 	</span>
 
 
       </div>
       <div class="article-entry">
         
-          <h2 id="防火墙的限制"><a href="#防火墙的限制" class="headerlink" title="防火墙的限制"></a>防火墙的限制</h2><h3 id="1-限制只允许指定IP访问指定端口"><a href="#1-限制只允许指定IP访问指定端口" class="headerlink" title="1. 限制只允许指定IP访问指定端口"></a>1. 限制只允许指定IP访问指定端口</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-A INPUT -m state --state NEW -m tcp -p tcp -s 127.0.0.1 --dport 22,3306,8080 -j ACCEPT</span><br></pre></td></tr></table></figure>
-          <p>
-            <a href="/2019/05/31/Linux防火墙限制/">
-              阅读全文
-            </a>
-          </p>
+          <h3 id="1-如何求一段时间内每天的注册人数-并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数"><a href="#1-如何求一段时间内每天的注册人数-并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数" class="headerlink" title="1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数"></a>1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数</h3><blockquote>
+<p>Demo数据如下表,时间范围为2019-01-01至2019-01-03,左边为原始数据,右边为聚合</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>c_time</th>
+<th>uid</th>
+<th>-</th>
+<th>c_time</th>
+<th>sum</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2019-01-01</td>
+<td>10001</td>
+<td></td>
+<td>2019-01-01</td>
+<td>1</td>
+</tr>
+<tr>
+<td>2019-01-02</td>
+<td>10002</td>
+<td></td>
+<td>2019-01-02</td>
+<td>2</td>
+</tr>
+<tr>
+<td>2019-01-02</td>
+<td>10003</td>
+<td></td>
+<td>2019-01-03</td>
+<td>3</td>
+</tr>
+<tr>
+<td>2019-01-03</td>
+<td>10004</td>
+</tr>
+<tr>
+<td>2019-01-03</td>
+<td>10005</td>
+</tr>
+<tr>
+<td>2019-01-03</td>
+<td>10006</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>SQL简单实现</p>
+</blockquote>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> </span><br><span class="line">    <span class="keyword">SUM</span>(<span class="keyword">IF</span>(c_time = <span class="string">"2019-01-01"</span>,<span class="keyword">sum</span>,<span class="number">0</span>)) <span class="keyword">AS</span> <span class="string">"1"</span>,</span><br><span class="line">    <span class="keyword">SUM</span>(<span class="keyword">IF</span>(c_time <span class="keyword">BETWEEN</span> <span class="string">"2019-01-01"</span> <span class="keyword">AND</span> <span class="string">"2019-01-02"</span>,<span class="keyword">sum</span>,<span class="number">0</span>)) <span class="keyword">AS</span> <span class="string">"2"</span>,</span><br><span class="line">    <span class="keyword">SUM</span>(<span class="keyword">IF</span>(c_time <span class="keyword">BETWEEN</span> <span class="string">"2019-01-01"</span> <span class="keyword">AND</span> <span class="string">"2019-01-03"</span>,<span class="keyword">sum</span>,<span class="number">0</span>)) <span class="keyword">AS</span> <span class="string">"3"</span></span><br><span class="line"><span class="keyword">FROM</span> t</span><br><span class="line">然后将行转成列</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>Spark SQL简单实现</p>
+</blockquote>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** </span></span><br><span class="line"><span class="comment">思路:</span></span><br><span class="line"><span class="comment">1.利用UDF,将c_time转成list形式</span></span><br><span class="line"><span class="comment">    例如:</span></span><br><span class="line"><span class="comment">        2019-01-01进入UDF,根据endDate转化成List[2019-01-01,2019-01-02,2019-01-03]</span></span><br><span class="line"><span class="comment">2.利用explode方法将List转成多行</span></span><br><span class="line"><span class="comment">3.最终进行groupBy</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"><span class="keyword">val</span> beginDate = <span class="string">"2019-01-01"</span></span><br><span class="line"><span class="keyword">val</span> endDate = <span class="string">"2019-01-03"</span></span><br><span class="line"><span class="keyword">val</span> result = tDF</span><br><span class="line">    .filter(<span class="string">s"c_time &gt;='<span class="subst">$beginDate</span>' and c_time &lt; '<span class="subst">$endDate</span>'"</span>)</span><br><span class="line">    .selectExpr(<span class="string">"uid"</span>,<span class="string">"c_time"</span>)</span><br><span class="line">    .groupBy(<span class="string">"c_time"</span>)</span><br><span class="line">    .agg(count(<span class="string">"uid"</span>)).as(<span class="string">"sum"</span>)</span><br><span class="line">    .selectExpr(<span class="string">"sum"</span>,<span class="string">"dateList(c_time) date_list"</span>)</span><br><span class="line">    .withColumn(<span class="string">"c_time"</span>,explode($<span class="string">"date_list"</span>))</span><br><span class="line">    .groupBy(<span class="string">"c_time"</span>)</span><br><span class="line">    .agg(sum(<span class="string">"sum"</span>)).as(<span class="string">"sum"</span>)</span><br></pre></td></tr></table></figure>
+
         
       </div>
     </div>

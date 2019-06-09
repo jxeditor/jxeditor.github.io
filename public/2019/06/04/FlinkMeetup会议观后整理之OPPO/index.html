@@ -8,22 +8,22 @@
 
 <title>
   
-    Spark[RDD-DataFrame-DataSet]
+    FlinkMeetup会议观后整理之OPPO
   
 </title>
 
-<meta name="description" content="一. Spark2.x创建Spark对象12345val spark = SparkSession            .builder            .appName(&amp;quot;&amp;quot;)            .enableHiveSupport()            .getOrCreate()">
-<meta name="keywords" content="大数据,spark">
+<meta name="description" content="对于4月份在深圳举行的FlinkMeetup峰会,做一些知识性总结,提升一下自己,OPPO篇其实张俊张老师已经在过往记忆上做过总结整理了-传送门,本文更多的是了解自己的不足   主要内容 OPPO实时数仓的演进思路 基于Flink SQL的扩展条件 构建实时数仓的应用案例 未来的思考和展望">
+<meta name="keywords" content="flink">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Spark[RDD-DataFrame-DataSet]">
-<meta property="og:url" content="http://yoursite.com/2019/05/31/Spark[RDD-DataFrame-DataSet]/index.html">
+<meta property="og:title" content="FlinkMeetup会议观后整理之OPPO">
+<meta property="og:url" content="http://yoursite.com/2019/06/04/FlinkMeetup会议观后整理之OPPO/index.html">
 <meta property="og:site_name" content="BlackC">
-<meta property="og:description" content="一. Spark2.x创建Spark对象12345val spark = SparkSession            .builder            .appName(&amp;quot;&amp;quot;)            .enableHiveSupport()            .getOrCreate()">
+<meta property="og:description" content="对于4月份在深圳举行的FlinkMeetup峰会,做一些知识性总结,提升一下自己,OPPO篇其实张俊张老师已经在过往记忆上做过总结整理了-传送门,本文更多的是了解自己的不足   主要内容 OPPO实时数仓的演进思路 基于Flink SQL的扩展条件 构建实时数仓的应用案例 未来的思考和展望">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-05-31T13:31:53.170Z">
+<meta property="og:updated_time" content="2019-06-09T12:04:11.703Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Spark[RDD-DataFrame-DataSet]">
-<meta name="twitter:description" content="一. Spark2.x创建Spark对象12345val spark = SparkSession            .builder            .appName(&amp;quot;&amp;quot;)            .enableHiveSupport()            .getOrCreate()">
+<meta name="twitter:title" content="FlinkMeetup会议观后整理之OPPO">
+<meta name="twitter:description" content="对于4月份在深圳举行的FlinkMeetup峰会,做一些知识性总结,提升一下自己,OPPO篇其实张俊张老师已经在过往记忆上做过总结整理了-传送门,本文更多的是了解自己的不足   主要内容 OPPO实时数仓的演进思路 基于Flink SQL的扩展条件 构建实时数仓的应用案例 未来的思考和展望">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -153,17 +153,17 @@
       
         <div style="max-width: 1000px">
       
-          <article id="post-Spark[RDD-DataFrame-DataSet]" class="article article-type-post">
+          <article id="post-FlinkMeetup会议观后整理之OPPO" class="article article-type-post">
   
     <h1 class="article-header">
-      Spark[RDD-DataFrame-DataSet]
+      FlinkMeetup会议观后整理之OPPO
     </h1>
   
   
 
   <div class="article-info">
     <span class="article-date">
-  2019-05-31
+  2019-06-04
 </span>
 
     
@@ -174,46 +174,91 @@
 
     
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/大数据/">大数据</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
 	</span>
 
 
   </div>
   <div class="article-entry">
-    <h3 id="一-Spark2-x创建Spark对象"><a href="#一-Spark2-x创建Spark对象" class="headerlink" title="一. Spark2.x创建Spark对象"></a>一. Spark2.x创建Spark对象</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">val spark = SparkSession</span><br><span class="line">            .builder</span><br><span class="line">            .appName(&quot;&quot;)</span><br><span class="line">            .enableHiveSupport()</span><br><span class="line">            .getOrCreate()</span><br></pre></td></tr></table></figure>
+    <blockquote>
+<p>对于4月份在深圳举行的FlinkMeetup峰会,做一些知识性总结,提升一下自己,OPPO篇其实张俊张老师已经在过往记忆上做过总结整理了-<a href="https://mp.weixin.qq.com/s/ZZaaN0ubQgLqFwTiySi8UQ" target="_blank" rel="noopener">传送门</a>,本文更多的是了解自己的不足</p>
+</blockquote>
+<hr>
+<h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li>OPPO实时数仓的演进思路</li>
+<li>基于Flink SQL的扩展条件</li>
+<li>构建实时数仓的应用案例</li>
+<li>未来的思考和展望</li>
+</ul>
 <hr>
 <a id="more"></a>
-<h3 id="二-RDD-DataFrame和DataSet"><a href="#二-RDD-DataFrame和DataSet" class="headerlink" title="二. RDD,DataFrame和DataSet"></a>二. RDD,DataFrame和DataSet</h3><h4 id="1-RDD"><a href="#1-RDD" class="headerlink" title="1. RDD"></a>1. RDD</h4><p><strong>优缺点</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">优点:</span><br><span class="line">    编译时类型安全,编译时能检查出类型错误</span><br><span class="line">    面向对象的编程风格,直接通过类名点的方式来操作数据</span><br><span class="line">缺点:</span><br><span class="line">    序列化和反序列化的性能开销,无论是集群间的通信还是IO操作都需要对对象的结构和数据进行序列化和反序列化</span><br><span class="line">    GC的性能开销,频繁的创建和销毁对象,势必会增加GC</span><br></pre></td></tr></table></figure></p>
-<h4 id="2-DataFrame"><a href="#2-DataFrame" class="headerlink" title="2. DataFrame"></a>2. DataFrame</h4><p><strong>核心特征</strong></p>
+<h2 id="一、OPPO实时数仓的演进思路"><a href="#一、OPPO实时数仓的演进思路" class="headerlink" title="一、OPPO实时数仓的演进思路"></a>一、OPPO实时数仓的演进思路</h2><h3 id="1-OPPO业务与数据规模"><a href="#1-OPPO业务与数据规模" class="headerlink" title="1.OPPO业务与数据规模"></a>1.OPPO业务与数据规模</h3><p>OPPO基于Android定制了自己的ColorOS系统,日活跃用户超过2亿.围绕着ColorOS,OPPO构建了很多互联网应用,比如应用商店,浏览器,信息流等.用户在使用这些互联网应用的同时,也给OPPO积累了大量的数据.目前OPPO的总数据量超过100PB,日增数据量超过200TB—<strong>数据</strong>.</p>
+<p>要支撑这么大的一个数据量,OPPO研发出一整套的数据系统与服务,并逐渐形成了自己的数据中台体系—<strong>数据中台</strong>.</p>
+<h3 id="2-OPPO数据中台"><a href="#2-OPPO数据中台" class="headerlink" title="2.OPPO数据中台"></a>2.OPPO数据中台</h3><p>数据中台是什么?数据中台是指通过数据技术,对海量数据进行采集,计算,存储,加工,同时统一标准和口径.如果将数据看做原材料,那么数据中台就是加工坊.把它分成4个层次:</p>
 <blockquote>
-<p><strong>Schema:</strong><br>    包含了以ROW为单位的每行数据的列的信息;Spark通过Schema就能够读懂数据,因此在通信和IO时只需要序列化和反序列化数据,不需要考虑结构部分</p>
+<p><strong>业务支撑</strong>: 应用商店,浏览器,广告等;生产,品质,销售等;手软,ColorOs,影像等;IOT厂商</p>
+<p><strong>数据产品与服务</strong>: BI报表,用户洞察,内容标签,精准营销,舆情监测</p>
+<p><strong>全域数据体系</strong>: ID-Mapping,用户标签,内容标签</p>
+<p><strong>数据仓库</strong>: 原始层,明细层,汇总层,应用层</p>
+<p><strong>统一工具体系</strong>: 数据接入,数据治理,数据开发,数据消费</p>
+<p><strong>基础设施</strong>: 存储,计算</p>
+</blockquote>
+<ul>
+<li>最下层是统一工具体系,涵盖了”接入-治理-开发-消费”全数据链路;</li>
+<li>基于工具体系之上构建了数据仓库,划分成”原始层-明细层-汇总层-应用层”,这也是经典的数仓架构;</li>
+<li>再往上就是全域的数据体系,什么是全域呢?就是把公司所有的业务数据全部打通,形成统一的数据资产,比如ID-Mapping,用户标签等;</li>
+<li>最终,数据要能被业务用起来,需要场景驱动的数据产品与服务.</li>
+</ul>
+<p>以上就是OPPO数据中台的整个体系,而数据仓库在其中处于非常基础与核心的位置.</p>
+<h3 id="3-构建OPPO离线数仓"><a href="#3-构建OPPO离线数仓" class="headerlink" title="3.构建OPPO离线数仓"></a>3.构建OPPO离线数仓</h3><p>构建过程: 首先,数据来源基本是手机,日志文件以及DB数据库,基于Apache NiFI打造高可用,高吞吐的接入系统,将数据统一落入HDFS,形成原始层;紧接着,基于Hive的小时级ETL与天级汇总Hive任务,分别负责计算生成明细层与汇总层;最后,应用层是基于OPPO内部研发的数据产品,主要是报表分析,用户画像以及接口服务.此外,中间的明细层还支持Presto的<strong>即席查询</strong>与<strong>自助取数</strong>.</p>
+<h3 id="4-数仓实时化的诉求"><a href="#4-数仓实时化的诉求" class="headerlink" title="4.数仓实时化的诉求"></a>4.数仓实时化的诉求</h3><blockquote>
+<p><strong>业务侧</strong></p>
+</blockquote>
+<ul>
+<li>实时报表: 人群投放的到达率/曝光率/点击率</li>
+<li>实时标签: 用户当前所在的商圈</li>
+<li>实时接口: 用户最近下载某APP的时间</li>
+</ul>
+<blockquote>
+<p><strong>平台侧</strong></p>
+</blockquote>
+<ul>
+<li>调度任务: 凌晨0点大批量启动</li>
+<li>标签导入: 全量导入耗费数小时</li>
+<li>质量监控: 及时发现数据问题</li>
+</ul>
+<p>对于数仓实时化的诉求,大家通常都是从业务视角来看,但其实站在平台的角度,实时化也能带来切实的好处.首先,从业务侧来看,报表,标签,接口等都会有实时的应用场景;其次,对平台侧来说:第一,大量的批量任务都是从0点开始启动,都是通过T+1的方式去做数据处理,这会导致计算负载集中爆发,对集群的压力很大;第二,标签导入也属于一种T+1批量任务,每次全量导入都会耗费很长的时间;第三,数据质量的监控也必须是T+1的,导致没办法及时发现数据的一些问题.</p>
+<h3 id="5-离线到实现的平滑迁移"><a href="#5-离线到实现的平滑迁移" class="headerlink" title="5.离线到实现的平滑迁移"></a>5.离线到实现的平滑迁移</h3><p><table><br>    <tr><br>        <th rowspan="4">小时/天级</th><br>        <th rowspan="2">API</th><br>        <th>编程接口</th><br>        <th>SQL+UDF</th><br>    </tr><br>    <tr><br>        <th>数仓抽象</th><br>        <th>Table</th><br>    </tr><br>    <tr><br>        <th rowspan="2">RunTime</th><br>        <th>批量计算</th><br>        <th>Hive</th><br>    </tr><br>    <tr><br>        <th>离线数据</th><br>        <th>HDFS</th><br>    </tr><br></table></p>
+<p><table><br>    <tr><br>        <th rowspan="4">秒级/分级</th><br>        <th rowspan="2">API</th><br>        <th>编程接口</th><br>        <th>SQL+UDF</th><br>    </tr><br>    <tr><br>        <th>数仓抽象</th><br>        <th>Table</th><br>    </tr><br>    <tr><br>        <th rowspan="2">RunTime</th><br>        <th>流式计算</th><br>        <th>Flink</th><br>    </tr><br>    <tr><br>        <th>实时数据</th><br>        <th>Kafka</th><br>    </tr><br></table><br>无论是一个平台还是一个系统,都离不开上下两个层次的构成: 上层是API,是面向用户的编程抽象与接口;下层是RunTime,是面向内核的执行引擎.从离线到实时的迁移是平滑的,是什么意思?从API这层来看,数仓的抽象是Table,编程接口是SQL+UDF,离线数仓时代用户已经习惯了这样的API,迁移到实时数仓最好也能保持一致.而从RunTime层来看,计算引擎从Hive演进到了Flink,存储引擎从HDFS演进到了Kakfa.</p>
+<h3 id="6-构建OPPO实时数仓"><a href="#6-构建OPPO实时数仓" class="headerlink" title="6.构建OPPO实时数仓"></a>6.构建OPPO实时数仓</h3><p>构建过程: 与离线数仓基本相似,只是把Hive替换成Flink,把HDFS替换为Kafka.总体流程来看,基本模型是不变的,还是由原始层,明细层,汇总层,应用层的级联计算来构成.</p>
+<p>核心问题: 如何基于Flink构建实时数仓.</p>
+<hr>
+<h2 id="二、基于Flink-SQL的扩展工作"><a href="#二、基于Flink-SQL的扩展工作" class="headerlink" title="二、基于Flink SQL的扩展工作"></a>二、基于Flink SQL的扩展工作</h2><h3 id="1-Why-Flink-SQL"><a href="#1-Why-Flink-SQL" class="headerlink" title="1.Why Flink SQL"></a>1.Why Flink SQL</h3><blockquote>
+<p><strong>SQL</strong>: High-level Language</p>
+</blockquote>
+<ul>
+<li>ANSI SQL + UDF</li>
+<li>数据类型 + 内置函数</li>
+<li>自定义Source/Sink</li>
+<li>批流统一</li>
+</ul>
+<blockquote>
+<p><strong>Table API</strong>: Declarative DSL</p>
 </blockquote>
 <blockquote>
-<p><strong>off_heap:</strong><br>    Spark能够以二进制的形式序列化数据(不包含结构)到off-heap中,当要操作数据时,就直接操作off-heap内存</p>
+<p><strong>DataStream/DataSet API</strong>: Core APIs</p>
 </blockquote>
 <blockquote>
-<p><strong>Tungsten:</strong><br>    新的执行引擎</p>
+<p><strong>Stateful Stream Processing</strong>: Low-level building block(streams,state,[event] time)</p>
 </blockquote>
-<blockquote>
-<p><strong>Catalyst:</strong><br>    新的语法解析框架</p>
-</blockquote>
-<p><strong>优缺点</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">优点:</span><br><span class="line">    对外off-heap就像地盘,schema就像地图,spark有地图又有自己的地盘,就可以自己说了算,不再受jvm的限制,也就不再受GC的困扰,通过schema和off-heap,DataFrame解决了RDD的缺点</span><br><span class="line">    对比RDD提升了计算效率,减少数据读取,底层计算优化</span><br><span class="line">缺点:</span><br><span class="line">    DataFrame解决了RDD的缺点,但是丢失了RDD的优点</span><br><span class="line">    DataFrame不是类型安全的</span><br><span class="line">    API也不是面向对象风格</span><br><span class="line">总结:</span><br><span class="line">    在效率上得到了优化,但是在代码编写上需要仔细</span><br></pre></td></tr></table></figure></p>
-<h4 id="3-DataSet"><a href="#3-DataSet" class="headerlink" title="3. DataSet"></a>3. DataSet</h4><p><strong>核心特征(Encoder)</strong></p>
-<blockquote>
-<p>编译时的类型安全检查,性能极大的提升,内存使用极大降低,减少GC,极大的减少了网络数据的传输,极大的减少采用scala和java编程代码的差异性</p>
-</blockquote>
-<blockquote>
-<p>DataFrame每一行对应一个Row,而DataSet的定义更加宽松,每一个record对应了一个任意的类型,DataFrame只是DataSet的一种特例</p>
-</blockquote>
-<blockquote>
-<p>不同于Row是一个泛化的无类型JVM object,DataSet是由一系列的强类型JVM object组成的,Scala的case class或者java class定义.因此DataSet可以在变异时进行类型检查</p>
-</blockquote>
-<blockquote>
-<p>DataSet以Catalyst逻辑执行计划表示,并且数据以编码的二进制形式被存储,不需要反序列化就可以执行sorting,shuffle等操作</p>
-</blockquote>
-<blockquote>
-<p>DataSet创立需要一个显式的Encoder,把对象序列化为二进制</p>
-</blockquote>
+<ul>
+<li>低延迟,高吞吐</li>
+<li>高容错的状态管理</li>
+<li>端到端exactly-once</li>
+<li>Windows &amp; Event Time</li>
+</ul>
+<p>首先,为什么要用Flink SQL?上面展示了Flink框架的基本结构,最下面是Runtime,这个执行引擎我们认为最核心的优势是四个: 第一,低延迟,高吞吐;第二,端到端的Exactly-once;第三,可容错的状态管理;第四,Window &amp; Event time的支持.基于Runtime抽象出3个层次的API,SQL处于最上层.</p>
+<p>Flink SQL API有哪些优势?也可以从四个方面去看: 第一,支持ANSI SQL的标准;第二, 支持丰富的数据类型与内置函数,包括常见的算术运算与统计聚合;第三,可自定义Source/Sink,基于此可以灵活地扩展上下游;第四,批流统一,同样的SQL,既可以跑离线也可以跑实时.</p>
 
   </div>
   <footer class="article-footer">
