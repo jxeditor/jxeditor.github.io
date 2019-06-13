@@ -26,19 +26,17 @@ npm config set cache "C:/Program Files/nodejs/npm_cache"
 系统变量NODE_PATH=C:/Program Files/nodejs/npm_global/node_modules
 用户变量PATH=C:/Program Files/nodejs/npm_global
 
+# 如果默认存放在C盘，可以没有权限，需要管理员权限运行
 npm install -g hexo-cli
 npm install hexo-deployer-git --save
 
+# 进入Blog目录，下载hexo
+npm install hexo --save
+
+# 免密配置
 ssh-keygen -t rsa -C "账号"
 # 复制~/.ssh/id_rsa.pub内容
 # 添加到GitHub的ssh key
-
-# 修改git remote的模式
-git remote -v
-# 将https方式修改成主机:仓库的形式
-git remote add origin https://github.com/jxeditor/jxeditor.github.io.git
-git remote rm origin
-git remote add origin git@github.com:jxeditor/jxeditor.github.io.git
 ```
 
 ## 3.启动Hexo
@@ -60,6 +58,14 @@ git config --global user.email "you@example.com"
 git config --global user.name "Your Name"
 git init
 git remote add origin https://github.com/jxeditor/jxeditor.github.io.git
+
+# 修改git remote的模式
+git remote -v
+# 将https方式修改成主机:仓库的形式
+git remote add origin https://github.com/jxeditor/jxeditor.github.io.git
+git remote rm origin
+git remote add origin git@github.com:jxeditor/jxeditor.github.io.git
+
 git pull origin 远程分支 # 远程分支没有可以不进行拉取
 # 进行一系列操作
 git add *
