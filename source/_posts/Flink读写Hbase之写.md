@@ -42,6 +42,7 @@ wordCounts.addSink(new RichSinkFunction[(String, String)] {
         // put.addColumn(Bytes.toBytes(TABLE_CF), Bytes.toBytes("count"), Bytes.toBytes(value._2.toString().replace("---", "")))
         put.addColumn(Bytes.toBytes(TABLE_CF), Bytes.toBytes("count"), Bytes.toBytes(value._2 + "---"))
         mutator.mutate(put)
+        // 输出数据
         mutator.flush()
         val time2 = System.currentTimeMillis()
         println(time2 - time1)
@@ -190,9 +191,11 @@ object HbaseUtil {
 }
 
 // main
+// 输入数据
 wordCounts.map(x => {
   val put = new Put((x._1).getBytes)
   put.addColumn("info".getBytes, "count".getBytes, x._2.toString.getBytes)
+  // 输出数据
   HbaseUtil.put("test.demo_", put)
 })
 ```
@@ -227,13 +230,16 @@ val tableOuputFormat = new OutputFormat[Tuple2[String, String]] {
     }
   }
 }
+// 输入数据
 val hbaseDs = env.createInput(tableInputFormat)
+// 输出数据
 hbaseDs.output(tableOutputFormat)
 ```
 
 ---
 ## HadoopOutputFormat
 ```scala
+// 输入数据
 val hbaseDs = env.createInput(tableInputFormat)
 val hadoopOF = new HadoopOutputFormat[String, Mutation](new TableOutputFormat(), job)
 println(hbaseDs.collect().length)
@@ -242,6 +248,7 @@ val ds = hbaseDs.map(x => {
   put.addColumn(Bytes.toBytes(TABLE_CF), Bytes.toBytes("count"), Bytes.toBytes(x.f1 + "小猪猪"))
   (x.f0, put.asInstanceOf[Mutation])
 })
+// 输出数据
 ds.output(hadoopOF)
 ```
 
