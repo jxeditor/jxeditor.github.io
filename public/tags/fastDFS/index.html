@@ -8,13 +8,13 @@
 
 <title>
   
-    分类: 命令
+    标签: fastDFS
   
 </title>
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/categories/命令/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/fastDFS/index.html">
 <meta property="og:site_name" content="BlackC">
 <meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
@@ -148,7 +148,7 @@
       
         <div style="max-width: 1000px">
       
-          <h1>命令</h1>
+          <h1>fastDFS</h1>
 
 
   
@@ -158,36 +158,38 @@
 
     <div class="post-list-item article">
       <h3 class="article-header">
-        <a href="/2019/05/31/MVN命令/">
-  MVN命令
+        <a href="/2019/06/13/基于FastDFS实现类OSS以及扩展/">
+  基于FastDFS实现类OSS以及扩展
 </a>
 
       </h3>
       
 
       <div class="article-info">
-        <a href="/2019/05/31/MVN命令/"><span class="article-date">
-  2019-05-31
+        <a href="/2019/06/13/基于FastDFS实现类OSS以及扩展/"><span class="article-date">
+  2019-06-13
 </span>
 </a>
         
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/命令/">命令</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/">搭建</a></li></ul>
 	</span>
 
 
         
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mvn/">mvn</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fastDFS/">fastDFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/oss/">oss</a></li></ul>
 	</span>
 
 
       </div>
       <div class="article-entry">
         
-          <h2 id="1-安装包"><a href="#1-安装包" class="headerlink" title="1.安装包"></a>1.安装包</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 能够下载到jar包的情况</span><br><span class="line">1. 首先下载Maven无法加载的jar包</span><br><span class="line">2. 执行mvn命令</span><br><span class="line">mvn install:install-file</span><br><span class="line">-DgroupId=com.oracle    # groupId</span><br><span class="line">-DartifactId=ojdbc14 #artifactId</span><br><span class="line">-Dversion=10.2.0.4.0    # 版本号</span><br><span class="line">-Dpackaging=jar # 打包方式</span><br><span class="line">-Dfile=已下载的jar位置</span><br><span class="line"></span><br><span class="line"># 只能下载到工程文件的情况</span><br><span class="line">1. 首先下载源代码</span><br><span class="line">2. 进入工程目录&lt;与src同级目录&gt;</span><br><span class="line">3. 执行mvn命令</span><br><span class="line">mvn install -Dmaven.test.skip=true</span><br></pre></td></tr></table></figure>
+          <blockquote>
+<p>首先，FastDFS肯定没有OSS功能强大以及齐全，碍于成本问题，只能寻找一个类似OSS功能的替代品，所以需要考虑到以后的一些问题。</p>
+</blockquote>
           <p>
-            <a href="/2019/05/31/MVN命令/">
+            <a href="/2019/06/13/基于FastDFS实现类OSS以及扩展/">
               阅读全文
             </a>
           </p>

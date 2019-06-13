@@ -8,17 +8,22 @@
 
 <title>
   
-    分类: 命令
+    基于FastDFS实现类OSS以及扩展
   
 </title>
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/categories/命令/index.html">
+<meta name="description" content="首先，FastDFS肯定没有OSS功能强大以及齐全，碍于成本问题，只能寻找一个类似OSS功能的替代品，所以需要考虑到以后的一些问题。">
+<meta name="keywords" content="oss,fastDFS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于FastDFS实现类OSS以及扩展">
+<meta property="og:url" content="http://yoursite.com/2019/06/13/基于FastDFS实现类OSS以及扩展/index.html">
 <meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="首先，FastDFS肯定没有OSS功能强大以及齐全，碍于成本问题，只能寻找一个类似OSS功能的替代品，所以需要考虑到以后的一些问题。">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-13T02:29:16.249Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BlackC">
+<meta name="twitter:title" content="基于FastDFS实现类OSS以及扩展">
+<meta name="twitter:description" content="首先，FastDFS肯定没有OSS功能强大以及齐全，碍于成本问题，只能寻找一个类似OSS功能的替代品，所以需要考虑到以后的一些问题。">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -148,56 +153,61 @@
       
         <div style="max-width: 1000px">
       
-          <h1>命令</h1>
-
-
+          <article id="post-基于FastDFS实现类OSS以及扩展" class="article article-type-post">
+  
+    <h1 class="article-header">
+      基于FastDFS实现类OSS以及扩展
+    </h1>
   
   
-    <div class="post-list">
-  
 
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2019/05/31/MVN命令/">
-  MVN命令
-</a>
-
-      </h3>
-      
-
-      <div class="article-info">
-        <a href="/2019/05/31/MVN命令/"><span class="article-date">
-  2019-05-31
+  <div class="article-info">
+    <span class="article-date">
+  2019-06-13
 </span>
-</a>
-        
+
+    
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/命令/">命令</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/">搭建</a></li></ul>
 	</span>
 
 
-        
+    
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mvn/">mvn</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/fastDFS/">fastDFS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/oss/">oss</a></li></ul>
 	</span>
 
 
-      </div>
-      <div class="article-entry">
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>首先，FastDFS肯定没有OSS功能强大以及齐全，碍于成本问题，只能寻找一个类似OSS功能的替代品，所以需要考虑到以后的一些问题。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="一、未来考虑"><a href="#一、未来考虑" class="headerlink" title="一、未来考虑"></a>一、未来考虑</h2><h3 id="1-FastDFS能否实现OSS的部分功能"><a href="#1-FastDFS能否实现OSS的部分功能" class="headerlink" title="1.FastDFS能否实现OSS的部分功能"></a>1.FastDFS能否实现OSS的部分功能</h3><h3 id="2-FastDFS文件上传后文件名如何保存"><a href="#2-FastDFS文件上传后文件名如何保存" class="headerlink" title="2.FastDFS文件上传后文件名如何保存"></a>2.FastDFS文件上传后文件名如何保存</h3><h3 id="3-Hadoop生态体系能否像使用OSS一样使用FastDFS"><a href="#3-Hadoop生态体系能否像使用OSS一样使用FastDFS" class="headerlink" title="3.Hadoop生态体系能否像使用OSS一样使用FastDFS"></a>3.Hadoop生态体系能否像使用OSS一样使用FastDFS</h3><h3 id="4-FastDFS数据能否迁移到OSS上"><a href="#4-FastDFS数据能否迁移到OSS上" class="headerlink" title="4.FastDFS数据能否迁移到OSS上"></a>4.FastDFS数据能否迁移到OSS上</h3>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
         
-          <h2 id="1-安装包"><a href="#1-安装包" class="headerlink" title="1.安装包"></a>1.安装包</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 能够下载到jar包的情况</span><br><span class="line">1. 首先下载Maven无法加载的jar包</span><br><span class="line">2. 执行mvn命令</span><br><span class="line">mvn install:install-file</span><br><span class="line">-DgroupId=com.oracle    # groupId</span><br><span class="line">-DartifactId=ojdbc14 #artifactId</span><br><span class="line">-Dversion=10.2.0.4.0    # 版本号</span><br><span class="line">-Dpackaging=jar # 打包方式</span><br><span class="line">-Dfile=已下载的jar位置</span><br><span class="line"></span><br><span class="line"># 只能下载到工程文件的情况</span><br><span class="line">1. 首先下载源代码</span><br><span class="line">2. 进入工程目录&lt;与src同级目录&gt;</span><br><span class="line">3. 执行mvn命令</span><br><span class="line">mvn install -Dmaven.test.skip=true</span><br></pre></td></tr></table></figure>
-          <p>
-            <a href="/2019/05/31/MVN命令/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
 
-  
-    </div>
-  
+
+    
+
+  </footer>
+</article>
+
 
 
 
