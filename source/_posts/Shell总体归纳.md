@@ -1,7 +1,7 @@
 ---
 title: Shell总体归纳
 date: 2019-05-31 21:15:39
-categories: 教程
+categories: 运维
 tags: shell
 ---
 ### 一. 约定标记
