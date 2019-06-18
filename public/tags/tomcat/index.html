@@ -8,13 +8,13 @@
 
 <title>
   
-    分类: 集锦
+    标签: tomcat
   
 </title>
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/categories/集锦/index.html">
+<meta property="og:url" content="http://yoursite.com/tags/tomcat/index.html">
 <meta property="og:site_name" content="BlackC">
 <meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
@@ -148,7 +148,7 @@
       
         <div style="max-width: 1000px">
       
-          <h1>集锦</h1>
+          <h1>tomcat</h1>
 
 
   
@@ -158,84 +158,36 @@
 
     <div class="post-list-item article">
       <h3 class="article-header">
-        <a href="/2019/06/04/一些出现在业务需求上的小点子/">
-  一些出现在业务需求上的小点子
+        <a href="/2019/06/18/Tomcat的一些小应用/">
+  Tomcat的一些小应用
 </a>
 
       </h3>
       
 
       <div class="article-info">
-        <a href="/2019/06/04/一些出现在业务需求上的小点子/"><span class="article-date">
-  2019-06-04
+        <a href="/2019/06/18/Tomcat的一些小应用/"><span class="article-date">
+  2019-06-18
 </span>
 </a>
         
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/集锦/">集锦</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/">搭建</a></li></ul>
 	</span>
 
 
         
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sql/">sql</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tomcat/">tomcat</a></li></ul>
 	</span>
 
 
       </div>
       <div class="article-entry">
         
-          <h3 id="1-如何求一段时间内每天的注册人数-并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数"><a href="#1-如何求一段时间内每天的注册人数-并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数" class="headerlink" title="1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数"></a>1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数</h3><blockquote>
-<p>Demo数据如下表,时间范围为2019-01-01至2019-01-03,左边为原始数据,右边为聚合</p>
-</blockquote>
-<table>
-<thead>
-<tr>
-<th>c_time</th>
-<th>uid</th>
-<th>-</th>
-<th>c_time</th>
-<th>sum</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>2019-01-01</td>
-<td>10001</td>
-<td></td>
-<td>2019-01-01</td>
-<td>1</td>
-</tr>
-<tr>
-<td>2019-01-02</td>
-<td>10002</td>
-<td></td>
-<td>2019-01-02</td>
-<td>2</td>
-</tr>
-<tr>
-<td>2019-01-02</td>
-<td>10003</td>
-<td></td>
-<td>2019-01-03</td>
-<td>3</td>
-</tr>
-<tr>
-<td>2019-01-03</td>
-<td>10004</td>
-</tr>
-<tr>
-<td>2019-01-03</td>
-<td>10005</td>
-</tr>
-<tr>
-<td>2019-01-03</td>
-<td>10006</td>
-</tr>
-</tbody>
-</table>
+          <h2 id="自动重新加载"><a href="#自动重新加载" class="headerlink" title="自动重新加载"></a>自动重新加载</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 修改tomcat/conf/context.xml文件</span><br><span class="line"># 加上reloadable=&quot;true&quot;</span><br><span class="line">&lt;Context reloadable=&quot;true&quot;&gt;</span><br></pre></td></tr></table></figure>
           <p>
-            <a href="/2019/06/04/一些出现在业务需求上的小点子/">
+            <a href="/2019/06/18/Tomcat的一些小应用/">
               阅读全文
             </a>
           </p>

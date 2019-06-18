@@ -8,17 +8,22 @@
 
 <title>
   
-    分类: 集锦
+    Kylin初体验
   
 </title>
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/categories/集锦/index.html">
+<meta name="description" content="一、部署">
+<meta name="keywords" content="kylin">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kylin初体验">
+<meta property="og:url" content="http://yoursite.com/2019/06/12/Kylin初体验/index.html">
 <meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="一、部署">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-06-12T08:04:02.338Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BlackC">
+<meta name="twitter:title" content="Kylin初体验">
+<meta name="twitter:description" content="一、部署">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -148,104 +153,71 @@
       
         <div style="max-width: 1000px">
       
-          <h1>集锦</h1>
-
-
+          <article id="post-Kylin初体验" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Kylin初体验
+    </h1>
   
   
-    <div class="post-list">
-  
 
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2019/06/04/一些出现在业务需求上的小点子/">
-  一些出现在业务需求上的小点子
-</a>
-
-      </h3>
-      
-
-      <div class="article-info">
-        <a href="/2019/06/04/一些出现在业务需求上的小点子/"><span class="article-date">
-  2019-06-04
+  <div class="article-info">
+    <span class="article-date">
+  2019-06-12
 </span>
-</a>
-        
+
+    
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/集锦/">集锦</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
 	</span>
 
 
-        
+    
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sql/">sql</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kylin/">kylin</a></li></ul>
 	</span>
 
 
-      </div>
-      <div class="article-entry">
-        
-          <h3 id="1-如何求一段时间内每天的注册人数-并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数"><a href="#1-如何求一段时间内每天的注册人数-并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数" class="headerlink" title="1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数"></a>1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数</h3><blockquote>
-<p>Demo数据如下表,时间范围为2019-01-01至2019-01-03,左边为原始数据,右边为聚合</p>
+  </div>
+  <div class="article-entry">
+    <h2 id="一、部署"><a href="#一、部署" class="headerlink" title="一、部署"></a>一、部署</h2><hr>
+<a id="more"></a>
+<h2 id="二、Restful-API"><a href="#二、Restful-API" class="headerlink" title="二、Restful API"></a>二、Restful API</h2><h3 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h3><blockquote>
+<p><strong>Authentication</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="comment"># POST /kylin/api/user/authentication</span></span><br><span class="line">&gt; curl -c ./cookiefile.txt -X POST -H <span class="string">"Authorization:Basic QURNSU46S1lMSU4="</span> -H <span class="string">"Content-Type:application/json"</span> <span class="string">"http://192.168.142.128:7070/kylin/api/user/authentication"</span></span><br><span class="line">&gt; </span><br><span class="line">&gt; <span class="comment"># 使用上面的cookiefile来build cube</span></span><br><span class="line">&gt; curl -b ./cookiefile.txt -X PUT -H <span class="string">"Authorization:Basic QURNSU46S1lMSU4="</span> -H <span class="string">"Content-Type:application/json"</span> -d <span class="string">'&#123;"startTime":1423526400000,"endTime":1423612800000,"buildType":"BUILD"&#125;'</span> <span class="string">"http://192.168.142.128:7070/kylin/api/cubes/your_cube/build"</span></span><br><span class="line">&gt; </span><br><span class="line">&gt; <span class="comment"># 使用user/password来build cube </span></span><br><span class="line">&gt; curl -X PUT --user ADMIN:KYLIN -H <span class="string">"Content-Type:application/json;charset=utf-8"</span> -d <span class="string">'&#123;"startTime":820454400000,"endTime":821318400000,"buildType":"BUILD"&#125;'</span> <span class="string">"http://192.168.142.128:7070/kylin/api/cubes/your_cube/build"</span> </span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure></p>
 </blockquote>
-<table>
-<thead>
-<tr>
-<th>c_time</th>
-<th>uid</th>
-<th>-</th>
-<th>c_time</th>
-<th>sum</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>2019-01-01</td>
-<td>10001</td>
-<td></td>
-<td>2019-01-01</td>
-<td>1</td>
-</tr>
-<tr>
-<td>2019-01-02</td>
-<td>10002</td>
-<td></td>
-<td>2019-01-02</td>
-<td>2</td>
-</tr>
-<tr>
-<td>2019-01-02</td>
-<td>10003</td>
-<td></td>
-<td>2019-01-03</td>
-<td>3</td>
-</tr>
-<tr>
-<td>2019-01-03</td>
-<td>10004</td>
-</tr>
-<tr>
-<td>2019-01-03</td>
-<td>10005</td>
-</tr>
-<tr>
-<td>2019-01-03</td>
-<td>10006</td>
-</tr>
-</tbody>
-</table>
-          <p>
-            <a href="/2019/06/04/一些出现在业务需求上的小点子/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
+<blockquote>
+<p><strong>Query</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="comment"># POST /kylin/api/query</span></span><br><span class="line">&gt; curl -X POST -H <span class="string">"Authorization:Basic QURNSU46S1lMSU4="</span> -H <span class="string">"Content-Type:application/json"</span> -d <span class="string">'&#123;"sql":"select part_dt,sum(price) as total_sold,count(distinct seller_id) as sellers from kylin_sales group by part_dt order by part_dt","project":"learn_kylin"&#125;'</span>  <span class="string">"http://192.168.142.128:7070/kylin/api/query"</span></span><br><span class="line">&gt; curl -X POST --user ADMIN:KYLIN -H <span class="string">"Content-Type:application/json"</span> -d <span class="string">'&#123;"sql":"select part_dt,sum(price) as total_sold,count(distinct seller_id) as sellers from kylin_sales group by part_dt order by part_dt","project":"learn_kylin"&#125;'</span>  <span class="string">"http://192.168.142.128:7070/kylin/api/query"</span></span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p><strong>List queryable tables</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="comment"># GET /kylin/api/tables_and_columns</span></span><br><span class="line">&gt; <span class="comment"># 必要的参数project</span></span><br><span class="line">&gt; curl -X GET --user ADMIN:KYLIN -H <span class="string">"Content-Type:application/json"</span> <span class="string">"http://192.168.142.128:7070/kylin/api/tables_and_columns?project=learn_kylin"</span></span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p><strong>List cubes</strong><br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="comment"># GET /kylin/api/cubes</span></span><br><span class="line">&gt; <span class="comment"># 必要的参数offset,limit</span></span><br><span class="line">&gt; curl -X GET --user ADMIN:KYLIN -H <span class="string">"Content-Type:application/json"</span> <span class="string">"http://192.168.142.128:7070/kylin/api/cubes"</span></span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
 
-  
-    </div>
-  
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
 
 
 
