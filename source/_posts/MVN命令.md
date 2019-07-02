@@ -1,8 +1,8 @@
----
+﻿---
 title: MVN命令
 date: 2019-05-31 18:45:52
 categories: 命令
-tags: mvn
+tags: Maven
 ---
 ## 1.安装包
 ```

@@ -1,10 +1,9 @@
----
+﻿---
 title: 基于FastDFS实现类OSS以及扩展
 date: 2019-06-13 10:18:35
 categories: 搭建
 tags: 
-    - oss
-    - fastDFS
+    - OSS
 ---
 
 > 首先，FastDFS肯定没有OSS功能强大以及齐全，碍于成本问题，只能寻找一个类似OSS功能的替代品，所以需要考虑到以后的一些问题。

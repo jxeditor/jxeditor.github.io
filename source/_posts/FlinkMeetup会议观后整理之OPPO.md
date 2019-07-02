@@ -1,9 +1,9 @@
----
+﻿---
 title: FlinkMeetup会议观后整理之OPPO
 date: 2019-06-04 08:59:01
 categories: 大数据
 tags: 
-    - flink
+    - Flink
 ---
 > 对于4月份在深圳举行的FlinkMeetup峰会,做一些知识性总结,提升一下自己,OPPO篇其实张俊张老师已经在过往记忆上做过总结整理了-[传送门](https://mp.weixin.qq.com/s/ZZaaN0ubQgLqFwTiySi8UQ),本文更多的是了解自己的不足
 

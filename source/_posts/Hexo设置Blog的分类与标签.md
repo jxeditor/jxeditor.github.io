@@ -2,7 +2,7 @@
 title: Hexo设置Blog的分类与标签
 date: 2019-05-29 22:59:01
 categories: 搭建
-tags: hexo
+tags: Hexo
 ---
 
 ## 1.添加关于页面

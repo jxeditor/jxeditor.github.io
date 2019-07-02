@@ -1,9 +1,9 @@
----
+﻿---
 title: Kylin初体验
 date: 2019-06-12 14:53:01
 categories: 大数据
 tags: 
-    - kylin
+    - Kylin
 ---
 
 ## 一、部署
