@@ -8,13 +8,13 @@
 
 <title>
   
-    标签: CDH
+    归档
   
 </title>
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/tags/CDH/index.html">
+<meta property="og:url" content="http://yoursite.com/archives/page/3/index.html">
 <meta property="og:site_name" content="BlackC">
 <meta property="og:locale" content="zh-CN">
 <meta name="twitter:card" content="summary">
@@ -148,26 +148,33 @@
       
         <div style="max-width: 1000px">
       
-          <h1>CDH</h1>
-
+          
 
   
   
-    <div class="post-list">
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <h1><a href="/archives/2018" class="archive-year">2018</a></h1>
+        </div>
+        <div class="post-list">
+    
   
 
     <div class="post-list-item article">
       <h3 class="article-header">
-        <a href="/2019/05/31/CDH5.15.1搭建与重装/">
-  CDH5.15.1搭建与重装
+        <a href="/2018/06/18/Tomcat的一些小应用/">
+  Tomcat的一些小应用
 </a>
 
       </h3>
       
 
       <div class="article-info">
-        <a href="/2019/05/31/CDH5.15.1搭建与重装/"><span class="article-date">
-  2019-05-31
+        <a href="/2018/06/18/Tomcat的一些小应用/"><span class="article-date">
+  2018-06-18
 </span>
 </a>
         
@@ -178,21 +185,16 @@
 
         
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CDH/">CDH</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Tomcat/">Tomcat</a></li></ul>
 	</span>
 
 
       </div>
       <div class="article-entry">
         
-          <h2 id="系统环境-64位"><a href="#系统环境-64位" class="headerlink" title="系统环境[64位]"></a>系统环境[64位]</h2><ul>
-<li>操作系统: Centos</li>
-<li>Cloudera Manager: 5.15.1.4</li>
-<li>CDH: 5.15.1</li>
-</ul>
-<hr>
+          <h2 id="自动重新加载"><a href="#自动重新加载" class="headerlink" title="自动重新加载"></a>自动重新加载</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 修改tomcat/conf/context.xml文件</span><br><span class="line"># 加上reloadable=&quot;true&quot;</span><br><span class="line">&lt;Context reloadable=&quot;true&quot;&gt;</span><br></pre></td></tr></table></figure>
           <p>
-            <a href="/2019/05/31/CDH5.15.1搭建与重装/">
+            <a href="/2018/06/18/Tomcat的一些小应用/">
               阅读全文
             </a>
           </p>
@@ -201,10 +203,68 @@
     </div>
 
   
+
+  
+  
+    
+      
+        </div></section>
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <h1><a href="/archives/2017" class="archive-year">2017</a></h1>
+        </div>
+        <div class="post-list">
+    
+  
+
+    <div class="post-list-item article">
+      <h3 class="article-header">
+        <a href="/2017/06/18/系统常用的命令/">
+  系统常用的命令
+</a>
+
+      </h3>
+      
+
+      <div class="article-info">
+        <a href="/2017/06/18/系统常用的命令/"><span class="article-date">
+  2017-06-18
+</span>
+</a>
+        
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/命令/">命令</a></li></ul></li></ul>
+	</span>
+
+
+        
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/OS/">OS</a></li></ul>
+	</span>
+
+
+      </div>
+      <div class="article-entry">
+        
+          <h2 id="查看端口占用并释放"><a href="#查看端口占用并释放" class="headerlink" title="查看端口占用并释放"></a>查看端口占用并释放</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># windows</span></span><br><span class="line">netstat -ano|findstr 端口号</span><br><span class="line">taskkill /pid 进程号 -f</span><br><span class="line"><span class="comment"># linux</span></span><br><span class="line">netstat -anop |grep 端口号</span><br><span class="line"><span class="built_in">kill</span> -9 进程号</span><br></pre></td></tr></table></figure>
+          <p>
+            <a href="/2017/06/18/系统常用的命令/">
+              阅读全文
+            </a>
+          </p>
+        
+      </div>
     </div>
+
   
 
 
+
+  <div class="pagination">
+    <a class="extend prev" rel="prev" href="/archives/page/2/">上一页</a><a class="page-number" href="/archives/">1</a><a class="page-number" href="/archives/page/2/">2</a><span class="page-number current">3</span>
+  </div>
 
 
 
@@ -218,7 +278,7 @@
       
         </div>
       
-    </div>
+    </section></div>
   </div>
   <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 
@@ -294,5 +354,5 @@
 <script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
 <script src="/scripts/main.js"></script>
 
-</body>
+</div></body>
 </html>
