@@ -2,7 +2,7 @@
 title: Docker的简单入门
 date: 2019-05-31 15:20:25
 categorys: 教程
-tags: Docker
+tags: docker
 ---
 ## 1.组成
 - 镜像

@@ -3,8 +3,8 @@ title: Flink读写Hbase之写
 date: 2019-06-03 15:59:01
 categories: 大数据
 tags: 
-    - Flink
-    - HBase
+    - flink
+    - hbase
 ---
 > 主要对Flink写入HBase数据做一个整理,方便快速进行业务代码开发,只针对于具体的方法操作,并不涉及Flink搭建
 

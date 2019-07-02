@@ -3,7 +3,7 @@ title: XWiki的使用与修改
 date: 2019-06-28 08:53:01
 categories: 搭建
 tags: 
-    - Xwiki
+    - xwiki
 ---
 
 ## 安装搭建

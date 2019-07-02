@@ -3,7 +3,7 @@ title: Kafka使用Debezium监听MySQL
 date: 2019-06-04 13:59:01
 categories: 大数据
 tags: 
-    - Kafka
+    - kafka
 ---
 ## 理解Kafka Connect
 - 先建立一个Connect,这个Connect可以配置一些参数,确定信息的一些格式

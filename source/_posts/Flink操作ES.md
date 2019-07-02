@@ -1,9 +1,9 @@
----
+﻿---
 title: Flink操作ES
 date: 2019-07-02 14:53:01
 categories: 大数据
 tags: 
-    - Flink
+    - flink
 ---
 
 > 利用了Flink的Sink功能,将对ES的操作封装在自定义ElasticsearchSinkFunction类中.

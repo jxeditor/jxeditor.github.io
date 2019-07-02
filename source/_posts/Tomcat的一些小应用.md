@@ -3,7 +3,7 @@ title: Tomcat的一些小应用
 date: 2018-06-18 07:53:01
 categories: 搭建
 tags: 
-    - Tomcat
+    - tomcat
 ---
 
 ## 自动重新加载

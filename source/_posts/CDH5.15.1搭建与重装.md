@@ -3,7 +3,7 @@ title: CDH5.15.1搭建与重装
 date: 2019-05-31 21:22:16
 categories: 搭建
 tags: 
-    - CDH
+    - cdh
 ---
 
 ## 系统环境[64位]

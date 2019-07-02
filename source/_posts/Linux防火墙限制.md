@@ -2,7 +2,7 @@
 title: Linux防火墙限制
 date: 2019-05-31 21:16:39
 categories: 运维
-tags: OS
+tags: os
 ---
 ## 防火墙的限制
 ### 1. 限制只允许指定IP访问指定端口

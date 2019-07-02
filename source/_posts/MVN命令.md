@@ -2,7 +2,7 @@
 title: MVN命令
 date: 2019-05-31 18:45:52
 categories: 命令
-tags: Maven
+tags: maven
 ---
 ## 1.安装包
 ```

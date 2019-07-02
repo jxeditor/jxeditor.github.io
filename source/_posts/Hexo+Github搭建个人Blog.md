@@ -3,8 +3,8 @@ title: Hexo+Github搭建个人Blog
 date: 2019-05-29 21:59:01
 categories: 搭建
 tags: 
-    - Hexo
-    - Git
+    - hexo
+    - git
 ---
 ## 1.环境安装
 - 下载Git
