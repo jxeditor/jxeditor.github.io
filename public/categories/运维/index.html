@@ -90,7 +90,7 @@
             
               <li class="archive-list-container">
                 <a href="javascript:;">归档</a>
-                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">20</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">1</span></li></ul>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">4</span></li></ul>
               </li>
             
           
@@ -158,102 +158,6 @@
 
     <div class="post-list-item article">
       <h3 class="article-header">
-        <a href="/2019/05/31/Linux防火墙限制/">
-  Linux防火墙限制
-</a>
-
-      </h3>
-      
-
-      <div class="article-info">
-        <a href="/2019/05/31/Linux防火墙限制/"><span class="article-date">
-  2019-05-31
-</span>
-</a>
-        
-	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a></li></ul>
-	</span>
-
-
-        
-	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/os/">os</a></li></ul>
-	</span>
-
-
-      </div>
-      <div class="article-entry">
-        
-          <h2 id="防火墙的限制"><a href="#防火墙的限制" class="headerlink" title="防火墙的限制"></a>防火墙的限制</h2><h3 id="1-限制只允许指定IP访问指定端口"><a href="#1-限制只允许指定IP访问指定端口" class="headerlink" title="1. 限制只允许指定IP访问指定端口"></a>1. 限制只允许指定IP访问指定端口</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-A INPUT -m state --state NEW -m tcp -p tcp -s 127.0.0.1 --dport 22,3306,8080 -j ACCEPT</span><br></pre></td></tr></table></figure>
-          <p>
-            <a href="/2019/05/31/Linux防火墙限制/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
-
-  
-    </div>
-  
-
-  
-  
-    <div class="post-list">
-  
-
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2019/05/31/Shell总体归纳/">
-  Shell总体归纳
-</a>
-
-      </h3>
-      
-
-      <div class="article-info">
-        <a href="/2019/05/31/Shell总体归纳/"><span class="article-date">
-  2019-05-31
-</span>
-</a>
-        
-	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a></li></ul>
-	</span>
-
-
-        
-	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li></ul>
-	</span>
-
-
-      </div>
-      <div class="article-entry">
-        
-          <h3 id="一-约定标记"><a href="#一-约定标记" class="headerlink" title="一. 约定标记"></a>一. 约定标记</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br></pre></td></tr></table></figure>
-          <p>
-            <a href="/2019/05/31/Shell总体归纳/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
-
-  
-    </div>
-  
-
-  
-  
-    <div class="post-list">
-  
-
-    <div class="post-list-item article">
-      <h3 class="article-header">
         <a href="/2017/06/18/系统常用的命令/">
   系统常用的命令
 </a>
@@ -284,6 +188,102 @@
           <h2 id="查看端口占用并释放"><a href="#查看端口占用并释放" class="headerlink" title="查看端口占用并释放"></a>查看端口占用并释放</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># windows</span></span><br><span class="line">netstat -ano|findstr 端口号</span><br><span class="line">taskkill /pid 进程号 -f</span><br><span class="line"><span class="comment"># linux</span></span><br><span class="line">netstat -anop |grep 端口号</span><br><span class="line"><span class="built_in">kill</span> -9 进程号</span><br></pre></td></tr></table></figure>
           <p>
             <a href="/2017/06/18/系统常用的命令/">
+              阅读全文
+            </a>
+          </p>
+        
+      </div>
+    </div>
+
+  
+    </div>
+  
+
+  
+  
+    <div class="post-list">
+  
+
+    <div class="post-list-item article">
+      <h3 class="article-header">
+        <a href="/2016/05/31/Linux防火墙限制/">
+  Linux防火墙限制
+</a>
+
+      </h3>
+      
+
+      <div class="article-info">
+        <a href="/2016/05/31/Linux防火墙限制/"><span class="article-date">
+  2016-05-31
+</span>
+</a>
+        
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a></li></ul>
+	</span>
+
+
+        
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/os/">os</a></li></ul>
+	</span>
+
+
+      </div>
+      <div class="article-entry">
+        
+          <h2 id="防火墙的限制"><a href="#防火墙的限制" class="headerlink" title="防火墙的限制"></a>防火墙的限制</h2><h3 id="1-限制只允许指定IP访问指定端口"><a href="#1-限制只允许指定IP访问指定端口" class="headerlink" title="1. 限制只允许指定IP访问指定端口"></a>1. 限制只允许指定IP访问指定端口</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">-A INPUT -m state --state NEW -m tcp -p tcp -s 127.0.0.1 --dport 22,3306,8080 -j ACCEPT</span><br></pre></td></tr></table></figure>
+          <p>
+            <a href="/2016/05/31/Linux防火墙限制/">
+              阅读全文
+            </a>
+          </p>
+        
+      </div>
+    </div>
+
+  
+    </div>
+  
+
+  
+  
+    <div class="post-list">
+  
+
+    <div class="post-list-item article">
+      <h3 class="article-header">
+        <a href="/2016/05/31/Shell总体归纳/">
+  Shell总体归纳
+</a>
+
+      </h3>
+      
+
+      <div class="article-info">
+        <a href="/2016/05/31/Shell总体归纳/"><span class="article-date">
+  2016-05-31
+</span>
+</a>
+        
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a></li></ul>
+	</span>
+
+
+        
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li></ul>
+	</span>
+
+
+      </div>
+      <div class="article-entry">
+        
+          <h3 id="一-约定标记"><a href="#一-约定标记" class="headerlink" title="一. 约定标记"></a>一. 约定标记</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/bash</span><br></pre></td></tr></table></figure>
+          <p>
+            <a href="/2016/05/31/Shell总体归纳/">
               阅读全文
             </a>
           </p>
