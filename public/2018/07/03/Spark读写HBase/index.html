@@ -8,17 +8,22 @@
 
 <title>
   
-    归档: 2018/5
+    Spark读写HBase
   
 </title>
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/archives/2018/05/index.html">
+<meta name="description" content="不考虑HbaseUtil这种方式">
+<meta name="keywords" content="Spark">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark读写HBase">
+<meta property="og:url" content="http://yoursite.com/2018/07/03/Spark读写HBase/index.html">
 <meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="不考虑HbaseUtil这种方式">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-04T07:10:13.298Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BlackC">
+<meta name="twitter:title" content="Spark读写HBase">
+<meta name="twitter:description" content="不考虑HbaseUtil这种方式">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -148,69 +153,63 @@
       
         <div style="max-width: 1000px">
       
-          
-
+          <article id="post-Spark读写HBase" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Spark读写HBase
+    </h1>
   
   
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <h1><a href="/archives/2018" class="archive-year">2018</a></h1>
-        </div>
-        <div class="post-list">
-    
-  
 
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2018/05/31/数据库存储过程及触发器/">
-  数据库存储过程及触发器
-</a>
-
-      </h3>
-      
-
-      <div class="article-info">
-        <a href="/2018/05/31/数据库存储过程及触发器/"><span class="article-date">
-  2018-05-31
+  <div class="article-info">
+    <span class="article-date">
+  2018-07-03
 </span>
-</a>
-        
+
+    
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/数据库/">数据库</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
 	</span>
 
 
-        
+    
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/">mysql</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Spark/">Spark</a></li></ul>
 	</span>
 
 
-      </div>
-      <div class="article-entry">
-        
-          <h3 id="一-关键语法"><a href="#一-关键语法" class="headerlink" title="一.关键语法"></a>一.关键语法</h3><ul>
-<li><strong>DELIMITER</strong> 声明语句结束符</li>
-<li><strong>CREATE PROCEDURE</strong> 声明存储过程</li>
-<li><strong>BEGIN … END</strong> 储存过程开始和结束符号</li>
-<li><strong>SET</strong> 变量赋值</li>
-<li><strong>DECLARE</strong> 变量定义</li>
-<li><strong>DEFINER</strong> 存储过程的权限</li>
-</ul>
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>不考虑HbaseUtil这种方式</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="读取HBase"><a href="#读取HBase" class="headerlink" title="读取HBase"></a>读取HBase</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获得HBase的配置</span></span><br><span class="line"><span class="keyword">val</span> hbaseConf = <span class="type">HbaseUtil</span>.getConf()</span><br><span class="line">hbaseConf.set(org.apache.hadoop.hbase.mapreduce.<span class="type">TableOutputFormat</span>.<span class="type">OUTPUT_TABLE</span>, tableName)</span><br><span class="line"><span class="keyword">val</span> admin = <span class="keyword">new</span> <span class="type">HBaseAdmin</span>(hbaseConf)</span><br><span class="line"><span class="keyword">if</span> (!admin.isTableAvailable(tableName))&#123;</span><br><span class="line">    <span class="keyword">val</span> tableDesc = <span class="keyword">new</span> <span class="type">HTableDescriptor</span>(<span class="type">TableName</span>.valueOf(tableName))</span><br><span class="line">    admin.createTable(tableDesc)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> hBaseRdd = sc.newAPIHadoopRDD(hbaseConf,classOf[<span class="type">TableInputFormat</span>],classOf[org.apache.hadoop.hbase.io.<span class="type">ImmutableBytesWritable</span>],classOf[org.apache.hadoop.hbase.client.<span class="type">Result</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> count = hBaseRdd.count()</span><br><span class="line">hBaseRdd.foreach(x=&gt;&#123;</span><br><span class="line">    <span class="keyword">val</span> result = x._2</span><br><span class="line">    <span class="comment">// 获取行键</span></span><br><span class="line">    <span class="keyword">val</span> key = <span class="type">Bytes</span>.toString(result.getRow)</span><br><span class="line">    <span class="comment">// 通过列簇和列名获取列</span></span><br><span class="line">    <span class="keyword">val</span> name = <span class="type">Bytes</span>.toString(result.getValue(<span class="string">"cf"</span>.getBytes,<span class="string">"name"</span>.getBytes))</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 <hr>
-          <p>
-            <a href="/2018/05/31/数据库存储过程及触发器/">
-              阅读全文
-            </a>
-          </p>
+<h2 id="写入HBase"><a href="#写入HBase" class="headerlink" title="写入HBase"></a>写入HBase</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获得HBase的配置</span></span><br><span class="line"><span class="keyword">val</span> hbaseConf = <span class="type">HbaseUtil</span>.getConf()</span><br><span class="line">messages.foreachRDD(rdd =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span> (!rdd.isEmpty()) &#123;</span><br><span class="line">    <span class="type">HbaseUtil</span>.getTable(hbaseConn, <span class="type">TABLE_NAME</span>)</span><br><span class="line">    <span class="keyword">val</span> jobConf = <span class="type">HbaseUtil</span>.getNewJobConf(hbaseConf, <span class="type">TABLE_NAME</span>)</span><br><span class="line">    <span class="comment">// 先处理消息</span></span><br><span class="line">    rdd.map(data =&gt; &#123;</span><br><span class="line">      <span class="keyword">val</span> rowKey = data._2.toString</span><br><span class="line">      <span class="keyword">val</span> put = <span class="keyword">new</span> <span class="type">Put</span>(rowKey.getBytes())</span><br><span class="line">      put.addColumn(<span class="type">TABLE_CF</span>.getBytes(), <span class="string">"count"</span>.getBytes(), <span class="string">"1"</span>.getBytes())</span><br><span class="line">      <span class="comment">// 转成(Writable,Put)形式,调用spark函数写入HBase</span></span><br><span class="line">      <span class="comment">// saveAsHadoopDataset也是同理</span></span><br><span class="line">      (<span class="keyword">new</span> <span class="type">ImmutableBytesWritable</span>(), put)</span><br><span class="line">    &#125;).saveAsNewAPIHadoopDataset(jobConf)</span><br><span class="line">    <span class="comment">// 再更新offsets</span></span><br><span class="line">    km.updateZKOffsets(rdd)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
         
-      </div>
-    </div>
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
 
-  
+
+    
+
+  </footer>
+</article>
+
 
 
 
@@ -226,7 +225,7 @@
       
         </div>
       
-    </section></div>
+    </div>
   </div>
   <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 
@@ -302,5 +301,5 @@
 <script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
 <script src="/scripts/main.js"></script>
 
-</div></body>
+</body>
 </html>

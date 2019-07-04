@@ -6,6 +6,8 @@ tags: spark
 ---
 > SparkStreaming从Kafka中读取数据，并使用Redis进行Offset保存，同时监听Redis中的Key来确定是否停止程序。
 
+<!-- more -->
+
 ## 监听Redis中的Key
 ```scala
 /**
