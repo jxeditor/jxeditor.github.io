@@ -3,7 +3,7 @@ title: Spark读写HBase
 date: 2018-07-03 13:53:01
 categories: 大数据
 tags: 
-    - Spark
+    - spark
 ---
 > 不考虑HbaseUtil这种方式
 
