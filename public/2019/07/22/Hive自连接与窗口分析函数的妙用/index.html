@@ -8,17 +8,22 @@
 
 <title>
   
-    归档: 2018/7
+    Hive自连接与窗口分析函数的妙用
   
 </title>
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/archives/2018/07/index.html">
+<meta name="description" content="对于HQL的窗口函数,大家可能都不陌生,尤其一些求topN等等.本人在网上就看到一些很神奇的列子.">
+<meta name="keywords" content="hive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive自连接与窗口分析函数的妙用">
+<meta property="og:url" content="http://yoursite.com/2019/07/22/Hive自连接与窗口分析函数的妙用/index.html">
 <meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="对于HQL的窗口函数,大家可能都不陌生,尤其一些求topN等等.本人在网上就看到一些很神奇的列子.">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-07-22T07:07:25.209Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BlackC">
+<meta name="twitter:title" content="Hive自连接与窗口分析函数的妙用">
+<meta name="twitter:description" content="对于HQL的窗口函数,大家可能都不陌生,尤其一些求topN等等.本人在网上就看到一些很神奇的列子.">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -148,111 +153,70 @@
       
         <div style="max-width: 1000px">
       
-          
-
+          <article id="post-Hive自连接与窗口分析函数的妙用" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Hive自连接与窗口分析函数的妙用
+    </h1>
   
   
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <h1><a href="/archives/2018" class="archive-year">2018</a></h1>
-        </div>
-        <div class="post-list">
-    
-  
 
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2018/07/03/Spark读写HBase/">
-  Spark读写HBase
-</a>
-
-      </h3>
-      
-
-      <div class="article-info">
-        <a href="/2018/07/03/Spark读写HBase/"><span class="article-date">
-  2018-07-03
+  <div class="article-info">
+    <span class="article-date">
+  2019-07-22
 </span>
-</a>
-        
+
+    
 	<span class="article-category tagcloud">
 	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
 	</span>
 
 
-        
-	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
-	</span>
-
-
-      </div>
-      <div class="article-entry">
-        
-          <blockquote>
-<p>不考虑HbaseUtil这种方式</p>
-</blockquote>
-          <p>
-            <a href="/2018/07/03/Spark读写HBase/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
-
-  
-
-  
-  
     
-  
-
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2018/07/03/优雅停止SparkStreaming/">
-  优雅停止SparkStreaming
-</a>
-
-      </h3>
-      
-
-      <div class="article-info">
-        <a href="/2018/07/03/优雅停止SparkStreaming/"><span class="article-date">
-  2018-07-03
-</span>
-</a>
-        
-	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
-	</span>
-
-
-        
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hive/">hive</a></li></ul>
 	</span>
 
 
-      </div>
-      <div class="article-entry">
-        
-          <blockquote>
-<p>SparkStreaming从Kafka中读取数据，并使用Redis进行Offset保存，同时监听Redis中的Key来确定是否停止程序。</p>
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>对于HQL的窗口函数,大家可能都不陌生,尤其一些求topN等等.本人在网上就看到一些很神奇的列子.</p>
 </blockquote>
-          <p>
-            <a href="/2018/07/03/优雅停止SparkStreaming/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
+<a id="more"></a>
+<h1 id="基本需求"><a href="#基本需求" class="headerlink" title="基本需求"></a>基本需求</h1><blockquote>
+<p>有一张demo表,有id(用户),date(月份),pv(访问量)三个字段,针对表中数据实现相对应的业务需求<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">name    date        pv</span><br><span class="line">A       2015-01     5</span><br><span class="line">A       2015-01     15</span><br><span class="line">B       2015-01     5</span><br><span class="line">A       2015-01     8</span><br><span class="line">B       2015-01     25</span><br><span class="line">A       2015-01     5</span><br><span class="line">A       2015-02     4</span><br><span class="line">A       2015-02     6</span><br><span class="line">A       2015-02     4</span><br><span class="line">B       2015-02     10</span><br><span class="line">B       2015-02     5</span><br><span class="line">A       2015-03     16</span><br><span class="line">A       2015-03     22</span><br><span class="line">B       2015-03     23</span><br><span class="line">B       2015-03     10</span><br><span class="line">B       2015-03     11</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p><strong>需求:</strong><br>求每个用户截止每月为止的最大单月访问次数和累计到该月的总访问次数</p>
+<hr>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><h2 id="自连接方式"><a href="#自连接方式" class="headerlink" title="自连接方式"></a>自连接方式</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> a.name,a.date,a.pv,<span class="keyword">max</span>(b.pv),<span class="keyword">sum</span>(b.pv)</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">(</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">name</span>,<span class="built_in">date</span>,<span class="keyword">sum</span>(pv) pv</span><br><span class="line">    <span class="keyword">from</span> demo</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span>,<span class="built_in">date</span></span><br><span class="line">) a</span><br><span class="line"><span class="keyword">join</span></span><br><span class="line">(</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">name</span>,<span class="built_in">date</span>,<span class="keyword">sum</span>(pv) pv</span><br><span class="line">    <span class="keyword">from</span> demo</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span>,<span class="built_in">date</span></span><br><span class="line">) b</span><br><span class="line"><span class="keyword">on</span> a.name=b.name</span><br><span class="line"><span class="keyword">where</span> a.date &gt;= b.date</span><br><span class="line"><span class="keyword">group</span> <span class="keyword">by</span> a.name,a.date,a.pv;</span><br></pre></td></tr></table></figure>
+<h2 id="窗口函数方式"><a href="#窗口函数方式" class="headerlink" title="窗口函数方式"></a>窗口函数方式</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> a.name,a.date,a.pv,</span><br><span class="line"><span class="keyword">sum</span>(a.pv) <span class="keyword">over</span> (<span class="keyword">partition</span> <span class="keyword">by</span> a.name <span class="keyword">order</span> <span class="keyword">by</span> a.date) sumpv,</span><br><span class="line"><span class="keyword">max</span>(a.pv) <span class="keyword">over</span> (<span class="keyword">partition</span> <span class="keyword">by</span> a.name <span class="keyword">order</span> <span class="keyword">by</span> a.date) maxpv</span><br><span class="line"><span class="keyword">from</span></span><br><span class="line">(</span><br><span class="line">    <span class="keyword">select</span> <span class="keyword">name</span>,<span class="built_in">date</span>,<span class="keyword">sum</span>(pv) pv</span><br><span class="line">    <span class="keyword">from</span> demo</span><br><span class="line">    <span class="keyword">group</span> <span class="keyword">by</span> <span class="keyword">name</span>,<span class="built_in">date</span></span><br><span class="line">) a;</span><br></pre></td></tr></table></figure>
+<p><strong>实测: </strong><br>两种方式对应的job数为6:1</p>
+<hr>
 
-  
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
 
 
 
@@ -268,7 +232,7 @@
       
         </div>
       
-    </section></div>
+    </div>
   </div>
   <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 
@@ -344,5 +308,5 @@
 <script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
 <script src="/scripts/main.js"></script>
 
-</div></body>
+</body>
 </html>
