@@ -1,4 +1,4 @@
-﻿---
+---
 title: Tomcat的一些小应用
 date: 2018-06-18 07:53:01
 categories: 搭建
@@ -24,4 +24,15 @@ tags:
 <role rolename="admin-gui"/>
 <role rolename="manager-script"/>
 <user username="admin" password="admin" roles="admin-gui,manager-gui,manager-script"/>
+```
+
+## 设置Tomcat展开目录
+```
+# 打开Tomcat所在安装目录,打开到conf配置文件下,打开web.xml文件
+# 修改listings属性,将其设定为true
+<init-param>
+    <param-name>listings</param-name>
+    <param-value>false</param-value>
+</init-param>
+# 重启Tomcat服务
 ```
