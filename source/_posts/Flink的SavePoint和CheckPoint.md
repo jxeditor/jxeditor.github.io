@@ -47,6 +47,9 @@ val conf = senv.getCheckpointConfig
 conf.enableExternalizedCheckpoints(ExternalizedCheckpointCleanup.DELETE_ON_CANCELLATION)
 // 取消作业时保留检查点.
 conf.enableExternalizedCheckpoints(ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
+
+脚本指定对应的checkpoint:
+flink1.8 run -m yarn-cluster -ynm FlinkBehaviorTrace1.8 -yn 1 -ys 1 -ytm 1024 -s hdfs:///flink/checkpoints/data/FlinkBehaviorTrace1.8/check_id/1e87f3f4092026ef36f115f073147c39/chk-2064658/_metadata /home/etiantian/zsd/flink-project/flink1.8-behavior-trace-graphic/flink1.8-behavior-trace/flink1.8-behavior-trace-graphic-full.jar /home/etiantian/zsd/config/flink-config.properties
 ```
 
 ---
