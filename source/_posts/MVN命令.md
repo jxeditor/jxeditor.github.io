@@ -1,10 +1,14 @@
-﻿---
+---
 title: MVN命令
 date: 2017-05-31 18:45:52
-categories: 命令
+categories: 编译
 tags: maven
 ---
+
 ## 1.安装包
+
+<!-- more -->
+
 ```
 # 能够下载到jar包的情况
 1. 首先下载Maven无法加载的jar包
@@ -22,8 +26,6 @@ mvn install:install-file
 3. 执行mvn命令
 mvn install -Dmaven.test.skip=true
 ```
-
-<!-- more -->
 
 ---
 

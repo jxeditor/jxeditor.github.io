@@ -1,4 +1,4 @@
-﻿---
+---
 title: CDH5.15.1搭建与重装
 date: 2019-05-31 21:22:16
 categories: 搭建
@@ -44,24 +44,34 @@ vi /etc/hosts
 ```
 
 #### 2.免密配置
-```
+```bash
 ssh-keygen -t rsa
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 scp ~/.ssh/authorized_keys root@hadoop02:~/.ssh/
 scp ~/.ssh/authorized_keys root@hadoop03:~/.ssh/
+
+# 或者
+ssh-keygen
+ssh-copy-id -i .ssh/id_rsa.pub root@hadoop01
+ssh-copy-id -i .ssh/id_rsa.pub root@hadoop02
+ssh-copy-id -i .ssh/id_rsa.pub root@hadoop03
 ```
 
 #### 3.JDK配置
-```
-rpm -qa | grep java     // 查询
-rpm -e --nodeps 包名    // 卸载
-rpm -ivh 包名           // 安装
+```bash
+rpm -qa | grep java     # 查询
+rpm -e --nodeps 包名    # 卸载
+rpm -ivh 包名           # 安装
 
 echo "JAVA_HOME=/usr/java/latest/" >> /etc/environment
-或者
+# 或者
 echo "export PATH=$PATH:/usr/java/latest/bin" >> /etc/profile
 source /etc/profile
+
+# 注意,无论哪种安装方法,一定保证/usr/java/default存在
+mkdir /usr/java
+ln -s /usr/local/jdk8 /usr/java/default
 ```
 
 #### 4.MySQL配置
@@ -78,26 +88,56 @@ grant all privileges on *.* to 'root'@'hadoop01' identified by '123456' with gra
 flush privileges;
 ```
 
-#### 5.防火墙和SELinux配置
+#### 5.防火墙,SELinux以及Swap配置
 ```
-service iptables stop   // 临时关闭
-chkconfig iptables off  // 重启后永久生效
+service iptables stop   # 临时关闭
+chkconfig iptables off  # 重启后永久生效
 
-setenforce 0            // 临时关闭
-vi /etc/selinux/config  // 重启后永久生效
+setenforce 0            # 临时关闭
+vi /etc/selinux/config  # 重启后永久生效
 SELINUX=disabled
+
+echo 10 > /proc/sys/vm/swappiness
+echo 10 > /proc/sys/vm/swappiness
+vi /etc/sysctl.conf     # 重启后永久生效
+vm.swappiness = 10
+
+echo never > /sys/kernel/mm/transparent_hugepage/defrag
+echo never > /sys/kernel/mm/transparent_hugepage/enabled
+vi /etc/rc.local        # 重启后永久生效
+# 将上述两条语句写入rc.local文件
 ```
 
 #### 6.NTP时间同步
-```
+```bash
 yum install ntp
 chkconfig ntpd on
-chkconfig --list        // ntpd其中2-5为on状态就代表成功
+chkconfig --list        # ntpd其中2-5为on状态就代表成功
 
+# 能联网情况下
 ntpdate cn.pool.ntp.org
 hwclock --systohc
-
 service ntpd start
+
+# 不能联网情况下
+# 设置hadoop01为NTP服务器
+vi /etc/ntp.conf        # 默认的server都关闭
+restrict 127.0.0.1
+restrict -6 ::1
+restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap
+server 192.168.1.128 perfer
+server 192.168.1.128
+server 127.127.1.0
+fudge 127.127.1.0 stratum 10
+
+# NTP客户端设置
+vi /etc/ntp.conf        # 默认的server都关闭
+restrict 127.0.0.1
+restrict -6 ::1
+server 192.168.1.128
+restrict 192.168.1.128 nomodify notrap noquery
+server 127.127.1.0
+fudge 127.127.1.0 stratum 10
 ```
 
 ---
@@ -110,7 +150,7 @@ mv cloudera /opt/
 mv cm-5.15.1 /opt/
 
 // 添加数据库连接
-cp mysql-connector-java-5.1.47-bin.jar /opt/cm-5.15.1/share/cmf/lib/   
+cp mysql-connector-java-5.1.47-bin.jar /opt/cm-5.15.1/share/cmf/lib/
 
 // 主节点初始化CM数据库
 /opt/cm-5.15.1/share/cmf/schema/scm_prepare_database.sh mysql cm -hlocalhost -uroot -p123456 --scm-host localhost scm scm scm
@@ -141,53 +181,51 @@ useradd --system --home=/opt/cm-5.15.1/run/cloudera-scm-server/ --no-create-home
 
 #### 3.配置CDH
 ##### 访问[http://hadoop01:7180](http://hadoop01:7180)进行配置
-```
-用户名密码均为admin
-选择CM版本
-选择Agent节点
-选择Parcel包
-耐心等待分配
-检查主机正确性
-echo 0 > /proc/sys/vm/swappiness
-echo never > /sys/kernel/mm/transparent_hugepage/defrag
-echo never > /sys/kernel/mm/transparent_hugepage/enabled
-选择所有服务
-服务配置一般默认<zk默认只有1个节点可以调整>
-进行数据库设置
+```bash
+# 用户名密码均为admin
+# 选择CM版本
+# 选择Agent节点
+# 选择Parcel包
+# 耐心等待分配
+# 检查主机正确性
+# 选择所有服务
+# 服务配置一般默认<zk默认只有1个节点可以调整>
+# 进行数据库设置
 cp mysql-connector-java-5.1.47-bin.jar /opt/cloudera/parcels/CDH-5.15.1-1.cdh5.15.1.p0.4/lib/hive/lib/
 cp mysql-connector-java-5.1.47-bin.jar /var/lib/oozie/
-yum install libxml2-python krb5-devel cyrus-sasl-gssapi cyrus-sasl-deve libxml2-devel libxslt-devel mysql mysql-devel openldap-devel python-devel python-simplejson sqlite-devel
-测试连接
-耐心等待服务启动
-安装完毕
+# 测试连接
+# hue测试不通过,缺少依赖
+yum install libxml2-python krb5-devel cyrus-sasl-plain cyrus-sasl-gssapi cyrus-sasl-devel libxml2-devel libxslt-devel mysql mysql-devel openldap-devel python-devel python-simplejson sqlite-devel mod_ssl
+# 耐心等待服务启动
+# 安装完毕
 ```
 
 ---
 
 ## 测试与各端口
-```
+```bash
 hdfs hadoop jar /opt/cloudera/parcels/CDH/lib/hadoop-mapreduce/hadoop-mapreduce-examples.jar pi 10 100
 
-CDH
+# CDH
 http://hadoop01:7180
 
-Yarn
+# Yarn
 http://hadoop01:8088
 
-Hue
+# Hue
 http://hadoop01:8888
 
-HDFS
+# HDFS
 http://hadoop01:50070
 
-JobHistory
+# JobHistory
 http://hadoop01:19888
 
-HBase
+# HBase
 http://hadoop01:60010
 http://hadoop01:60030
 
-Spark
+# Spark
 http://hadoop01:7077
 http://hadoop01:8080
 http://hadoop01:8081
@@ -217,6 +255,10 @@ rm -rf /dfs/dn/*
 
 // 重新安装
 http://hadoop01:7180
+
+// 数据库连接
+cp mysql-connector-java-5.1.47-bin.jar /var/lib/oozie/
+cp mysql-connector-java-5.1.47-bin.jar /opt/cloudera/parcels/CDH-5.15.1-1.cdh5.15.1.p0.4/lib/hive/lib/
 ```
 
 ---

@@ -1,4 +1,4 @@
-﻿---
+---
 title: XWiki的使用与修改
 date: 2019-06-28 08:53:01
 categories: 搭建
@@ -10,6 +10,7 @@ tags:
 > - 下载官方最新版本...war
 > - 部署到Tomcat
 > - 启动 localhost:8080/xwiki
+
 <!-- more -->
 
 ---
