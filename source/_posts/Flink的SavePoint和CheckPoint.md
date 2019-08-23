@@ -1,10 +1,11 @@
-﻿---
+---
 title: Flink的SavePoint和CheckPoint
 date: 2019-07-02 09:53:01
 categories: 大数据
 tags: 
     - flink
 ---
+
 > 最初的目的是为了处理Flink流程序异常退出,如何恢复数据
 
 <!-- more -->

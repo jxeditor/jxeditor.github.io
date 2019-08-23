@@ -6,14 +6,16 @@ tags:
     - tomcat
 ---
 
+> Tomcat的修改
+
+<!-- more -->
+
 ## 自动重新加载
 ```
 # 修改tomcat/conf/context.xml文件
 # 加上reloadable="true"
 <Context reloadable="true">
 ```
-
-<!-- more -->
 
 ---
 

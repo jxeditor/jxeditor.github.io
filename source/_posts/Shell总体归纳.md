@@ -1,15 +1,18 @@
-﻿---
+---
 title: Shell总体归纳
 date: 2016-05-31 21:15:39
 categories: 运维
 tags: shell
 ---
+
+> Shell指南
+
+<!-- more -->
+
 ### 一. 约定标记
 ```
 #!/bin/bash
 ```
-
-<!-- more -->
 
 ---
 

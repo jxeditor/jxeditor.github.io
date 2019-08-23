@@ -12,18 +12,18 @@
   
 </title>
 
-<meta name="description" content="一.关键语法 DELIMITER 声明语句结束符 CREATE PROCEDURE 声明存储过程 BEGIN … END 储存过程开始和结束符号 SET 变量赋值 DECLARE 变量定义 DEFINER 存储过程的权限">
+<meta name="description" content="存储过程和触发器">
 <meta name="keywords" content="mysql">
 <meta property="og:type" content="article">
 <meta property="og:title" content="数据库存储过程及触发器">
 <meta property="og:url" content="http://yoursite.com/2018/05/31/数据库存储过程及触发器/index.html">
 <meta property="og:site_name" content="BlackC">
-<meta property="og:description" content="一.关键语法 DELIMITER 声明语句结束符 CREATE PROCEDURE 声明存储过程 BEGIN … END 储存过程开始和结束符号 SET 变量赋值 DECLARE 变量定义 DEFINER 存储过程的权限">
+<meta property="og:description" content="存储过程和触发器">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-07-19T12:36:19.446Z">
+<meta property="og:updated_time" content="2019-08-23T01:10:12.655Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库存储过程及触发器">
-<meta name="twitter:description" content="一.关键语法 DELIMITER 声明语句结束符 CREATE PROCEDURE 声明存储过程 BEGIN … END 储存过程开始和结束符号 SET 变量赋值 DECLARE 变量定义 DEFINER 存储过程的权限">
+<meta name="twitter:description" content="存储过程和触发器">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -81,21 +81,21 @@
             
               <li class="category-list-container">
                 <a href="javascript:;">分类</a>
-                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">4</span></li></ul>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">6</span></li></ul>
               </li>
             
           
             
               <li class="tag-list-container">
                 <a href="javascript:;">标签</a>
-                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li></ul>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li></ul>
               </li>
             
           
             
               <li class="archive-list-container">
                 <a href="javascript:;">归档</a>
-                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">6</span></li></ul>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">6</span></li></ul>
               </li>
             
           
@@ -180,7 +180,11 @@
 
   </div>
   <div class="article-entry">
-    <h3 id="一-关键语法"><a href="#一-关键语法" class="headerlink" title="一.关键语法"></a>一.关键语法</h3><ul>
+    <blockquote>
+<p>存储过程和触发器</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="一-关键语法"><a href="#一-关键语法" class="headerlink" title="一.关键语法"></a>一.关键语法</h3><ul>
 <li><strong>DELIMITER</strong> 声明语句结束符</li>
 <li><strong>CREATE PROCEDURE</strong> 声明存储过程</li>
 <li><strong>BEGIN … END</strong> 储存过程开始和结束符号</li>
@@ -189,7 +193,6 @@
 <li><strong>DEFINER</strong> 存储过程的权限</li>
 </ul>
 <hr>
-<a id="more"></a>
 <h3 id="二-入门实例"><a href="#二-入门实例" class="headerlink" title="二.入门实例"></a>二.入门实例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER $$</span><br><span class="line">USE `test`$$</span><br><span class="line">DROP PROCEDURE IF EXISTS `test`$$</span><br><span class="line"></span><br><span class="line">CREATE DEFINER=`root`@`localhost` PROCEDURE `test`()</span><br><span class="line">BEGIN</span><br><span class="line">SELECT COUNT(*) FROM `test`.`info`;</span><br><span class="line">END$$</span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
 <hr>
 <h3 id="三-存储过程使用"><a href="#三-存储过程使用" class="headerlink" title="三.存储过程使用"></a>三.存储过程使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CALL test(); 调用存储过程</span><br><span class="line">SET @ip=1; 存储过程外定义变量</span><br></pre></td></tr></table></figure>

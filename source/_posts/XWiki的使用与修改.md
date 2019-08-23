@@ -6,12 +6,14 @@ tags:
     - xwiki
 ---
 
+> XWiki的二次自定义
+
+<!-- more -->
+
 ## 安装搭建
 > - 下载官方最新版本...war
 > - 部署到Tomcat
 > - 启动 localhost:8080/xwiki
-
-<!-- more -->
 
 ---
 

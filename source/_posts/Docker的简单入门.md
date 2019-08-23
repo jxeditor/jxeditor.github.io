@@ -1,15 +1,18 @@
-﻿---
+---
 title: Docker的简单入门
 date: 2017-05-31 15:20:25
 categorys: 教程
 tags: docker
 ---
+
+> Docker入门级教程
+
+<!-- more -->
+
 ## 1.组成
 - 镜像
 - 容器
 - 仓库
-
-<!-- more -->
 
 ---
 

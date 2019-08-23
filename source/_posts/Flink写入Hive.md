@@ -1,4 +1,4 @@
-﻿---
+---
 title: Flink写入Hive
 date: 2019-07-02 08:53:01
 categories: 大数据
@@ -10,6 +10,7 @@ tags:
 > 虽然说是Flink写入Hive,其实真正的操作是Flink写入Hdfs,Hive进行刷新操作.
 
 <!-- more -->
+
 ## 引用依赖
 ```xml
 <properties>

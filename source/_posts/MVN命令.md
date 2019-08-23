@@ -5,9 +5,11 @@ categories: 编译
 tags: maven
 ---
 
-## 1.安装包
+> MVN常用命令
 
 <!-- more -->
+
+## 1.安装包
 
 ```
 # 能够下载到jar包的情况

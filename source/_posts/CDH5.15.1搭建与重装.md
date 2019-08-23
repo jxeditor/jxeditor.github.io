@@ -6,14 +6,16 @@ tags:
     - cdh
 ---
 
+> 如何快速的搭建一套CDH
+
+<!-- more -->
+
 ## 系统环境[64位]
 - 操作系统: Centos
 - Cloudera Manager: 5.15.1.4
 - CDH: 5.15.1
 
 --- 
-
-<!-- more -->
 
 ## 下载地址
 #### Clouder Manager下载地址

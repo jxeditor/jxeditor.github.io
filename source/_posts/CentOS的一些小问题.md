@@ -4,6 +4,11 @@ date: 2016-07-24 09:24:25
 categories: 运维
 tags: os
 ---
+
+> 记录CentOS上发生的一些稀奇古怪的事情
+
+<!-- more -->
+
 ## not in the sudoers file
 ```bash
 # 解决not in the sudoers file
@@ -15,8 +20,6 @@ xx ALL=(ALL)  ALL
 
 chmod u-w /etc/sudoers
 ```
-
-<!-- more -->
 
 ---
 

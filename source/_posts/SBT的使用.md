@@ -5,13 +5,12 @@ categories: 编译
 tags: sbt
 ---
 
-# 项目开发环境
-## IDEA+Scala+Sbt
-
 > IDEA与Scala的安装不进行细说，主要记录下Sbt的安装过程
 
 <!-- more -->
 
+# 项目开发环境
+## IDEA+Scala+Sbt
 - 去官网下载Sbt.msi，我的是1.2.8，傻瓜式安装，安装目录路径不能有空格
 - 安装成功后，进入安装目录的 conf/ 文件夹
 - 编辑sbtconfig.txt

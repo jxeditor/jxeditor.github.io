@@ -4,9 +4,11 @@ date: 2017-09-24 09:33:59
 categories: 大数据
 tags: mr
 ---
+
 > 入门测试,测试数据可能得自己看代码捋一捋,挺有意思的
 
 <!-- more -->
+
 ## 递归关系物品分类
 ```java
 import org.apache.hadoop.conf.Configuration;

@@ -1,4 +1,4 @@
-﻿---
+---
 title: Kylin初体验
 date: 2019-06-12 14:53:01
 categories: 大数据
@@ -6,11 +6,13 @@ tags:
     - kylin
 ---
 
+> Kylin初入门
+
+<!-- more -->
+
 ## 一、部署
 
-
 ---
-<!-- more -->
 
 ## 二、Restful API
 ### 查询

@@ -1,10 +1,15 @@
-﻿---
+---
 title: Spark[RDD-DataFrame-DataSet]
 date: 2019-05-31 21:29:45
 categories: 大数据
 tags: 
     - spark
 ---
+
+> Spark三类简述
+
+<!-- more -->
+
 ### 一. Spark2.x创建Spark对象
 ```
 val spark = SparkSession
@@ -14,7 +19,7 @@ val spark = SparkSession
             .getOrCreate()
 ```
 ---
-<!-- more -->
+
 ### 二. RDD,DataFrame和DataSet
 #### 1. RDD
 **优缺点**

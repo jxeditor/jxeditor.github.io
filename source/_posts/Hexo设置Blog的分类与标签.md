@@ -1,9 +1,13 @@
-﻿---
+---
 title: Hexo设置Blog的分类与标签
 date: 2016-04-29 22:59:01
 categories: 搭建
 tags: hexo
 ---
+
+> Hexo的简单使用
+
+<!-- more -->
 
 ## 1.添加关于页面
 ```
@@ -13,7 +17,7 @@ nav:
     name: 关于
     url: /about
 ```
-<!-- more -->
+
 ## 2.添加分类-标签页面
 ```
 ---

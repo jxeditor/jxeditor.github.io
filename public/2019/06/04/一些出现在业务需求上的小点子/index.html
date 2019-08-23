@@ -12,18 +12,18 @@
   
 </title>
 
-<meta name="description" content="1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数 Demo数据如下表,时间范围为2019-01-01至2019-01-03,左边为原始数据,右边为聚合">
+<meta name="description" content="业务需求优化">
 <meta name="keywords" content="spark">
 <meta property="og:type" content="article">
 <meta property="og:title" content="一些出现在业务需求上的小点子">
 <meta property="og:url" content="http://yoursite.com/2019/06/04/一些出现在业务需求上的小点子/index.html">
 <meta property="og:site_name" content="BlackC">
-<meta property="og:description" content="1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数 Demo数据如下表,时间范围为2019-01-01至2019-01-03,左边为原始数据,右边为聚合">
+<meta property="og:description" content="业务需求优化">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-14T01:51:18.510Z">
+<meta property="og:updated_time" content="2019-08-23T01:09:26.547Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="一些出现在业务需求上的小点子">
-<meta name="twitter:description" content="1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数 Demo数据如下表,时间范围为2019-01-01至2019-01-03,左边为原始数据,右边为聚合">
+<meta name="twitter:description" content="业务需求优化">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -81,21 +81,21 @@
             
               <li class="category-list-container">
                 <a href="javascript:;">分类</a>
-                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">4</span></li></ul>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">14</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">6</span></li></ul>
               </li>
             
           
             
               <li class="tag-list-container">
                 <a href="javascript:;">标签</a>
-                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li></ul>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li></ul>
               </li>
             
           
             
               <li class="archive-list-container">
                 <a href="javascript:;">归档</a>
-                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">4</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">6</span></li></ul>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">5</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">6</span></li></ul>
               </li>
             
           
@@ -180,10 +180,13 @@
 
   </div>
   <div class="article-entry">
-    <h3 id="1-如何求一段时间内每天的注册人数-并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数"><a href="#1-如何求一段时间内每天的注册人数-并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数" class="headerlink" title="1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数"></a>1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数</h3><blockquote>
-<p>Demo数据如下表,时间范围为2019-01-01至2019-01-03,左边为原始数据,右边为聚合</p>
+    <blockquote>
+<p>业务需求优化</p>
 </blockquote>
 <a id="more"></a>
+<h3 id="1-如何求一段时间内每天的注册人数-并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数"><a href="#1-如何求一段时间内每天的注册人数-并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数" class="headerlink" title="1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数"></a>1.如何求一段时间内每天的注册人数,并且实现每一天的统计人数都是之前的注册人数加上当天的注册人数</h3><blockquote>
+<p>Demo数据如下表,时间范围为2019-01-01至2019-01-03,左边为原始数据,右边为聚合</p>
+</blockquote>
 <table>
 <thead>
 <tr>

@@ -4,13 +4,16 @@ date: 2016-05-31 21:16:39
 categories: 运维
 tags: os
 ---
+
+> 防火墙
+
+<!-- more -->
+
 ## 防火墙的限制
 ### 1. 限制只允许指定IP访问指定端口
 ```
 -A INPUT -m state --state NEW -m tcp -p tcp -s 127.0.0.1 --dport 22,3306,8080 -j ACCEPT
 ```
-
-<!-- more -->
 
 ---
 
