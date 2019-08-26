@@ -191,5 +191,50 @@ Cas的配置都在webapp/WEB-INF/classes/application.properties中
 
 ## 注意点
 - 依赖包一定要3.3.3版本的,我下3.5.1版本的会报错
-- Cas服务需要修改支持http
+- Cas服务需要修改支持http,修改WEB-INF\classes\services\HTTPSandIMAPS-10000001.json
 - 出现403错误ticket验证不了需要使用IP的方式,不能使用localhost
+
+---
+
+## application.properties配置
+```
+# 出现服务未定义时,需要加上这个配置
+cas.serviceRegistry.initFromJson=true
+cas.serviceRegistry.json.location=classpath:/services
+
+##
+# CAS Authentication Credentials
+#
+#cas.authn.accept.users=superadmin::system
+#数据库配置
+#配置密码加密
+cas.authn.jdbc.query[0].passwordEncoder.type=DEFAULT
+cas.authn.jdbc.query[0].passwordEncoder.characterEncoding=UTF-8
+cas.authn.jdbc.query[0].passwordEncoder.encodingAlgorithm=MD5
+
+cas.authn.jdbc.query[0].sql=SELECT * FROM global_users WHERE user_name =?
+#select * from cms_auth_user where user_name=?
+cas.authn.jdbc.query[0].healthQuery=
+cas.authn.jdbc.query[0].isolateInternalQueries=false
+cas.authn.jdbc.query[0].url=jdbc:mysql://dmysql01:3306/fdfs?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
+#cas.authn.jdbc.query[0].failFast=true
+#cas.authn.jdbc.query[0].isolationLevelName=ISOLATION_READ_COMMITTED
+cas.authn.jdbc.query[0].dialect=org.hibernate.dialect.MySQLDialect
+cas.authn.jdbc.query[0].leakThreshold=10
+#cas.authn.jdbc.query[0].propagationBehaviorName=PROPAGATION_REQUIRED
+cas.authn.jdbc.query[0].batchSize=1
+cas.authn.jdbc.query[0].user=root
+#cas.authn.jdbc.query[0].ddlAuto=create-drop
+#cas.authn.jdbc.query[0].maxAgeDays=180
+cas.authn.jdbc.query[0].password=123456
+cas.authn.jdbc.query[0].autocommit=false
+cas.authn.jdbc.query[0].driverClass=com.mysql.jdbc.Driver
+cas.authn.jdbc.query[0].idleTimeout=5000
+# cas.authn.jdbc.query[0].credentialCriteria=
+# cas.authn.jdbc.query[0].name=
+# cas.authn.jdbc.query[0].order=0
+# cas.authn.jdbc.query[0].dataSourceName=
+# cas.authn.jdbc.query[0].dataSourceProxy=false
+cas.authn.jdbc.query[0].fieldPassword=PASSWORD
+
+```

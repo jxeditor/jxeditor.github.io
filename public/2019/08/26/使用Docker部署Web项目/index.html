@@ -8,17 +8,22 @@
 
 <title>
   
-    标签: hbase
+    使用Docker部署Web项目
   
 </title>
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/tags/hbase/index.html">
+<meta name="description" content="docker进行项目部署">
+<meta name="keywords" content="docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Docker部署Web项目">
+<meta property="og:url" content="http://yoursite.com/2019/08/26/使用Docker部署Web项目/index.html">
 <meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="docker进行项目部署">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-26T08:22:36.867Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BlackC">
+<meta name="twitter:title" content="使用Docker部署Web项目">
+<meta name="twitter:description" content="docker进行项目部署">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -148,108 +153,66 @@
       
         <div style="max-width: 1000px">
       
-          <h1>hbase</h1>
-
-
+          <article id="post-使用Docker部署Web项目" class="article article-type-post">
+  
+    <h1 class="article-header">
+      使用Docker部署Web项目
+    </h1>
   
   
-    <div class="post-list">
-  
 
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2019/06/03/Flink读写Hbase之写/">
-  Flink读写Hbase之写
-</a>
-
-      </h3>
-      
-
-      <div class="article-info">
-        <a href="/2019/06/03/Flink读写Hbase之写/"><span class="article-date">
-  2019-06-03
+  <div class="article-info">
+    <span class="article-date">
+  2019-08-26
 </span>
-</a>
-        
+
+    
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/">搭建</a></li></ul>
 	</span>
 
 
-        
+    
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
 	</span>
 
 
-      </div>
-      <div class="article-entry">
-        
-          <blockquote>
-<p>主要对Flink写入HBase数据做一个整理,方便快速进行业务代码开发,只针对于具体的方法操作,并不涉及Flink搭建</p>
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>docker进行项目部署</p>
 </blockquote>
-          <p>
-            <a href="/2019/06/03/Flink读写Hbase之写/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
+<a id="more"></a>
+<h2 id="安装docker以及加载镜像"><a href="#安装docker以及加载镜像" class="headerlink" title="安装docker以及加载镜像"></a>安装docker以及加载镜像</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 本机使用的是CentOS6.5,docker存在很多bug</span></span><br><span class="line">yum install docker-engine</span><br><span class="line"><span class="comment"># 有网情况</span></span><br><span class="line">docker pull mysql</span><br><span class="line">docker pull tomcat</span><br><span class="line"><span class="comment"># 没网情况</span></span><br><span class="line">docker save -o ./images.tar images</span><br><span class="line">docker load -i images.tar 或者 docker load &lt; images.tar</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="制作镜像"><a href="#制作镜像" class="headerlink" title="制作镜像"></a>制作镜像</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">vi Dockerfile</span><br><span class="line">FROM tomcat:latest</span><br><span class="line">MAINTAINER xs</span><br><span class="line">COPY cas.war /usr/local/tomcat/webapps/</span><br><span class="line">COPY wiki.war /usr/local/tomcat/webapps/</span><br><span class="line"></span><br><span class="line">docker build -t demo:v1 .</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="启动容器"><a href="#启动容器" class="headerlink" title="启动容器"></a>启动容器</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">docker run --name dmysql01 --hostname dmysql01 --ip 172.17.0.3  -e MYSQL_ROOT_PASSWORD=123456 -v /root/dmysql01/data:/var/lib/mysql -d -p 13306:3306 mysql</span><br><span class="line"></span><br><span class="line"><span class="comment"># 需要知道mysql的IP地址</span></span><br><span class="line">docker inspect dmysql01</span><br><span class="line"><span class="comment"># docker exec -it 容器ID /bin/bash</span></span><br><span class="line">ALTER USER <span class="string">'root'</span>@<span class="string">'%'</span> IDENTIFIED WITH mysql_native_password BY <span class="string">'123456'</span>;</span><br><span class="line"></span><br><span class="line">docker run --name myweb --add-host dmysql01:172.17.0.8 -v /root/docker/app/repository:/usr/<span class="built_in">local</span>/tomcat/work/Catalina/localhost/wiki/extension/repository -d -p 18080:8080 demo:v1</span><br></pre></td></tr></table></figure>
 
-  
-    </div>
-  
-
-  
-  
-    <div class="post-list">
-  
-
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2019/06/03/Flink读写Hbase之读/">
-  Flink读写Hbase之读
-</a>
-
-      </h3>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
       
-
-      <div class="article-info">
-        <a href="/2019/06/03/Flink读写Hbase之读/"><span class="article-date">
-  2019-06-03
-</span>
-</a>
+          <img src="/images/cc/by.png">
         
-	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
-	</span>
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
 
 
-        
-	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
-	</span>
+    
 
+  </footer>
+</article>
 
-      </div>
-      <div class="article-entry">
-        
-          <blockquote>
-<p>主要对Flink读取HBase数据做一个整理,方便快速进行业务代码开发,只针对于具体的方法操作,并不涉及Flink搭建</p>
-</blockquote>
-          <p>
-            <a href="/2019/06/03/Flink读写Hbase之读/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
-
-  
-    </div>
-  
 
 
 
