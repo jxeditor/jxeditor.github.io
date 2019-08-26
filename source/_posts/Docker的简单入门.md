@@ -1,7 +1,7 @@
 ---
 title: Docker的简单入门
 date: 2017-05-31 15:20:25
-categorys: 教程
+categories: 教程
 tags: docker
 ---
 
@@ -19,37 +19,46 @@ tags: docker
 ## 2.命令
 ```
 - 获取镜像 :
-docker pull 仓库名:标记名(eg:docker pull ubuntu:12.04)
+docker pull 镜像名:版本号(eg:docker pull ubuntu:12.04)
 
-- 使用镜像创建容器 :
-docker run -t -i ubuntu:14.04 /bin/bash
+- 使用镜像创建容器(--name自定义容器名,hostPort宿主机端口,port容器内部端口) :
+docker run --name name -p hostPort:port -d image
 
 - 查看当前运行的容器(加上-a查看所有容器) :
-docker container ls
+docker ps
 
 - 停止NAMES容器 :
-docker container stop NAMES
+docker stop NAMES
 
-- 删除NAMES容器 :
-docker container rm NAMES
+- 删除NAMES容器(-f强制) :
+docker rm NAMES
 
 - 查看容器信息 :
 docker container ps
 
 - 查看容器输出信息 :
-docker container logs NAMES
+docker logs NAMES
 
 - 进入容器 :
 docker attach NAMES
 
 - 查看镜像 :
-docker image ls
+docker images
 
 - 删除NAMES镜像 :
-docker image rm NAMES
+docker rmi NAMES
 
-- 查看镜像仓库 :
+- 搜索镜像 :
 docker search centos
+
+- 命令行进行容器 :
+docker exec -it [容器名称]  /bin/bash
+
+- 运行tomcat容器
+docker run --name mytomcat -p 8099:8080 -d tomcat
+
+- 运行mysql容器并挂载目录
+docker run --name mymysql -e MYSQL_ROOT_PASSWORD=123456 -d -p 3306:3306 -v /mysql/data:/var/lib/mysql mysql
 ```
 
 ---
