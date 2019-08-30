@@ -20,7 +20,7 @@
 <meta property="og:site_name" content="BlackC">
 <meta property="og:description" content="hive表数据依赖于hbase数据">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-08-30T02:56:03.233Z">
+<meta property="og:updated_time" content="2019-08-30T02:59:41.045Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Hive整合Hbase">
 <meta name="twitter:description" content="hive表数据依赖于hbase数据">
@@ -184,7 +184,7 @@
 <p>hive表数据依赖于hbase数据</p>
 </blockquote>
 <a id="more"></a>
-<h2 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE hbase_hive_1(key int, value string)   </span><br><span class="line">STORED BY &apos;org.apache.hadoop.hive.hbase.HBaseStorageHandler&apos;   </span><br><span class="line">WITH SERDEPROPERTIES (&quot;hbase.columns.mapping&quot; = &quot;:key,cf1:val&quot;)   </span><br><span class="line">TBLPROPERTIES (&quot;hbase.table.name&quot; = &quot;xyz&quot;);</span><br></pre></td></tr></table></figure>
+<h2 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># hbase已存在的表,需要使用外部表的形式创建</span><br><span class="line">CREATE EXTERNAL TABLE hbase_hive_1(key int, value string)   </span><br><span class="line">STORED BY &apos;org.apache.hadoop.hive.hbase.HBaseStorageHandler&apos;   </span><br><span class="line">WITH SERDEPROPERTIES (&quot;hbase.columns.mapping&quot; = &quot;:key,cf1:val&quot;)   </span><br><span class="line">TBLPROPERTIES (&quot;hbase.table.name&quot; = &quot;xyz&quot;);  </span><br><span class="line"></span><br><span class="line"># 复杂数据类型,hbase表test2中的字段为user:gid,user:sid,info:uid,info:level</span><br><span class="line">CREATE EXTERNAL TABLE hive_test_2(key int,user map&lt;string,string&gt;,info map&lt;string,string&gt;)   </span><br><span class="line">STORED BY &apos;org.apache.hadoop.hive.hbase.HBaseStorageHandler&apos;   </span><br><span class="line">WITH SERDEPROPERTIES (&quot;hbase.columns.mapping&quot; =&quot;user:,info:&quot;)    </span><br><span class="line">TBLPROPERTIES  (&quot;hbase.table.name&quot; = &quot;test2&quot;);</span><br></pre></td></tr></table></figure>
   </div>
   <footer class="article-footer">
     
