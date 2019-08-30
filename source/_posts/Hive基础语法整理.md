@@ -210,13 +210,20 @@ select concat("1","2");
 select concat_ws("|","1","2"); # 连接符
 select length("asb");
 
+# 时间戳转字符串
+from_unixtime(cast(f.finish_time as int),'yyyy-MM-dd HH:mm:ss')
+# 字符串转时间戳
+unix_timestamp('2018-02-06 00:00:00','yyyy-MM-dd HH:mm:ss')
+
 row_number():没有相同名次,名次不空位
 rank():有并列名次,并列名次后将空位
 dense_rank():有并列名次,无空位
 
 # 查询每个班级的前三
-select tmp.c,tmp.s from
-(select r.class c,r.score s,row_number() over (distribute by r.class sort by r.score desc) rr from classinfo r) tmp 
+select tmp.c,tmp.s 
+from (
+select r.class c,r.score s,row_number() over (distribute by r.class sort by r.score desc) rr from classinfo r
+) tmp 
 where rr<4;
 
 select class,score,
@@ -233,4 +240,15 @@ from classinfo;
 # 通过EXPLAIN,EXPLAIN EXTENDED或explain DEPENDENCY来查看执行计划和依赖情况
 explain select * from aa7;
 explain extended select * from aa7;
+```
+
+---
+
+## 命令行执行
+```
+hive -e "sql"
+# 显示表名列名
+set hive.cli.print.header=true;
+# 不显示表名
+set  hive.resultset.use.unique.column.names=false;
 ```

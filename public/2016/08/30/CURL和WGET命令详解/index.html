@@ -8,17 +8,22 @@
 
 <title>
   
-    分类: 大数据
+    CURL和WGET命令详解
   
 </title>
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/categories/搭建/大数据/index.html">
+<meta name="description" content="简单了解一下CURL和WGET命令的使用,毕竟也是常用到的命令">
+<meta name="keywords" content="tools">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CURL和WGET命令详解">
+<meta property="og:url" content="http://yoursite.com/2016/08/30/CURL和WGET命令详解/index.html">
 <meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="简单了解一下CURL和WGET命令的使用,毕竟也是常用到的命令">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-30T08:15:23.727Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BlackC">
+<meta name="twitter:title" content="CURL和WGET命令详解">
+<meta name="twitter:description" content="简单了解一下CURL和WGET命令的使用,毕竟也是常用到的命令">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -148,58 +153,64 @@
       
         <div style="max-width: 1000px">
       
-          <h1>大数据</h1>
-
-
+          <article id="post-CURL和WGET命令详解" class="article article-type-post">
+  
+    <h1 class="article-header">
+      CURL和WGET命令详解
+    </h1>
   
   
-    <div class="post-list">
-  
 
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2019/02/21/ELK安装搭建/">
-  ELK安装搭建以及常见问题
-</a>
-
-      </h3>
-      
-
-      <div class="article-info">
-        <a href="/2019/02/21/ELK安装搭建/"><span class="article-date">
-  2019-02-21
+  <div class="article-info">
+    <span class="article-date">
+  2016-08-30
 </span>
-</a>
-        
+
+    
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/">搭建</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/大数据/">大数据</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/大数据/运维/">运维</a></li></ul></li></ul></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a></li></ul>
 	</span>
 
 
-        
+    
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/elk/">elk</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tools/">tools</a></li></ul>
 	</span>
 
 
-      </div>
-      <div class="article-entry">
-        
-          <blockquote>
-<p>对于ELK一系列环境搭建</p>
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>简单了解一下CURL和WGET命令的使用,毕竟也是常用到的命令</p>
 </blockquote>
-          <p>
-            <a href="/2019/02/21/ELK安装搭建/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
+<a id="more"></a>
+<h2 id="CURL命令"><a href="#CURL命令" class="headerlink" title="CURL命令"></a>CURL命令</h2><p>curl是一种命令行工具，作用是发出网络请求，然后得到和提取数据，显示在”标准输出”（stdout）上面。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"># 查看网页源码</span><br><span class="line">curl www.baidu.com</span><br><span class="line"></span><br><span class="line"># 保存网页或资源文件</span><br><span class="line">curl -o test.html www.baidu.com</span><br><span class="line">curl -o test.jpg https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line"></span><br><span class="line"># 自动跳转</span><br><span class="line">curl -L www.baidu.com</span><br><span class="line"></span><br><span class="line"># 获取头信息(连带网页源码)-I则只显示头信息</span><br><span class="line">curl -i www.baidu.com</span><br><span class="line"></span><br><span class="line"># 显示通信过程</span><br><span class="line">curl -v www.baidu.com</span><br><span class="line">curl --trace output.txt www.baidu.com</span><br><span class="line">curl --trace-ascii output.txt www.baidu.com</span><br><span class="line"></span><br><span class="line"># 发送GET</span><br><span class="line">curl https://www.baidu.com/s?wd=wget</span><br><span class="line"></span><br><span class="line"># 发送POST</span><br><span class="line">curl -X POST --data &quot;wd=wget&quot; https://www.baidu.com/s</span><br><span class="line">curl -X POST --data-urlencode &quot;wd=wget&quot; https://www.baidu.com/s</span><br><span class="line"></span><br><span class="line"># 支持HEAD GET POST PUT DELETE</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="WGET命令"><a href="#WGET命令" class="headerlink" title="WGET命令"></a>WGET命令</h2><p>wget是一个下载文件的工具，它用在命令行下。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"># 下载文件</span><br><span class="line">wget https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line"></span><br><span class="line"># 下载文件并自定义名称</span><br><span class="line">wget -O test.jpg https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line"></span><br><span class="line"># 限速下载</span><br><span class="line">wget –limit-rate=300k https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line"></span><br><span class="line"># 断点续传(服务器支持断点续传)</span><br><span class="line">wget -c https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line"></span><br><span class="line"># 后台下载</span><br><span class="line">wget -b https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line">tail -f wget-log</span><br><span class="line"></span><br><span class="line"># 伪装代理下载</span><br><span class="line">wget –user-agent=”Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.204 Safari/534.16″ https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line"></span><br><span class="line"># 测试下载链接</span><br><span class="line">wget –spider https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line"></span><br><span class="line"># 重试次数(默认20次)</span><br><span class="line">wget –tries=40 https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line"></span><br><span class="line"># 下载多个文件(通过一份链接文件)</span><br><span class="line">wget -i urlList.txt</span><br><span class="line"></span><br><span class="line"># 镜像网站</span><br><span class="line">wget –mirror -p –convert-links -P ./LOCAL URL </span><br><span class="line"></span><br><span class="line"># 过滤指定格式下载</span><br><span class="line">wget –reject=gif https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line"></span><br><span class="line"># 下载指定格式文件</span><br><span class="line">wget -r -A.pdf https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line"></span><br><span class="line"># 下载信息存入日志文件</span><br><span class="line">wget -o download.log https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line"></span><br><span class="line"># 限制总下载文件大小(对单个文件下载不起作用)</span><br><span class="line">wget -Q5m -i urlList.txt </span><br><span class="line"></span><br><span class="line"># FTP链接下载</span><br><span class="line">wget -ftp https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br><span class="line">wget –ftp-user=USERNAME –ftp-password=PASSWORD https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg</span><br></pre></td></tr></table></figure></p>
 
-  
-    </div>
-  
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
 
 
 
