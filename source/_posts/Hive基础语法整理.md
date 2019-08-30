@@ -56,6 +56,17 @@ alter table data add columns(age int,add String);
 # 删除字段---只留下age,add字段
 alter table data replace columns(age int,add String);
 
+# 导入数据
+insert into 导入到多张表 from aa7 insert into aa10 select id where id>1 insert into aa11 select name;
+
+# 导出数据
+# 从hive表导出到本地目录
+insert overwrite local directory '/root/hivedata/exp1' row format delimited fields terminated by '\t' select * from aa7;
+# 从hive表导出到hdfs目录
+insert overwrite directory '/exp1' row format delimited fields terminated by '\t' select * from aa7;
+# >重定向到文件中
+hive -e "use uu;select * from aa7" > /root/exp1;
+
 # 分区表
 create table data(id int,name string)
 partitioned by (country string)
@@ -183,4 +194,34 @@ row format delimited fields terminated by '\t'
 collection items terminated by ',';
 
 select str.name,str.score.chinese,str.score.math from data str where str.score.math > 60;
+```
+
+---
+
+## 内部函数
+```
+select rand();
+select split(rand()*100,"\\.")[0];
+select substring(rand()*100,2,2);
+select regexp_replace("a.jsp","jsp","html");
+select cast(1 as double);
+select case when 1=1 then "man" when 1=2 then "woman" else "yao" end;
+select concat("1","2");
+select concat_ws("|","1","2"); # 连接符
+select length("asb");
+
+row_number():没有相同名次,名次不空位
+rank():有并列名次,并列名次后将空位
+dense_rank():有并列名次,无空位
+
+# 查询每个班级的前三
+select tmp.c,tmp.s from
+(select r.class c,r.score s,row_number() over (distribute by r.class sort by r.score desc) rr from classinfo r) tmp 
+where rr<4;
+
+select class,score,
+rank() over(distribute by class sort by score desc) rank,
+dense_rank() over(distribute by class sort by score desc) dense_rank,
+row_number() over(distribute by class sort by score desc) row_number
+from classinfo;
 ```
