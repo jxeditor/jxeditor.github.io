@@ -225,3 +225,12 @@ dense_rank() over(distribute by class sort by score desc) dense_rank,
 row_number() over(distribute by class sort by score desc) row_number
 from classinfo;
 ```
+
+---
+
+## 执行计划
+```
+# 通过EXPLAIN,EXPLAIN EXTENDED或explain DEPENDENCY来查看执行计划和依赖情况
+explain select * from aa7;
+explain extended select * from aa7;
+```

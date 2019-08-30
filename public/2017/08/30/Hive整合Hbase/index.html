@@ -8,17 +8,22 @@
 
 <title>
   
-    标签: shell
+    Hive整合Hbase
   
 </title>
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/tags/shell/index.html">
+<meta name="description" content="hive表数据依赖于hbase数据">
+<meta name="keywords" content="hive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hive整合Hbase">
+<meta property="og:url" content="http://yoursite.com/2017/08/30/Hive整合Hbase/index.html">
 <meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="hive表数据依赖于hbase数据">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-08-30T02:56:03.233Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BlackC">
+<meta name="twitter:title" content="Hive整合Hbase">
+<meta name="twitter:description" content="hive表数据依赖于hbase数据">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -148,108 +153,61 @@
       
         <div style="max-width: 1000px">
       
-          <h1>shell</h1>
-
-
+          <article id="post-Hive整合Hbase" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Hive整合Hbase
+    </h1>
   
   
-    <div class="post-list">
-  
 
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2017/08/20/常用的脚本整合/">
-  常用的脚本整合
-</a>
-
-      </h3>
-      
-
-      <div class="article-info">
-        <a href="/2017/08/20/常用的脚本整合/"><span class="article-date">
-  2017-08-20
+  <div class="article-info">
+    <span class="article-date">
+  2017-08-30
 </span>
-</a>
-        
+
+    
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
 	</span>
 
 
-        
+    
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hive/">hive</a></li></ul>
 	</span>
 
 
-      </div>
-      <div class="article-entry">
-        
-          <blockquote>
-<p>有一部分命令在&lt;<strong>运维-系统常用的命令</strong>&gt;</p>
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>hive表数据依赖于hbase数据</p>
 </blockquote>
-          <p>
-            <a href="/2017/08/20/常用的脚本整合/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
-
-  
-    </div>
-  
-
-  
-  
-    <div class="post-list">
-  
-
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2016/05/31/Shell总体归纳/">
-  Shell总体归纳
-</a>
-
-      </h3>
+<a id="more"></a>
+<h2 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CREATE TABLE hbase_hive_1(key int, value string)   </span><br><span class="line">STORED BY &apos;org.apache.hadoop.hive.hbase.HBaseStorageHandler&apos;   </span><br><span class="line">WITH SERDEPROPERTIES (&quot;hbase.columns.mapping&quot; = &quot;:key,cf1:val&quot;)   </span><br><span class="line">TBLPROPERTIES (&quot;hbase.table.name&quot; = &quot;xyz&quot;);</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
       
-
-      <div class="article-info">
-        <a href="/2016/05/31/Shell总体归纳/"><span class="article-date">
-  2016-05-31
-</span>
-</a>
+          <img src="/images/cc/by.png">
         
-	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a></li></ul>
-	</span>
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
 
 
-        
-	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li></ul>
-	</span>
+    
 
+  </footer>
+</article>
 
-      </div>
-      <div class="article-entry">
-        
-          <blockquote>
-<p>Shell指南</p>
-</blockquote>
-          <p>
-            <a href="/2016/05/31/Shell总体归纳/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
-
-  
-    </div>
-  
 
 
 
