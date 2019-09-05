@@ -38,7 +38,7 @@ docker build -t demo:v1 .
 
 ## 启动容器
 ```bash
-docker run --name dmysql01 --hostname dmysql01 --ip 172.17.0.3  -e MYSQL_ROOT_PASSWORD=123456 -v /root/dmysql01/data:/var/lib/mysql -d -p 13306:3306 mysql
+docker run --name dmysql01 --hostname dmysql01 --ip 172.17.0.3 -e MYSQL_ROOT_PASSWORD=123456 -v /root/dmysql01/data:/var/lib/mysql -d -p 13306:3306 mysql
 
 # 需要知道mysql的IP地址
 docker inspect dmysql01
