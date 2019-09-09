@@ -1,5 +1,5 @@
 ---
-title: 基于CentOS7.6搭建K8S集群
+title: 基于CentOS7.6搭建K8S-集群搭建篇
 date: 2019-09-04 15:46:35
 categories: 搭建
 tags: docker
@@ -24,6 +24,7 @@ k8s.gcr.io/pause
 calico/node
 calico/cni
 calico/pod2daemon-flexvol
+calico/kube-controllers 
 ```
 
 ---
