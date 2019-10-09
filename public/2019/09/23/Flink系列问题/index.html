@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink系列问题
+  
+</title>
+
+<meta name="description" content="针对Flink的一些知识问答">
+<meta name="keywords" content="flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink系列问题">
+<meta property="og:url" content="http://yoursite.com/2019/09/23/Flink系列问题/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="针对Flink的一些知识问答">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-09T01:38:14.541Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flink系列问题">
+<meta name="twitter:description" content="针对Flink的一些知识问答">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">7</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">7</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">7</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink系列问题" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink系列问题
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-09-23
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>针对Flink的一些知识问答</p>
+</blockquote>
+<a id="more"></a>
+<h3 id="简单介绍一下Flink"><a href="#简单介绍一下Flink" class="headerlink" title="简单介绍一下Flink"></a>简单介绍一下Flink</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Apache Flink是一个分布式大数据处理引擎，可对有限数据流和无限数据流进行有状态计算。可部署在各种集群环境，对各种大小的数据规模进行快速计算。</span><br></pre></td></tr></table></figure>
+<h3 id="Flink相比传统的Spark-Streaming有什么区别？和Spark中的Structured-Streaming相比呢？Flink相比Spark-Streaming和Storm有什么优势？"><a href="#Flink相比传统的Spark-Streaming有什么区别？和Spark中的Structured-Streaming相比呢？Flink相比Spark-Streaming和Storm有什么优势？" class="headerlink" title="Flink相比传统的Spark Streaming有什么区别？和Spark中的Structured Streaming相比呢？Flink相比Spark Streaming和Storm有什么优势？"></a>Flink相比传统的Spark Streaming有什么区别？和Spark中的Structured Streaming相比呢？Flink相比Spark Streaming和Storm有什么优势？</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 相比Spark Streaming和Storm有什么优势</span><br><span class="line">Spark streaming的本质还是一款基于Microbatch计算的引擎。这种引擎一个天生的缺点就是每个Microbatch的调度开销比较大，当我们要求越低的延迟时，额外的开销就越大。这就导致了Spark Streaming实际上不是特别适合于做秒级甚至亚秒级的计算。</span><br><span class="line">Storm在最开始的流处理中扮演了很重要的角色，可以亚秒级的响应，阿里开源的JStorm，在很多互联网公司，被广泛应用于流计算处理。Storm是一个没有批处理能力的数据流处理器，除此之外Storm只提供了非常底层的API，用户需要自己实现很多复杂的逻辑。另外，Storm在状态管理和容错能力上不足。种种原因，Storm也无法满足我们的需求。</span><br><span class="line">Flink不同于Spark，Flink是一个真正意义上的流计算引擎，和Storm类似，Flink是通过流水线数据传输实现低延迟的流处理；Flink使用了经典的Chandy-Lamport算法，能够在满足低延迟和低failover开销的基础之上，完美地解决exactly once的目标；如果要用一套引擎来统一流处理和批处理，那就必须以流处理引擎为基础。Flink还提供了SQL／TableAPI这两个API，为批和流在Query层的统一又铺平了道路。因此Flink是最合适的批和流统一的引擎；Flink在设计之初就非常在意性能相关的任务状态state和流控等关键技术的设计，这些都使得用Flink执行复杂的大规模任务时性能更胜一筹。</span><br></pre></td></tr></table></figure>
+<h3 id="Flink的组件栈是怎么样的？"><a href="#Flink的组件栈是怎么样的？" class="headerlink" title="Flink的组件栈是怎么样的？"></a>Flink的组件栈是怎么样的？</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># API &amp; Libraries 层</span><br><span class="line">作为分布式数据处理框架，Flink同时提供了支撑流计算和批计算的接口，同时在此基础上抽象出不同的应用类型的组件库，如基于流处理的CEP（复杂事件处理库），SQL &amp; TABLE库和基于批处理的FlinkML（机器学习库），Gelly（图处理库）等。</span><br><span class="line">API层包括构建流计算应用的DataStream API和批计算应用的DataSet API，两者都是提供给用户丰富的数据处理高级API，例如Map，FlatMap 等，同时也提供比较低级的Process Function API ，用户可以直接操作状态和时间等底层数据。</span><br><span class="line"></span><br><span class="line"># Runtime 核心层</span><br><span class="line">该层主要负责对上层不同接口提供基础服务，也是Flink 分布式计算框架的核心实现层，支持分布式Stream作业的执行、JobGraph到ExecutionGraph的映射转换、任务调度等。</span><br><span class="line">将DataStream和DataSet转成统一的可执行的Task Operator，达到在流式引擎下同时处理批量计算和流式计算的目的</span><br><span class="line"></span><br><span class="line"># 物理部署层</span><br><span class="line">该层主要涉及Flink的部署模式，目前Flink支持多种部署模式：本地、集群（Standalone / YARN）、云（GCE / EC2）、kubenetes。</span><br><span class="line">Flink能够通过该层支持不同平台的部署，用户可以根据需要选择使用对应的部署模式。</span><br></pre></td></tr></table></figure>
+<h3 id="Flink的基础编程模型了解吗？"><a href="#Flink的基础编程模型了解吗？" class="headerlink" title="Flink的基础编程模型了解吗？"></a>Flink的基础编程模型了解吗？</h3><h3 id="说说Flink架构中的角色和作用？"><a href="#说说Flink架构中的角色和作用？" class="headerlink" title="说说Flink架构中的角色和作用？"></a>说说Flink架构中的角色和作用？</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Flink是主从架构模式，Flink集群中有主节点和从节点，另外在集群之外还有客户端节点，在这些节点</span><br><span class="line">之中又有许多内部的角色，这些角色联合运作，完成整个Flink程序的计算任务。</span><br><span class="line"></span><br><span class="line"># Client </span><br><span class="line">进行提交任务,提交完成后可以选择关闭进程或等待返回结果.不是Flink集群运行的一部分.</span><br><span class="line"></span><br><span class="line"># Actor System(AKKA) </span><br><span class="line">Flink内部使用AKKA角色系统来管理JobManager和TaskManager</span><br><span class="line"></span><br><span class="line"># JobManager </span><br><span class="line">主要职责是分布式执行,并协调任务做CK,协调故障恢复等,从客户端接收到任务后,首先生成优化过的执行计划,再调度到TaskManager中执行</span><br><span class="line"></span><br><span class="line"># Scheduler </span><br><span class="line">调度器,Flink的执行者被定义为任务槽.每个任务管理器都需要管理一个或多个任务槽.在内部,Flink决定哪些任务需要共享该插槽以及哪些任务必须被放置在特定的插槽中.它通过SlotSharingGroup和CoLocationGroup完成.</span><br><span class="line"></span><br><span class="line"># Checkpoint Coordinator</span><br><span class="line">Checkpoint协调器,负责checkpoint管理执行</span><br><span class="line"></span><br><span class="line"># Memory Manager</span><br><span class="line">内存管理器,会根据配置等信息计算内存的分配</span><br><span class="line"></span><br><span class="line"># TaskManager</span><br><span class="line">主要职责是从JobManager处接收任务,并部署和启动任务,接收上游的数据并处理,TaskManager在创建之初就设置好了Slot , 每个Slot可以执行一个任务,每个TaskManager是一个进程</span><br><span class="line"></span><br><span class="line"># Task Slot</span><br><span class="line">任务槽，负责具体任务的执行,每一个slot是一个线程</span><br></pre></td></tr></table></figure>
+<h3 id="说说Flink中常用的算子？用过哪些？"><a href="#说说Flink中常用的算子？用过哪些？" class="headerlink" title="说说Flink中常用的算子？用过哪些？"></a>说说Flink中常用的算子？用过哪些？</h3><h3 id="Flink中的分区策略有哪几种？"><a href="#Flink中的分区策略有哪几种？" class="headerlink" title="Flink中的分区策略有哪几种？"></a>Flink中的分区策略有哪几种？</h3><h3 id="Flink的并行度有了解吗？Flink中设置并行度需要注意什么？"><a href="#Flink的并行度有了解吗？Flink中设置并行度需要注意什么？" class="headerlink" title="Flink的并行度有了解吗？Flink中设置并行度需要注意什么？"></a>Flink的并行度有了解吗？Flink中设置并行度需要注意什么？</h3><h3 id="Flink支持哪几种重启策略？分别如何配置？"><a href="#Flink支持哪几种重启策略？分别如何配置？" class="headerlink" title="Flink支持哪几种重启策略？分别如何配置？"></a>Flink支持哪几种重启策略？分别如何配置？</h3><h3 id="Flink的分布式缓存有什么作用？如何使用？"><a href="#Flink的分布式缓存有什么作用？如何使用？" class="headerlink" title="Flink的分布式缓存有什么作用？如何使用？"></a>Flink的分布式缓存有什么作用？如何使用？</h3><h3 id="Flink中的广播变量，使用广播变量需要注意什么事项？"><a href="#Flink中的广播变量，使用广播变量需要注意什么事项？" class="headerlink" title="Flink中的广播变量，使用广播变量需要注意什么事项？"></a>Flink中的广播变量，使用广播变量需要注意什么事项？</h3><h3 id="Flink中对窗口的支持包括哪几种？说说他们的使用场景"><a href="#Flink中对窗口的支持包括哪几种？说说他们的使用场景" class="headerlink" title="Flink中对窗口的支持包括哪几种？说说他们的使用场景"></a>Flink中对窗口的支持包括哪几种？说说他们的使用场景</h3><h3 id="Flink-中的-State-Backends是什么？有什么作用？分成哪几类？说说他们各自的优缺点？"><a href="#Flink-中的-State-Backends是什么？有什么作用？分成哪几类？说说他们各自的优缺点？" class="headerlink" title="Flink 中的 State Backends是什么？有什么作用？分成哪几类？说说他们各自的优缺点？"></a>Flink 中的 State Backends是什么？有什么作用？分成哪几类？说说他们各自的优缺点？</h3><h3 id="Flink中的时间种类有哪些？各自介绍一下？"><a href="#Flink中的时间种类有哪些？各自介绍一下？" class="headerlink" title="Flink中的时间种类有哪些？各自介绍一下？"></a>Flink中的时间种类有哪些？各自介绍一下？</h3><h3 id="WaterMark是什么？是用来解决什么问题？如何生成水印？水印的原理是什么？"><a href="#WaterMark是什么？是用来解决什么问题？如何生成水印？水印的原理是什么？" class="headerlink" title="WaterMark是什么？是用来解决什么问题？如何生成水印？水印的原理是什么？"></a>WaterMark是什么？是用来解决什么问题？如何生成水印？水印的原理是什么？</h3><h3 id="Flink的table和SQL熟悉吗？Table-API和SQL中TableEnvironment这个类有什么作用？"><a href="#Flink的table和SQL熟悉吗？Table-API和SQL中TableEnvironment这个类有什么作用？" class="headerlink" title="Flink的table和SQL熟悉吗？Table API和SQL中TableEnvironment这个类有什么作用？"></a>Flink的table和SQL熟悉吗？Table API和SQL中TableEnvironment这个类有什么作用？</h3><h3 id="Flink如何实现SQL解析的呢？"><a href="#Flink如何实现SQL解析的呢？" class="headerlink" title="Flink如何实现SQL解析的呢？"></a>Flink如何实现SQL解析的呢？</h3><h3 id="Flink是如何做到批处理与流处理统一的？"><a href="#Flink是如何做到批处理与流处理统一的？" class="headerlink" title="Flink是如何做到批处理与流处理统一的？"></a>Flink是如何做到批处理与流处理统一的？</h3><h3 id="Flink中的数据传输模式是怎么样的？"><a href="#Flink中的数据传输模式是怎么样的？" class="headerlink" title="Flink中的数据传输模式是怎么样的？"></a>Flink中的数据传输模式是怎么样的？</h3><h3 id="Flink的容错机制知道吗？"><a href="#Flink的容错机制知道吗？" class="headerlink" title="Flink的容错机制知道吗？"></a>Flink的容错机制知道吗？</h3><h3 id="Flink中的分布式快照机制是怎么样的？"><a href="#Flink中的分布式快照机制是怎么样的？" class="headerlink" title="Flink中的分布式快照机制是怎么样的？"></a>Flink中的分布式快照机制是怎么样的？</h3><h3 id="Flink是如何实现Exactly-once的？"><a href="#Flink是如何实现Exactly-once的？" class="headerlink" title="Flink是如何实现Exactly-once的？"></a>Flink是如何实现Exactly-once的？</h3><h3 id="Flink的Kafka-connector是如何做到向下兼容的呢？"><a href="#Flink的Kafka-connector是如何做到向下兼容的呢？" class="headerlink" title="Flink的Kafka-connector是如何做到向下兼容的呢？"></a>Flink的Kafka-connector是如何做到向下兼容的呢？</h3><h3 id="Flink中的内存管理是如何做的？"><a href="#Flink中的内存管理是如何做的？" class="headerlink" title="Flink中的内存管理是如何做的？"></a>Flink中的内存管理是如何做的？</h3><h3 id="Flink中的序列化是如何做的？"><a href="#Flink中的序列化是如何做的？" class="headerlink" title="Flink中的序列化是如何做的？"></a>Flink中的序列化是如何做的？</h3><h3 id="Flink中的RPC框架选型是怎么样的？"><a href="#Flink中的RPC框架选型是怎么样的？" class="headerlink" title="Flink中的RPC框架选型是怎么样的？"></a>Flink中的RPC框架选型是怎么样的？</h3><h3 id="Flink在使用Window时出现数据倾斜，你有什么解决办法？"><a href="#Flink在使用Window时出现数据倾斜，你有什么解决办法？" class="headerlink" title="Flink在使用Window时出现数据倾斜，你有什么解决办法？"></a>Flink在使用Window时出现数据倾斜，你有什么解决办法？</h3><h3 id="Flink-SQL在使用Groupby时出现热点数据，如何处理？"><a href="#Flink-SQL在使用Groupby时出现热点数据，如何处理？" class="headerlink" title="Flink SQL在使用Groupby时出现热点数据，如何处理？"></a>Flink SQL在使用Groupby时出现热点数据，如何处理？</h3><h3 id="现在我有Flink任务，delay极高，请问你有什么调优策略？"><a href="#现在我有Flink任务，delay极高，请问你有什么调优策略？" class="headerlink" title="现在我有Flink任务，delay极高，请问你有什么调优策略？"></a>现在我有Flink任务，delay极高，请问你有什么调优策略？</h3><h3 id="Flink是如何处理反压的？和Spark有什么区别？Storm呢？"><a href="#Flink是如何处理反压的？和Spark有什么区别？Storm呢？" class="headerlink" title="Flink是如何处理反压的？和Spark有什么区别？Storm呢？"></a>Flink是如何处理反压的？和Spark有什么区别？Storm呢？</h3><h3 id="Operator-Chains（算子链）这个概念你了解吗？Flink是如何优化的？什么情况下Operator才会chain在一起？"><a href="#Operator-Chains（算子链）这个概念你了解吗？Flink是如何优化的？什么情况下Operator才会chain在一起？" class="headerlink" title="Operator Chains（算子链）这个概念你了解吗？Flink是如何优化的？什么情况下Operator才会chain在一起？"></a>Operator Chains（算子链）这个概念你了解吗？Flink是如何优化的？什么情况下Operator才会chain在一起？</h3><h3 id="讲讲一个Flink-job提交的整个流程吗？"><a href="#讲讲一个Flink-job提交的整个流程吗？" class="headerlink" title="讲讲一个Flink job提交的整个流程吗？"></a>讲讲一个Flink job提交的整个流程吗？</h3><h3 id="讲讲一个Flink-job调度和执行的流程吗？"><a href="#讲讲一个Flink-job调度和执行的流程吗？" class="headerlink" title="讲讲一个Flink job调度和执行的流程吗？"></a>讲讲一个Flink job调度和执行的流程吗？</h3><h3 id="Flink所谓”三层图”结构是哪几个”图”？它们之间是什么关系？他们之间是如何转化的？"><a href="#Flink所谓”三层图”结构是哪几个”图”？它们之间是什么关系？他们之间是如何转化的？" class="headerlink" title="Flink所谓”三层图”结构是哪几个”图”？它们之间是什么关系？他们之间是如何转化的？"></a>Flink所谓”三层图”结构是哪几个”图”？它们之间是什么关系？他们之间是如何转化的？</h3><h3 id="JobManger和TaskManager分别在集群中扮演了什么角色，说说它们都做了些什么？"><a href="#JobManger和TaskManager分别在集群中扮演了什么角色，说说它们都做了些什么？" class="headerlink" title="JobManger和TaskManager分别在集群中扮演了什么角色，说说它们都做了些什么？"></a>JobManger和TaskManager分别在集群中扮演了什么角色，说说它们都做了些什么？</h3><h3 id="简单说说Flink数据的抽象和数据的交换过程"><a href="#简单说说Flink数据的抽象和数据的交换过程" class="headerlink" title="简单说说Flink数据的抽象和数据的交换过程"></a>简单说说Flink数据的抽象和数据的交换过程</h3><h3 id="Flink的分布式快照机制是如何实现的？"><a href="#Flink的分布式快照机制是如何实现的？" class="headerlink" title="Flink的分布式快照机制是如何实现的？"></a>Flink的分布式快照机制是如何实现的？</h3><h3 id="Flink的反压是如何实现的？"><a href="#Flink的反压是如何实现的？" class="headerlink" title="Flink的反压是如何实现的？"></a>Flink的反压是如何实现的？</h3><h3 id="说说FlinkSQL是如何转化的？了解逻辑计划和和物理计划吗？FlinkSQL的维表JOIN是如何做的？了解Async-IO吗？解决了什么问题？"><a href="#说说FlinkSQL是如何转化的？了解逻辑计划和和物理计划吗？FlinkSQL的维表JOIN是如何做的？了解Async-IO吗？解决了什么问题？" class="headerlink" title="说说FlinkSQL是如何转化的？了解逻辑计划和和物理计划吗？FlinkSQL的维表JOIN是如何做的？了解Async IO吗？解决了什么问题？"></a>说说FlinkSQL是如何转化的？了解逻辑计划和和物理计划吗？FlinkSQL的维表JOIN是如何做的？了解Async IO吗？解决了什么问题？</h3>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2019 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>

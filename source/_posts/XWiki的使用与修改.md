@@ -225,6 +225,9 @@ xwiki-platform-panels-ui的NavigationConfigurationSection.xml
 {{/html}}
 
 # 重新导入xar文件
+
+# 修改xwiki-platform-index-tree-api下的hbm.xml文件
+# 根据XWS_RANK进行排序
 ```
 
 ## XWiki整合Cas

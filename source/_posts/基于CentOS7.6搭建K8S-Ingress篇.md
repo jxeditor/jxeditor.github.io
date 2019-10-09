@@ -149,3 +149,46 @@ IP(Ingress Controller所在IP)    www.tomcat.com
 # 访问
 http://www.tomcat.com/
 ```
+
+---
+
+## 启用Https
+```
+# 生成私钥 tls.key, 密钥位数是 2048
+openssl genrsa -out tls.key 2048
+# 使用 tls.key 生成自签证书
+openssl req -new -x509 -key tls.key -out tls.crt -subj /C=CN/ST=GuangDong/L=Guangzhou/O=DevOps/CN=www.tomcat.com
+kubectl create secret tls tomcat-ingress-secret --cert=tls.crt --key=tls.key 
+kubectl get secret
+kubectl describe secret tomcat-ingress-secret
+
+# 创建Ingress
+vi ingress-tomcat-tls.yaml 
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-tomcat-tls
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  tls:
+  - hosts: 
+    - www.tomcat.com
+    secretName: tomcat-ingress-secret
+  rules:
+  - host: www.tomcat.com
+    http:
+      paths:
+      - path:
+        backend:
+          serviceName: tomcat
+          servicePort: 8080
+          
+kubectl apply -f ingress-tomcat-tls.yaml 
+kubectl get ingress
+kubectl describe ingress ingress-tomcat-tls
+
+# 访问
+https://www.tomcat.com/
+```

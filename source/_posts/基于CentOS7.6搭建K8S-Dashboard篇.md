@@ -112,7 +112,7 @@ kubectl describe secret -n kube-system dashboard-admin-token-l7kpn
 # 在dashboard后台使用tocken方式登录即可
 # 生成kubeconfig文件
 DASH_TOCKEN=$(kubectl get secret -n kube-system dashboard-admin-token-l7kpn -o jsonpath={.data.token}|base64 -d)
-kubectl config set-cluster kubernetes --server=192.168.17.132:6443 --kubeconfig=/root/dashbord-admin.conf
+kubectl config set-cluster kubernetes --server=192.168.17.129:6443 --kubeconfig=/root/dashbord-admin.conf
 kubectl config set-credentials dashboard-admin --token=$DASH_TOCKEN --kubeconfig=/root/dashbord-admin.conf
 kubectl config set-context dashboard-admin@kubernetes --cluster=kubernetes --user=dashboard-admin --kubeconfig=/root/dashbord-admin.conf
 kubectl config use-context dashboard-admin@kubernetes --kubeconfig=/root/dashbord-admin.conf

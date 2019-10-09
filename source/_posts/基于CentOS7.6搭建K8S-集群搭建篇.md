@@ -193,8 +193,6 @@ kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=v1.15.3 --ap
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
-# kubeadm join 192.168.17.132:6443 --token df7sdx.l8bag75r4lgvlgbk \
-    --discovery-token-ca-cert-hash sha256:1cd49129a02067b6512288e543554416aeaa0765c563c2d13f303c7ad23ed111 
 
 # 创建网络需要引入docker镜像,如果需要在内网部署,则提前save好镜像文件,版本与calico.yaml内版本一致
 calico/node
@@ -205,10 +203,22 @@ calico/pod2daemon-flexvol
 # 创建网络(calico.yaml可以下载下来,链接可能更新,可以在官网自行找到)
 kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml
 
+# 加入集群
+kubeadm join 192.168.17.129:6443 --token jt6t8v.p7btvogl1l0wivga \
+    --discovery-token-ca-cert-hash sha256:a2ee7cf619eb081474fcf295a4da7491afd75b3d913763888f5f01226ca80e90 
+
+
 # 重启/删除集群(删除.kube很重要)
-kubectl reset
+kubeadm reset
 rm -rf $HOME/.kube
-kubectl init
+# 其余节点删除
+rm -rf /etc/cni/*
+rm -rf /etc/kubernetes/*
+rm -rf /var/lib/etcd/*
+rm -rf /var/lib/kubelet/*
+rm -rf /var/lib/cni/*
+rm -rf /var/lib/calico/*
+kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=v1.15.3 --apiserver-advertise-address=192.168.17.129
 ```
 
 ---
@@ -219,8 +229,8 @@ kubectl init
 kubectl taint nodes --all node-role.kubernetes.io/master-
 
 # 将其他节点加入集群(其他节点执行join命令即可)
-kubeadm join 192.168.17.132:6443 --token df7sdx.l8bag75r4lgvlgbk \
-    --discovery-token-ca-cert-hash sha256:1cd49129a02067b6512288e543554416aeaa0765c563c2d13f303c7ad23ed111 
+kubeadm join 192.168.17.129:6443 --token jt6t8v.p7btvogl1l0wivga \
+    --discovery-token-ca-cert-hash sha256:a2ee7cf619eb081474fcf295a4da7491afd75b3d913763888f5f01226ca80e90 
 
 # 查看节点
 kubectl get nodes
