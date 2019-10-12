@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    任务调度结合数据结构图实现
+  
+</title>
+
+<meta name="description" content="各类作业执行会操作不同的表,作业之间又有依赖关系,所以希望通过输入输出表与作业的关系来决定作业顺序,其实如果没有特殊要求,像这类调度可以使用Azkanban工具来实现,更加方便">
+<meta name="keywords" content="algorithm">
+<meta property="og:type" content="article">
+<meta property="og:title" content="任务调度结合数据结构图实现">
+<meta property="og:url" content="http://yoursite.com/2019/10/12/任务调度结合数据结构图实现/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="各类作业执行会操作不同的表,作业之间又有依赖关系,所以希望通过输入输出表与作业的关系来决定作业顺序,其实如果没有特殊要求,像这类调度可以使用Azkanban工具来实现,更加方便">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-12T08:56:22.189Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="任务调度结合数据结构图实现">
+<meta name="twitter:description" content="各类作业执行会操作不同的表,作业之间又有依赖关系,所以希望通过输入输出表与作业的关系来决定作业顺序,其实如果没有特殊要求,像这类调度可以使用Azkanban工具来实现,更加方便">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">7</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">28</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">6</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">7</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-任务调度结合数据结构图实现" class="article article-type-post">
+  
+    <h1 class="article-header">
+      任务调度结合数据结构图实现
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-10-12
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/算法/">算法</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/算法/大数据/">大数据</a></li></ul></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/">algorithm</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>各类作业执行会操作不同的表,作业之间又有依赖关系,所以希望通过输入输出表与作业的关系来决定作业顺序,其实如果没有特殊要求,像这类调度可以使用Azkanban工具来实现,更加方便</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="已有信息"><a href="#已有信息" class="headerlink" title="已有信息"></a>已有信息</h2><ul>
+<li>各spark作业jar</li>
+<li>neo4j存储了作业与表的关系图</li>
+<li>作业有执行的先后关系</li>
+</ul>
+<hr>
+<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><ul>
+<li>半/全自动化执行作业</li>
+<li>只需要确定输入表输出表与作业的关系,就可以生成执行信息</li>
+</ul>
+<hr>
+<h2 id="实现流程"><a href="#实现流程" class="headerlink" title="实现流程"></a>实现流程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">1.Neo4j针对输入输出表,建立图</span><br><span class="line">2.根据图去生成作业的执行顺序&lt;重点&gt;</span><br><span class="line">    eg: 现有5张表,ta,tb,tc,td,te,每个表对应1个spark程序j1,j2,j3,j4,j5</span><br><span class="line">    表的依赖关系为tc依赖于(ta,tb),te依赖于(tc,td),那么我们可以得到一个任务分层树</span><br><span class="line">    表分层:</span><br><span class="line">        第一层: ta,tb,td		</span><br><span class="line">        第二层: tc							</span><br><span class="line">        第三层: te							</span><br><span class="line">    对应作业:	</span><br><span class="line">        第一层: j1,j2,j4</span><br><span class="line">        第二层: j3</span><br><span class="line">        第三层: j5</span><br><span class="line">3.建立作业的状态表job_state(状态信息MySQL存储)</span><br><span class="line">    eg: 根据上述信息,可以了解到,树的深度是未知的,所以根据层数来指定分层表是不理想的,但是可以用父子节点的方式将作业信息存放单表中</span><br><span class="line">    每个作业应该有的信息有</span><br><span class="line">        作业id(每天根据第2步生成任务分层树生成)</span><br><span class="line">        父作业id(依赖的作业id,无为0,,可以是多个)</span><br><span class="line">        执行状态(0未执行,1,正在执行,2执行失败,6执行成功)</span><br><span class="line">        执行命令(spark-submit ...jar)</span><br><span class="line">        开始时间</span><br><span class="line">        结束时间</span><br><span class="line">4.建立脚本,每天定时执行(具体选择队列形式&lt;celery一次执行&gt;,还是重复执行&lt;crontab每N分钟执行&gt;)</span><br><span class="line">5.脚本逻辑</span><br><span class="line">    去表中获取今日份作业信息&lt;循环执行&gt;</span><br><span class="line">    判断状态值与依赖</span><br><span class="line">    状态为0且无父依赖</span><br><span class="line">        调用console执行spark作业</span><br><span class="line">    状态为0但有父依赖</span><br><span class="line">        根据父作业id,查询父作业状态select * from job_state where id = 父作业id and 执行状态 != 6</span><br><span class="line">        判断状态值,为6则执行,只要有不为6的就跳过</span><br><span class="line">    状态不为0</span><br><span class="line">        跳过执行</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="图代码实现"><a href="#图代码实现" class="headerlink" title="图代码实现"></a>图代码实现</h2><h3 id="Point-TablePoint-ProjectPoint"><a href="#Point-TablePoint-ProjectPoint" class="headerlink" title="Point(TablePoint,ProjectPoint)"></a>Point(TablePoint,ProjectPoint)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    HashSet&lt;String&gt; parentPoints = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    HashSet&lt;String&gt; childPoints = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ---</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProjectPoint</span> <span class="keyword">extends</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"任务节点"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ---</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TablePoint</span> <span class="keyword">extends</span> <span class="title">Point</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"表节点"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Graph"><a href="#Graph" class="headerlink" title="Graph"></a>Graph</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Graph</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> HashMap&lt;String, Point&gt; pointMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> HashMap&lt;String, HashSet&lt;String&gt;&gt; edgeMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 添加节点,Point具有两个数组,分别存父节点,子节点</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> name</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> point</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addPoint</span><span class="params">(String name, Point point)</span> </span>&#123;</span><br><span class="line">        pointMap.put(name, point);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 添加边,并给from节点添加子节点列表,给to节点添加父节点列表</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> from</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> to</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">addEdge</span><span class="params">(String from, String to)</span> </span>&#123;</span><br><span class="line">        HashSet&lt;String&gt; nextPoint = edgeMap.get(from);</span><br><span class="line">        <span class="keyword">if</span> (nextPoint != <span class="keyword">null</span>) &#123;</span><br><span class="line">            nextPoint.add(to);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            HashSet&lt;String&gt; strings = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">            strings.add(to);</span><br><span class="line">            edgeMap.put(from, strings);</span><br><span class="line">        &#125;</span><br><span class="line">        Point fromPoint = pointMap.get(from);</span><br><span class="line">        Point toPoint = pointMap.get(to);</span><br><span class="line">        fromPoint.childPoints.add(to);</span><br><span class="line">        toPoint.parentPoints.add(from);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    HashMap&lt;String, HashSet&lt;String&gt;&gt; getEdgeMap() &#123;</span><br><span class="line">        <span class="keyword">return</span> edgeMap;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function">HashMap&lt;String, Point&gt; <span class="title">getPointMap</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> pointMap;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取出度</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">HashMap&lt;String, Integer&gt; <span class="title">getOutDegree</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        HashMap&lt;String, Integer&gt; outDegree = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (String key : edgeMap.keySet()) &#123;</span><br><span class="line">            outDegree.put(key, edgeMap.get(key).size());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> outDegree;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取入度</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">HashMap&lt;String, Integer&gt; <span class="title">getInDegree</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        HashMap&lt;String, Integer&gt; inDegree = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (String key : edgeMap.keySet()) &#123;</span><br><span class="line">            HashSet&lt;String&gt; strings = edgeMap.get(key);</span><br><span class="line">            <span class="keyword">for</span> (String s : strings) &#123;</span><br><span class="line">                inDegree.merge(s, <span class="number">1</span>, (a, b) -&gt; a + b);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> inDegree;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取points各个节点为ProjectPoint的节点,HashSet去重</span></span><br><span class="line"><span class="comment">     * 目前暂且支持table-&gt;project-&gt;table的情况</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> points</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function">HashSet&lt;String&gt; <span class="title">getParentNodes</span><span class="params">(HashSet&lt;String&gt; points)</span> </span>&#123;</span><br><span class="line">        HashSet&lt;String&gt; result = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (String point : points) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!(pointMap.get(point) <span class="keyword">instanceof</span> ProjectPoint)) &#123;</span><br><span class="line">                result.addAll(getParentNodes(pointMap.get(point).parentPoints));</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                result.add(point);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="GraphDemo"><a href="#GraphDemo" class="headerlink" title="GraphDemo"></a>GraphDemo</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.util.HashMap;</span><br><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GraphDemo</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Graph graph = <span class="keyword">new</span> Graph();</span><br><span class="line">        <span class="comment">// 构建图</span></span><br><span class="line">        graph.addPoint(<span class="string">"a"</span>, <span class="keyword">new</span> TablePoint());</span><br><span class="line">        graph.addPoint(<span class="string">"b"</span>, <span class="keyword">new</span> TablePoint());</span><br><span class="line">        graph.addPoint(<span class="string">"c"</span>, <span class="keyword">new</span> TablePoint());</span><br><span class="line">        graph.addPoint(<span class="string">"d"</span>, <span class="keyword">new</span> ProjectPoint());</span><br><span class="line">        graph.addPoint(<span class="string">"e"</span>, <span class="keyword">new</span> TablePoint());</span><br><span class="line">        graph.addPoint(<span class="string">"f"</span>, <span class="keyword">new</span> ProjectPoint());</span><br><span class="line">        graph.addPoint(<span class="string">"g"</span>, <span class="keyword">new</span> TablePoint());</span><br><span class="line">        graph.addPoint(<span class="string">"h"</span>, <span class="keyword">new</span> TablePoint());</span><br><span class="line">        graph.addPoint(<span class="string">"i"</span>, <span class="keyword">new</span> TablePoint());</span><br><span class="line">        graph.addPoint(<span class="string">"j"</span>, <span class="keyword">new</span> ProjectPoint());</span><br><span class="line">        graph.addEdge(<span class="string">"a"</span>, <span class="string">"d"</span>);</span><br><span class="line">        graph.addEdge(<span class="string">"b"</span>, <span class="string">"d"</span>);</span><br><span class="line">        graph.addEdge(<span class="string">"c"</span>, <span class="string">"d"</span>);</span><br><span class="line">        graph.addEdge(<span class="string">"d"</span>, <span class="string">"e"</span>);</span><br><span class="line">        graph.addEdge(<span class="string">"e"</span>, <span class="string">"f"</span>);</span><br><span class="line">        graph.addEdge(<span class="string">"f"</span>, <span class="string">"g"</span>);</span><br><span class="line">        graph.addEdge(<span class="string">"f"</span>, <span class="string">"h"</span>);</span><br><span class="line">        graph.addEdge(<span class="string">"g"</span>, <span class="string">"j"</span>);</span><br><span class="line">        graph.addEdge(<span class="string">"h"</span>, <span class="string">"j"</span>);</span><br><span class="line">        graph.addEdge(<span class="string">"i"</span>, <span class="string">"j"</span>);</span><br><span class="line"></span><br><span class="line">        System.out.println(graph.getPointMap());</span><br><span class="line">        System.out.println(graph.getEdgeMap());</span><br><span class="line"></span><br><span class="line">        HashMap&lt;String, HashSet&lt;String&gt;&gt; edgeMap = graph.getEdgeMap();</span><br><span class="line">        HashMap&lt;String, Point&gt; pointMap = graph.getPointMap();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 出度</span></span><br><span class="line">        System.out.println(graph.getOutDegree());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 入度</span></span><br><span class="line">        System.out.println(graph.getInDegree());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 生成ProjectPoint节点,以及其父ProjectPoint节点信息</span></span><br><span class="line">        <span class="keyword">for</span> (String key : pointMap.keySet()) &#123;</span><br><span class="line">            <span class="comment">// System.out.println(key+":"+pointMap.get(key).parentPoints);</span></span><br><span class="line">            <span class="keyword">if</span> (pointMap.get(key) <span class="keyword">instanceof</span> ProjectPoint) &#123;</span><br><span class="line">                HashSet&lt;String&gt; parentNodes = graph.getParentNodes(pointMap.get(key).parentPoints);</span><br><span class="line">                System.out.println(key + <span class="string">":"</span> + parentNodes);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="图升级版实现-lt-附思路和代码-gt"><a href="#图升级版实现-lt-附思路和代码-gt" class="headerlink" title="图升级版实现&lt;附思路和代码&gt;"></a>图升级版实现&lt;附思路和代码&gt;</h2><h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">我们已经获取了一个图,并且确定了每个节点的父节点与子节点</span><br><span class="line">那么获取所有没有入度的节点</span><br><span class="line">执行完没有入度的节点之后,删除节点,与其对应的边,再去获取没有入度的节点</span><br><span class="line">一直循环,直到结束</span><br><span class="line"></span><br><span class="line">点集:存放节点信息</span><br><span class="line">边集:存放(from点,to点)关系对</span><br><span class="line"></span><br><span class="line">执行节点: </span><br><span class="line">执行时,将正在执行的节点保存起来&lt;runningNode&gt;;</span><br><span class="line">什么是执行节点,获取没有入度的节点并且不存在于&lt;runningNode&gt;的节点就是执行节点</span><br><span class="line">没有入度的节点:遍历边集的to节点,不存在与点集的都是没有入度的节点</span><br><span class="line">执行前或执行后删除都可以,顺序如下</span><br><span class="line">[1,2,3,4,5,6]-&gt;[(1,2),(1,3),(4,5),(3,6),(5,6)]</span><br><span class="line">to(2,3,5,6) 执行1,4</span><br><span class="line">[2,3,5,6]-&gt;[(3,6),(5,6)]</span><br><span class="line">to(6) 执行2,3,5</span><br><span class="line">[6]-&gt;[]</span><br><span class="line">to() 执行6</span><br><span class="line"></span><br><span class="line">具体实现开启多线程执行作业</span><br></pre></td></tr></table></figure>
+<h3 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h3>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2019 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>

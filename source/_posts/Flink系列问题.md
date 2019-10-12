@@ -37,8 +37,11 @@ API层包括构建流计算应用的DataStream API和批计算应用的DataSet A
 Flink能够通过该层支持不同平台的部署，用户可以根据需要选择使用对应的部署模式。
 ```
 
-### Flink的基础编程模型了解吗？
-
+### [Flink的基础编程模型了解吗？](https://www.cnblogs.com/cxhfuujust/p/10925843.html)
+```
+Flink 程序的基础构建单元是流（streams）与转换（transformations）。DataSet API 中使用的数据集也是一种流。数据流（stream）就是一组永远不会停止的数据记录流，而转换（transformation）是将一个或多个流作为输入，并生成一个或多个输出流的操作。
+执行时，Flink程序映射到 streaming dataflows，由流（streams）和转换操作（transformation operators）组成。每个 dataflow 从一个或多个源（source）开始，在一个或多个接收器（sink）中结束。
+```
 
 ### 说说Flink架构中的角色和作用？
 ```
@@ -47,6 +50,9 @@ Flink是主从架构模式，Flink集群中有主节点和从节点，另外在�
 
 # Client 
 进行提交任务,提交完成后可以选择关闭进程或等待返回结果.不是Flink集群运行的一部分.
+当用户提交一个Flink程序时，会首先创建一个Client，该Client首先会对用户提交的Flink程序进行预处理，并提交到Flink集群中处理，所以Client需要从用户提交的Flink程序配置中获取JobManager的地址，并建立到JobManager的连接，将Flink Job提交给JobManager。
+Client会将用户提交的Flink程序组装一个JobGraph， 并且是以JobGraph的形式提交的。一个JobGraph是一个Flink Dataflow，它由多个JobVertex组成的DAG。
+其中，一个JobGraph包含了一个Flink程序的如下信息：JobID、Job名称、配置信息、一组JobVertex等。
 
 # Actor System(AKKA) 
 Flink内部使用AKKA角色系统来管理JobManager和TaskManager
@@ -64,7 +70,8 @@ Checkpoint协调器,负责checkpoint管理执行
 内存管理器,会根据配置等信息计算内存的分配
 
 # TaskManager
-主要职责是从JobManager处接收任务,并部署和启动任务,接收上游的数据并处理,TaskManager在创建之初就设置好了Slot , 每个Slot可以执行一个任务,每个TaskManager是一个进程
+主要职责是从JobManager处接收任务,并部署和启动任务,接收上游的数据并处理,TaskManager在创建之初就设置好了Slot , 每个Slot可以执行一个任务,每个TaskManager是一个进程.
+每个TaskManager负责管理其所在节点上的资源信息，如内存、磁盘、网络，在启动的时候将资源的状态向JobManager汇报。
 
 # Task Slot
 任务槽，负责具体任务的执行,每一个slot是一个线程
