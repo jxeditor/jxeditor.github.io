@@ -8,22 +8,22 @@
 
 <title>
   
-    基于CentOS7.6搭建K8S-问题
+    使用Spark2.0的坑
   
 </title>
 
-<meta name="description" content="一系列的问题">
-<meta name="keywords" content="docker">
+<meta name="description" content="从Spark1转换到Spark2,总体逻辑可能没有什么变化,但是小细节会有很多坑">
+<meta name="keywords" content="spark">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基于CentOS7.6搭建K8S-问题">
-<meta property="og:url" content="http://yoursite.com/2019/09/23/基于CentOS7.6搭建K8S-问题/index.html">
+<meta property="og:title" content="使用Spark2.0的坑">
+<meta property="og:url" content="http://yoursite.com/2019/10/15/使用Spark2.0的坑/index.html">
 <meta property="og:site_name" content="BlackC">
-<meta property="og:description" content="一系列的问题">
+<meta property="og:description" content="从Spark1转换到Spark2,总体逻辑可能没有什么变化,但是小细节会有很多坑">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-09-23T01:25:15.931Z">
+<meta property="og:updated_time" content="2019-10-15T07:10:15.103Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="基于CentOS7.6搭建K8S-问题">
-<meta name="twitter:description" content="一系列的问题">
+<meta name="twitter:title" content="使用Spark2.0的坑">
+<meta name="twitter:description" content="从Spark1转换到Spark2,总体逻辑可能没有什么变化,但是小细节会有很多坑">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -153,40 +153,40 @@
       
         <div style="max-width: 1000px">
       
-          <article id="post-基于CentOS7.6搭建K8S-问题" class="article article-type-post">
+          <article id="post-使用Spark2.0的坑" class="article article-type-post">
   
     <h1 class="article-header">
-      基于CentOS7.6搭建K8S-问题
+      使用Spark2.0的坑
     </h1>
   
   
 
   <div class="article-info">
     <span class="article-date">
-  2019-09-23
+  2019-10-15
 </span>
 
     
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/">搭建</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
 	</span>
 
 
     
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
 	</span>
 
 
   </div>
   <div class="article-entry">
     <blockquote>
-<p>一系列的问题</p>
+<p>从Spark1转换到Spark2,总体逻辑可能没有什么变化,但是小细节会有很多坑</p>
 </blockquote>
 <a id="more"></a>
-<h2 id="CoreDNS解析不了域名"><a href="#CoreDNS解析不了域名" class="headerlink" title="CoreDNS解析不了域名"></a>CoreDNS解析不了域名</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># 暂时未解决,官网提供的解决办法失效</span><br></pre></td></tr></table></figure>
+<h2 id="连接MySQL报No-suitable-driver"><a href="#连接MySQL报No-suitable-driver" class="headerlink" title="连接MySQL报No suitable driver"></a>连接MySQL报No suitable driver</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注册临时表</span></span><br><span class="line">df.registerTempTable(<span class="string">"demo"</span>)</span><br><span class="line"><span class="keyword">val</span> prop = <span class="keyword">new</span> java.util.<span class="type">Properties</span></span><br><span class="line">prop.setProperty(<span class="string">"user"</span>,<span class="string">"root"</span>)</span><br><span class="line">prop.setProperty(<span class="string">"password"</span>,<span class="string">"123456"</span>)</span><br><span class="line">prop.setProperty(<span class="string">"driver"</span>,<span class="string">"com.mysql.jdbc.Driver"</span>)</span><br><span class="line">prop.setProperty(<span class="string">"url"</span>,<span class="string">"jdbc:mysql://127.0.0.1:3306/test"</span>)</span><br><span class="line">sqlContext.sql(<span class="string">"select name,age,sex from demo"</span>)</span><br><span class="line">.write</span><br><span class="line">.mode(org.apache.spark.sql.<span class="type">SaveMode</span>.<span class="type">Append</span>)</span><br><span class="line">.jdbc(prop.getProperty(<span class="string">"url"</span>),<span class="string">"demo"</span>,prop)</span><br></pre></td></tr></table></figure>
 <hr>
-<h2 id="master节点的Calico-pod启动不来"><a href="#master节点的Calico-pod启动不来" class="headerlink" title="master节点的Calico pod启动不来"></a>master节点的Calico pod启动不来</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># 主要原因应该是系统环境问题,初始时可以启动</span><br></pre></td></tr></table></figure>
+<h2 id="Spark生成一个空的DataFrame"><a href="#Spark生成一个空的DataFrame" class="headerlink" title="Spark生成一个空的DataFrame"></a>Spark生成一个空的DataFrame</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 在1中可以直接用null,2中就不可以了</span><br><span class="line">var df:DataFrame = null</span><br><span class="line"></span><br><span class="line"># 生成一个无列的空DataFrame</span><br><span class="line">var df = spark.emptyDataFrame</span><br><span class="line"></span><br><span class="line"># 生成一个有列的空DataFrame</span><br><span class="line">val schema = StructType(</span><br><span class="line">  Seq(</span><br><span class="line">    StructField(&quot;lie1&quot;, StringType, true),</span><br><span class="line">    StructField(&quot;lie2&quot;, StringType, true),</span><br><span class="line">    StructField(&quot;lie3&quot;, StringType, true)))</span><br><span class="line">val df = spark.createDataFrame(sc.emptyRDD[Row], schema)</span><br></pre></td></tr></table></figure>
   </div>
   <footer class="article-footer">
     
