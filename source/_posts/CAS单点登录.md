@@ -23,13 +23,21 @@ keytool -import -keystore C:\Java\jdk1.8.0_191\jre\lib\security\cacerts -file D:
 keytool -delete -alias tomcat -keystore C:\Java\jdk1.8.0_191\jre\lib\security\cacerts
 keytool -list -v -keystore C:\Java\jdk1.8.0_191\jre\lib\security\cacerts
 ```
+
+### PKIX问题
+```
+# 如果CasClient与CasServer不在同一服务器上
+# 那么需要对将上述生成的tomcat.cer证书导入到JDK中
+# 尤其注意JDK的位置,用IDEA很可能JDK在C盘目录下
+```
+
 ### 配置tomcat
 ```
 # 修改tomcat_path/conf/server.xml,添加内容:
 <Connector port="8443" protocol="org.apache.coyote.http11.Http11NioProtocol"
     maxThreads="200" SSLEnabled="true" scheme="https"
     secure="true" clientAuth="false" sslProtocol="TLS"
-    keystoreFile="/Users/wangsaichao/Desktop/tomcat.keystore"
+    keystoreFile="D:\tomcat.keystore"
     keystorePass="changeit"/>
 ```
 
@@ -72,6 +80,58 @@ cas.logout.removeDescendantTickets=true
 ---
 
 ## Cas客户端
+### 注意
+```
+# 我的2个Cas客户端与Cas服务端分布在3台服务器上
+# 服务端使用https,客户端使用http
+192.168.3.108 service.cas.com
+192.168.3.109 app1.cas.com
+192.168.3.110 app2.cas.com
+
+# 配置application.yml时尤其注意cas.client-host-url
+cas:
+    # cas服务端前缀,不是登录地址
+    server-url-prefix: https://service.cas.com:8443
+    # cas的登录地址
+    server-login-url: https://service.cas.com:8443/login
+    # 当前客户端的地址<我们这里使用域名>
+    # a.配置为IP时,调用退出时只会退出域名访问
+    # b.配置为域名时,调用退出时只会退出IP访问
+    client-host-url: http://app1.cas.com:8081
+    # client-host-url: http://app2.cas.com:8082
+    # Ticket校验器
+    validation-type: CAS
+```
+### 代码<以Client1为例>
+```
+# Application类
+@SpringBootApplication
+@EnableCasClient
+public class Application {
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+
+# 登出接口,退出时需要注意,将子系统的也进行退出,如果想继续重定向
+@RequestMapping("/logout")
+public String logout(HttpSession session) {
+    session.invalidate();
+    // 调用当前系统的退出,会去调用其他子系统的logoutRedirect接口去注销(因为使用域名所以域名不会注销)
+    return "redirect:https://cas.com:8443/logout?service=http://app2.cas.com:8082/logoutRedirect";
+}
+
+@RequestMapping("/logoutRedirect")
+public String logoutRedirect(HttpSession session){
+    session.invalidate();
+    // 重定向去其他页面,如果客户端多的话,只能重定向到下一个客户端的注销页面了,形成一个重定向流
+    return "redirect:https://service.cas.com:8443";
+}
+
+# 如果有N个系统怎么办,让用户关闭网页么?
+```
+
+### 依赖
 ```
 # 新建Maven项目,添加依赖
 <?xml version="1.0" encoding="UTF-8"?>
@@ -205,20 +265,4 @@ cas.logout.removeDescendantTickets=true
         </plugins>
     </build>
 </project>
-
-# Application类
-@SpringBootApplication
-@EnableCasClient
-public class Application {
-    public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
-    }
-}
-
-# 登出接口
-@RequestMapping("/logout")
-public String logout(HttpSession session){
-    session.invalidate();
-    return "redirect:https://service.cas.com:8443/logout?service=http://app1.cas.com:8081";
-}
 ```
