@@ -8,22 +8,22 @@
 
 <title>
   
-    常用的脚本整合
+    HBase的基本命令
   
 </title>
 
-<meta name="description" content="有一部分命令在&amp;lt;运维-系统常用的命令&amp;gt;">
-<meta name="keywords" content="shell">
+<meta name="description" content="记录Hbase常用的命令以及对性能帮助大的命令.">
+<meta name="keywords" content="hbase">
 <meta property="og:type" content="article">
-<meta property="og:title" content="常用的脚本整合">
-<meta property="og:url" content="http://yoursite.com/2017/08/20/常用的脚本整合/index.html">
+<meta property="og:title" content="HBase的基本命令">
+<meta property="og:url" content="http://yoursite.com/2019/10/24/HBase的基本命令/index.html">
 <meta property="og:site_name" content="BlackC">
-<meta property="og:description" content="有一部分命令在&amp;lt;运维-系统常用的命令&amp;gt;">
+<meta property="og:description" content="记录Hbase常用的命令以及对性能帮助大的命令.">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-09-05T00:32:57.463Z">
+<meta property="og:updated_time" content="2019-10-24T08:04:49.108Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="常用的脚本整合">
-<meta name="twitter:description" content="有一部分命令在&amp;lt;运维-系统常用的命令&amp;gt;">
+<meta name="twitter:title" content="HBase的基本命令">
+<meta name="twitter:description" content="记录Hbase常用的命令以及对性能帮助大的命令.">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -153,43 +153,38 @@
       
         <div style="max-width: 1000px">
       
-          <article id="post-常用的脚本整合" class="article article-type-post">
+          <article id="post-HBase的基本命令" class="article article-type-post">
   
     <h1 class="article-header">
-      常用的脚本整合
+      HBase的基本命令
     </h1>
   
   
 
   <div class="article-info">
     <span class="article-date">
-  2017-08-20
+  2019-10-24
 </span>
 
     
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
 	</span>
 
 
     
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
 	</span>
 
 
   </div>
   <div class="article-entry">
     <blockquote>
-<p>有一部分命令在&lt;<strong>运维-系统常用的命令</strong>&gt;</p>
+<p>记录Hbase常用的命令以及对性能帮助大的命令.</p>
 </blockquote>
 <a id="more"></a>
-<h2 id="删除日志文件脚本"><a href="#删除日志文件脚本" class="headerlink" title="删除日志文件脚本"></a>删除日志文件脚本</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用find</span></span><br><span class="line">find /root/<span class="built_in">test</span>/ -<span class="built_in">type</span> f -newermt <span class="string">"Aug 19"</span> -delete <span class="comment"># 删除8月19日的文件</span></span><br><span class="line">find /root/ -<span class="built_in">type</span> f -mtime +1 -delete <span class="comment"># 删除一天前的文件</span></span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="增删后缀"><a href="#增删后缀" class="headerlink" title="增删后缀"></a>增删后缀</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 增加后缀</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> *</span><br><span class="line">   <span class="keyword">do</span> mv <span class="variable">$i</span> <span class="variable">$i</span><span class="string">".bak"</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除后缀</span></span><br><span class="line">rename <span class="string">'s/\.xml$//'</span> *.xml</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="crontab定时脚本"><a href="#crontab定时脚本" class="headerlink" title="crontab定时脚本"></a>crontab定时脚本</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">crontab -l <span class="comment"># 列出定时任务</span></span><br><span class="line">crontab -e <span class="comment"># 编辑定时任务</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定时任务格式</span></span><br><span class="line">* * * * * sh /root/os.sh &gt; /root/os.log</span><br><span class="line">第一个*为分(0-59)</span><br><span class="line">第二个*为时(0-23)</span><br><span class="line">第三个*为日(1-31)</span><br><span class="line">第四个*为月(1-12)</span><br><span class="line">第五个*为周(1-7)或(0-6),周日=0或7</span><br><span class="line"></span><br><span class="line">n-m表示到n到m之间</span><br><span class="line">*/n表示每n段时间</span><br><span class="line">n,m表示第n和第m</span><br><span class="line"></span><br><span class="line">&gt; /dev/null 2&gt;&amp;1</span><br><span class="line">&gt;代表重定向</span><br><span class="line">/dev/null代表空设备文件</span><br><span class="line">2&gt;&amp;1表示标准错误输出重定向等同于标准输出</span><br></pre></td></tr></table></figure>
-
+<h2 id="major-compact"><a href="#major-compact" class="headerlink" title="major_compact"></a>major_compact</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 合并文件,清除删除,过期,多余版本的数据,提高读写数据的效率</span><br><span class="line"># HBase中实现了两种Compaction的方式</span><br><span class="line">Minor: 操作只用来做部分文件的合并操作以及包括minVersion=0并且设置ttl的过期版本清理，不做任何删除数据、多版本数据的清理工作。</span><br><span class="line">Major: 操作是对Region下的HStore下的所有StoreFile执行合并操作，最终的结果是整理合并出一个文件。</span><br><span class="line"></span><br><span class="line"># 使用的时机&lt;major_compact是很重的后台操作&gt;</span><br><span class="line">业务低峰时段执行</span><br><span class="line">优先考虑含有TTL的表</span><br><span class="line">storefile短期内增加比较多</span><br><span class="line">表中storefile平均大小比较小</span><br></pre></td></tr></table></figure>
   </div>
   <footer class="article-footer">
     

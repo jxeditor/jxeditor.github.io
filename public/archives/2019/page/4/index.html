@@ -8,22 +8,17 @@
 
 <title>
   
-    常用的脚本整合
+    归档: 2019
   
 </title>
 
-<meta name="description" content="有一部分命令在&amp;lt;运维-系统常用的命令&amp;gt;">
-<meta name="keywords" content="shell">
-<meta property="og:type" content="article">
-<meta property="og:title" content="常用的脚本整合">
-<meta property="og:url" content="http://yoursite.com/2017/08/20/常用的脚本整合/index.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="BlackC">
+<meta property="og:url" content="http://yoursite.com/archives/2019/page/4/index.html">
 <meta property="og:site_name" content="BlackC">
-<meta property="og:description" content="有一部分命令在&amp;lt;运维-系统常用的命令&amp;gt;">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-09-05T00:32:57.463Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="常用的脚本整合">
-<meta name="twitter:description" content="有一部分命令在&amp;lt;运维-系统常用的命令&amp;gt;">
+<meta name="twitter:title" content="BlackC">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -153,68 +148,69 @@
       
         <div style="max-width: 1000px">
       
-          <article id="post-常用的脚本整合" class="article article-type-post">
+          
+
   
-    <h1 class="article-header">
-      常用的脚本整合
-    </h1>
   
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <h1><a href="/archives/2019" class="archive-year">2019</a></h1>
+        </div>
+        <div class="post-list">
+    
   
 
-  <div class="article-info">
-    <span class="article-date">
-  2017-08-20
+    <div class="post-list-item article">
+      <h3 class="article-header">
+        <a href="/2019/02/21/ELK安装搭建/">
+  ELK安装搭建以及常见问题
+</a>
+
+      </h3>
+      
+
+      <div class="article-info">
+        <a href="/2019/02/21/ELK安装搭建/"><span class="article-date">
+  2019-02-21
 </span>
-
-    
-	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a></li></ul>
-	</span>
-
-
-    
-	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li></ul>
-	</span>
-
-
-  </div>
-  <div class="article-entry">
-    <blockquote>
-<p>有一部分命令在&lt;<strong>运维-系统常用的命令</strong>&gt;</p>
-</blockquote>
-<a id="more"></a>
-<h2 id="删除日志文件脚本"><a href="#删除日志文件脚本" class="headerlink" title="删除日志文件脚本"></a>删除日志文件脚本</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用find</span></span><br><span class="line">find /root/<span class="built_in">test</span>/ -<span class="built_in">type</span> f -newermt <span class="string">"Aug 19"</span> -delete <span class="comment"># 删除8月19日的文件</span></span><br><span class="line">find /root/ -<span class="built_in">type</span> f -mtime +1 -delete <span class="comment"># 删除一天前的文件</span></span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="增删后缀"><a href="#增删后缀" class="headerlink" title="增删后缀"></a>增删后缀</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 增加后缀</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> *</span><br><span class="line">   <span class="keyword">do</span> mv <span class="variable">$i</span> <span class="variable">$i</span><span class="string">".bak"</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除后缀</span></span><br><span class="line">rename <span class="string">'s/\.xml$//'</span> *.xml</span><br></pre></td></tr></table></figure>
-<hr>
-<h2 id="crontab定时脚本"><a href="#crontab定时脚本" class="headerlink" title="crontab定时脚本"></a>crontab定时脚本</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">crontab -l <span class="comment"># 列出定时任务</span></span><br><span class="line">crontab -e <span class="comment"># 编辑定时任务</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定时任务格式</span></span><br><span class="line">* * * * * sh /root/os.sh &gt; /root/os.log</span><br><span class="line">第一个*为分(0-59)</span><br><span class="line">第二个*为时(0-23)</span><br><span class="line">第三个*为日(1-31)</span><br><span class="line">第四个*为月(1-12)</span><br><span class="line">第五个*为周(1-7)或(0-6),周日=0或7</span><br><span class="line"></span><br><span class="line">n-m表示到n到m之间</span><br><span class="line">*/n表示每n段时间</span><br><span class="line">n,m表示第n和第m</span><br><span class="line"></span><br><span class="line">&gt; /dev/null 2&gt;&amp;1</span><br><span class="line">&gt;代表重定向</span><br><span class="line">/dev/null代表空设备文件</span><br><span class="line">2&gt;&amp;1表示标准错误输出重定向等同于标准输出</span><br></pre></td></tr></table></figure>
-
-  </div>
-  <footer class="article-footer">
-    
-  <div class="cc">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
-      <img src="/images/cc/cc.png">
-      
-          <img src="/images/cc/by.png">
+</a>
         
-          <img src="/images/cc/sa.png">
-      
-      <span>
-        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
-      </span>
-    </a>
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/">搭建</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/大数据/">大数据</a><ul class="article-category-list-child"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/大数据/运维/">运维</a></li></ul></li></ul></li></ul>
+	</span>
+
+
+        
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/elk/">elk</a></li></ul>
+	</span>
+
+
+      </div>
+      <div class="article-entry">
+        
+          <blockquote>
+<p>对于ELK一系列环境搭建</p>
+</blockquote>
+          <p>
+            <a href="/2019/02/21/ELK安装搭建/">
+              阅读全文
+            </a>
+          </p>
+        
+      </div>
+    </div>
+
+  
+
+
+
+  <div class="pagination">
+    <a class="extend prev" rel="prev" href="/archives/2019/page/3/">上一页</a><a class="page-number" href="/archives/2019/">1</a><a class="page-number" href="/archives/2019/page/2/">2</a><a class="page-number" href="/archives/2019/page/3/">3</a><span class="page-number current">4</span>
   </div>
-
-
-    
-
-  </footer>
-</article>
-
-
-
 
 
 
@@ -228,7 +224,7 @@
       
         </div>
       
-    </div>
+    </section></div>
   </div>
   <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 
@@ -304,5 +300,5 @@
 <script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
 <script src="/scripts/main.js"></script>
 
-</body>
+</div></body>
 </html>
