@@ -231,6 +231,22 @@ rank() over(distribute by class sort by score desc) rank,
 dense_rank() over(distribute by class sort by score desc) dense_rank,
 row_number() over(distribute by class sort by score desc) row_number
 from classinfo;
+
+# 一行变多行,将split之后转化的array替换成一个虚表
+# 关键词lateral view explode
+select id, test.context from demo lateral view explode(split(context, ',')) test as context;
+
+# 多行变一行,会去重,将分组之后的context放入集合中,并以','进行分割
+# 如果不使用concat_ws,结果就是集合
+select id,concat_ws(',',collect_set(context)) from demo group by id;
+
+# 多行多列变一行,先进行字符串拼接,在存入集合中
+select a.id,concat_ws('|',collect_set(a.info))
+from (
+	select id,concat_ws(',',context,dt) as info
+	from demo
+) a
+group by a.id;
 ```
 
 ---

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    HBase的工作原理
+  
+</title>
+
+<meta name="description" content="Hbase工作原理介绍">
+<meta name="keywords" content="hbase">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HBase的工作原理">
+<meta property="og:url" content="http://yoursite.com/2017/11/23/HBase的工作原理/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="Hbase工作原理介绍">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-25T01:34:35.359Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HBase的工作原理">
+<meta name="twitter:description" content="Hbase工作原理介绍">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">24</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">7</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">30</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">8</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">13</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">7</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-HBase的工作原理" class="article article-type-post">
+  
+    <h1 class="article-header">
+      HBase的工作原理
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2017-11-23
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>Hbase工作原理介绍</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># Client</span><br><span class="line">包含访问HBase的接口，Client维护着一些cache来加快对HBase的访问，比如Region的位置信息。</span><br><span class="line"></span><br><span class="line"># Zookeeper</span><br><span class="line">保证任何时候，集群中只有一个Master</span><br><span class="line">存贮所有Region的寻址入口，root表在哪台服务器上。</span><br><span class="line">实时监控Region Server的状态，将Region server的上线和下线信息实时通知给Master</span><br><span class="line">存储HBase的schema,包括有哪些table，每个table有哪些column family</span><br><span class="line"></span><br><span class="line"># Master</span><br><span class="line">为Region Server分配Region</span><br><span class="line">负责Region Server的负载均衡</span><br><span class="line">发现失效的Region Server并重新分配其上的Region</span><br><span class="line">HDFS上的垃圾文件回收</span><br><span class="line">处理schema更新请求</span><br><span class="line"></span><br><span class="line"># Region Server</span><br><span class="line">Region Server维护Master分配给它的Region，处理对这些Region的IO请求</span><br><span class="line">Region Server负责切分在运行过程中变得过大的Region</span><br><span class="line"></span><br><span class="line"># 注意</span><br><span class="line">可以看到，Client访问HBase上数据的过程并不需要Master参与（寻址访问Zookeeper和Region Server，数据读写访问Region Server），Master仅仅维护者table和region的元数据信息，负载很低。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="物理存储"><a href="#物理存储" class="headerlink" title="物理存储"></a>物理存储</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"># Table的存储方式</span><br><span class="line">Table中的所有行都按照row key的字典序排列。</span><br><span class="line">Table在行的方向上分割为多个Region。</span><br><span class="line">Region按大小分割的，每个表一开始只有一个Region，随着数据不断插入表，Region不断增大，当增大到一个阀值的时候，Region就会等分会两个新的Region。当Table中的行不断增多，就会有越来越多的Region。</span><br><span class="line">Region是Hbase中分布式存储和负载均衡的最小单元。最小单元就表示不同的Region可以分布在不同的Region Server上。但一个Region是不会拆分到多个Region Server上的。</span><br><span class="line">Region虽然是分布式存储的最小单元，但并不是物理存储的最小单元。</span><br><span class="line">事实上，Region由一个或者多个Store组成，每个Store保存一个column family。</span><br><span class="line">每个Strore又由一个MemStore和0至多个StoreFile组成。如上图</span><br><span class="line"></span><br><span class="line"># MemStore &amp; StoreFile</span><br><span class="line">一个Region由多个Store组成，每个Store包含一个列族的所有数据</span><br><span class="line">Store包括位于内存的MemStore和位于硬盘的StoreFile</span><br><span class="line">写操作先写入MemStore,当MemStore中的数据量达到某个阈值，Region Server启动flashcache进程写入StoreFile,每次写入形成单独一个StoreFile</span><br><span class="line">当StoreFile大小超过一定阈值后，会把当前的Region分割成两个，并由Master分配给相应的Region Server，实现负载均衡</span><br><span class="line">客户端检索数据时，先在MemStore找，找不到再找StoreFile</span><br><span class="line">StoreFile以HFile格式保存在HDFS上。</span><br><span class="line"></span><br><span class="line"># HFile</span><br><span class="line">Data Block段: 保存表中的数据，这部分可以被压缩</span><br><span class="line">Meta Block段(可选的): 保存用户自定义的kv对，可以被压缩。</span><br><span class="line">File Info段: Hfile的元信息，不被压缩，用户也可以在这一部分添加自己的元信息。</span><br><span class="line">Data Block Index段: Data Block的索引。每条索引的key是被索引的block的第一条记录的key。</span><br><span class="line">Meta Block Index段(可选的): Meta Block的索引。</span><br><span class="line">Trailer: </span><br><span class="line">    这一段是定长的。保存了每一段的偏移量，读取一个HFile时，会首先 读取Trailer，Trailer保存了每个段的起始位置(段的Magic Number用来做安全check).</span><br><span class="line">    然后，DataBlock Index会被读取到内存中，这样，当检索某个key时，不需要扫描整个HFile，而只需从内存中找到key所在的block，通过一次磁盘io将整个 block读取到内存中，再找到需要的key。</span><br><span class="line">    DataBlock Index采用LRU机制淘汰。</span><br><span class="line">HFile的Data Block，Meta Block通常采用压缩方式存储，压缩之后可以大大减少网络IO和磁盘IO，随之而来的开销当然是需要花费cpu进行压缩和解压缩。</span><br><span class="line">目标HFile的压缩支持两种方式：Gzip，Lzo。</span><br><span class="line"></span><br><span class="line"># HLog(WAL Log)</span><br><span class="line">HLog记录数据的所有变更,一旦数据修改，就可以从log中进行恢复</span><br><span class="line">每个Region Server维护一个HLog,而不是每个Region一个。这样不同Region(来自不同table)的日志会混在一起.</span><br><span class="line">这样做的目的是不断追加单个文件相对于同时写多个文件而言，可以减少磁盘寻址次数，因此可以提高对table的写性能。</span><br><span class="line">带来的麻烦是，如果一台Region Server下线，为了恢复其上的Region，需要将Region Server上的log进行拆分，然后分发到其它Region Server上进行恢复。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="寻址机制"><a href="#寻址机制" class="headerlink" title="寻址机制"></a>寻址机制</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># 两个关键表</span><br><span class="line">ROOT表 &amp; META表</span><br><span class="line"></span><br><span class="line"># 假设我们要从Table里面插寻一条RowKey是RK10000的数据</span><br><span class="line">a.从META表里面查询哪个Region包含这条数据</span><br><span class="line">b.获取管理这个Region的RegionServer地址</span><br><span class="line">c.连接这个RegionServer, 查到这条数据</span><br><span class="line"></span><br><span class="line"># 系统如何找到某个RK</span><br><span class="line">a.第一层是保存Zookeeper里面的文件，它持有ROOT Region的位置</span><br><span class="line">b.ROOT Region是META表的第一个Region,其中保存了META表其它Region的位置,通过ROOT Region，我们就可以访问META表的数据</span><br><span class="line">c.META是第三层，它是一个特殊的表，保存了HBase中所有数据表的Region位置信息</span><br><span class="line"></span><br><span class="line"># 注意</span><br><span class="line">ROOT Region永远不会被split，保证了最需要三次跳转，就能定位到任意Region</span><br><span class="line">META表每行保存一个Region的位置信息，RK采用表名加表的最后一行编码而成。</span><br><span class="line">为了加快访问，META表的全部Region都保存在内存中。</span><br><span class="line">Client会将查询过的位置信息保存缓存起来，缓存不会主动失效，因此如果Client上的缓存全部失效，则需要进行最多6次网络来回，才能定位到正确的Region(其中三次用来发现缓存失效，另外三次用来获取位置信息)。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="读写过程"><a href="#读写过程" class="headerlink" title="读写过程"></a>读写过程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># 读请求过程</span><br><span class="line">客户端通过Zookeeper以及ROOT表和META表找到目标数据所在的Region Server</span><br><span class="line">联系Region Server查询目标数据</span><br><span class="line">Region Server定位到目标数据所在的Region，发出查询请求</span><br><span class="line">Region先在MemStore中查找，命中则返回</span><br><span class="line">如果在MemStore中找不到，则在StoreFile中扫描（可能会扫描到很多的StoreFile--bloomfilter）</span><br><span class="line"></span><br><span class="line"># 写请求过程</span><br><span class="line">Client向Region Server提交写请求</span><br><span class="line">Region Server找到目标Region</span><br><span class="line">Region检查数据是否与schema一致</span><br><span class="line">如果客户端没有指定版本，则获取当前系统时间作为数据版本</span><br><span class="line">将更新写入WAL log</span><br><span class="line">将更新写入MemStore</span><br><span class="line">判断MemStore的是否需要flush为StoreFile</span><br><span class="line"></span><br><span class="line"># 注意</span><br><span class="line">数据在更新时首先写入HLog(WAL log)和内存(MemStore)中，MemStore中的数据是排序的，当MemStore累计到一定阈值时，就会创建一个新的MemStore，并 且将老的MemStore添加到flush队列，由单独的线程flush到磁盘上，成为一个StoreFile。</span><br><span class="line">于此同时，系统会在Zookeeper中记录一个redo point，表示这个时刻之前的变更已经持久化了。</span><br><span class="line">当系统出现意外时，可能导致内存(MemStore)中的数据丢失，此时使用Log(WAL log)来恢复checkpoint之后的数据。</span><br><span class="line">StoreFile是只读的，一旦创建后就不可以再修改。因此Hbase的更新其实是不断追加的操作。</span><br><span class="line">当一个Store中的StoreFile达到一定的阈值后，就会进行一次合并(minor_compact, major_compact),将对同一个key的修改合并到一起，形成一个大的StoreFile，当StoreFile的大小达到一定阈值后，又会对 StoreFile进行split，等分为两个StoreFile。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Region管理"><a href="#Region管理" class="headerlink" title="Region管理"></a>Region管理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># Region分配</span><br><span class="line">任何时刻，一个Region只能分配给一个Region Server。Master记录了当前有哪些可用的Region Server。以及当前哪些Region分配给了哪些Region Server，哪些Region还没有分配。</span><br><span class="line">当需要分配的新的Region，并且有一个Region Server上有可用空间时，Master就给这个Region Server发送一个装载请求，把Region分配给这个Region Server。Region Server得到请求后，就开始对此Region提供服务。</span><br><span class="line"></span><br><span class="line"># Region Server上线</span><br><span class="line">Master使用Zookeeper来跟踪Region Server状态。当某个Region Server启动时，会首先在Zookeeper上的server目录下建立代表自己的znode，并获得该znode的独占锁。</span><br><span class="line">由于Master订阅了server目录上的变更消息，当server目录下的文件出现新增或删除操作时，Master可以得到来自Zookeeper的实时通知。因此一旦Region Server上线，Master能马上得到消息。</span><br><span class="line"></span><br><span class="line"># Region Server下线</span><br><span class="line">当Region Server下线时，它和Zookeeper的会话断开，Zookeeper而自动释放代表这台server的文件上的独占锁。而Master不断轮询server目录下文件的锁状态。</span><br><span class="line">如果Master发现某个Region Server丢失了它自己的独占锁，(或者Master连续几次和Region Server通信都无法成功),Master就是尝试去获取代表这个Region Server的读写锁，一旦获取成功，就可以确定：</span><br><span class="line">    Region Server和Zookeeper之间的网络断开了。</span><br><span class="line">    Region Server挂了。</span><br><span class="line">无论哪种情况，Region Server都无法继续为它的Region提供服务了，此时Master会删除server目录下代表这台Region Server的znode数据，并将这台Region Server的Region分配给其它还活着的同志。</span><br><span class="line">如果网络短暂出现问题导致Region Server丢失了它的锁，那么Region Server重新连接到zookeeper之后，只要代表它的文件还在，它就会不断尝试获取这个文件上的锁，一旦获取到了，就可以继续提供服务。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="Master工作机制"><a href="#Master工作机制" class="headerlink" title="Master工作机制"></a>Master工作机制</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># Master上线</span><br><span class="line">Master启动进行以下步骤:</span><br><span class="line">    从Zookeeper上获取唯一一个代表Active Master的锁，用来阻止其它Master成为Master。</span><br><span class="line">    扫描Zookeeper上的server父节点，获得当前可用的Region Server列表。</span><br><span class="line">    和每个Region Server通信，获得当前已分配的Region和Region Server的对应关系。</span><br><span class="line">    扫描META Region的集合，计算得到当前还未分配的Region，将他们放入待分配Region列表。</span><br><span class="line"> </span><br><span class="line"># Master下线</span><br><span class="line">由于Master只维护表和Region的元数据，而不参与表数据IO的过程，Master下线仅导致所有元数据的修改被冻结(无法创建删除表，无法修改表的schema，无法进行Region的负载均衡，无法处理Region 上下线，无法进行Region的合并，唯一例外的是Region的split可以正常进行，因为只有Region Server参与)，表的数据读写还可以正常进行。</span><br><span class="line">因此Master下线短时间内对整个NBase集群没有影响。从上线过程可以看到，Master保存的信息全是可以冗余信息（都可以从系统其它地方收集到或者计算出来），因此，一般HBase集群中总是有一个Master在提供服务，还有一个以上 的Master在等待时机抢占它的位置。</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2019 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>
