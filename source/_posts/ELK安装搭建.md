@@ -59,3 +59,33 @@ kibana-6.6.1/bin/kibana
 nohup kibana-6.6.1/bin/kibana &
 http://hadoop02:5601
 ```
+### Logstash
+```
+tar -zxvf logstash-2.3.1.tar.gz
+# 设置采集配置
+# 命令行形式
+bin/logstash -e 'input { stdin {} } output { stdout{} }'
+bin/logstash -e 'input { stdin {} } output { stdout{codec => rubydebug} }'
+bin/logstash -e 'input { stdin {} } output { elasticsearch {hosts => ["172.16.0.14:9200"]} stdout{} }'
+bin/logstash -e 'input { stdin {} } output { elasticsearch {hosts => ["172.16.0.15:9200", "172.16.0.16:9200"]} stdout{} }'
+
+bin/logstash -e 'input { stdin {} } output { kafka { topic_id => "test_topic" bootstrap_servers => "172.16.0.11:9092,172.16.0.12:9092,172.16.0.13:9092"} stdout{codec => rubydebug} }'
+
+# 配置文件形式
+vi logstash.conf
+input {
+	file {
+		type => "gamelog"
+		path => "/log/*/*.log"
+		discover_interval => 10
+		start_position => "beginning" 
+	}
+}
+output {
+    elasticsearch {
+		index => "gamelog-%{+YYYY.MM.dd}"
+        hosts => ["172.16.0.14:9200", "172.16.0.15:9200", "172.16.0.16:9200"]
+    }
+}
+bin/logstash -f logstash.conf
+```
