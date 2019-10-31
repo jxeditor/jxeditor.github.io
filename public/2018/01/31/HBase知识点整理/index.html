@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    HBase知识点整理
+  
+</title>
+
+<meta name="description" content="整理一下HBase经常会问到的知识性的问题">
+<meta name="keywords" content="hbase">
+<meta property="og:type" content="article">
+<meta property="og:title" content="HBase知识点整理">
+<meta property="og:url" content="http://yoursite.com/2018/01/31/HBase知识点整理/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="整理一下HBase经常会问到的知识性的问题">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-31T01:50:54.689Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="HBase知识点整理">
+<meta name="twitter:description" content="整理一下HBase经常会问到的知识性的问题">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">28</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">15</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">7</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">30</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">9</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">7</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-HBase知识点整理" class="article article-type-post">
+  
+    <h1 class="article-header">
+      HBase知识点整理
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2018-01-31
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>整理一下HBase经常会问到的知识性的问题</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="HBase的特点是什么"><a href="#HBase的特点是什么" class="headerlink" title="HBase的特点是什么?"></a>HBase的特点是什么?</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">HBase一个分布式的基于列式存储的数据库，基于Hadoop的 hdfs存储，zookeeper进行管理。</span><br><span class="line"></span><br><span class="line">HBase适合存储半结构化或非结构化数据，对于数据结构字段不够确定或者杂乱无章很难按一个概念去抽取的数据。</span><br><span class="line"></span><br><span class="line">HBase中值为null的记录不会被存储。</span><br><span class="line"></span><br><span class="line">基于的表包含rowkey，时间戳，和列族。新写入数据时，时间戳更新，同时可以查询到以前的版本。</span><br><span class="line"></span><br><span class="line">HBase是主从架构。HMaster作为主节点，HRegionServer 作为从节点。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="HBase如何导入-导出数据"><a href="#HBase如何导入-导出数据" class="headerlink" title="HBase如何导入,导出数据?"></a>HBase如何导入,导出数据?</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">使用MapReduce Job方式，根据HbaseAPI编写java脚本，将文本文件用文件流的方式截取，然后存储到多个字符串数组中.</span><br><span class="line">在put方法下，通过对表中的列族进行for循环遍历列名，用if判断列名后进行for循环.</span><br><span class="line">调用put.add的方法对列族下每一个列进行设值，每个列族下有几个了就赋值几次！没有表先对先创建表。</span><br><span class="line"></span><br><span class="line"># 导入数据</span><br><span class="line">hbase org.apache.hadoop.hbase.mapreduce.Driver import tablename hdfspath</span><br><span class="line">hbase org.apache.hadoop.hbase.mapreduce.Import tablename hdfspath</span><br><span class="line"></span><br><span class="line"># 导出数据</span><br><span class="line">hbase org.apache.hadoop.hbase.mapreduce.Driver export tablename hdfspath</span><br><span class="line">hbase org.apache.hadoop.hbase.mapreduce.Export tablename hdfspath</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="HBase的存储结构"><a href="#HBase的存储结构" class="headerlink" title="HBase的存储结构?"></a>HBase的存储结构?</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">HBase中的每张表都通过行键(rowkey)按照一定的范围被分割成多个子表（HRegion）.</span><br><span class="line"></span><br><span class="line">默认一个HRegion超过256M就要被分割成两个，由HRegionServer管理，管理哪些HRegion由Hmaster分配。</span><br><span class="line"></span><br><span class="line">HRegion存取一个子表时，会创建一个HRegion对象，然后对表的每个列族（Column Family）创建一个store实例.</span><br><span class="line"></span><br><span class="line">每个store都会有0个或多个StoreFile与之对应，每个StoreFile都会对应一个HFile.</span><br><span class="line"></span><br><span class="line">HFile就是实际的存储文件，因此，一个HRegion还拥有一个MemStore实例。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="HBase和Hive有什么区别？Hive与HBase的底层存储是什么？Hive是产生的原因是什么？HBase是为了弥补Hadoop的什么缺陷"><a href="#HBase和Hive有什么区别？Hive与HBase的底层存储是什么？Hive是产生的原因是什么？HBase是为了弥补Hadoop的什么缺陷" class="headerlink" title="HBase和Hive有什么区别？Hive与HBase的底层存储是什么？Hive是产生的原因是什么？HBase是为了弥补Hadoop的什么缺陷?"></a>HBase和Hive有什么区别？Hive与HBase的底层存储是什么？Hive是产生的原因是什么？HBase是为了弥补Hadoop的什么缺陷?</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">a.共同点</span><br><span class="line">hbase与hive都是架构在hadoop之上的。都是用hadoop作为底层存储.</span><br><span class="line"></span><br><span class="line">b.区别</span><br><span class="line">Hive是建立在Hadoop之上为了减少MapReducejobs编写工作的批处理系统</span><br><span class="line">HBase是为了支持弥补Hadoop对实时操作的缺陷的项目</span><br><span class="line"></span><br><span class="line">想象你在操作RMDB数据库，如果是全表扫描，就用Hive+Hadoop，如果是索引访问，就用HBase+Hadoop。</span><br><span class="line"></span><br><span class="line">Hive query就是MapReduce jobs可以从5分钟到数小时不止，HBase是非常高效的，肯定比Hive高效的多。</span><br><span class="line"></span><br><span class="line">Hive本身不存储和计算数据，它完全依赖于HDFS和 MapReduce，Hive中的表纯逻辑。</span><br><span class="line"></span><br><span class="line">Hive借用Hadoop的MapReduce来完成一些Hive中的命令的执行.</span><br><span class="line"></span><br><span class="line">HBase是物理表，不是逻辑表，提供一个超大的内存hash表，搜索引擎通过它来存储索引，方便查询操作。</span><br><span class="line"></span><br><span class="line">HBase是列存储。</span><br><span class="line"></span><br><span class="line">HDFS作为底层存储，HDFS是存放文件的系统，而HBase负责组织文件。</span><br><span class="line"></span><br><span class="line">Hive需要用到HDFS存储文件，需要用到MapReduce计算框架。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="解释下HBase实时查询的原理"><a href="#解释下HBase实时查询的原理" class="headerlink" title="解释下HBase实时查询的原理?"></a>解释下HBase实时查询的原理?</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">实时查询，可以认为是从内存中查询，一般响应时间在1秒内。</span><br><span class="line"></span><br><span class="line">HBase的机制是数据先写入到内存中，当数据量达到一定的量（如 128M），再写入磁盘中.</span><br><span class="line"></span><br><span class="line">在内存中，是不进行数据的更新或合并操作的，只增加数据.</span><br><span class="line"></span><br><span class="line">这使得用户的写操作只要进入内存中就可以立即返回，保证了HBase I/O的高性能。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="列簇怎么创建比较好"><a href="#列簇怎么创建比较好" class="headerlink" title="列簇怎么创建比较好?"></a>列簇怎么创建比较好?</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rowKey最好要创建有规则的rowKey，即最好是有序的。</span><br><span class="line"></span><br><span class="line">HBase中一张表最好只创建一到两个列族比较好，因为HBase不能很好的处理多个列族。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="描述HBase的rowKey的设计原则"><a href="#描述HBase的rowKey的设计原则" class="headerlink" title="描述HBase的rowKey的设计原则"></a>描述HBase的rowKey的设计原则</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">a.rowkey长度原则</span><br><span class="line">rowkey是一个二进制码流，可以是任意字符串，最大长度64kb.</span><br><span class="line">实际应用中一般为10-100bytes，以 byte[]形式保存，一般设计成定长。</span><br><span class="line">建议越短越好，不要超过16个字节， 原因如下：</span><br><span class="line">    数据的持久化文件HFile中是按照KeyValue存储的，如果rowkey过长会极大影响HFile的存储效率.</span><br><span class="line">    MemStore将缓存部分数据到内存，如果rowkey字段过长，内存的有效利用率就会降低.</span><br><span class="line">    系统不能缓存更多的数据，这样会降低检索效率.</span><br><span class="line"></span><br><span class="line">b.rowkey散列原则</span><br><span class="line">如果rowkey按照时间戳的方式递增，不要将时间放在二进制码的前面.</span><br><span class="line">建议将rowkey的高位作为散列字段，由程序随机生成，低位放时间字段.</span><br><span class="line">这样将提高数据均衡分布在每个RegionServer，以实现负载均衡的几率。</span><br><span class="line">如果没有散列字段，首字段直接是时间信息，所有的数据都会集中在一个RegionServer上.</span><br><span class="line">这样在数据检索的时候负载会集中在个别的RegionServer 上，造成热点问题，会降低查询效率。</span><br><span class="line"></span><br><span class="line">c.rowkey唯一原则</span><br><span class="line">必须在设计上保证其唯一性，rowkey是按照字典顺序排序存储的.</span><br><span class="line">因此，设计rowkey的时候，要充分利用这个排序的特点.</span><br><span class="line">将经常读取的数据存储到一块，将最近可能会被访问的数据放到一块。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="描述-Hbase-中-scan-和-get-的功能以及实现的异同"><a href="#描述-Hbase-中-scan-和-get-的功能以及实现的异同" class="headerlink" title="描述 Hbase 中 scan 和 get 的功能以及实现的异同"></a>描述 Hbase 中 scan 和 get 的功能以及实现的异同</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">a.按指定RowKey获取唯一一条记录，get方法( org.apache.hadoop.hbase.client.Get)</span><br><span class="line">Get的方法处理分两种:</span><br><span class="line">    设置了ClosestRowBefore和没有设置的rowlock主要是用来保证行的事务性，即每个get是以一个row来标记的.</span><br><span class="line">    一个row中可以有很多family和column。</span><br><span class="line"></span><br><span class="line">b.按指定的条件获取一批记录，scan方法(org.apache.Hadoop.hbase.client.Scan)</span><br><span class="line">实现条件查询功能使用的就是scan方式:</span><br><span class="line">    scan可以通过setCaching与setBatch方法提高速度(以空间换时间);</span><br><span class="line">    scan可以通过setStartRow与setEndRow来限定范围([start，end]start? 是闭区间，end 是开区间)。范围越小，性能越高;</span><br><span class="line">    scan可以通过setFilter方法添加过滤器，这也是分页、多条件查询的基础。 </span><br><span class="line">    </span><br><span class="line">c.全表扫描，即直接扫描整张表中所有行记录。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="请详细描述HBase中一个Cell的结构"><a href="#请详细描述HBase中一个Cell的结构" class="headerlink" title="请详细描述HBase中一个Cell的结构"></a>请详细描述HBase中一个Cell的结构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">HBase中通过row和columns确定的为一个存贮单元称为cell。</span><br><span class="line">Cell：由&#123;row key，column(=&lt;family&gt; + &lt;label&gt;)，version&#125;是唯一确定的单元.</span><br><span class="line">Cell中的数据是没有类型的，全部是字节码形式存贮。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="简述HBase中compact用途是什么，什么时候触发，分为哪两种，有什么区别，有哪些相关配置参数"><a href="#简述HBase中compact用途是什么，什么时候触发，分为哪两种，有什么区别，有哪些相关配置参数" class="headerlink" title="简述HBase中compact用途是什么，什么时候触发，分为哪两种，有什么区别，有哪些相关配置参数?"></a>简述HBase中compact用途是什么，什么时候触发，分为哪两种，有什么区别，有哪些相关配置参数?</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">a.compact的用途</span><br><span class="line">在HBase中每当有memstore数据flush到磁盘之后，就形成一个storeFile.</span><br><span class="line">当storeFile的数量达到一定程度后，就需要将storeFile文件来进行compaction操作。</span><br><span class="line">Compact的作用：</span><br><span class="line">    合并文件</span><br><span class="line">    清除过期，多余版本的数据</span><br><span class="line">    提高读写数据的效率</span><br><span class="line"></span><br><span class="line">b.种类与区别</span><br><span class="line">种类:</span><br><span class="line">    minor</span><br><span class="line">    major</span><br><span class="line">区别:</span><br><span class="line">    Minor操作只用来做部分文件的合并操作以及包括minVersion=0并且设置ttl的过期版本清理，不做任何删除数据、多版本数据的清理工作。</span><br><span class="line">    Major操作是对Region下的HStore下的所有StoreFile执行合并操作，最终的结果是整理合并出一个文件。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="简述HBase-Filter的实现原理是什么？结合实际项目经验，写出几个使用Filter的场景。"><a href="#简述HBase-Filter的实现原理是什么？结合实际项目经验，写出几个使用Filter的场景。" class="headerlink" title="简述HBase Filter的实现原理是什么？结合实际项目经验，写出几个使用Filter的场景。"></a>简述HBase Filter的实现原理是什么？结合实际项目经验，写出几个使用Filter的场景。</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">HBase为筛选数据提供了一组过滤器，通过这个过滤器可以在 HBase中的数据的多个维度（行，列，数据版本）上进行对数据的筛选操作，也就是说过滤器最终能够筛选的数据能够细化到具体的一个存储单元格上（由行键，列名，时间戳定位）。</span><br><span class="line">RowFilter、PrefixFilter。HBase的filter是通过scan设置的，所以是基于scan的查询结果进行过滤。</span><br><span class="line">过滤器的类型很多，但是可以分为两大类&lt;比较过滤器，专用过滤器&gt;。</span><br><span class="line">过滤器的作用是在服务端判断数据是否满足条件，然后只将满足条件的数据返回给客户端。</span><br><span class="line">如在进行订单开发的时候，我们使用rowkeyfilter过滤出某个用户的所有订单。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="HBase内部是什么机制？"><a href="#HBase内部是什么机制？" class="headerlink" title="HBase内部是什么机制？"></a>HBase内部是什么机制？</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">在HBase中无论是增加新行还是修改已有的行，其内部流程都是相同的。</span><br><span class="line">HBase接到命令后存下变化信息，或者写入失败抛出异常。默认情况下，执行写入时会写到两个地方：预写式日志（write-ahead log，也称HLog）和MemStore。</span><br><span class="line">HBase的默认方式是把写入动作记录在这两个地方，以保证数据持久化。</span><br><span class="line">只有当这两个地方的变化信息都写入并确认后，才认为写动作完成。</span><br><span class="line"></span><br><span class="line">MemStore是内存里的写入缓冲区，HBase中数据在永久写入硬盘之前在这里累积。</span><br><span class="line">当MemStore填满后，其中的数据会刷写到硬盘，生成一个HFile。HFile是HBase使用的底层存储格式。</span><br><span class="line">HFile对应于列族，一个列族可以有多个HFile，但一个HFile不能存储多个列族的数据。</span><br><span class="line">在集群的每个节点上，每个列族有一个MemStore。</span><br><span class="line">大型分布式系统中硬件故障很常见，HBase也不例外。</span><br><span class="line"></span><br><span class="line">设想一下，如果MemStore还没有刷写，服务器就崩溃了，内存中没有写入硬盘的数据就会丢失。</span><br><span class="line">HBase的应对办法是在写动作完成之前先写入WAL。</span><br><span class="line">HBase集群中每台服务器维护一个WAL来记录发生的变化。</span><br><span class="line">WAL是底层文件系统上的一个文件。</span><br><span class="line">直到WAL新记录成功写入后，写动作才被认为成功完成。</span><br><span class="line">这可以保证HBase和支撑它的文件系统满足持久性。</span><br><span class="line"></span><br><span class="line">大多数情况下，HBase使用Hadoop分布式文件系统（HDFS）来作为底层文件系统。</span><br><span class="line">如果HBase服务器宕机，没有从MemStore里刷写到HFile的数据将可以通过回放WAL来恢复。</span><br><span class="line">你不需要手工执行。Hbase的内部机制中有恢复流程部分来处理。</span><br><span class="line">每台HBase服务器有一个WAL，这台服务器上的所有表（和它们的列族）共享这个WAL。</span><br><span class="line">你可能想到，写入时跳过WAL应该会提升写性能。但我们不建议禁用WAL，除非你愿意在出问题时丢失数据。</span><br><span class="line"></span><br><span class="line">注意：</span><br><span class="line">    不写入WAL会在RegionServer故障时增加丢失数据的风险。</span><br><span class="line">    关闭WAL，出现故障时HBase可能无法恢复数据，没有刷写到硬盘的所有写入数据都会丢失。</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="HBase宕机如何处理？"><a href="#HBase宕机如何处理？" class="headerlink" title="HBase宕机如何处理？"></a>HBase宕机如何处理？</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">宕机分为HMaster宕机和HRegisoner宕机.</span><br><span class="line">如果是HRegisoner宕机，HMaster会将其所管理的region重新分布到其他活动的RegionServer上，由于数据和日志都持久在HDFS中，该操作不会导致数据丢失。</span><br><span class="line">所以数据的一致性和安全性是有保障的。</span><br><span class="line"></span><br><span class="line">如果是HMaster宕机，HMaster没有单点问题，HBase中可以启动多个HMaster，通过Zookeeper的Master Election机制保证总有一个Master运行。</span><br><span class="line">即ZooKeeper会保证总会有一个HMaster在对外提供服务。</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2019 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>
