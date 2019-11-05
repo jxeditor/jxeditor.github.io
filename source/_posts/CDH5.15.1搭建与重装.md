@@ -174,6 +174,8 @@ useradd --system --home=/opt/cm-5.15.1/run/cloudera-scm-server/ --no-create-home
 - CDH-5.15.1-1.cdh5.15.1.p0.4-el6.parcel.sha1
 - manifest.json.txt
 ```
+mv CDH-5.15.1-1.cdh5.15.1.p0.4-el6.parcel* manifest.json.txt /opt/cloudera/parcel-repo/
+
 // 主节点
 /opt/cm-5.15.1/etc/init.d/cloudera-scm-server start
 // 所有节点

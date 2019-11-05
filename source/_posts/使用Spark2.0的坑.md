@@ -42,3 +42,11 @@ val schema = StructType(
     StructField("lie3", StringType, true)))
 val df = spark.createDataFrame(sc.emptyRDD[Row], schema)
 ```
+
+---
+
+## 写Hive速度极其慢
+```
+使用insertinto,字段顺序与hive表字段顺序不一致导致
+修改顺序后,速度正常
+```

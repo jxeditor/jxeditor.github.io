@@ -9,6 +9,44 @@ tags: os
 
 <!-- more -->
 
+## 自制yum仓库
+```
+# 挂载镜像的仓库
+mkidr /mnt/iso
+mount -o loop *.iso /mnt/iso
+vi /etc/yum.repos.d/file.repo
+[base]
+name=rhel6repo
+baseurl=file:///mnt/iso
+enabled=1
+gpgckeck=0
+gpgkey=file:///mnt/iso/RPM-GPG-KEY-redhat-release
+
+yum clean all
+
+# 自制仓库
+yum install --downloadonly --downloaddir=/temp/ mysql-community-server
+yum install createrepo -y
+
+createrepo /temp/
+
+此时已经可以使用file:///temp/的形式添加本地仓库
+
+# 内网仓库
+yum install httpd
+cd /var/www/html/
+mkdir centos/6/os/x86_64/
+# 用mv移动会出现403问题
+cp -r /temp/* /var/www/html/centos/6/os/x86_64/
+vi  client.repo
+[client]
+name=httpServer
+baseurl=http://192.168.3.201/centos/$releasever/os/$basearch
+gpgcheck=0
+```
+
+---
+
 ## not in the sudoers file
 ```bash
 # 解决not in the sudoers file
@@ -47,4 +85,11 @@ TYPE=Ethernet
 或者service network restart
 # 自动获取IP地址命令
 dhclient
+```
+
+---
+
+## XShell上传下载
+```
+yum install lrzsz
 ```
