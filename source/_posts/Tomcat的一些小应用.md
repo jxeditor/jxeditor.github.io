@@ -10,6 +10,16 @@ tags:
 
 <!-- more -->
 
+## CMD启动乱码
+```
+# 修改tomcat的config目录下的logging.properties文件
+java.util.logging.ConsoleHandler.encoding = UTF-8
+改为
+java.util.logging.ConsoleHandler.encoding = GBK
+```
+
+---
+
 ## 自动重新加载
 ```
 # 修改tomcat/conf/context.xml文件
