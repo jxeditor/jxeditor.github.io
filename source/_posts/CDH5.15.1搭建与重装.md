@@ -5,12 +5,12 @@ categories: 搭建
 tags: cdh
 ---
 
-> 如何快速的搭建一套CDH
+> 如何快速的搭建一套CDH,注意CentOS版本对应
 
 <!-- more -->
 
 ## 系统环境[64位]
-- 操作系统: Centos
+- 操作系统: Centos6
 - Cloudera Manager: 5.15.1.4
 - CDH: 5.15.1
 
@@ -39,9 +39,9 @@ tags: cdh
 #### 1.网络配置
 ```
 vi /etc/hosts
-192.168.163.129	hadoop01
-192.168.163.130	hadoop02
-192.168.163.131	hadoop03
+192.168.6.129	hadoop01
+192.168.6.130	hadoop02
+192.168.6.131	hadoop03
 ```
 
 #### 2.免密配置
@@ -77,11 +77,15 @@ ln -s /usr/local/jdk8 /usr/java/default
 
 #### 4.MySQL配置
 ```
+# CentOS7
+wget http://repo.mysql.com/mysql-community-release-el7-5.noarch.rpm
+rpm -ivh mysql-community-release-el7-5.noarch.rpm
+# 继续
 yum install mysql-server
 chkconfig mysqld on
 service mysqld start
 mysqladmin -u root password '123456'
-mysql -u root password '123456'
+mysql -u root -p
 create database hive DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 create database hue DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
 create database oozie DEFAULT CHARSET utf8 COLLATE utf8_general_ci;
@@ -146,7 +150,7 @@ fudge 127.127.1.0 stratum 10
 ## 开始安装
 #### 1.安装Cloudera Manager Server 和Agent
 ```
-tar xzvf cloudera-manager*.tar.gz
+tar -xzvf cloudera-manager*.tar.gz
 mv cloudera /opt/
 mv cm-5.15.1 /opt/
 
@@ -172,9 +176,9 @@ useradd --system --home=/opt/cm-5.15.1/run/cloudera-scm-server/ --no-create-home
 ##### sha1要mv成sha,否则系统会重新下载
 - CDH-5.15.1-1.cdh5.15.1.p0.4-el6.parcel
 - CDH-5.15.1-1.cdh5.15.1.p0.4-el6.parcel.sha1
-- manifest.json.txt
+- manifest.json
 ```
-mv CDH-5.15.1-1.cdh5.15.1.p0.4-el6.parcel* manifest.json.txt /opt/cloudera/parcel-repo/
+mv CDH-5.15.1-1.cdh5.15.1.p0.4-el6.parcel* manifest.json /opt/cloudera/parcel-repo/
 
 // 主节点
 /opt/cm-5.15.1/etc/init.d/cloudera-scm-server start
@@ -267,6 +271,15 @@ cp mysql-connector-java-5.1.47-bin.jar /opt/cloudera/parcels/CDH-5.15.1-1.cdh5.1
 ---
 
 ## 可能出现的问题
+#### 部署
+```
+问题:
+    首个失败：主机 hadoop03 (id=2) 上的客户端配置 (id=4) 已使用 127 退出，而预期值为 0。
+解决:
+    检查是否是java找不到,需要/usr/java/default
+    如果不是,则检查是否是内存不足导致无法部署客户端配置
+```
+
 #### HDFS
 ```
 1.Permission denied: user=root, access=WRITE, inode="/user":hdfs:supergroup:drwxr-xr-x
