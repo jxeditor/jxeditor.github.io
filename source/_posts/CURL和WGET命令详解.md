@@ -10,7 +10,8 @@ tags: tools
 <!-- more -->
 
 ## CURL命令
-curl是一种命令行工具，作用是发出网络请求，然后得到和提取数据，显示在"标准输出"（stdout）上面。
+curl是一种命令行工具，作用是发出网络请求，然后得到和提取数据
+显示在"标准输出"（stdout）上面。
 ```
 # 查看网页源码
 curl www.baidu.com
@@ -45,6 +46,15 @@ curl -X POST --data-urlencode "wd=wget" https://www.baidu.com/s
 ## WGET命令
 wget是一个下载文件的工具，它用在命令行下。
 ```
+# 抓取整站
+wget -r -p -np -k -E http://www.xxx.com 
+
+# 抓取第一级
+wget -l 1 -p -np -k http://www.xxx.com 
+
+-r 递归抓取
+-k 抓取之后修正链接，适合本地浏览
+
 # 下载文件
 wget https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
 
@@ -52,7 +62,7 @@ wget https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
 wget -O test.jpg https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
 
 # 限速下载
-wget –limit-rate=300k https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
+wget -limit-rate=300k https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
 
 # 断点续传(服务器支持断点续传)
 wget -c https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
@@ -62,22 +72,22 @@ wget -b https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.
 tail -f wget-log
 
 # 伪装代理下载
-wget –user-agent=”Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.204 Safari/534.16″ https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
+wget -user-agent="Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US) AppleWebKit/534.16 (KHTML, like Gecko) Chrome/10.0.648.204 Safari/534.16" https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
 
 # 测试下载链接
-wget –spider https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
+wget -spider https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
 
 # 重试次数(默认20次)
-wget –tries=40 https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
+wget -tries=40 https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
 
 # 下载多个文件(通过一份链接文件)
 wget -i urlList.txt
 
 # 镜像网站
-wget –mirror -p –convert-links -P ./LOCAL URL 
+wget -mirror -p -convert-links -P ./LOCAL URL 
 
 # 过滤指定格式下载
-wget –reject=gif https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
+wget --reject=gif https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
 
 # 下载指定格式文件
 wget -r -A.pdf https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
@@ -90,5 +100,5 @@ wget -Q5m -i urlList.txt
 
 # FTP链接下载
 wget -ftp https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
-wget –ftp-user=USERNAME –ftp-password=PASSWORD https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
+wget -ftp-user=USERNAME -ftp-password=PASSWORD https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
 ```

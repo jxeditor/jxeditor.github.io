@@ -1,5 +1,5 @@
 ---
-title: FlinkSQLShell的搭建与使用
+title: FlinkSQL的搭建与使用
 date: 2019-12-05 16:05:28
 categories: 大数据
 tags: flink
@@ -66,4 +66,37 @@ antlr-runtime-3.4.jar
 ./bin/sql-client.sh embedded
 use catalog hive;
 show tables;
+```
+
+---
+
+## TableAPI的使用
+```scala
+# 记录一下坑
+1.TableAPI目前不支持HiveStreamTableSink,所以写不进去,可以读
+2.CDH集群一定要注意引用的pom是CDH版本的
+
+# 测试代码
+object HiveDemoOnTable {
+  def main(args: Array[String]): Unit = {
+    val env = StreamExecutionEnvironment.getExecutionEnvironment
+    val tEnv = StreamTableEnvironment.create(env)
+
+    val ds1 = env.socketTextStream("hadoop01", 9999, '\n')
+
+    val hiveCatalog = new HiveCatalog("test", "default",
+      "hive_conf", "1.2.1")
+    tEnv.registerCatalog("test", hiveCatalog)
+    tEnv.useCatalog("test")
+
+    val table = tEnv.sqlQuery("select `topic`,`partition`,`offset`,msg,`c_date` from user_test_orc")
+
+    table.insertInto("user_test_orc")
+
+    env.execute("test")
+  }
+
+    //  case class Order(user: Int, product: String, amount: Int)
+    case class Order(topic: String, partition: Integer, offset: Integer, msg: String, c_date: String)
+}
 ```
