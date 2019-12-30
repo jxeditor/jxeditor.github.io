@@ -1,0 +1,181 @@
+---
+title: Flink&Spark知识目录
+date: 2019-08-25 11:14:15
+categories: 大数据
+tags:
+    - flink
+    - spark
+---
+
+> 逐步提高自己技术
+
+<!-- more -->
+
+## Flink
+```
+初识Flink
+Flink读取Kafka源码解读
+Flink的状态后端
+Flink的runtime
+Flink系列之数据流编程模型
+Flink系列之checkpoint
+Flink系列之savepoint
+Flink系列之checkpoint和savepoint的区别
+Flink系列之部署Standalone模式
+Flink系列之部署on yarn模式
+Flink系列之state
+Flink系列之checkpoint的实现原理
+Flink系列之window机制
+Flink从checkpoint和savepoint恢复的具体操作
+Flink系列之watermark的理解
+Flink系列之结合代码分析watermark的过程
+Flink系列之自定义Trigger的实现
+Flink系列之自定义Evictor的实现
+Flink系列之窗口函数的使用
+Flink系列之广播状态模式
+Flink系列之广播状态模式的具体实现
+Flink系列之流的join
+Flink系列之动态表和连续查询
+Flink系列之客户端测试版
+Flink系列之Table和SQL
+Flink系列之Table和SQL的一些常用的操作
+Flink系列之动态表的查询
+Flink系列之JSONKeyValueDeserializationSchema序列化
+Flink系列之Side Outputs的使用
+Flink系列之Flink如何处理反压
+Flink系列之热门商品TopN项目实战
+Flink系列之怎么实现exactly-once语义的
+Flink系列之窗口函数
+Flink系列之ProcessWindowFunction增量聚合
+Flink系列之ProcessFunction
+Flink系列之ProcessFunction补充说明
+Flink系列之KeyedState中ValueState的使用
+Flink系列之Operator Chain
+Flink系列之End-to-End Exactly-Once的实现
+Flink系列之keyby的详解
+Flink系列之滚动窗口的使用
+Flink系列之滑动窗口的使用
+Flink系列之窗口的总结
+Flink系列之CEP
+Flink系列之CEP
+Flink的CEP使用Demo
+Flink系列之slot和parallelism的关系
+Flink系列之slot和parallelism的测试
+Flink系列之动态表和连续查询
+Flink系列之流和维表的join实现
+Flink系列之空闲状态保留时间
+Flink系列是Flink table中的时间属性
+Flink系列之Flink SQL实现一个基于processing time
+Flink系列之Flink SQL实现一个基于Event time的滑动
+Flink系列之UDF函数
+Flink系列之UDF使用demo
+Flink系列之yarn-session的使用
+Flink系列之HDFS连接器
+Flink系列之多sink的实现
+Flink系列之批量写入mysql实现
+Flink系列之窗口聚合和非窗口聚合的区别
+Flink系列之Flink消费多个topic的数据sink到不同的
+Flink系列之自定义source
+Flink系列之测流输出在实际项目中的使用
+Flink系列之消费kafka的数据写入elasticsearch
+Flink系列之读取arvo格式的数据
+Flink系列之early计算的实现
+Flink系列之window的start_time和end_time是怎么计算的
+Flink的eventtime和watermark的详解和源码分析
+Flink指定从某个时间戳开始消费kafka的数据
+Flink的Metric的使用
+Flink的window源码分析
+Flink的广播流使用
+Flink的异步IO
+Flink使用异步IO查询mysql的数据
+Flink的operator chain详细说明
+玩Flink没有集群环境还想看到UI界面怎么办呢?
+Flink自定义分区sink到kafka,怎么实现呢?
+Flink写入hdfs动态路径的实现(Flink streaming的累加器)
+Flink的BoundedOutOfOrdernessTimestampExtractor源码解析
+Flink的interval join实现
+Flink的interval join的API实现
+Flink SQL 实现interval 
+Flink中怎么获取kafka的topic信息
+为什么我的Flink任务正常运行,UI上却不显示接收和发送的数据?
+怎么从每天的0点开始,实时统计TopN,并且秒级输出呢
+Flink使用异步IO查询mysql和redis(scala版本的)
+Flink怎么读取hdfs的orc文件,然后用sql分析呢?
+Flink的状态清除TTL
+Flink批量写入hbase
+Flink SQL的Retraction
+Flink怎么合理的分配资源?
+Flink的apply方法和process方法有什么区别?
+Flink的AllWindowFunction源码分析和具体的使用
+Flink的operator chain带来的问题分析
+Flink的分布式缓存
+Flink发生数据倾斜怎么办?(两段聚合的方式)
+Flink的AllWindowFunction源码分析和具体的使用
+Flink系列之UpsertStreamTableSink的使用
+FlinkSQL基于1.8.1实时统计PV,UV
+Flink1.9.1最新版本整合kafka使用以及WEB UI的介绍
+Flink实时统计用户的点击行为
+Flink任务怎么知道某个subtask运行在哪个机器上?
+Flink不使用window怎么实现批量操作?
+Flink怎么在本地提交任务到远程的集群?
+```
+
+---
+
+## Spark
+```
+Spark的核心之RDD: Spark的核心之RDD
+sparkstreaming消费kafka(direct方式): sparkstreaming消费kafka(direct方式)
+spark算子之combineByKey: spark算子之combineByKey
+spark分区个数详解: spark分区个数详解
+Spark怎么实现exactly-once的语义: Spark怎么实现exactly-once的语义
+spark中RDD的分区是怎么传递的: spark中RDD的分区是怎么传递的
+sparkstreaming的window操作: sparkstreaming的window操作
+sparkstreaming反压机制的实现原理: sparkstreaming反压机制的实现原理
+spark --jars添加第三方jar包: spark --jars添加第三方jar包
+sparkstreaming的设计原理: sparkstreaming的设计原理
+spark的rdd的理解: spark的rdd的理解
+sparkstreaming整合kafka的两种方式: sparkstreaming整合kafka的两种方式
+sparkstreaming整合kafka手动维护offest到redis: sparkstreaming整合kafka手动维护offest到redis
+sparkstreaming的性能优化: sparkstreaming的性能优化
+spark web ui的使用: spark web ui的使用
+sparkstreaming结合mysql的事物实现exactly-once的语义: sparkstreaming结合mysql的事物实现exactly-once的语义
+spark的dataframe写入mysql或者hive的一个小陷阱: spark的dataframe写入mysql或者hive的一个小陷阱
+spark的数据倾斜: spark的数据倾斜
+spark的transform算子使用和源码分析: spark的transform算子使用和源码分析
+spark和flink的累计器使用: spark和flink的累计器使用
+sparkstreaming中StreamingListener的使用: sparkstreaming中StreamingListener的使用
+sparkstreaming中怎么获取kafka的topic和timestamp信息: sparkstreaming中怎么获取kafka的topic和timestamp信息
+sparkstreaming中使用StreamingListener完成程序的异常报警通知: sparkstreaming中使用StreamingListener完成程序的异常报警通知
+spark使用BulkLoad写入hbase时候的排序问题
+spark报错OOM一定是executor memory太小了吗?
+spark的leftOuterJoin算子的使用和源码解析
+如何合理的设计hbase的rowkey?
+sparkstreaming的window使用和源码分析以及和Flink的window的区别
+spark的4040端口占用问题
+集群迁移方案(写的比较随意)
+集群迁移(二)
+在idea里面怎么远程提交spark任务到yarn集群
+spark on yarn动态资源分配
+Spark structured streaming的滑动窗口实现
+HBase集群的迁移方案
+sparkstreaming任务出现堆积怎么办?(流量突然大增资源不够怎么办?)
+hbase的集群迁移方案
+一次线上SQL的优化记录
+hive建表的陷阱
+spark sql join的问题
+spark的任务怎么合理的分配资源
+hive中的数据怎么快速的同步到hbase中
+Phoenix整合spark进行查询分析
+sparkstreaming实时写hive产生大量的小文件怎么处理比较好?
+spark使用bulk load同步数据到hbase的优化
+Phoenix的安装和使用
+Phoenix整合spark进行查询分析
+sparkstreaming实时写hive产生大量的小文件怎么处理比较好?
+spark sql读取mysql的数据速度很慢任务长时间卡住怎么优化?
+maven环境下java和scala混合开发如何打依赖包?
+Spark RDD转Dataframe的时候怎么动态构建schema?
+spark的面试题map和MapPartitions有什么区别?
+Spark&Flink的面试题
+spark on yarn UI上怎么查看日志?
+```

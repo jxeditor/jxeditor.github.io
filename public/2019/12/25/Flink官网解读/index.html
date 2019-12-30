@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink官网解读
+  
+</title>
+
+<meta name="description" content="上次实时维表join的事,觉得自己对于Flink官网并没有去细致了解,单开一篇,记录对Flink官网的解读,局限于scala开发">
+<meta name="keywords" content="flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink官网解读">
+<meta property="og:url" content="http://yoursite.com/2019/12/25/Flink官网解读/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="上次实时维表join的事,觉得自己对于Flink官网并没有去细致了解,单开一篇,记录对Flink官网的解读,局限于scala开发">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-12-26T00:57:02.315Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flink官网解读">
+<meta name="twitter:description" content="上次实时维表join的事,觉得自己对于Flink官网并没有去细致了解,单开一篇,记录对Flink官网的解读,局限于scala开发">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">43</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">16</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">9</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/">tool</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">46</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink官网解读" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink官网解读
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-12-25
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>上次实时维表join的事,觉得自己对于Flink官网并没有去细致了解,单开一篇,记录对Flink官网的解读,局限于scala开发</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="基本API"><a href="#基本API" class="headerlink" title="基本API"></a>基本API</h1><h2 id="数据集与数据流"><a href="#数据集与数据流" class="headerlink" title="数据集与数据流"></a>数据集与数据流</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Flink使用DataSet和DataStream表示程序中的数据</span><br></pre></td></tr></table></figure>
+<h2 id="Flink程序剖析"><a href="#Flink程序剖析" class="headerlink" title="Flink程序剖析"></a>Flink程序剖析</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a.获得execution environment</span></span><br><span class="line"><span class="comment">// org.apache.flink.api.scala</span></span><br><span class="line"><span class="comment">// ExecutionEnvironment</span></span><br><span class="line"><span class="keyword">val</span> env = <span class="type">ExecutionEnvironment</span>.getExecutionEnvironment</span><br><span class="line"><span class="comment">// org.apache.flink.streaming.api.scala</span></span><br><span class="line"><span class="comment">// StreamExecutionEnvironment</span></span><br><span class="line"><span class="keyword">val</span> env = <span class="type">StreamExecutionEnvironment</span>.getExecutionEnvironment()</span><br><span class="line"></span><br><span class="line"><span class="comment">// b.加载/创建初始数据</span></span><br><span class="line"><span class="keyword">val</span> text = env.readTextFile(<span class="string">"test.log"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// c.指定对此数据的转换</span></span><br><span class="line"><span class="keyword">val</span> counts = text.flatMap(w =&gt; &#123;w.split(<span class="string">" "</span>)&#125;).map((_, <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">// d.指定将计算结果放在何处</span></span><br><span class="line">counts.writeAsCsv(<span class="string">"output"</span>, <span class="string">"\n"</span>, <span class="string">" "</span>)</span><br><span class="line">counts.print()</span><br><span class="line"></span><br><span class="line"><span class="comment">// e.触发程序执行</span></span><br><span class="line">env.execute(<span class="string">"Scala WordCount Example"</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="Lazy-Evaluation"><a href="#Lazy-Evaluation" class="headerlink" title="Lazy Evaluation"></a>Lazy Evaluation</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">所有Flink程序都是延迟执行的,执行程序的main方法时,不会进行数据加载和转换,而是先生成执行计划.</span><br><span class="line">当通过execute显示触发时,才会真正执行.</span><br></pre></td></tr></table></figure>
+<h2 id="指定键"><a href="#指定键" class="headerlink" title="指定键"></a>指定键</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// join,coGroup,keyBy,groupBy要求定义Key</span></span><br><span class="line"><span class="comment">// reduce,groupReduce,aggregate,windows计算分组数据</span></span><br><span class="line"><span class="keyword">val</span> counts = text</span><br><span class="line">  .flatMap(_.split(<span class="string">" "</span>))</span><br><span class="line">  .map((_, <span class="number">1</span>))</span><br><span class="line">  .groupBy(<span class="number">0</span>)</span><br><span class="line">  .reduceGroup(<span class="keyword">new</span> <span class="type">GroupReduceFunction</span>[(<span class="type">String</span>, <span class="type">Int</span>), (<span class="type">String</span>, <span class="type">Int</span>)] &#123;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">reduce</span></span>(iterable: lang.<span class="type">Iterable</span>[(<span class="type">String</span>, <span class="type">Int</span>)], collector: <span class="type">Collector</span>[(<span class="type">String</span>, <span class="type">Int</span>)]): <span class="type">Unit</span> = &#123;</span><br><span class="line">      <span class="keyword">val</span> value = iterable.iterator()</span><br><span class="line">      <span class="keyword">var</span> map = <span class="type">Map</span>[<span class="type">String</span>, <span class="type">Int</span>]()</span><br><span class="line">      <span class="keyword">while</span> (value.hasNext) &#123;</span><br><span class="line">        <span class="keyword">val</span> tuple = value.next()</span><br><span class="line">        map += (tuple._1 -&gt; (tuple._2 + map.getOrElse(tuple._1, <span class="number">0</span>)))</span><br><span class="line">      &#125;</span><br><span class="line">      map.foreach(x =&gt; &#123;</span><br><span class="line">        collector.collect((x._1, x._2))</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> counts = text</span><br><span class="line">  .flatMap(_.split(<span class="string">" "</span>))</span><br><span class="line">  .map((_, <span class="number">1</span>))</span><br><span class="line">  .groupBy(<span class="number">0</span>)</span><br><span class="line">  .reduce((x, y) =&gt; (x._1, x._2 + y._2))</span><br><span class="line"></span><br><span class="line"><span class="comment">// 也可以使用POJO</span></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">WordCount</span>(<span class="params">word: <span class="type">String</span>, count: <span class="type">Int</span></span>)</span></span><br><span class="line"><span class="class"><span class="title">val</span> <span class="title">input</span> </span>= env.fromElements(</span><br><span class="line">    <span class="type">WordCount</span>(<span class="string">"hello"</span>, <span class="number">1</span>),</span><br><span class="line">    <span class="type">WordCount</span>(<span class="string">"world"</span>, <span class="number">2</span>))</span><br><span class="line">input.keyBy(<span class="string">"word"</span>)</span><br></pre></td></tr></table></figure>
+<h2 id="指定转换函数"><a href="#指定转换函数" class="headerlink" title="指定转换函数"></a>指定转换函数</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">data.map &#123; x =&gt; x.toInt &#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyMapFunction</span> <span class="keyword">extends</span> <span class="title">RichMapFunction</span>[<span class="type">String</span>, <span class="type">Int</span>] </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">map</span></span>(in: <span class="type">String</span>):<span class="type">Int</span> = &#123; in.toInt &#125;</span><br><span class="line">&#125;;</span><br><span class="line">data.map(<span class="keyword">new</span> <span class="type">MyMapFunction</span>())</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Streaming-DataStream-API"><a href="#Streaming-DataStream-API" class="headerlink" title="Streaming(DataStream API)"></a>Streaming(DataStream API)</h1><h2 id="范例"><a href="#范例" class="headerlink" title="范例"></a>范例</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 5秒一个窗口输出计数</span></span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.scala._</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.windowing.time.<span class="type">Time</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">WindowWordCount</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]) &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> env = <span class="type">StreamExecutionEnvironment</span>.getExecutionEnvironment</span><br><span class="line">    <span class="keyword">val</span> text = env.socketTextStream(<span class="string">"localhost"</span>, <span class="number">9999</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> counts = text.flatMap &#123; _.toLowerCase.split(<span class="string">"\\W+"</span>) filter &#123; _.nonEmpty &#125; &#125;</span><br><span class="line">      .map &#123; (_, <span class="number">1</span>) &#125;</span><br><span class="line">      .keyBy(<span class="number">0</span>)</span><br><span class="line">      .timeWindow(<span class="type">Time</span>.seconds(<span class="number">5</span>))</span><br><span class="line">      .sum(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    counts.print()</span><br><span class="line"></span><br><span class="line">    env.execute(<span class="string">"Window Stream WordCount"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="数据源"><a href="#数据源" class="headerlink" title="数据源"></a>数据源</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">// 文件</span><br><span class="line">readTextFile(path) // 逐行读取文件</span><br><span class="line">readFile(fileInputFormat, path) // 根据指定的文件输入格式读取一次文件</span><br><span class="line">readFile(fileInputFormat, path, watchType, interval, pathFilter) // watchType可以定期监视路径中的新数据(FileProcessingMode.PROCESS_CONTINUOUSLY),或者处理一次路径中当前数据并退出(FileProcessingMode.PROCESS_ONCE),使用pathFilter,进一步排除文件</span><br><span class="line"></span><br><span class="line">// socket</span><br><span class="line">socketTextStream</span><br><span class="line"></span><br><span class="line">// 集合</span><br><span class="line">fromCollection(Seq)</span><br><span class="line">fromCollection(Iterator)</span><br><span class="line">fromElements(elements: _*)</span><br><span class="line">fromParallelCollection(SplittableIterator)</span><br><span class="line">generateSequence(from, to)</span><br><span class="line"></span><br><span class="line">// 自定义</span><br><span class="line">addSource // 比如FlinkKafkaConsumer10</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2019 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>
