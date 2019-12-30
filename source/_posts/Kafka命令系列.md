@@ -30,9 +30,44 @@ kafka-topics --zookeeper hadoop03:2181 --topic test --describe
 分区数量,备份因子,以及各分区的Leader,Replica信息
 
 查看消费组列表
-kafka-consumer-groups --new-consumer --bootstrap-server hadoop03:9092 --list
+kafka-consumer-groups --bootstrap-server hadoop03:9092 --list
 
 查看特定消费组
-kafka-consumer-groups --new-consumer --bootstrap-server hadoop03:9292 --group groupName --describe
+kafka-consumer-groups --bootstrap-server hadoop03:9092 --group groupName --describe
 分区ID,最近一次提交的offset,最拉取的生产消息offset,消费offset与生产offset之间的差值
+
+修改分区数
+kafka-topics --alter --zookeeper hadoop03:2181 --topic test --partitions 6
+
+修改topic副本数
+vi ~/kafka_add_replicas.json
+{"topics":
+    [{"topic":"prod_log_simul"}],
+    "version": 1
+}
+kafka-reassign-partitions --zookeeper hadoop01:2181 --topics-to-move-json-file ~/kafka_add_replicas.json --broker-list "0,1,2" --generate
+vi ~/topic-reassignment.json
+{
+    "version":1,
+    "partitions":[
+        {
+            "topic":"test",
+            "partition":2,
+            "replicas":[0,1,2]
+            },
+        {
+            "topic":"test",
+            "partition":1,
+            "replicas":[0,1,2]
+        },
+        {
+            "topic":"test",
+            "partition":0,
+            "replicas":[0,1,2]
+        }
+    ]
+}
+kafka-reassign-partitions --zookeeper hadoop01:2181 --reassignment-json-file ~/topic-reassignment.json --execute
+查看分配进度
+kafka-reassign-partitions --zookeeper hadoop01:2181 --reassignment-json-file ~/topic-reassignment.json --verify
 ```
