@@ -2,7 +2,9 @@
 title: Flink实时维表Join
 date: 2019-12-24 15:25:03
 categories: 大数据
-tags: flink
+tags: 
+    - flink
+    - mysql
 ---
 
 > 维表是一张实时变化的表,流表需要去Join维表,如何实现这种需求
@@ -147,7 +149,8 @@ FROM
 ---
 
 ## 实际需求 
-MySQL中维表实时变化,流表需要进行维表join
+### MySQL
+维表实时变化,流表需要进行维表join
 ```scala
 package com.test.flink.stream.mysql
 
