@@ -22,6 +22,7 @@ npm install -g mockjs
 
 ## 直接上代码
 ```js
+// vi kafka.js
 var kafka = require('kafka-node');
 var Mock = require('mockjs');
 const Random = Mock.Random;
@@ -90,4 +91,11 @@ mq.AddProducer(conn, function (producer) {
         }, 2000);
     })
 });
+```
+
+---
+
+## 执行
+```
+node kafka.js
 ```
