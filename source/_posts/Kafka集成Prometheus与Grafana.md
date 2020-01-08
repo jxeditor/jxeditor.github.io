@@ -14,8 +14,10 @@ tags:
 
 ## 依赖情况
 ```
+# 只需部署一台服务器上
 grafana
 prometheus
+# 部署在各kafka服务器上
 kafka_exporter
 ```
 
@@ -35,8 +37,8 @@ scrape_configs:
 
 ## 启动
 ```
-# kafka_exporter
-./kafka_exporter --kafka.server=hadoop03:9092 &
+# kafka_exporter(多台)
+./kafka_exporter --kafka.server=KafkaIP或者域名:9092 &
 # prometheus
 ./prometheus --config.file=./conf/prometheus.yml &
 # grafana
