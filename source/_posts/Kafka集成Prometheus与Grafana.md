@@ -45,3 +45,10 @@ scrape_configs:
 ./bin/grafana-server web &
 username/password: admin/admin
 ```
+
+---
+
+## Grafana Dashboard
+```
+ID: 7589
+```
