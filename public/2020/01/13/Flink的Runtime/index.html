@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink的Runtime
+  
+</title>
+
+<meta name="description" content="介绍Flink Runtime的作业执行的核心机制">
+<meta name="keywords" content="flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink的Runtime">
+<meta property="og:url" content="http://yoursite.com/2020/01/13/Flink的Runtime/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="介绍Flink Runtime的作业执行的核心机制">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-01-13T07:42:36.291Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flink的Runtime">
+<meta name="twitter:description" content="介绍Flink Runtime的作业执行的核心机制">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">53</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">21</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/">tool</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">10</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">45</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink的Runtime" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink的Runtime
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-01-13
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>介绍Flink Runtime的作业执行的核心机制</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h2><p>首先Flink是可以运行在多种环境中的,如Standalone,Yarn,K8S之类;Flink Runtime层采用了标准的Master-Slave架构.</p>
+<ul>
+<li><code>Client</code>(不属于Runtime)</li>
+<li><code>Master</code></li>
+<li><ul>
+<li>JobManager</li>
+</ul>
+</li>
+<li><ul>
+<li>Dispatcher</li>
+</ul>
+</li>
+<li><ul>
+<li>ResourceManager </li>
+</ul>
+</li>
+<li><code>Slave</code></li>
+<li><ul>
+<li>TaskManager</li>
+</ul>
+</li>
+<li><code>Akka</code>(角色通信)</li>
+<li><code>Netty</code>(数据传输)</li>
+</ul>
+<p><code>Dispatcher</code>负责负责接收用户提供的作业，并且负责为这个新提交的作业拉起一个新的<code>JobManager</code>组件。<br><code>ResourceManager</code>负责资源的管理,在整个Flink集群中只有一个<code>ResourceManager</code><br><code>JobManager</code>负责管理作业的执行,在一个Flink集群中可能有多个作业同时执行,每个作业都有自己的<code>JobManager</code>组件</p>
+<hr>
+<h2 id="执行流程"><a href="#执行流程" class="headerlink" title="执行流程"></a>执行流程</h2><p>用户提交作业,提交脚本会首先启动一个<code>Client</code>进程负责作业的编译与提交<br>首先将用户编写的代码编译为一个<code>JobGraph</code>(会进行一些检查或优化等工作)<br><code>Client</code>将产生的<code>JobGraph</code>提交到集群中执行<br><strong>两种情况</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Standalone这种Session模式,AM会预先启动,此时Client直接与Dispatcher建立连接并提交作业即可</span><br><span class="line">Per-Job模式,AM不会预先启动,此时Client将首先向资源管理系统&lt;如Yarn,K8S&gt;申请资源来启动AM,然后再向AM中的Dispatcher提交作业</span><br></pre></td></tr></table></figure></p>
+<p>作业到<code>Dispatcher</code>后,<code>Dispatcher</code>会首先启动一个<code>JobManager</code>组件<br><code>JobManager</code>会向<code>ResourceManager</code>申请资源来启动作业中具体的任务<br><strong>两种情况</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">根据Session和Per-Job模式的区别,TaskExecutor可能已经启动或者尚未启动</span><br><span class="line">Session模式,ResourceManager中已有记录了TaskExecutor注册的资源,可以直接选取空闲资源进行分配</span><br><span class="line">Per-Job模式,ResourceManager也需要首先向外部资源管理系统申请资源来启动TaskExecutor,然后等待TaskExecutor注册相应资源后再继续选择空闲资源进程分配</span><br></pre></td></tr></table></figure></p>
+<p><code>TaskExecutor</code>的资源是通过<code>Slot</code>来描述的,一个<code>Slot</code>一般可以执行一个具体的<code>Task</code><br><code>ResourceManager</code>选择到空闲的<code>Slot</code>之后,就会通知相应的<code>TM</code>将该<code>Slot</code>分配分<code>JobManager</code><br><code>TaskExecutor</code>进行相应的记录后,会向<code>JobManager</code>进行注册<br><code>JobManager</code>收到<code>TaskExecutor</code>注册上来的<code>Slot</code>后,就可以实际提交<code>Task</code>了<br><code>TaskExecutor</code>收到<code>JobManager</code>提交的<code>Task</code>之后,会启动一个新的线程来执行该<code>Task</code><br><code>Task</code>启动后就会开始进行预先指定的计算,并通过数据<code>Shuffle</code>模块互相交换数据</p>
+<p><strong>注意</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Flink支持两种不同的模式,Per-job模式与Session模式</span><br><span class="line">Per-job模式下整个Flink集群只执行单个作业,即每个作业会独享Dispatcher和ResourceManager组件</span><br><span class="line">Per-job模式下AppMaster和TaskExecutor都是按需申请的</span><br><span class="line">Per-job模式更适合运行执行时间较长的大作业,这些作业对稳定性要求较高,并且对申请资源的时间不敏感</span><br><span class="line"></span><br><span class="line">Session模式下,Flink预先启动AppMaster以及一组TaskExecutor</span><br><span class="line">然后在整个集群的生命周期中会执行多个作业</span><br><span class="line">Session模式更适合规模小,执行时间短的作业。</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="作业调度"><a href="#作业调度" class="headerlink" title="作业调度"></a>作业调度</h2><p>Flink中,资源是由<code>TaskExecutor</code>上的<code>Slot</code>来表示的,每个<code>Slot</code>可以用来执行不同的<code>Task</code><br>任务即<code>Job</code>中实际的<code>Task</code>,它包含了待执行的用户逻辑<br>调度的主要目的就是为了给<code>Task</code>找到匹配的<code>Slot</code></p>
+<hr>
+<p>在<code>ResourceManager</code>中有一个子组件叫做<code>SlotManager</code>,它维护了当前集群中所有<code>TaskExecutor</code>上的<code>Slot</code>的信息与状态<br>如该<code>Slot</code>在哪个<code>TaskExecutor</code>中,该<code>Slot</code>当前是否空闲等<br>当<code>JobManger</code>来为特定<code>Task</code>申请资源的时候,根据当前是<code>Per-job</code>还是<code>Session</code>模式,<code>ResourceManager</code>可能会去申请资源来启动新的<code>TaskExecutor</code></p>
+<hr>
+<p>当<code>TaskExecutor</code>启动之后,它会通过服务发现找到当前活跃的<code>ResourceManager</code>并进行注册<br>注册信息中,会包含该<code>TaskExecutor</code>中所有<code>Slot</code>的信息<br><code>ResourceManager</code>收到注册信息后,其中的<code>SlotManager</code>就会记录下相应的<code>Slot</code>信息<br>当<code>JobManager</code>为某个<code>Task</code>来申请资源时,<code>SlotManager</code>就会从当前空闲的<code>Slot</code>中按一定规则选择一个空闲的<code>Slot</code>进行分配<br>当分配完成后<code>RM</code>会首先向<code>TaskManager</code>发送<code>RPC</code>要求将选定的<code>Slot</code>分配给特定的<code>JobManager</code><br><code>TaskManager</code>如果还没有执行过该<code>JobManager</code>的<code>Task</code>的话,它需要首先向相应的<code>JobManager</code>建立连接,然后发送提供<code>Slot</code>的<code>RPC</code>请求<br>在<code>JobManager</code>中,所有<code>Task</code>的请求会缓存到<code>SlotPool</code>中<br>当有<code>Slot</code>被提供之后,<code>SlotPool</code>会从缓存的请求中选择相应的请求并结束相应的请求过程</p>
+<hr>
+<p>当<code>Task</code>结束之后,无论是正常结束还是异常结束,都会通知<code>JobManager</code>相应的结束状态<br><code>TaskManager</code>端将<code>Slot</code>标记为已占用但未执行任务的状态<br><code>JobManager</code>会首先将相应的<code>Slot</code>缓存到<code>SlotPool</code>中,但不会立即释放<br>这种方式避免了如果将<code>Slot</code>直接还给<code>ResourceManager</code>,在任务异常结束之后需要重启时,需要立刻重新申请<code>Slot</code>的问题<br>通过延时释放,<code>Failover</code>的<code>Task</code>可以尽快调度回原来的<code>TaskManager</code>,从而加快<code>Failover</code>的速度</p>
+<hr>
+<p>当<code>SlotPool</code>中缓存的<code>Slot</code>超过指定的时间仍未使用时,<code>SlotPool</code>就会发起释放该<code>Slot</code>的过程<br>与申请<code>Slot</code>的过程对应,<code>SlotPool</code>会首先通知<code>TaskManager</code>来释放该<code>Slot</code><br><code>TaskExecutor</code>通知<code>ResourceManager</code>该<code>Slot</code>已经被释放,从而最终完成释放的逻辑<br><strong>注意</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">除了正常的通信逻辑外,在ResourceManager和TaskExecutor之间还存在定时的心跳消息来同步Slot的状态</span><br></pre></td></tr></table></figure></p>
+<p><strong>调度方式</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Eager调度(适用于流作业)</span><br><span class="line">Eager调度如其名子所示,它会在作业启动时申请资源将所有的Task调度起来</span><br><span class="line">这种调度算法主要用来调度可能没有终止的流作业</span><br><span class="line"></span><br><span class="line">Lazy From Source(适用于批作业)</span><br><span class="line">Lazy From Source是从Source开始,按拓扑顺序来进行调度</span><br><span class="line">简单来说,Lazy From Source会先调度没有上游任务的Source任务</span><br><span class="line">当这些任务执行完成时,它会将输出数据缓存到内存或者写入到磁盘中</span><br><span class="line">然后,对于后续的任务,当它的前驱任务全部执行完成后</span><br><span class="line">Flink就会将这些任务调度起来</span><br><span class="line">这些任务会从读取上游缓存的输出数据进行自己的计算</span><br><span class="line">这一过程继续进行直到所有的任务完成计算</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h2 id="错误恢复"><a href="#错误恢复" class="headerlink" title="错误恢复"></a>错误恢复</h2><p>整体上来说,错误可能分为两大类:<code>Task</code>执行出现错误或<code>Flink</code>集群的<code>Master</code>出现错误</p>
+<p><strong>第一类错误恢复策略</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Restart-all,重启所有的Task</span><br><span class="line">对于Flink的流任务,由于Flink提供Checkpoint机制</span><br><span class="line">因此当任务重启后可以直接从上次的Checkpoint开始继续执行</span><br><span class="line">因此这种方式更适合于流作业</span><br></pre></td></tr></table></figure></p>
+<p><strong>第二类错误恢复策略</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Restart-individual</span><br><span class="line">只适用于Task之间没有数据传输的情况</span><br><span class="line">这种情况下,我们可以直接重启出错的任务</span><br></pre></td></tr></table></figure></p>
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>
