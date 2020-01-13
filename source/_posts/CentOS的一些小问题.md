@@ -68,6 +68,23 @@ chmod u-w /etc/sudoers
 
 ---
 
+## NAT固定IP连接外网
+```
+# 虚拟网络编辑器NAT取消勾选使用本地DHCP,NAT设置192.168.6.1网关
+
+# 将网络适配器IP调为192.168.6.2,DNS为114.114.114.114
+
+vi /etc/sysconfig/network-scripts/ifcfg-ens**
+BOOTPROTO=static
+ONBOOT=yes
+IPADDR=192.168.6.134
+DNS1=114.114.114.114
+NETMASK=255.255.255.0
+GATEWAY=192.168.6.1
+```
+
+---
+
 ## 动态获取IP
 ```
 vi /etc/sysconfig/network-scripts/ifcfg-eth0

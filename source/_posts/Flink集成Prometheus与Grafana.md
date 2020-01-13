@@ -62,6 +62,7 @@ scrape_configs:
 ```
 # pushgateway
 ./pushgateway &
+./pushgateway --web.enable-lifecycle --web.enable-admin-api &
 
 # node_exporter
 ./node_exporter &
@@ -74,6 +75,16 @@ scrape_configs:
 username/password: admin/admin
 
 # 注意版本问题
+```
+
+---
+
+## 针对pushgateway的优化
+```
+# 版本为1.0.1,低版本并不会主动去清除group信息
+# 哪怕是很久没有进行push数据了,也不会清除
+# 需要自己写脚本定时去清除所有的group信息
+curl -X PUT http://hadoop01:9091/api/v1/admin/wipe
 ```
 
 ---

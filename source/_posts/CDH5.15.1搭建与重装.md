@@ -1,6 +1,6 @@
 ---
 title: CDH5.15.1搭建与重装
-date: 2019-05-31 21:22:16
+date: 2018-09-18 21:22:16
 categories: 搭建
 tags: cdh
 ---
@@ -102,7 +102,6 @@ setenforce 0            # 临时关闭
 vi /etc/selinux/config  # 重启后永久生效
 SELINUX=disabled
 
-echo 10 > /proc/sys/vm/swappiness
 echo 10 > /proc/sys/vm/swappiness
 vi /etc/sysctl.conf     # 重启后永久生效
 vm.swappiness = 10
