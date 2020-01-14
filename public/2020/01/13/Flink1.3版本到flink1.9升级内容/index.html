@@ -8,17 +8,24 @@
 
 <title>
   
-    标签: sbt
+    Flink1.3版本到flink1.9不同版本特性
   
 </title>
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="BlackC">
-<meta property="og:url" content="http://yoursite.com/tags/sbt/index.html">
+<meta name="description" content="引言一年内,公司从flink1.3-&amp;gt; flink1.8 -&amp;gt; flink1.9 不断的迎接不同版本对flink相关业务需求进行满足,代码方面也慢慢的简单化">
+<meta name="keywords" content="flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink1.3版本到flink1.9不同版本特性">
+<meta property="og:url" content="http://yoursite.com/2020/01/13/Flink1.3版本到flink1.9升级内容/index.html">
 <meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="引言一年内,公司从flink1.3-&amp;gt; flink1.8 -&amp;gt; flink1.9 不断的迎接不同版本对flink相关业务需求进行满足,代码方面也慢慢的简单化">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="http://yoursite.com/Flink1.3版本到flink1.9升级内容/20200113034205621.png">
+<meta property="og:updated_time" content="2020-01-14T03:23:53.395Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="BlackC">
+<meta name="twitter:title" content="Flink1.3版本到flink1.9不同版本特性">
+<meta name="twitter:description" content="引言一年内,公司从flink1.3-&amp;gt; flink1.8 -&amp;gt; flink1.9 不断的迎接不同版本对flink相关业务需求进行满足,代码方面也慢慢的简单化">
+<meta name="twitter:image" content="http://yoursite.com/Flink1.3版本到flink1.9升级内容/20200113034205621.png">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -148,108 +155,63 @@
       
         <div style="max-width: 1000px">
       
-          <h1>sbt</h1>
-
-
+          <article id="post-Flink1.3版本到flink1.9升级内容" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink1.3版本到flink1.9不同版本特性
+    </h1>
   
   
-    <div class="post-list">
-  
 
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2019/12/06/将SBT的依赖转换为Maven目录结构的依赖/">
-  将SBT的依赖转换为Maven目录结构的依赖
-</a>
-
-      </h3>
-      
-
-      <div class="article-info">
-        <a href="/2019/12/06/将SBT的依赖转换为Maven目录结构的依赖/"><span class="article-date">
-  2019-12-06
+  <div class="article-info">
+    <span class="article-date">
+  2020-01-13
 </span>
-</a>
-        
+
+    
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编译/">编译</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
 	</span>
 
 
-        
+    
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/maven/">maven</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sbt/">sbt</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
 	</span>
 
 
-      </div>
-      <div class="article-entry">
-        
-          <blockquote>
-<p>如果不联网的话,需要写程序对ivy仓库目录进行刷新</p>
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>引言<br>一年内,公司从flink1.3-&gt; flink1.8 -&gt; flink1.9 不断的迎接不同版本对flink相关业务需求进行满足,代码方面也慢慢的简单化<br><a id="more"></a></p>
 </blockquote>
-          <p>
-            <a href="/2019/12/06/将SBT的依赖转换为Maven目录结构的依赖/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
-
-  
-    </div>
-  
-
-  
-  
-    <div class="post-list">
-  
-
-    <div class="post-list-item article">
-      <h3 class="article-header">
-        <a href="/2019/08/19/SBT的使用/">
-  SBT的使用
-</a>
-
-      </h3>
+<p><img src="/Flink1.3版本到flink1.9升级内容/20200113034205621.png" alt></p>
+<h3 id="Flink的1-0到1-9特性理论内容"><a href="#Flink的1-0到1-9特性理论内容" class="headerlink" title="Flink的1.0到1.9特性理论内容"></a><a href="https://www.cnblogs.com/zclaude/p/12048429.html" target="_blank" rel="noopener">Flink的1.0到1.9特性理论内容</a></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">主要详细讲解</span><br><span class="line">Flink API历史变迁;</span><br><span class="line">Flink High-Level API历史变迁;</span><br><span class="line">Flink Checkpoint &amp; Recovery历史变迁</span><br><span class="line">Flink Runtime历史变迁</span><br></pre></td></tr></table></figure>
+<h3 id="flink-历史变迁结合实际业务"><a href="#flink-历史变迁结合实际业务" class="headerlink" title="flink 历史变迁结合实际业务"></a>flink 历史变迁结合实际业务</h3><h4 id="flink1-3版本"><a href="#flink1-3版本" class="headerlink" title="flink1.3版本"></a>flink1.3版本</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># flink1.3版本:基本支持简单的业务的开发</span><br><span class="line">当时对用户做题的行为轨迹进行记录: </span><br><span class="line">Debezium结合Kafka Connect实时捕获Mysql变更事件写入kafka,flink监控kafka,hbase作为中间表进行数据处理,结果存储es</span><br><span class="line">mysql -&gt; kafka -&gt; flink -&gt; hbase -&gt; es</span><br><span class="line"></span><br><span class="line">主要根据flink API结合scala的相关算子, 对es进行增删操作</span><br><span class="line">难点:根据kafka收集到的数据分为增删改以及空数据四块内容,需要分别对这四种数据进行按条件处理,程序大量引用了filter.map操作,代码的可读性比较差</span><br><span class="line"></span><br><span class="line">具体代码实现:</span><br><span class="line">https://github.com/hostility-sadan/flink-bahavior-trace.git</span><br></pre></td></tr></table></figure>
+<h4 id="flink1-8版本"><a href="#flink1-8版本" class="headerlink" title="flink1.8版本"></a>flink1.8版本</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">flink1.8版本:对之前业务逻辑使用新的框架进行优化</span><br><span class="line">主要特征项目:试题画像</span><br><span class="line">需求表述:</span><br><span class="line">1、</span><br><span class="line">维护目标：自建试题-&gt;若干属性（包括status属性，正文+选项+解析 即content+option+analysis 只放ES)</span><br><span class="line">监控：question_info</span><br><span class="line">过滤条件：question_id&lt;0</span><br><span class="line">后续操作：各种属性从after拿出放入ES</span><br><span class="line">2、</span><br><span class="line">维护目标：非引用试题-&gt;自建课列表; 自建课-&gt; 非引用试题列表</span><br><span class="line">监控：tp_j_course_question_info</span><br><span class="line">过滤条件：course_id&lt;0,is_quote=0</span><br><span class="line">特殊处理：更新操作里，如果after:local_status=2 表示删除，不是更新</span><br><span class="line">后续操作：查询自建课列表更新ES</span><br><span class="line">          如果是有效的且共享课，如果是删除操作，如果非引用试题列表长度为0，从 教材id+schoolid-&gt;共享课列表 移除课</span><br><span class="line">  如果是有效的且共享课，如果是添加操作，如果非引用试题列表长度为1，从 教材id+schoolid-&gt;共享课列表 添加课</span><br><span class="line">3、</span><br><span class="line">维护目标：自建课-&gt;SHARE_TYPE,LOCAL_STATUS,dc_school_id</span><br><span class="line">监控：tp_course_info</span><br><span class="line">过滤条件：course_id&lt;0</span><br><span class="line">后续操作：如果为更新操作，如果SHARE_TYPE从其它值变为1并且非引用试题列表长度不为0，则从 教材id+schoolid-&gt;共享课列表 添加课</span><br><span class="line">                          如果SHARE_TYPE从1变为其它值并且非引用试题列表长度不为0，则从 教材id+schoolid-&gt;共享课列表 移除课</span><br><span class="line">  如果LOCAL_STATUS从1变为2并且非引用试题列表长度不为0，则从 教材id+schoolid-&gt;共享课列表 移除课</span><br><span class="line">                          如果SHARE_TYPE从其它值变为1,用当前时间更新 自建课-&gt;share_time</span><br><span class="line">          如果为插入操作，如SHARE_TYPE=1，如非引用试题列表长度不为0，如有教材ID，则从 教材id+schoolid-&gt;共享课列表 添加课</span><br><span class="line">4、</span><br><span class="line">维护目标：自建课-&gt;教材ID</span><br><span class="line">监控:tp_j_course_teaching_material</span><br><span class="line">过滤条件：course_id&lt;0</span><br><span class="line">后续操作：如果为插入操作，如非引用试题列表长度不为0，如SHARE_TYPE=1，如LOCAL_STATUS=1，则从 教材id+schoolid-&gt;共享课列表 添加课</span><br><span class="line"></span><br><span class="line">难点:多流交互,需要做到流与流处理的无序性</span><br><span class="line">优化内容:构建了图的架构,提高了代码的可读性,以及使用checkpoint进行自动恢复机制</span><br><span class="line"></span><br><span class="line">具体代码实现:</span><br><span class="line">https://github.com/hostility-sadan/flink-new-ques-all-profile.git</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
       
-
-      <div class="article-info">
-        <a href="/2019/08/19/SBT的使用/"><span class="article-date">
-  2019-08-19
-</span>
-</a>
+          <img src="/images/cc/by.png">
         
-	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/编译/">编译</a></li></ul>
-	</span>
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
 
 
-        
-	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sbt/">sbt</a></li></ul>
-	</span>
+    
 
+  </footer>
+</article>
 
-      </div>
-      <div class="article-entry">
-        
-          <blockquote>
-<p>IDEA与Scala的安装不进行细说，主要记录下Sbt的安装过程</p>
-</blockquote>
-          <p>
-            <a href="/2019/08/19/SBT的使用/">
-              阅读全文
-            </a>
-          </p>
-        
-      </div>
-    </div>
-
-  
-    </div>
-  
 
 
 
