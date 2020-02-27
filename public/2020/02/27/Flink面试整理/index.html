@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink面试基础
+  
+</title>
+
+<meta name="description" content="记录面试中有关Flink的概念知识">
+<meta name="keywords" content="flink,interface">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink面试基础">
+<meta property="og:url" content="http://yoursite.com/2020/02/27/Flink面试整理/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="记录面试中有关Flink的概念知识">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-02-27T12:26:09.264Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flink面试基础">
+<meta name="twitter:description" content="记录面试中有关Flink的概念知识">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">59</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interface/">interface</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">12</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/">tool</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">48</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink面试整理" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink面试基础
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-02-27
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/interface/">interface</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>记录面试中有关Flink的概念知识</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="Flink面试基础"><a href="#Flink面试基础" class="headerlink" title="Flink面试基础"></a>Flink面试基础</h1><h1 id="Flink时间类型有哪些？"><a href="#Flink时间类型有哪些？" class="headerlink" title="Flink时间类型有哪些？"></a>Flink时间类型有哪些？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">三种时间类型</span><br><span class="line">Event Time事件生成时间，事件实际产生的时间</span><br><span class="line">Ingestion Time事件接入时间，进入Flink系统的时间</span><br><span class="line">Processing Time事件处理时间，Flink处理的时间</span><br><span class="line"></span><br><span class="line">事件处理时间处理Window时，使用机器自身时间</span><br><span class="line">可能因为机器时钟不同步导致乱序，适用于时间精确度不高的计算</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink的窗口类型有哪些？"><a href="#Flink的窗口类型有哪些？" class="headerlink" title="Flink的窗口类型有哪些？"></a>Flink的窗口类型有哪些？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">两种窗口类型</span><br><span class="line">    基于时间的Time Window</span><br><span class="line">    基于数量的Count Window</span><br><span class="line">窗口的操作又可以分为</span><br><span class="line">Tumbling Window滚动窗口</span><br><span class="line">Sliding Window滑动窗口</span><br><span class="line">Session Window会话窗口</span><br><span class="line">Global Window全局窗口</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink定义窗口的组件？"><a href="#Flink定义窗口的组件？" class="headerlink" title="Flink定义窗口的组件？"></a>Flink定义窗口的组件？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Assigner 决定某个元素被分配到哪个/哪些窗口中去</span><br><span class="line">Trigger 决定一个窗口何时能够被计算或清除，每个窗口都会拥有一个自己的Trigger</span><br><span class="line">Evictor 在Trigger触发之后，窗口处理之前，Evictor会用来剔除窗口中不需要的元素，相当于一个filter</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink窗口执行过程？"><a href="#Flink窗口执行过程？" class="headerlink" title="Flink窗口执行过程？"></a>Flink窗口执行过程？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Assigner，Trigger，Evictor都位于一个算子(Window Operator)</span><br><span class="line">数据流进入算子，每一个到达的元素都交给Assigner</span><br><span class="line">Assigner决定元素被放到哪个/些窗口，可能会创建新窗口</span><br><span class="line">一个元素可以被放入多个窗口中，所以存在多个窗口是可能的</span><br><span class="line">每个窗口都拥有自己的Trigger</span><br><span class="line">Trigger有定时器，决定窗口何时被计算或清除</span><br><span class="line">每当有元素加入该窗口或之前注册的定时器超时了，Trigger都会被调用</span><br><span class="line">Trigger的返回结果可以是Continue(不做任何操作)，Fire(处理窗口数据)，Purge(移除窗口和窗口中数据)，或者Fire+Purge</span><br><span class="line">一个Trigger的调用结果只是Fire的话，会计算窗口并保留窗口原样，窗口数据不变，等待下次Fire时再计算</span><br><span class="line">一个窗口可以被重复计算多次直到被Purge</span><br><span class="line">在Purge之前，窗口会一直占用内存</span><br><span class="line">当Trigger Fire了，窗口中元素集合交给Evictor(如果有)</span><br><span class="line">Evictor主要用来遍历窗口中的元素列表，并决定最先进入窗口的多少个元素需要移除</span><br><span class="line">剩余元素会交给用户指定函数进行窗口的计算</span><br><span class="line">如果没有Evictor，窗口中所有元素会一起交给函数进行计算</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink的状态后端？"><a href="#Flink的状态后端？" class="headerlink" title="Flink的状态后端？"></a>Flink的状态后端？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">3种状态后端</span><br><span class="line">内存 MemoryStateBackend</span><br><span class="line">文件系统 FsStateBackend</span><br><span class="line">RocksDB RocksDBStateBackend</span><br><span class="line">只有RocksDB状态后端支持增量检查点，默认关闭</span><br><span class="line">state.backend: rocksdb</span><br><span class="line">state.backend.incremental: true</span><br><span class="line">RocksDBStateBackend rocksDBStateBackend = new RocksDBStateBackend(&quot;hdfs://path/to/flink-checkpoints&quot;, true);</span><br><span class="line">env.setStateBackend(rocksDBStateBackend);</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink中RocksDB的优缺点？"><a href="#Flink中RocksDB的优缺点？" class="headerlink" title="Flink中RocksDB的优缺点？"></a>Flink中RocksDB的优缺点？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">优:</span><br><span class="line">    如果状态空间超大，增量检查点只包含本次ck与上次ck之间的差异</span><br><span class="line">    而不是所有状态，变得轻量级，解决了大状态CK问题</span><br><span class="line">    上一个检查点已经存在的文件可以直接引用，不被引用的文件可以及时删除</span><br><span class="line">缺:</span><br><span class="line">    程序出现问题，TM需要从多个检查点加载状态数据，这些数据可能包括被删除的状态</span><br><span class="line">    旧检查点文件不能随便删除，因为新检查点仍然会引用他们，贸然删除，程序可能无法恢复</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink的状态类型有哪些？"><a href="#Flink的状态类型有哪些？" class="headerlink" title="Flink的状态类型有哪些？"></a>Flink的状态类型有哪些？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">基本的有OperatorState和KeyedState</span><br><span class="line">特殊的有BroadcastState</span><br><span class="line">OperatorState跟一个特定Operator的并发实例绑定，整个Operator只对应一个State，有多少状态由并行度决定</span><br><span class="line">KeyedState是基于KeyStream上的状态，KeyBy之后的OperatorState，与并行度无关了，有多少状态由KeyBy之后有多少Key决定</span><br><span class="line">BroadcastState是1.5开始出现的，用于以特定方式组合和联合处理两个事件流。</span><br><span class="line">    A流的事件被广播到一个算子的所有并行实例，该算子将它们保存为状态。</span><br><span class="line">    B流的事件不广播，发送给同一个算子的单个实例，并与广播流的事件一起处理。</span><br><span class="line">    BroadcastState保存在内存中</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink如何处理延迟数据？"><a href="#Flink如何处理延迟数据？" class="headerlink" title="Flink如何处理延迟数据？"></a>Flink如何处理延迟数据？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Flink窗口处理流式数据虽然提供了基础EventTime的WaterMark机制，但是只能在一定程序上解决，如果数据延迟超过了WaterMark设置的时间，数据会被Flink丢弃。</span><br><span class="line">可以通过设置AllowedLateness+OutputTag来处理这些严重迟到的数据。默认是永不超时。</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink中ManagedState和RawState区别？"><a href="#Flink中ManagedState和RawState区别？" class="headerlink" title="Flink中ManagedState和RawState区别？"></a>Flink中ManagedState和RawState区别？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">是KeyedState和OperatorState的两种存在形式</span><br><span class="line">ManagedState，托管状态，由Flink框架管理的状态</span><br><span class="line">通过框架提供的接口来更行和管理状态的值</span><br><span class="line">不需要序列化</span><br><span class="line">RawState，原始状态，由用户自行管理的具体数据结构</span><br><span class="line">Flink在做CK时，使用byte[]来读写状态内容，对其内部数据结构一无所知</span><br><span class="line">需要序列化</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink的KeyedState和OperatorState的区别？"><a href="#Flink的KeyedState和OperatorState的区别？" class="headerlink" title="Flink的KeyedState和OperatorState的区别？"></a>Flink的KeyedState和OperatorState的区别？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">KeyedState</span><br><span class="line">    只适用于KeyedStream上的算子</span><br><span class="line">    每个Key对应一个状态</span><br><span class="line">    重写RichFunction，通过里面的RuntimeContext访问</span><br><span class="line">    状态随着Key自动在多个算子子任务上迁移</span><br><span class="line">    支持ValueState，ListState，MapSate等数据结构</span><br><span class="line">OperatorState</span><br><span class="line">    可以用于所有算子</span><br><span class="line">    一个算子子任务对应一个状态</span><br><span class="line">    通过实现CheckpointedFunction等接口访问</span><br><span class="line">    有多种状态重新分配方式</span><br><span class="line">    支持ListState，BroadcastSate等数据结构</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink的Join优化？"><a href="#Flink的Join优化？" class="headerlink" title="Flink的Join优化？"></a>Flink的Join优化？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Flink处理数据时，每台机器只是存储了集群的部分数据。</span><br><span class="line">为了执行Join，Flink需要找到两个数据集的所有满足Join条件的数据。</span><br><span class="line">Flink需要将两个数据集有相同Key的数据发送到同一台机器上</span><br><span class="line">两种策略：</span><br><span class="line">repartition-repartition strategy</span><br><span class="line">    两个数据集都会使用Key进行重分区并通过网络传输</span><br><span class="line">broadcast-forward strategy</span><br><span class="line">    一个数据集不动，另一个数据集会复制到有第一个数据集部分数据的所有机器上</span><br><span class="line">    ds1.join(ds2,JoinHint.BROADCAST_HASH_FIRST)</span><br><span class="line">    第二个参数就是提示</span><br><span class="line">    BROADCAST_HASH_FIRST：第一个数据集是较小的数据集</span><br><span class="line">    BROADCAST_HASH_SECOND：第二个数据集是较小的数据集</span><br><span class="line">    REPARTITION_HASH_FIRST：第一个数据集是较小的数据集</span><br><span class="line">    REPARTITION_HASH_SECOND：第二个数据集是较小的数据集</span><br><span class="line">    REPARTITION_SORT_MERGE：对数据集进行重分区，同时使用sort和merge策略</span><br><span class="line">    OPTIMIZER_CHOOSES：Flink的优化器决定两个数据集如何join</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink自定义Sink和Source写法？"><a href="#Flink自定义Sink和Source写法？" class="headerlink" title="Flink自定义Sink和Source写法？"></a>Flink自定义Sink和Source写法？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">自定义Sink，继承RichSinkFunction，实现数据写入</span><br><span class="line">自定义Source，继承RichSourceFunction，实现数据读取</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink自定义UDF函数写法？"><a href="#Flink自定义UDF函数写法？" class="headerlink" title="Flink自定义UDF函数写法？"></a>Flink自定义UDF函数写法？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">UDF:继承ScalarFunction</span><br><span class="line">UDAF:继承AggregateFunction</span><br><span class="line">UDTF:继承TableFunction</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink如何保证exactly-once？"><a href="#Flink如何保证exactly-once？" class="headerlink" title="Flink如何保证exactly-once？"></a>Flink如何保证exactly-once？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">通过Flink的CK机制保证唯一</span><br><span class="line">Barrier插入到数据流中，作为数据流的一部分和数据一起向下流动</span><br><span class="line">Barrier不会干扰正常数据，每个Barrier都带有快照ID</span><br><span class="line">多个不同快照的多个Barrier会在流中同时出现</span><br><span class="line">当所有的OperatorTask成功存储了它们的状态，一个检查点才算完成</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink反压如何解决的？"><a href="#Flink反压如何解决的？" class="headerlink" title="Flink反压如何解决的？"></a>Flink反压如何解决的？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">示例：</span><br><span class="line">    A进入FLink，被Task1处理</span><br><span class="line">    记录被序列化进缓冲区</span><br><span class="line">    缓冲区的数据被移动到Task2，Task2会从缓冲区内读取记录</span><br><span class="line">    Task1在其输出端分配了一个缓冲区，Task2在其输入端也有一个</span><br><span class="line">本地传输：</span><br><span class="line">    如果Task1和Task2在同一个TM，缓冲区可以直接共享</span><br><span class="line">    一旦Task2消费了数据它会被回收</span><br><span class="line">    如果Task2比Task1慢，缓冲区会以比Task1填充速度更慢的速度进行回收</span><br><span class="line">    从而使Task1降速</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink异步IO读写的情况？"><a href="#Flink异步IO读写的情况？" class="headerlink" title="Flink异步IO读写的情况？"></a>Flink异步IO读写的情况？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">Flink的Async I/O允许用户将异步请求客户端与数据流一起使用</span><br><span class="line">操作:</span><br><span class="line">    实现AsyncFunction调度请求</span><br><span class="line">    一个结果ResultFuture的回调</span><br><span class="line">    在数据流上应用异步IO操作作为转换</span><br><span class="line">/**</span><br><span class="line"> * AsyncFunction的一个实现，它发送请求并设置回调</span><br><span class="line"> */</span><br><span class="line">class AsyncDatabaseRequest extends AsyncFunction[String, (String, String)] &#123;</span><br><span class="line"></span><br><span class="line">    /** 可以发出带有回调的并发请求的特定数据库的客户端 */</span><br><span class="line">    lazy val client: DatabaseClient = new DatabaseClient(host, post, credentials)</span><br><span class="line"></span><br><span class="line">    /** 用于将来回调的上下文 */</span><br><span class="line">    implicit lazy val executor: ExecutionContext = ExecutionContext.fromExecutor(Executors.directExecutor())</span><br><span class="line"></span><br><span class="line">    override def asyncInvoke(str: String, resultFuture: ResultFuture[(String, String)]): Unit = &#123;</span><br><span class="line"></span><br><span class="line">        // 发出异步请求，接收结果的Future</span><br><span class="line">        val resultFutureRequested: Future[String] = client.query(str)</span><br><span class="line"></span><br><span class="line">        // 将回调设置为在客户端请求完成后执行</span><br><span class="line">        // 回调只是将结果转发到结果Future</span><br><span class="line">        resultFutureRequested.onSuccess &#123;</span><br><span class="line">            case result: String =&gt; resultFuture.complete(Iterable((str, result)))</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 创建原始流</span><br><span class="line">val stream: DataStream[String] = ...</span><br><span class="line"></span><br><span class="line">// 应用异步I/O转换</span><br><span class="line">val resultStream: DataStream[(String, String)] =</span><br><span class="line">    AsyncDataStream.unorderedWait(stream, new AsyncDatabaseRequest(), 1000, TimeUnit.MILLISECONDS, 100)</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Flink的CK和SP的区别是什么？"><a href="#Flink的CK和SP的区别是什么？" class="headerlink" title="Flink的CK和SP的区别是什么？"></a>Flink的CK和SP的区别是什么？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CK的生命周期由Flink管理，即Flink创建，拥有和发布CK，无需用户交互，轻量级，快速恢复</span><br><span class="line">SP由用户创建，拥有和删除，是计划的，手动备份的，可作为恢复。像Flink版本更新，更改JobGraph，更改并行度</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>
