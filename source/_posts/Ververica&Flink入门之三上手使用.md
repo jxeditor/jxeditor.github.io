@@ -33,3 +33,13 @@ Task Slot是TM中最小资源分配单位,一个TM中有多少个Task Slot就意
 一个Task Slot可以执行多个Operator
 Operator是能够被Chain在一起处理的,任务链
 ```
+
+---
+
+# 日志配置
+```
+默认使用log4j配置,如果需要使用其他的日志方式,可以删除文件
+log4j-cli.properties:用Flink命令行时用的log配置,比如执行flink run
+log4j-yarn-session.properties:用yarn-session.sh启动时命令行执行时用的日志配置
+log4j.properties:无论Standalone还是Yarn模式,JM和TM使用的日志配置
+```
