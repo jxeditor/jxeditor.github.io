@@ -1,1 +1,2 @@
-b
+git add -f *
+git commit -m "update"
