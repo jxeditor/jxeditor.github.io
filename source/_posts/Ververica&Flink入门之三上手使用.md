@@ -43,3 +43,26 @@ log4j-cli.properties:用Flink命令行时用的log配置,比如执行flink run
 log4j-yarn-session.properties:用yarn-session.sh启动时命令行执行时用的日志配置
 log4j.properties:无论Standalone还是Yarn模式,JM和TM使用的日志配置
 ```
+
+---
+
+# Yarn跑Flink的好处
+```
+资源按需使用，提高集群的资源利用率
+任务有优先级，根据优先级运行作业
+基于 Yarn 调度系统，能够自动化地处理各个角色的 Failover
+    JobManager进程和TaskManager进程都由Yarn NodeManager监控
+    如果JobManager进程异常退出，则Yarn ResourceManager会重新调度JobManager到其他机器
+    如果TaskManager进程异常退出，JobManager会收到消息并重新向Yarn ResourceManager申请资源，重新启动TaskManager
+```
+
+---
+
+# 参数关系
+```
+-n(yarn-session) 与 -p 的关系
+    -n和-yn在社区版本中没有实际的控制作用,实际资源由-p申请
+    在blink的开源版本的yarn-session中,-n用于启动指定的TM,即使Job需要更多的slot也不会申请新的TM
+-yn(yarn-cluster) 与 -p 的关系
+    在blink的开源版本的yarn-cluster中,-yn表示初始TM数量,不设置上限,实际还是由-p和-ys决定
+```
