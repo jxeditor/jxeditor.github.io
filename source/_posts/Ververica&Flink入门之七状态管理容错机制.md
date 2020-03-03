@@ -1,5 +1,5 @@
 ---
-title: Ververica&Flink入门之六WindowTime
+title: Ververica&Flink入门之七状态管理容错机制
 date: 2019-04-19 15:38:06
 categories: 大数据
 tags: flink
