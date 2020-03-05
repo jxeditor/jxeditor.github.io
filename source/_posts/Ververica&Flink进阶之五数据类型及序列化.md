@@ -48,3 +48,26 @@ tags: flink
 添加类型提示
 手动创建TypeInfomation
 ```
+
+---
+
+# Kryo序列化
+```
+对于Flink无法序列化的类型,默认会交给Kryo处理,如果Kryo仍然无法处理
+    1.强制使用Avro来代替Kryo
+        env.getConfig().enableForceAvro();
+    2.为Kryo增加自定义的Serializer以增强Kryo的功能
+        env.getConfig().addDefaultKryoSerializer(clazz,serializer);
+
+禁用Kryo
+    env.getConfig().disableGenericTypers();
+```
+
+---
+
+# Flink通信层的序列化
+```
+Flink的Task之间如果需要跨网络传输数据记录,那么就需要将数据序列化之后写入NetworkBufferPool,然后下层的Task读出之后再进行反序列操作,最后进行逻辑处理
+
+为了使得记录以及时间能够被写入Buffer随后在消费时在从Buffer中读出,Flink提供了数据记录序列化器(Record)
+```
