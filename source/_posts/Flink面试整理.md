@@ -3,7 +3,7 @@ title: Flink面试基础
 date: 2020-02-27 11:40:26
 categories: 大数据
 tags:
-    - interface
+    - interview
     - flink
 ---
 

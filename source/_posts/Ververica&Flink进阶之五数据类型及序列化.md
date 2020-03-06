@@ -69,5 +69,7 @@ tags: flink
 ```
 Flink的Task之间如果需要跨网络传输数据记录,那么就需要将数据序列化之后写入NetworkBufferPool,然后下层的Task读出之后再进行反序列操作,最后进行逻辑处理
 
-为了使得记录以及时间能够被写入Buffer随后在消费时在从Buffer中读出,Flink提供了数据记录序列化器(Record)
+为了使得记录以及时间能够被写入Buffer随后在消费时在从Buffer中读出,Flink提供了数据记录序列化器(RecordSerializer)与反序列化器(RecordDeserializer)以及事件序列化器(EventSerializer)
+
+Function发送的数据被封装成SerialzationDelegate,它将任意元素公开为IOReadableWritable以进行序列化,通过setInstance()来传入要序列化的数据
 ```
