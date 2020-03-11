@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Ververica&amp;Flink运维之二指标监控报警
+  
+</title>
+
+<meta name="description" content="B站Flink教程视频观看">
+<meta name="keywords" content="flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ververica&amp;Flink运维之二指标监控报警">
+<meta property="og:url" content="http://yoursite.com/2019/08/16/Ververica&Flink运维之二指标监控报警/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="B站Flink教程视频观看">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-11T09:36:08.924Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ververica&amp;Flink运维之二指标监控报警">
+<meta name="twitter:description" content="B站Flink教程视频观看">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">87</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">53</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/">tool</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">75</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Ververica&amp;Flink运维之二指标监控报警" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Ververica&Flink运维之二指标监控报警
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-08-16
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>B站Flink教程视频观看</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="为什么关注指标"><a href="#为什么关注指标" class="headerlink" title="为什么关注指标"></a>为什么关注指标</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">指标</span><br><span class="line">    标准化</span><br><span class="line">    可量化</span><br><span class="line">    多维度</span><br><span class="line">监控</span><br><span class="line">    易用</span><br><span class="line">    实时</span><br><span class="line">    可查询历史</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="监控报警链路"><a href="#监控报警链路" class="headerlink" title="监控报警链路"></a>监控报警链路</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">日志指标收集</span><br><span class="line">    统一化,集中化</span><br><span class="line">解析展示</span><br><span class="line">    多维度,多种方式聚合</span><br><span class="line">监控报警</span><br><span class="line">    个性化,可配置</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="指标展示"><a href="#指标展示" class="headerlink" title="指标展示"></a>指标展示</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">grafana</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="常用的指标"><a href="#常用的指标" class="headerlink" title="常用的指标"></a>常用的指标</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">系统指标</span><br><span class="line">    可用性,流量,CPU,内存,GC,网络,CK,Connector</span><br><span class="line">    </span><br><span class="line">自定义指标</span><br><span class="line">    处理逻辑耗时打点</span><br><span class="line">    外部服务调用性能</span><br><span class="line">    缓存命中率</span><br><span class="line">    处理失败的数据占比</span><br><span class="line">    filter过滤的数据占比</span><br><span class="line">    超时丢弃的数据量</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="如何确定关注哪些监控项"><a href="#如何确定关注哪些监控项" class="headerlink" title="如何确定关注哪些监控项"></a>如何确定关注哪些监控项</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">作业状态相关</span><br><span class="line">    作业故障</span><br><span class="line">    运行不稳定</span><br><span class="line">    影响可用性的风险因素</span><br><span class="line"></span><br><span class="line">作业性能相关</span><br><span class="line">    处理延迟</span><br><span class="line">    数据倾斜</span><br><span class="line">    性能瓶颈</span><br><span class="line"></span><br><span class="line">业务逻辑相关</span><br><span class="line">    上游数据问题</span><br><span class="line">    新上逻辑问题</span><br><span class="line">    数据丢失</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="指标聚合方式"><a href="#指标聚合方式" class="headerlink" title="指标聚合方式"></a>指标聚合方式</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">聚合维度 </span><br><span class="line">    Task</span><br><span class="line">    Operator</span><br><span class="line">    Job</span><br><span class="line">    Host</span><br><span class="line">        物理指标</span><br><span class="line">    Cluster</span><br><span class="line">        容量</span><br><span class="line">        流量</span><br><span class="line">    业务维度</span><br><span class="line">    大盘展示</span><br><span class="line">        粗粒度</span><br><span class="line">    故障排除</span><br><span class="line">        由粗到细</span><br><span class="line">    性能测试</span><br><span class="line">        细粒度</span><br><span class="line"></span><br><span class="line">聚合方式</span><br><span class="line">    总和,均值,最大,最小</span><br><span class="line">        常规指标</span><br><span class="line">        消除统计误差</span><br><span class="line">    差值</span><br><span class="line">        上游数据量与下游处理量的差</span><br><span class="line">        最新offset与消费offset的差</span><br><span class="line">    99线</span><br><span class="line">        xx率</span><br><span class="line">        xx耗时</span><br><span class="line">    指标缺失</span><br><span class="line">        单个指标缺失</span><br><span class="line">        整个作业没有指标</span><br><span class="line">        </span><br><span class="line">多指标复杂聚合</span><br><span class="line">    时间线对比</span><br><span class="line">        同比</span><br><span class="line">        环比</span><br><span class="line">        持续时间</span><br><span class="line">        周期性</span><br><span class="line">    结合外部系统计算</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="指标监控的用途"><a href="#指标监控的用途" class="headerlink" title="指标监控的用途"></a>指标监控的用途</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">作业异常报警</span><br><span class="line">    作业状态异常</span><br><span class="line">    作业无指标上报</span><br><span class="line">    指标达到阈值</span><br><span class="line">        处理量跌0</span><br><span class="line">        消费延迟</span><br><span class="line">            数量</span><br><span class="line">            时间</span><br><span class="line">        失败率,丢失率</span><br><span class="line">    个性化</span><br><span class="line">        报警时段</span><br><span class="line">        聚合方式</span><br><span class="line">    错误日志,关键词日志</span><br><span class="line">需要考虑报警系统本身的稳定性</span><br><span class="line">    误报</span><br><span class="line">    漏报</span><br><span class="line">    延迟</span><br><span class="line"></span><br><span class="line">指标大盘</span><br><span class="line">    反映平台整体的现状</span><br><span class="line">        异常值高亮</span><br><span class="line">        多维度聚合</span><br><span class="line">        时间线对比</span><br><span class="line">    及时发现并快速定位到故障</span><br><span class="line">    给出平台可优化的方向</span><br><span class="line">    便于统筹资源分配</span><br><span class="line">    </span><br><span class="line">自动化运维</span><br><span class="line">    无法运维</span><br><span class="line">        没有指标</span><br><span class="line">        黑盒作业</span><br><span class="line">        一群人围着看问题</span><br><span class="line">    手动运维</span><br><span class="line">        重启,扩容,回滚,迁移,降级</span><br><span class="line">        纠正错误代码</span><br><span class="line">        优化处理逻辑</span><br><span class="line">    辅助运维</span><br><span class="line">        使用指标量化</span><br><span class="line">        经验转化为建议</span><br><span class="line">            GC频繁-&gt;增大内存</span><br><span class="line">            数据量大-&gt;增大并发</span><br><span class="line">    智能运维</span><br><span class="line">        故障自动拉起</span><br><span class="line">        资源不足自动扩容</span><br><span class="line">        自动切换备用作业</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>
