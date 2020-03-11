@@ -8,22 +8,21 @@
 
 <title>
   
-    Ververica&amp;Flink入门之八TableAPI
+    BlackC
   
 </title>
 
-<meta name="description" content="B站Flink教程视频观看">
-<meta name="keywords" content="flink">
+<meta name="description" content="title: Ververica&amp;amp;Flink入门之五客户端操作date: 2019-04-12 10:28:56categories: 大数据 tags: flink B站Flink教程视频观看">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Ververica&amp;Flink入门之八TableAPI">
-<meta property="og:url" content="http://yoursite.com/2019/04/26/Ververica&Flink入门之八TableAPI/index.html">
+<meta property="og:title" content="BlackC">
+<meta property="og:url" content="http://yoursite.com/2020/03/05/Ververica&Flink入门之五客户端操作/index.html">
 <meta property="og:site_name" content="BlackC">
-<meta property="og:description" content="B站Flink教程视频观看">
+<meta property="og:description" content="title: Ververica&amp;amp;Flink入门之五客户端操作date: 2019-04-12 10:28:56categories: 大数据 tags: flink B站Flink教程视频观看">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-03-11T03:15:54.842Z">
+<meta property="og:updated_time" content="2020-03-11T03:29:16.380Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Ververica&amp;Flink入门之八TableAPI">
-<meta name="twitter:description" content="B站Flink教程视频观看">
+<meta name="twitter:title" content="BlackC">
+<meta name="twitter:description" content="title: Ververica&amp;amp;Flink入门之五客户端操作date: 2019-04-12 10:28:56categories: 大数据 tags: flink B站Flink教程视频观看">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -153,42 +152,28 @@
       
         <div style="max-width: 1000px">
       
-          <article id="post-Ververica&amp;Flink入门之八TableAPI" class="article article-type-post">
-  
-    <h1 class="article-header">
-      Ververica&Flink入门之八TableAPI
-    </h1>
+          <article id="post-Ververica&amp;Flink入门之五客户端操作" class="article article-type-post">
   
   
 
   <div class="article-info">
     <span class="article-date">
-  2019-04-26
+  2020-03-05
 </span>
 
     
-	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
-	</span>
-
 
     
-	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
-	</span>
-
 
   </div>
   <div class="article-entry">
-    <blockquote>
+    <hr>
+<p>title: Ververica&amp;Flink入门之五客户端操作<br>date: 2019-04-12 10:28:56<br>categories: 大数据</p>
+<h2 id="tags-flink"><a href="#tags-flink" class="headerlink" title="tags: flink"></a>tags: flink</h2><blockquote>
 <p>B站Flink教程视频观看</p>
 </blockquote>
 <a id="more"></a>
-<h1 id="Table-API-amp-SQL"><a href="#Table-API-amp-SQL" class="headerlink" title="Table API &amp; SQL"></a>Table API &amp; SQL</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">声明式,用户只关心做什么,不用关心怎么做</span><br><span class="line">高性能,支持查询优化,可以获取更好的执行性能</span><br><span class="line">流批统一,相同的逻辑,既可以流模式运行,也可以批模式运行</span><br><span class="line">标准稳定,语义遵循SQL标准,不易变动</span><br><span class="line">易理解,语义明确,所见即所得</span><br></pre></td></tr></table></figure>
-<hr>
-<h1 id="Table使用"><a href="#Table使用" class="headerlink" title="Table使用"></a>Table使用</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># 获取一个Table</span><br><span class="line">    注册对应的TableSource</span><br><span class="line">        通过TableDescription来注册</span><br><span class="line">        自定义Source</span><br><span class="line">        DataStream</span><br><span class="line">    调用TableEnv的scan方法获取Table对象</span><br><span class="line"></span><br><span class="line"># 输出一个Table</span><br><span class="line">    TableDescription</span><br><span class="line">    自定义TableSink</span><br><span class="line">    DataStream</span><br><span class="line">    </span><br><span class="line"># 操作Table</span><br><span class="line">    select,filter,where</span><br><span class="line">    groupBy,flatAggrgate</span><br><span class="line">    join</span><br><span class="line">    addColumns添加列</span><br><span class="line">    addOrReplaceColumns替换列</span><br><span class="line">    dropColumns删除列</span><br><span class="line">    renameColumns重命名列</span><br><span class="line">    withColumns选择范围列</span><br><span class="line">    withoutColumns反选范围列</span><br></pre></td></tr></table></figure>
-<hr>
-<h1 id="易用性"><a href="#易用性" class="headerlink" title="易用性"></a>易用性</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"># Map</span><br><span class="line">UDF,继承ScalarFunction</span><br><span class="line">table.map(udf())</span><br><span class="line">table.select(udf1(),udf2(),udf3())</span><br><span class="line"></span><br><span class="line"># FlatMap</span><br><span class="line">UDTF,继承TableFunction</span><br><span class="line">table.flatMap(udtf())</span><br><span class="line">table.joinLateral(udtf())</span><br><span class="line"></span><br><span class="line"># Aggregate</span><br><span class="line">UDAF,继承AggregateFunction</span><br><span class="line">table.aggregate(agg())</span><br><span class="line">table.select(agg1(),agg2()...)</span><br><span class="line"></span><br><span class="line"># FlatAggregate</span><br><span class="line">UD(TA)F,继承TableAggregateFunction</span><br><span class="line">table.groupBy(&apos;a&apos;)</span><br><span class="line">    .flatAggregate(flatAggFunc(&apos;e,&apos;f) as (&apos;a,&apos;b,&apos;c))</span><br><span class="line">    .select(&apos;a,&apos;c)</span><br><span class="line">新增Agg,能输出多行</span><br><span class="line"></span><br><span class="line"># AggregateFunction &amp; TableAggregateFunction</span><br><span class="line">AggregateFunction适合做最大值</span><br><span class="line">TableAggregateFunction可以做TopN</span><br></pre></td></tr></table></figure>
+
   </div>
   <footer class="article-footer">
     
