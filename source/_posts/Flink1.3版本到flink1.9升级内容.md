@@ -5,11 +5,9 @@ categories: 大数据
 tags: flink
 ---
 
-> 引言
-一年内,公司从flink1.3-> flink1.8 -> flink1.9 不断的迎接不同版本对flink相关业务需求进行满足,代码方面也慢慢的简单化
-<!-- more -->
+> 一年内,公司从flink1.3-> flink1.8 -> flink1.9 不断的迎接不同版本对flink相关业务需求进行满足,代码方面也慢慢的简单化
 
-![](/Flink1.3版本到flink1.9升级内容/20200113034205621.png)
+<!-- more -->
 
 ### [Flink的1.0到1.9特性理论内容](https://www.cnblogs.com/zclaude/p/12048429.html)
 ```
