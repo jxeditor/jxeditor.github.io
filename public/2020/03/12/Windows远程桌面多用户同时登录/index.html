@@ -8,22 +8,22 @@
 
 <title>
   
-    ROOT没有操作HDFS的权限问题
+    Windows远程桌面多用户同时登录
   
 </title>
 
-<meta name="description" content="没有权限操作hdfs">
-<meta name="keywords" content="cdh">
+<meta name="description" content="远程连接多用户同时操作">
+<meta name="keywords" content="tools,os">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ROOT没有操作HDFS的权限问题">
-<meta property="og:url" content="http://yoursite.com/2017/01/13/ROOT没有操作HDFS的权限问题/index.html">
+<meta property="og:title" content="Windows远程桌面多用户同时登录">
+<meta property="og:url" content="http://yoursite.com/2020/03/12/Windows远程桌面多用户同时登录/index.html">
 <meta property="og:site_name" content="BlackC">
-<meta property="og:description" content="没有权限操作hdfs">
+<meta property="og:description" content="远程连接多用户同时操作">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-01-13T04:08:56.967Z">
+<meta property="og:updated_time" content="2020-03-12T05:34:02.950Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ROOT没有操作HDFS的权限问题">
-<meta name="twitter:description" content="没有权限操作hdfs">
+<meta name="twitter:title" content="Windows远程桌面多用户同时登录">
+<meta name="twitter:description" content="远程连接多用户同时操作">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -153,38 +153,42 @@
       
         <div style="max-width: 1000px">
       
-          <article id="post-ROOT没有操作HDFS的权限问题" class="article article-type-post">
+          <article id="post-Windows远程桌面多用户同时登录" class="article article-type-post">
   
     <h1 class="article-header">
-      ROOT没有操作HDFS的权限问题
+      Windows远程桌面多用户同时登录
     </h1>
   
   
 
   <div class="article-info">
     <span class="article-date">
-  2017-01-13
+  2020-03-12
 </span>
 
     
 	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/系统/">系统</a></li></ul>
 	</span>
 
 
     
 	<span class="article-tag tagcloud">
-		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cdh/">cdh</a></li></ul>
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/os/">os</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/tools/">tools</a></li></ul>
 	</span>
 
 
   </div>
   <div class="article-entry">
     <blockquote>
-<p>没有权限操作hdfs</p>
+<p>远程连接多用户同时操作</p>
 </blockquote>
 <a id="more"></a>
-<h2 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># 不能su hdfs的话,修改/etc/passwd中hdfs对应的/sbin/nologin,改为/bin/bash</span><br><span class="line">su - hdfs</span><br><span class="line">hdfs dfs -chown -R root:hdfs /</span><br><span class="line"># 就可以了</span><br></pre></td></tr></table></figure>
+<h1 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h1><p>Win 10系统设备一台,需要专业版<br>RDPWrap工具<a href="https://github.com/jxeditor/Software/blob/master/Win10%E5%A4%9A%E7%94%A8%E6%88%B7%E5%90%8C%E6%97%B6%E7%99%BB%E9%99%86.zip" target="_blank" rel="noopener">下载链接</a></p>
+<hr>
+<h1 id="操作"><a href="#操作" class="headerlink" title="操作"></a>操作</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">a.以管理员身份运行install.bat</span><br><span class="line">b.运行RDPconf.exe</span><br><span class="line">    ListenerState可能是不支持</span><br><span class="line">c.进入&apos;替换&apos;文件夹</span><br><span class="line">d.将termsrv.dll复制到C:\Windows\System32\下</span><br><span class="line">e.将termsrv.dll.mui复制到C:\Windows\System32\zh-CN\下</span><br><span class="line">f.重启电脑,运行RDPConf.exe</span><br><span class="line">    ListenerState为支持状态</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">C:\Windows\System32\下文件提示没有权限</span><br><span class="line">右键要操作的文件-属性-&gt;安全-&gt;高级-&gt;更改&apos;所有者&apos;</span><br><span class="line">-&gt;高级-&gt;立即查找-&gt;Administrators-&gt;确定</span><br><span class="line">-&gt;确定-&gt;更改权限</span><br></pre></td></tr></table></figure>
   </div>
   <footer class="article-footer">
     
