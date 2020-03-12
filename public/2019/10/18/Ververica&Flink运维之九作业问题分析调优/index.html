@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Ververica&amp;Flink运维之九作业问题分析调优
+  
+</title>
+
+<meta name="description" content="B站Flink教程视频观看">
+<meta name="keywords" content="flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ververica&amp;Flink运维之九作业问题分析调优">
+<meta property="og:url" content="http://yoursite.com/2019/10/18/Ververica&Flink运维之九作业问题分析调优/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="B站Flink教程视频观看">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-12T03:54:14.521Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Ververica&amp;Flink运维之九作业问题分析调优">
+<meta name="twitter:description" content="B站Flink教程视频观看">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">92</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">58</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tool/">tool</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">15</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Ververica&amp;Flink运维之九作业问题分析调优" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Ververica&Flink运维之九作业问题分析调优
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-10-18
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>B站Flink教程视频观看</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="原理剖析"><a href="#原理剖析" class="headerlink" title="原理剖析"></a>原理剖析</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line">CK机制</span><br><span class="line">    什么是CK</span><br><span class="line">        简单的说就是Flink为了达到容错和Exactly-Once语义的功能</span><br><span class="line">        定期把State持久化下来,而这一持久化过程就叫CK</span><br><span class="line">        它是FlinkJob在某一时刻全局状态的快照</span><br><span class="line">    </span><br><span class="line">统一时钟-广播</span><br><span class="line">    由中心点生成时钟并广播给各个Slave节点,达到时间的统一性</span><br><span class="line">    缺点:</span><br><span class="line">        单点故障</span><br><span class="line">        数据不一致,出现脑裂现象</span><br><span class="line">        系统复杂,不稳定</span><br><span class="line"></span><br><span class="line">Flink之Barrier</span><br><span class="line">    定时向数据流中发送Barrier</span><br><span class="line"></span><br><span class="line">CK注意</span><br><span class="line">    频率不宜过高,一般需求1-5分钟,精确性要求高20-30秒</span><br><span class="line">    超时时间不宜过长,一般在频率的一半即可</span><br><span class="line">    异步化:在Operator的自定义snapshotState尽量异步化</span><br><span class="line">    </span><br><span class="line">Flink背压</span><br><span class="line">    Flink不同TaskManager之间的数据交换就是采用有界的buffer实现</span><br><span class="line">    当上下游计算速度不一致时就会出现正背压和反背压的情况</span><br><span class="line"></span><br><span class="line">反压-静态控流</span><br><span class="line">    预估producer和consumer的处理速度,静态控制快速组件的速度</span><br><span class="line">    达到系统整体的平衡</span><br><span class="line"></span><br><span class="line">反压处理-Flink</span><br><span class="line">    静态流控的缺陷:</span><br><span class="line">        事先预估系统中流速</span><br><span class="line">        系统的速度是静态的,不能适应动态变化的速度</span><br><span class="line">    动态流控:</span><br><span class="line">        TCP流控(Flink1.5之前)</span><br><span class="line">            主要通过TCP协议的滑动窗口实现</span><br><span class="line">            缺点:</span><br><span class="line">                Flink上游对下游情况一无所知,导致上游对数据反压的感知过于迟钝</span><br><span class="line">                TCP的复用导致一个channel阻塞住其他channel,尤其是CKBarrier的传递</span><br><span class="line">        Credit流控</span><br><span class="line">            根据TCP的流量控制原理实现一套自身的流控机制</span><br><span class="line">            在数据交换是会返回一个Credit,当为0时将不会再发送数据给下游</span><br><span class="line">            放空了Netty层与Socket层,作业的其他信息交换得到了保障</span><br><span class="line">            </span><br><span class="line">Java内存模型的问题</span><br><span class="line">    JVM复杂,GC成本高</span><br><span class="line">        使用JVM对开发人员来说是比较复杂的,垃圾回收的成本高</span><br><span class="line">    对象存储开销大密度低</span><br><span class="line">        对象存储到Heap中,需要序列化</span><br><span class="line">        其中对象Header会占用比较大的空间导致了对象的存储密度低</span><br><span class="line">    OOM引起稳定性问题</span><br><span class="line">        当内存不足时,会引发OOM异常,导致系统崩溃</span><br><span class="line"></span><br><span class="line">Flink内存组成</span><br><span class="line">    cutoff:预留内存</span><br><span class="line">    NetworkBuffers:用于Task间的数据交换</span><br><span class="line">    MomeryManager:主要用于算法上,目前用于batch作业中,可以是堆外</span><br><span class="line">    free:用户在算子中new的对象以及TM的数据结构使用的</span><br><span class="line">    </span><br><span class="line">内存计算</span><br><span class="line">    TM 8G,Net 0.1,MF 0.2</span><br><span class="line">    可用内存:8192M * 0.75 = 6144M</span><br><span class="line">    Network:6144M * 0.1 = 614.4M</span><br><span class="line">    Heap:6144M * 0.9 * 0.8 = 4424M</span><br><span class="line">    Flink:6144M * 0.9 * 0.2 = 796M</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="性能定位"><a href="#性能定位" class="headerlink" title="性能定位"></a>性能定位</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">定位口诀</span><br><span class="line">    一压二查三指标,延迟吞吐是核心</span><br><span class="line">    时刻关注资源量,排查首先看GC</span><br><span class="line"></span><br><span class="line">看反压</span><br><span class="line">    通常最后一个被压高的subTask的下游就是Job的瓶颈之一</span><br><span class="line">看CK时长</span><br><span class="line">    CK时长能在一定程度影响Job的整体吞吐</span><br><span class="line">看核心指标</span><br><span class="line">    指标是对一个任务性能精准判断的依据</span><br><span class="line">    延迟指标和吞吐则是其中最为关键的指标</span><br><span class="line">资源的使用率</span><br><span class="line">    提高资源的利用率是最终的目的</span><br><span class="line">    </span><br><span class="line">常见的性能问题</span><br><span class="line">    JSON序列化和反序列化</span><br><span class="line">        常是在Source和Sink的Task上,在指标上没有体现,容易被忽略</span><br><span class="line">    Map和Set的Hash冲突</span><br><span class="line">        由于HashMap,HashSet等随数据负载因子增高,引起的插入和查询性能下降</span><br><span class="line">    数据倾斜</span><br><span class="line">        数据倾斜大大影响系统的吞吐</span><br><span class="line">    和低速的系统交互</span><br><span class="line">        在高速的计算系统中,低速的外部系统,比如MySQL,HBase,传统的单机系统等</span><br><span class="line">    频繁的GC</span><br><span class="line">        内内存或是比例分配不合理导致频繁GC,甚至是TM失联</span><br><span class="line">    大窗口</span><br><span class="line">        窗口size大,数据量大,或是滑动窗口size和step比值比较大如size=5min,step=1s</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="经典场景调优"><a href="#经典场景调优" class="headerlink" title="经典场景调优"></a>经典场景调优</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">数据去重</span><br><span class="line">    通过Set,Map等数据结构结合Flink的State实现</span><br><span class="line">        缺陷:</span><br><span class="line">            随时间的推移,Set,Map等数据量增大,Hash冲突导致对写性能急剧下降</span><br><span class="line">            内存直线上升,导致频繁GC</span><br><span class="line">            资源耗尽吞吐低,TM失联,任务异常</span><br><span class="line">    精准去重:通过bitMap/roaring bitMap</span><br><span class="line">    近似去重:bloomFilter</span><br><span class="line"></span><br><span class="line">数据倾斜</span><br><span class="line">    单点问题</span><br><span class="line">        数据集中在某些partition上,致使数据严重不平衡</span><br><span class="line">    GC频繁</span><br><span class="line">        过多的数据集中在某些JVM中导致其内存资源短缺,进而引起频繁的GC</span><br><span class="line">    吞吐下降,延迟增大</span><br><span class="line">        频繁的GC和数据单点导致系统吞吐下降,数据延迟</span><br><span class="line">    系统崩溃</span><br><span class="line">        严重情况下过长的GC会导致TM和JM失联,系统崩溃</span><br><span class="line">倾斜-源头</span><br><span class="line">    数据源的消费不均匀:调整并发度</span><br><span class="line">        对于数据源消费不均匀,比如kafka数据源,尝试通过调整数据源算子的并发度实现</span><br><span class="line">        原则:通常情况下是Source的并发度和Kafka的分区数一致或是Kafka分区数是Source并发度的正整数倍</span><br><span class="line"></span><br><span class="line">无统计场景</span><br><span class="line">    改变Key的分布</span><br><span class="line">聚合场景</span><br><span class="line">    预聚合</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="内存调优"><a href="#内存调优" class="headerlink" title="内存调优"></a>内存调优</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">Flink内存主要是三部分,NetworkBuffer和ManagerPool都是由Flink管理</span><br><span class="line">ManagerPool也已经走向堆外内存,所以内存调优分为两部分</span><br><span class="line">    非堆内存NetWorkBuffer和ManagerPool调优</span><br><span class="line">    Flink系统中Heap内存调优</span><br><span class="line"></span><br><span class="line">非堆内存</span><br><span class="line">    调整NetworkBuffer和ManagerPool的比例</span><br><span class="line">        NetworkBuffer:</span><br><span class="line">            taskmanager.network.memory.fraction(默认0.1)</span><br><span class="line">            taskmanager.network.memory.min(默认64M)</span><br><span class="line">            taskmanager.network.memory.max(默认1G)</span><br><span class="line">            原则:默认是0.1或是小于0.1可以根据使用的情况进行调整</span><br><span class="line">        ManagerPool:</span><br><span class="line">            taskmanager.memory.off-heap:true(默认是false)</span><br><span class="line">            taskmanager.memory.fraction(默认是0.7)</span><br><span class="line">            原则:在流计算中建议调整成小于0.3</span><br><span class="line">            </span><br><span class="line">堆内存</span><br><span class="line">    Flink是运行在JVM上的,所以堆内存调优和传统JVM调优无差别</span><br><span class="line">    默认Flink使用的ParallelScavenge的垃圾回收器,可以改用G1垃圾回收器</span><br><span class="line">    启动参数</span><br><span class="line">        env.java.opts= -server -XX:+UseG1GC -XX:MaxGCPauseMillis=300 -XX:+PrintGCDetails</span><br><span class="line">        </span><br><span class="line">G1的优势</span><br><span class="line">    无空间碎片</span><br><span class="line">        G1基于标记-整理算法,不会产生空间碎片,分配大对象时不会无法得到连续的空间而提前触发一次FULLGC</span><br><span class="line">    可控制的暂停时间</span><br><span class="line">        G1通过动态调整young代空间并根据回收代价和空间率选择部分回收Old代垃圾达到可预测的暂停时间</span><br><span class="line">    并行与并发</span><br><span class="line">        G1能更充分的利用CPU,多核环境下的硬件优势来缩短stop the world的停顿时间</span><br><span class="line">        </span><br><span class="line">G1参数</span><br><span class="line">    -XX:MaxGCPauseMillis:设置允许的最大GC停顿时间(GC Pause Time),默认是200ms</span><br><span class="line">    -XX:G1HeapRegionSize:每个分区的大小,默认值是会根据整个堆区的大小计算出来,范围是1M~32M,取值是2的幂,计算的倾向是尽量有2048个分区数</span><br><span class="line">    -XX:MaxTenuringThreshold=n:晋升老年代的年龄阈值,默认值为15</span><br><span class="line">    -XX:InitiatingHeapOccupancyPercent:</span><br><span class="line">        一般会简写IHOP,默认是45%,这个占比跟并发周期的启动相关,当空间占比达到这个值时,会启动并发周期</span><br><span class="line">        如果经常出现FULLGC,可以调低该值,尽早的回收可以减少FULLGC的触发</span><br><span class="line">        但如果过低,则并发阶段会更加频繁,降低应用的吞吐</span><br><span class="line">    -XX:G1NewSizePercent:年轻代最小的堆空间占比,默认5%</span><br><span class="line">    -XX:G1MaxNewSizePercent:年轻代最大的堆空间占比,默认60%</span><br><span class="line">    -XX:CountGCThreads:并发执行的线程数,默认值接近整个应用线程数的1/4</span><br><span class="line">    -XX:-XX:G1HeapWastePercent:允许的浪费堆空间的占比,默认5%,如果并发标记可回收的空间小于5%,则不会触发MixedGC</span><br><span class="line">    -XX:G1MixedGCCountTarget:一次全局并发标记之后,后续最多执行的MixedGC次数,默认值是8</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>
