@@ -8,7 +8,7 @@ favicon: /images/favicon.ico
 monochrome: true
 
 # view setting
-avatar: https://raw.githubusercontent.com/jxeditor/jxeditor.github.io/hexo/logo.jpg
+avatar: https://raw.githubusercontent.com/jxeditor/Software/master/Blog/logo.jpg
 avatarLink: /about
 maxContentWidth: 1000px # set the main content column's max-width property. keep it blank to unlimited the width
 copyright: # the copyright text in the footer, could be richtext
