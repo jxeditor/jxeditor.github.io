@@ -2,7 +2,9 @@
 title: HBase的工作原理
 date: 2017-11-23 08:50:29
 categories: 大数据
-tags: hbase
+tags: 
+    - hbase
+    - interview
 ---
 
 > Hbase工作原理介绍

@@ -2,7 +2,9 @@
 title: Zookeeper的领导者选举和原子广播
 date: 2017-08-28 14:30:40
 categories: 大数据
-tags: zk
+tags: 
+    - zk
+    - interview
 ---
 
 > 简单的说一下zookeeper工作的过程,如果对这个过程还不太清楚,或者说对它如何使用等不太清楚的,可以参考一下其他的文章

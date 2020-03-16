@@ -2,7 +2,9 @@
 title: Kafka的概念性知识整合
 date: 2018-01-25 10:38:27
 categories: 大数据
-tags: kafka
+tags: 
+    - kafka
+    - interview
 ---
 
 > 主要围绕Kafka组件,文件存储机制以及常用命令的介绍

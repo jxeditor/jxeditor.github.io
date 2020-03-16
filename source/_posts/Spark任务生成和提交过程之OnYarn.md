@@ -2,7 +2,9 @@
 title: Spark任务生成和提交过程之OnYarn
 date: 2017-11-21 14:38:48
 categories: 大数据
-tags: spark
+tags: 
+    - spark
+    - interview
 ---
 
 > 整理Spark任务生成和提交过程,最好能在脑海形成一个图

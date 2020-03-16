@@ -2,7 +2,9 @@
 title: HBase的基本命令
 date: 2017-11-23 15:58:31
 categories: 大数据
-tags: hbase
+tags: 
+    - hbase
+    - interview
 ---
 
 > 记录Hbase常用的命令以及对性能帮助大的命令.

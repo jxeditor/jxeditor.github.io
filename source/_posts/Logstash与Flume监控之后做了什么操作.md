@@ -2,7 +2,9 @@
 title: Logstash与Flume监控之后做了什么操作
 date: 2017-10-29 09:49:30
 categories: 大数据
-tags: elk
+tags: 
+    - elk
+    - interview
 ---
 
 > 对于Flume与Logstash重启后的操作

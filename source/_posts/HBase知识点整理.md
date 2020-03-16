@@ -2,7 +2,9 @@
 title: HBase知识点整理
 date: 2018-01-31 09:06:07
 categories: 大数据
-tags: hbase
+tags: 
+    - hbase
+    - interview
 ---
 
 > 整理一下HBase经常会问到的知识性的问题

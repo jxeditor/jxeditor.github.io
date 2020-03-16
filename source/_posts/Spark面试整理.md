@@ -1,5 +1,5 @@
 ---
-title: Spark面试基础
+title: Spark面试整理
 date: 2020-03-06 14:40:35
 categories: 大数据
 tags:
@@ -11,7 +11,7 @@ tags:
 
 <!-- more -->
 
-# Spark面试基础
+# Spark面试整理
 
 # Spark概念
 ```
