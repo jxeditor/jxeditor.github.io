@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink批流统一操作外部存储
+  
+</title>
+
+<meta name="description" content="整理公司业务,对于Flink离线批处理进行学习与踩坑">
+<meta name="keywords" content="flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink批流统一操作外部存储">
+<meta property="og:url" content="http://yoursite.com/2020/04/18/Flink批流统一操作外部存储/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="整理公司业务,对于Flink离线批处理进行学习与踩坑">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-04-18T13:11:53.785Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flink批流统一操作外部存储">
+<meta name="twitter:description" content="整理公司业务,对于Flink离线批处理进行学习与踩坑">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://raw.githubusercontent.com/jxeditor/Software/master/Blog/logo.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">95</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">59</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">10</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink批流统一操作外部存储" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink批流统一操作外部存储
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-04-18
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>整理公司业务,对于Flink离线批处理进行学习与踩坑</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="批处理"><a href="#批处理" class="headerlink" title="批处理"></a>批处理</h1><h2 id="数据Source"><a href="#数据Source" class="headerlink" title="数据Source"></a>数据Source</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这里我统一使用Hive作为数据源,符合离线数仓实际</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建方式1: StreamTableEnv,写入hive不支持(insert into),只能使用(insert overwrite),可支持MySQL的写入</span></span><br><span class="line"><span class="keyword">val</span> env = <span class="type">StreamExecutionEnvironment</span>.getExecutionEnvironment</span><br><span class="line"><span class="keyword">val</span> settings = <span class="type">EnvironmentSettings</span>.newInstance().useBlinkPlanner().inStreamingMode().build</span><br><span class="line"><span class="keyword">val</span> tEnv = <span class="type">StreamTableEnvironment</span>.create(env, settings)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建方式2: TableEnv,写入hive(insert into,overwrite皆可),写MySQL不支持</span></span><br><span class="line"><span class="keyword">val</span> settings = <span class="type">EnvironmentSettings</span>.newInstance().useBlinkPlanner().inBatchMode().build()</span><br><span class="line"><span class="keyword">val</span> tEnv = <span class="type">TableEnvironment</span>.create(settings)</span><br><span class="line"><span class="keyword">val</span> hiveCatalog = <span class="keyword">new</span> <span class="type">HiveCatalog</span>(<span class="string">"test"</span>, <span class="string">"default"</span>,</span><br><span class="line">  <span class="string">"hive_conf"</span>, <span class="string">"2.1.1"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册HiveCatalog</span></span><br><span class="line">tEnv.registerCatalog(<span class="string">"test"</span>, hiveCatalog)</span><br><span class="line">tEnv.useCatalog(<span class="string">"test"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印Catalog中拥有的表</span></span><br><span class="line">tEnv.listTables().foreach(println)</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="数据Sink"><a href="#数据Sink" class="headerlink" title="数据Sink"></a>数据Sink</h2><h3 id="写入Hive"><a href="#写入Hive" class="headerlink" title="写入Hive"></a>写入Hive</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建方式1,2皆可,注意两者不同,1不可聚合</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 当结果表为Hive表时</span></span><br><span class="line">tEnv.getConfig.setSqlDialect(<span class="type">SqlDialect</span>.<span class="type">HIVE</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意,因为使用的是HiveCatalog,对于Hive上的元数据它都有,所以我们直接使用就行</span></span><br><span class="line"><span class="keyword">val</span> src = tEnv.sqlQuery(<span class="string">"SELECT * FROM default.test"</span>)</span><br><span class="line">tEnv.sqlUpdate(<span class="string">s"INSERT INTO default.test1 SELECT id FROM <span class="subst">$src</span>"</span>)</span><br><span class="line">tEnv.execute(<span class="string">"insert into hive table"</span>)</span><br><span class="line"></span><br><span class="line">注意,可能出现找不到<span class="type">HDFS</span>块的报错</span><br><span class="line">解决方式:</span><br><span class="line">hiveCatalog.getHiveConf.set(<span class="string">"dfs.client.use.datanode.hostname"</span>, <span class="string">"true"</span>)</span><br></pre></td></tr></table></figure>
+<h3 id="写入Kafka"><a href="#写入Kafka" class="headerlink" title="写入Kafka"></a>写入Kafka</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建方式1,2皆可,1不可以进行聚合操作,2可以</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 注意,实际上的表是创建在Hive上的,所以不能重复创建</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">createKafkaTable</span></span>(): <span class="type">String</span> = &#123;</span><br><span class="line">    <span class="string">""</span><span class="string">"</span></span><br><span class="line"><span class="string">      |CREATE TABLE demo1 (</span></span><br><span class="line"><span class="string">      |    id VARCHAR COMMENT 'uid'</span></span><br><span class="line"><span class="string">      |)</span></span><br><span class="line"><span class="string">      |WITH (</span></span><br><span class="line"><span class="string">      |    'connector.type' = 'kafka', -- 使用 kafka connector</span></span><br><span class="line"><span class="string">      |    'connector.version' = 'universal',  -- kafka 版本</span></span><br><span class="line"><span class="string">      |    'connector.topic' = 'test01',  -- kafka topic</span></span><br><span class="line"><span class="string">      |    'connector.properties.0.key' = 'zookeeper.connect',  -- zk连接信息</span></span><br><span class="line"><span class="string">      |    'connector.properties.0.value' = 'cdh04:2181',  -- zk连接信息</span></span><br><span class="line"><span class="string">      |    'connector.properties.1.key' = 'bootstrap.servers',  -- broker连接信息</span></span><br><span class="line"><span class="string">      |    'connector.properties.1.value' = 'cdh04:9092',  -- broker连接信息</span></span><br><span class="line"><span class="string">      |    'connector.sink-partitioner' = 'fixed',</span></span><br><span class="line"><span class="string">      |    'update-mode' = 'append',</span></span><br><span class="line"><span class="string">      |    'format.type' = 'json',  -- 数据源格式为 json</span></span><br><span class="line"><span class="string">      |    'format.derive-schema' = 'true' -- 从 DDL schema 确定 json 解析规则</span></span><br><span class="line"><span class="string">      |)</span></span><br><span class="line"><span class="string">    "</span><span class="string">""</span>.stripMargin</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">tEnv.sqlUpdate(createKafkaTable())</span><br><span class="line"><span class="keyword">val</span> src = tEnv.sqlQuery(<span class="string">"SELECT * FROM default.test"</span>)</span><br><span class="line">tEnv.sqlUpdate(<span class="string">s"INSERT INTO demo1 SELECT id FROM <span class="subst">$src</span>"</span>)</span><br><span class="line">tEnv.execute(<span class="string">"insert into kafka table"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// kafka数据</span></span><br><span class="line">kafka-console-consumer --group demo --bootstrap-server cdh05:<span class="number">9092</span> --topic test01 --from-beginning</span><br><span class="line">&#123;<span class="string">"id"</span>:<span class="string">"test"</span>&#125;</span><br><span class="line"></span><br><span class="line">注意,可能出现bootstrap.servers <span class="type">URL</span> 不能解析的报错</span><br><span class="line">初步判断是生产环境<span class="type">Kafka</span>内网解析导致的</span><br></pre></td></tr></table></figure>
+<h3 id="写入MySQL"><a href="#写入MySQL" class="headerlink" title="写入MySQL"></a>写入MySQL</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 只能使用创建方式1</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">createMysqlTable</span></span>(): <span class="type">String</span> = &#123;</span><br><span class="line">    <span class="string">s""</span><span class="string">"</span></span><br><span class="line"><span class="string">       |CREATE TABLE demo2 (</span></span><br><span class="line"><span class="string">       |	`id` VARCHAR</span></span><br><span class="line"><span class="string">       |) WITH (</span></span><br><span class="line"><span class="string">       |	'connector.type' = 'jdbc',</span></span><br><span class="line"><span class="string">       |	'connector.url' = 'jdbc:mysql://localhost:3306/test?useSSL=true&amp;serverTimezone=UTC',</span></span><br><span class="line"><span class="string">       |	'connector.table' = 'demo',</span></span><br><span class="line"><span class="string">       |	'connector.driver' = 'com.mysql.cj.jdbc.Driver',</span></span><br><span class="line"><span class="string">       |	'connector.username' = 'root',</span></span><br><span class="line"><span class="string">       |	'connector.password' = '123456'</span></span><br><span class="line"><span class="string">       |)</span></span><br><span class="line"><span class="string">       |"</span><span class="string">""</span>.stripMargin</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">tEnv.sqlUpdate(createMysqlTable())</span><br><span class="line"><span class="keyword">val</span> src = tEnv.sqlQuery(<span class="string">"SELECT * FROM default.test"</span>)</span><br><span class="line">tEnv.sqlUpdate(<span class="string">s"INSERT INTO demo2 SELECT id FROM <span class="subst">$src</span>"</span>)</span><br><span class="line">tEnv.execute(<span class="string">"insert into mysql table"</span>)</span><br><span class="line"></span><br><span class="line">注意,在进行字段变化,导致字段模糊的情况下</span><br><span class="line">eg:</span><br><span class="line">    <span class="keyword">val</span> table = tEnv.sqlQuery(</span><br><span class="line">        <span class="string">s""</span><span class="string">"</span></span><br><span class="line"><span class="string">        |SELECT *, ROW_NUMBER() OVER (PARTITION BY id ORDER BY index DESC) AS num</span></span><br><span class="line"><span class="string">        |FROM  default.test</span></span><br><span class="line"><span class="string">        |"</span><span class="string">""</span>.stripMargin</span><br><span class="line">    ).filter(<span class="string">"num = 1"</span>).select(</span><br><span class="line">      <span class="string">"id,num"</span></span><br><span class="line">    )</span><br><span class="line">报错<span class="type">Table</span> has a full primary keys <span class="keyword">if</span> it is updated</span><br><span class="line">解决方式:</span><br><span class="line">    在后面加上.groupBy(<span class="string">"id"</span>,<span class="string">"num"</span>).select(<span class="string">"id"</span>,<span class="string">"num"</span>)</span><br><span class="line"></span><br><span class="line">报错<span class="type">Conversion</span> to relational algebra failed to preserve datatypes</span><br><span class="line">解决方式:</span><br><span class="line">    检查类型转换</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="流处理"><a href="#流处理" class="headerlink" title="流处理"></a>流处理</h1><h2 id="数据Source-1"><a href="#数据Source-1" class="headerlink" title="数据Source"></a>数据Source</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用Kafka作为数据源</span></span><br><span class="line"><span class="keyword">val</span> env = <span class="type">StreamExecutionEnvironment</span>.getExecutionEnvironment</span><br><span class="line">env.setStreamTimeCharacteristic(<span class="type">TimeCharacteristic</span>.<span class="type">EventTime</span>)</span><br><span class="line">env.setParallelism(<span class="number">4</span>)</span><br><span class="line"><span class="keyword">val</span> settings = <span class="type">EnvironmentSettings</span>.newInstance().useBlinkPlanner().inStreamingMode().build</span><br><span class="line"><span class="keyword">val</span> tEnv = <span class="type">StreamTableEnvironment</span>.create(env, settings)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">createKafkaSourceTable</span></span>(): <span class="type">String</span> = &#123;</span><br><span class="line">    <span class="string">""</span><span class="string">"</span></span><br><span class="line"><span class="string">    |CREATE TABLE test (</span></span><br><span class="line"><span class="string">    |    business VARCHAR,</span></span><br><span class="line"><span class="string">    |    database VARCHAR,</span></span><br><span class="line"><span class="string">    |    es VARCHAR,</span></span><br><span class="line"><span class="string">    |    ts BIGINT,</span></span><br><span class="line"><span class="string">    |    rowtime as TO_TIMESTAMP(FROM_UNIXTIME(ts / 1000,'yyyy-MM-dd HH:mm:ss')),</span></span><br><span class="line"><span class="string">    |    proctime as PROCTIME(),</span></span><br><span class="line"><span class="string">    |    WATERMARK FOR rowtime as rowtime - INTERVAL '5' SECOND</span></span><br><span class="line"><span class="string">    |)</span></span><br><span class="line"><span class="string">    |WITH (</span></span><br><span class="line"><span class="string">    |    'connector.type' = 'kafka', -- 使用 kafka connector</span></span><br><span class="line"><span class="string">    |    'connector.version' = 'universal',  -- kafka 版本</span></span><br><span class="line"><span class="string">    |    'connector.topic' = 'test01',  -- kafka topic</span></span><br><span class="line"><span class="string">    |    'connector.properties.zookeeper.connect' = 'cdh04:2181',  -- zk连接信息</span></span><br><span class="line"><span class="string">    |    'connector.properties.bootstrap.servers' = 'cdh04:9092',  -- broker连接信息</span></span><br><span class="line"><span class="string">    |    'connector.properties.group.id' = 'kafkasql',</span></span><br><span class="line"><span class="string">    |    'update-mode' = 'append',</span></span><br><span class="line"><span class="string">    |    'connector.startup-mode' = 'earliest-offset',</span></span><br><span class="line"><span class="string">    |    'format.type' = 'json',  -- 数据源格式为 json</span></span><br><span class="line"><span class="string">    |    'format.derive-schema' = 'true' -- 从 DDL schema 确定 json 解析规则</span></span><br><span class="line"><span class="string">    |)</span></span><br><span class="line"><span class="string">    "</span><span class="string">""</span>.stripMargin</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">tEnv.sqlUpdate(createKafkaSourceTable)</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="数据Sink-1"><a href="#数据Sink-1" class="headerlink" title="数据Sink"></a>数据Sink</h2><h3 id="写入Kakfa"><a href="#写入Kakfa" class="headerlink" title="写入Kakfa"></a>写入Kakfa</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">createKafkaSinkTable</span></span>(): <span class="type">String</span> = &#123;</span><br><span class="line">    <span class="string">""</span><span class="string">"</span></span><br><span class="line"><span class="string">    |CREATE TABLE demo1 (</span></span><br><span class="line"><span class="string">    |    business VARCHAR COMMENT 'uid',</span></span><br><span class="line"><span class="string">    |    pv BIGINT COMMENT 'pv',</span></span><br><span class="line"><span class="string">    |    t_start TIMESTAMP(3) COMMENT '开始时间',</span></span><br><span class="line"><span class="string">    |    t_end TIMESTAMP(3) COMMENT '结束时间'</span></span><br><span class="line"><span class="string">    |)</span></span><br><span class="line"><span class="string">    |WITH (</span></span><br><span class="line"><span class="string">    |    'connector.type' = 'kafka', -- 使用 kafka connector</span></span><br><span class="line"><span class="string">    |    'connector.version' = 'universal',  -- kafka 版本</span></span><br><span class="line"><span class="string">    |    'connector.topic' = 'test01_sink',  -- kafka topic</span></span><br><span class="line"><span class="string">    |    'connector.properties.0.key' = 'zookeeper.connect',  -- zk连接信息</span></span><br><span class="line"><span class="string">    |    'connector.properties.0.value' = 'cdh04:2181',  -- zk连接信息</span></span><br><span class="line"><span class="string">    |    'connector.properties.1.key' = 'bootstrap.servers',  -- broker连接信息</span></span><br><span class="line"><span class="string">    |    'connector.properties.1.value' = 'cdh04:9092',  -- broker连接信息</span></span><br><span class="line"><span class="string">    |    'connector.sink-partitioner' = 'fixed',</span></span><br><span class="line"><span class="string">    |    'update-mode' = 'append',</span></span><br><span class="line"><span class="string">    |    'format.type' = 'json',  -- 数据源格式为 json</span></span><br><span class="line"><span class="string">    |    'format.derive-schema' = 'true' -- 从 DDL schema 确定 json 解析规则</span></span><br><span class="line"><span class="string">    |)</span></span><br><span class="line"><span class="string">    "</span><span class="string">""</span>.stripMargin</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> query =</span><br><span class="line">    <span class="string">""</span><span class="string">"</span></span><br><span class="line"><span class="string">    |SELECT business,COUNT(1) as pv,</span></span><br><span class="line"><span class="string">    | HOP_START(rowtime, INTERVAL '5' second, INTERVAL '10' second) as t_start,</span></span><br><span class="line"><span class="string">    | HOP_END(rowtime, INTERVAL '5' second, INTERVAL '10' second) as t_end</span></span><br><span class="line"><span class="string">    |FROM test</span></span><br><span class="line"><span class="string">    |GROUP BY business,HOP(rowtime, INTERVAL '5' second, INTERVAL '10' second)</span></span><br><span class="line"><span class="string">        "</span><span class="string">""</span>.stripMargin</span><br><span class="line"><span class="keyword">val</span> res1 = tEnv.sqlQuery(query)</span><br><span class="line"></span><br><span class="line">tEnv.sqlUpdate(</span><br><span class="line">    <span class="string">s""</span><span class="string">"</span></span><br><span class="line"><span class="string">    |INSERT INTO demo1</span></span><br><span class="line"><span class="string">    |SELECT *</span></span><br><span class="line"><span class="string">    |FROM $res1</span></span><br><span class="line"><span class="string">    |"</span><span class="string">""</span>.stripMargin</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>
