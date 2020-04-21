@@ -9,6 +9,19 @@ tags: flink
 
 <!-- more -->
 
+# 环境配置项
+```scala
+tEnv.getConfig.getConfiguration.setBoolean(OptimizerConfigOptions.TABLE_OPTIMIZER_JOIN_REORDER_ENABLED, true)
+// 关闭SQL优化重用源表
+tEnv.getConfig.getConfiguration.setBoolean(OptimizerConfigOptions.TABLE_OPTIMIZER_REUSE_SOURCE_ENABLED, false)
+tEnv.getConfig.getConfiguration.setLong(OptimizerConfigOptions.TABLE_OPTIMIZER_BROADCAST_JOIN_THRESHOLD, 10485760L)
+tEnv.getConfig.getConfiguration.setInteger(ExecutionConfigOptions.TABLE_EXEC_RESOURCE_DEFAULT_PARALLELISM, 1)
+tEnv.getConfig.getConfiguration.setInteger(ExecutionConfigOptions.TABLE_EXEC_SORT_DEFAULT_LIMIT, 200)
+tEnv.getConfig.addConfiguration(GlobalConfiguration.loadConfiguration)
+```
+
+---
+
 # 批处理
 ## 数据Source
 ```scala
@@ -135,6 +148,37 @@ eg:
     检查类型转换
 ```
 
+### 写入Es
+```scala
+// 只支持Streaming Append Mode Sink和Streaming Upsert Mode
+// 只能使用创建方式1
+
+def createEsTable(): String = {
+  s"""
+     |CREATE TABLE test_xs_01 (
+     | id VARCHAR
+     |) WITH (
+     | 'connector.type' = 'elasticsearch',
+     | 'connector.version' = '7',
+     | 'connector.hosts' = 'http://hosts01:9200;http://hosts02:9200;http://hosts03:9200',
+     | 'connector.index' = 'test_xs_01',
+     | 'connector.document-type' = 'test_xs_01',
+     | 'update-mode' = 'append',
+     | 'format.type' = 'json'
+     |)
+     |""".stripMargin
+}
+注意:update-mode为append时,Es中的id是随机生成的
+如果需要指定id,需要使用upsert
+并进行group by操作,Es中id为分组字段拼接
+
+tEnv.sqlUpdate(createEsTable())
+val src = tEnv.sqlQuery("SELECT * FROM default.test")
+tEnv.sqlUpdate(s"INSERT INTO test_xs_01 SELECT id FROM $src")
+
+tEnv.execute("insert into es table")
+```
+
 ---
 
 # 流处理
@@ -214,6 +258,8 @@ val query =
     |GROUP BY business,HOP(rowtime, INTERVAL '5' second, INTERVAL '10' second)
         """.stripMargin
 val res1 = tEnv.sqlQuery(query)
+
+tEnv.sqlUpdate(createKafkaSinkTable)
 
 tEnv.sqlUpdate(
     s"""
