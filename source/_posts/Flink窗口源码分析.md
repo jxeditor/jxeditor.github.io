@@ -5,48 +5,49 @@ categories: 大数据
 tags: flink
 ---
 
-> 深入源码层面,学习Flink窗口操作的原理
+> 深入源码层面,学习Flink窗口操作的原理,这里只挑了各部分的一个进行分析
 
 <!-- more -->
 
 ## 依赖关系
 ```
 Window
-    GlobalWindow
-    TimeWindow
+    GlobalWindow(放置所有数据的默认窗口)
+    TimeWindow(表示一段时间间隔的窗口)
 
 WindowAssigner
-    -MerginWindowAssigner
+    -MerginWindowAssigner(窗口是可以合并的)
         -DynamicEventTimeSessionWindows
         -DynamicProcessingTimeSessionWindows
         -EventTimeSessionWindows
         -ProcessingTimeSessionWindows
-    -SlidingEventTimeWindows
+    -SlidingEventTimeWindows(滑动窗口)
         -SlidingTimeWindows
-    -SlidingProcessingTimeWindows
-    -TumblingEventTimeWindows
+    -SlidingProcessingTimeWindows(滑动窗口)
+    -TumblingEventTimeWindows(滚动窗口)
         -TumblingTimeWindows
-    -TumblingProcessionTimeWindows
-    -GlobalWindwos
+    -TumblingProcessionTimeWindows(滚动窗口)
+    -GlobalWindwos(将所有元素分配在一个窗口中)
     
 Trigger
-    -ContinuousEventTimeTrigger
-    -ContinuousProcessingTimeTrigger
-    -CountTrigger
+    -ContinuousEventTimeTrigger(基于给定时间间隔连续触发,计算基于水印)
+    -ContinuousProcessingTimeTrigger(基于给定时间间隔连续触发,计算基于ProcessingTime)
+    -CountTrigger(每maxCount触发一次计算)
         -用于DataStream
         -用于KeyedStream
-    -DeltaTrigger
-    -EventTimeTrigger
+    -DeltaTrigger(此触发器计算上次触发的数据点与当前到达的数据点之间的增量。如果增量高于指定的阈值，则会触发。)
+        需要用户自己实现DeltaFunction
+    -EventTimeTrigger(按照EventTime判断是否触发计算)
         -用于EventTimeWindows
-    -NeverTrigger
+    -NeverTrigger(一个从不触发的触发器，作为GlobalWindows的默认触发器)
         -用于GlobalWindows
-    -ProcessingTimeTrigger
+    -ProcessingTimeTrigger(按照ProcessingTime判断是否触发计算)
         -用于ProcessingTimeWindows
-    -PurgingTrigger
+    -PurgingTrigger(包装类,将TriggerResult为FIRE的改为FIRE_AND_PURGE)
         -用于DataStream
         -用于KeyedStream
         -用于DataStreamGroupWindowAggregateBase
-    -StateCleaningCountTrigger(GlobalWindow)
+    -StateCleaningCountTrigger(GlobalWindow)(触发清理定时器触发或元素达到maxCount触发)
         -用于DataStreamGroupWindowAggregateBase
 
 TriggerResult
@@ -56,9 +57,9 @@ TriggerResult
     PURGE(移除窗口和窗口中的数据)
     
 Evictor
-    -CountEvictor
-    -DeltaEvictor
-    -TimeEvictor
+    -CountEvictor(以maxCount为判断标准,决定元素是否被移除)
+    -DeltaEvictor(计算每个元素与最后一个元素的Delta值,与threshold进行对比,如果大于等于,则移除该元素)
+    -TimeEvictor(以时间为判断标准,决定元素是否会被移除)
 
 Timer
 ```
