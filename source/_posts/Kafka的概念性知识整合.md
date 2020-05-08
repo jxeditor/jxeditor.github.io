@@ -214,3 +214,15 @@ Kafka日志管理器中会有一个专门的日志删除任务来周期性检测
 直接删除segment文件。后台会周期性的扫描，当满足设定的条件的数据就执行删除。
 如果设置是按照大小的方式，删除segment是按照segment存在顺序进行删除，即先删除存在最久的那个segment。
 ```
+
+---
+
+## 常见的专业性名词
+```
+AR: Assigned Replicas 分区中所有副本统称
+ISR: In Sync Replicas 所有与Leader副本保持一定程度同步的副本
+OSR: Outof Sync Replied 于Leader副本同步滞后过多的副本(不包括Leader副本)
+HW: High Watermak 特定消息的Offset,消费者只能拉取到这个offset之前的消息
+LEO: Log End Offset 表示当前日志文件下一条待写入消息的offset
+LSO: Last Start Offset 与Kafka事务有关,
+```
