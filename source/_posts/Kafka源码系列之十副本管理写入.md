@@ -1,5 +1,5 @@
 ---
-title: Kafka源码系列之十副本管理
+title: Kafka源码系列之十副本管理写入
 date: 2020-05-08 09:15:54
 categories: 大数据
 tags: kafka
