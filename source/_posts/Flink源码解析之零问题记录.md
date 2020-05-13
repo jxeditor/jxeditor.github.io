@@ -5,7 +5,7 @@ categories: 大数据
 tags: flink
 ---
 
-> 记录描述不清楚的内容
+> 记录描述不清楚的内容,系列完成后进行删除
 
 <!-- more -->
 
@@ -14,4 +14,5 @@ tags: flink
 2.Transformation到StreamGraph的过程中,树结构描述生成并不流畅,需要改进
 3.StreamEdge的用处并不太清楚,除了联系两个StreamNode还有什么其他的功能?
 4.org.apache.flink.streaming.api.operators.Operator和org.apache.flink.table.operations.Operation的区别是什么,只是一个用于Table,一个用于DataStream?
+5.SQL是转换为Stream的,那么是在执行什么操作的时候进行转换,转换成Stream是必需操作么?
 ```

@@ -11,11 +11,22 @@ tags: flink
 
 ## 结构
 ```
+StreamGraph
+    JobGraph
+        ExecutionGraph
+            物理执行图
+
 Executor
     ExecutorBase
         BatchExecutor
         StreamExecutor
     StreamExecutor
+
+Planner
+    PlannerBase
+        BatchPlanner
+        StreamPlanner
+    StreamPlan
 ```
 
 ---
@@ -120,7 +131,7 @@ def create(
 
 // TableEnvironmentImpl
 public JobExecutionResult execute(String jobName) throws Exception {
-    // 将Operation转换为Transformation,并添加到StreamExecutionEnvironment
+    // 将Operation转换为Transformation,并添加到StreamExecutionEnvironment,Operation怎么来的可以参考之前的文章
 	translate(bufferedModifyOperations);
 	bufferedModifyOperations.clear();
     // 调用StreamExecutionEnvironment.execute
@@ -128,6 +139,7 @@ public JobExecutionResult execute(String jobName) throws Exception {
 }
 // 转换
 private void translate(List<ModifyOperation> modifyOperations) {
+    // 怎么转换的之前文章有说明,这里其实就已经将SQL转为DataStream了
 	List<Transformation<?>> transformations = planner.translate(modifyOperations);
     // 添加Transformation
 	execEnv.apply(transformations);
@@ -191,7 +203,7 @@ public StreamGraph generate() {
     alreadyTransformed = new HashMap<>();
 
     for (Transformation<?> transformation: transformations) {
-        // transformation设置进StreamGraph
+        // transformation设置进StreamGraph,对转换树每个Transformation进行转换
         transform(transformation);
     }
 
@@ -204,13 +216,17 @@ public StreamGraph generate() {
     return builtStreamGraph;
 }
 
+// 对具体的一个Transformation进行转换
+// 生成StreamGraph中的StreamNode和StreamEdge
+// 返回值为Transformation的id集合
 private Collection<Integer> transform(Transformation<?> transform) {
+    // 跳过已经转换过的Transformation
     if (alreadyTransformed.containsKey(transform)) {
         return alreadyTransformed.get(transform);
     }
 
     LOG.debug("Transforming " + transform);
-
+    // 设置最大并行度
     if (transform.getMaxParallelism() <= 0) {
 
         // if the max parallelism hasn't been set, then first use the job wide max parallelism
@@ -222,6 +238,7 @@ private Collection<Integer> transform(Transformation<?> transform) {
     }
 
     // call at least once to trigger exceptions about MissingTypeInfo
+    // 为了触发MissingTypeInfo异常,字段类型
     transform.getOutputType();
 
     Collection<Integer> transformedIds;

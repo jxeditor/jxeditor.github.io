@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink源码解析之二JobGraph生成
+  
+</title>
+
+<meta name="description" content="接着上一篇StreamGraph已经被生成出来了,根据Flink的四层图结构,接下来就是JobGraph的生成">
+<meta name="keywords" content="flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink源码解析之二JobGraph生成">
+<meta property="og:url" content="http://yoursite.com/2020/05/11/Flink源码解析之二JobGraph生成/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="接着上一篇StreamGraph已经被生成出来了,根据Flink的四层图结构,接下来就是JobGraph的生成">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-05-11T03:18:25.138Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flink源码解析之二JobGraph生成">
+<meta name="twitter:description" content="接着上一篇StreamGraph已经被生成出来了,根据Flink的四层图结构,接下来就是JobGraph的生成">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://raw.githubusercontent.com/jxeditor/Software/master/Blog/logo.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">122</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">66</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">15</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">48</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink源码解析之二JobGraph生成" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink源码解析之二JobGraph生成
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-05-11
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>接着上一篇StreamGraph已经被生成出来了,根据Flink的四层图结构,接下来就是JobGraph的生成</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">PipelineExecutor</span><br><span class="line">    AbstractJobClusterExecutor</span><br><span class="line">    AbstractSessionClusterExecutor</span><br><span class="line">        RemoteExecutor</span><br><span class="line">    LocalExecutor</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="流程概览"><a href="#流程概览" class="headerlink" title="流程概览"></a>流程概览</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">StreamExecutionEnvironment.execute(JobName)-&gt;execute(StreamGraph)-&gt;executeAsync(StreamGraph)</span><br><span class="line">    PipelineExecutor.execute()[有多种情况,这里选RemoteExecutor]</span><br><span class="line">        ExecutorUtils.getJobGraph()-&gt;FlinkPipelineTranslationUtil.getJobGraph()</span><br><span class="line">            -&gt;FlinkPipelineTranslator.translateToJobGraph()[选StreamGraphTranslator]</span><br><span class="line">                -&gt;StreamGraph.getJobGraph()</span><br><span class="line">                    -&gt;StreamingJobGraphGenerator.createJobGraph()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="流程解析"><a href="#流程解析" class="headerlink" title="流程解析"></a>流程解析</h2><h3 id="StreamExecutionEnvironment入口"><a href="#StreamExecutionEnvironment入口" class="headerlink" title="StreamExecutionEnvironment入口"></a>StreamExecutionEnvironment入口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// StreamExecutionEnvironment</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> JobExecutionResult <span class="title">execute</span><span class="params">(String jobName)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">	Preconditions.checkNotNull(jobName, <span class="string">"Streaming Job name should not be null."</span>);</span><br><span class="line">    <span class="comment">// 拿到StreamGraph</span></span><br><span class="line">	<span class="keyword">return</span> execute(getStreamGraph(jobName));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 触发程序执行,执行导致Sink操作的所有部分,打印结果或将结果转发到消息队列</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> JobExecutionResult <span class="title">execute</span><span class="params">(StreamGraph streamGraph)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// 获取JobClient</span></span><br><span class="line">	<span class="keyword">final</span> JobClient jobClient = executeAsync(streamGraph);</span><br><span class="line">    <span class="comment">// 这一块以后再深入了解</span></span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="keyword">final</span> JobExecutionResult jobExecutionResult;</span><br><span class="line">		<span class="keyword">if</span> (configuration.getBoolean(DeploymentOptions.ATTACHED)) &#123;</span><br><span class="line">			jobExecutionResult = jobClient.getJobExecutionResult(userClassloader).get();</span><br><span class="line">		&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">			jobExecutionResult = <span class="keyword">new</span> DetachedJobExecutionResult(jobClient.getJobID());</span><br><span class="line">		&#125;</span><br><span class="line">		jobListeners.forEach(jobListener -&gt; jobListener.onJobExecuted(jobExecutionResult, <span class="keyword">null</span>));</span><br><span class="line">		<span class="keyword">return</span> jobExecutionResult;</span><br><span class="line">	&#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">		jobListeners.forEach(jobListener -&gt; &#123;</span><br><span class="line">			jobListener.onJobExecuted(<span class="keyword">null</span>, ExceptionUtils.stripExecutionException(t));</span><br><span class="line">		&#125;);</span><br><span class="line">		ExceptionUtils.rethrowException(t);</span><br><span class="line">		<span class="comment">// never reached, only make javac happy</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个PipelineExecutor工厂类,选择并实例化适当的PipelineExecutor</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> JobClient <span class="title">executeAsync</span><span class="params">(StreamGraph streamGraph)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">	checkNotNull(streamGraph, <span class="string">"StreamGraph cannot be null."</span>);</span><br><span class="line">	checkNotNull(configuration.get(DeploymentOptions.TARGET), <span class="string">"No execution.target specified in your configuration file."</span>);</span><br><span class="line">    <span class="comment">// 工厂类</span></span><br><span class="line">	<span class="keyword">final</span> PipelineExecutorFactory executorFactory =</span><br><span class="line">		executorServiceLoader.getExecutorFactory(configuration);</span><br><span class="line">	checkNotNull(</span><br><span class="line">		executorFactory,</span><br><span class="line">		<span class="string">"Cannot find compatible factory for specified execution.target (=%s)"</span>,</span><br><span class="line">		configuration.get(DeploymentOptions.TARGET));</span><br><span class="line">        <span class="comment">// 内部实现JobGraph生成逻辑</span></span><br><span class="line">	CompletableFuture&lt;JobClient&gt; jobClientFuture = executorFactory</span><br><span class="line">		.getExecutor(configuration)</span><br><span class="line">		.execute(streamGraph, configuration);</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		JobClient jobClient = jobClientFuture.get();</span><br><span class="line">		jobListeners.forEach(jobListener -&gt; jobListener.onJobSubmitted(jobClient, <span class="keyword">null</span>));</span><br><span class="line">		<span class="keyword">return</span> jobClient;</span><br><span class="line">	&#125; <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">		jobListeners.forEach(jobListener -&gt; jobListener.onJobSubmitted(<span class="keyword">null</span>, t));</span><br><span class="line">		ExceptionUtils.rethrow(t);</span><br><span class="line">		<span class="comment">// make javac happy, this code path will not be reached</span></span><br><span class="line">		<span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AbstractSessionClusterExecutor执行器"><a href="#AbstractSessionClusterExecutor执行器" class="headerlink" title="AbstractSessionClusterExecutor执行器"></a>AbstractSessionClusterExecutor执行器</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 远程执行</span></span><br><span class="line"><span class="comment">// RemoteExecutor的父类,execute方法在这里被实现</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;JobClient&gt; <span class="title">execute</span><span class="params">(@Nonnull <span class="keyword">final</span> Pipeline pipeline, @Nonnull <span class="keyword">final</span> Configuration configuration)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// 获取JobGraph</span></span><br><span class="line">	<span class="keyword">final</span> JobGraph jobGraph = ExecutorUtils.getJobGraph(pipeline, configuration);</span><br><span class="line">	<span class="keyword">try</span> (<span class="keyword">final</span> ClusterDescriptor&lt;ClusterID&gt; clusterDescriptor = clusterClientFactory.createClusterDescriptor(configuration)) &#123;</span><br><span class="line">		<span class="keyword">final</span> ClusterID clusterID = clusterClientFactory.getClusterId(configuration);</span><br><span class="line">		checkState(clusterID != <span class="keyword">null</span>);</span><br><span class="line">		<span class="keyword">final</span> ClusterClientProvider&lt;ClusterID&gt; clusterClientProvider = clusterDescriptor.retrieve(clusterID);</span><br><span class="line">		ClusterClient&lt;ClusterID&gt; clusterClient = clusterClientProvider.getClusterClient();</span><br><span class="line">        <span class="comment">// 提交JobGraph,Client是如何将生成好的JobGraph提交给远程执行,就在这里实现了</span></span><br><span class="line">		<span class="keyword">return</span> clusterClient</span><br><span class="line">				.submitJob(jobGraph)</span><br><span class="line">				.thenApplyAsync(jobID -&gt; (JobClient) <span class="keyword">new</span> ClusterClientJobClientAdapter&lt;&gt;(</span><br><span class="line">						clusterClientProvider,</span><br><span class="line">						jobID))</span><br><span class="line">				.whenComplete((ignored1, ignored2) -&gt; clusterClient.close());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="ExecutorUtils"><a href="#ExecutorUtils" class="headerlink" title="ExecutorUtils"></a>ExecutorUtils</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> JobGraph <span class="title">getJobGraph</span><span class="params">(@Nonnull <span class="keyword">final</span> Pipeline pipeline, @Nonnull <span class="keyword">final</span> Configuration configuration)</span> </span>&#123;</span><br><span class="line">	checkNotNull(pipeline);</span><br><span class="line">	checkNotNull(configuration);</span><br><span class="line">    <span class="comment">// Configuration公开的配置访问器</span></span><br><span class="line">	<span class="keyword">final</span> ExecutionConfigAccessor executionConfigAccessor = ExecutionConfigAccessor.fromConfiguration(configuration);</span><br><span class="line">    <span class="comment">// 获取JobGraph,并行度传递过去了</span></span><br><span class="line">	<span class="keyword">final</span> JobGraph jobGraph = FlinkPipelineTranslationUtil</span><br><span class="line">			.getJobGraph(pipeline, configuration, executionConfigAccessor.getParallelism());</span><br><span class="line">        <span class="comment">// Jar,ClassPath,检查点设置</span></span><br><span class="line">	jobGraph.addJars(executionConfigAccessor.getJars());</span><br><span class="line">	jobGraph.setClasspaths(executionConfigAccessor.getClasspaths());</span><br><span class="line">	jobGraph.setSavepointRestoreSettings(executionConfigAccessor.getSavepointRestoreSettings());</span><br><span class="line">	<span class="keyword">return</span> jobGraph;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="FlinkPipelineTranslationUtil"><a href="#FlinkPipelineTranslationUtil" class="headerlink" title="FlinkPipelineTranslationUtil"></a>FlinkPipelineTranslationUtil</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> JobGraph <span class="title">getJobGraph</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">		Pipeline pipeline,</span></span></span><br><span class="line"><span class="function"><span class="params">		Configuration optimizerConfiguration,</span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="keyword">int</span> defaultParallelism)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 将Pipeline转换为JobGraph,Flink支持不同PipelineAPI实现(这里使用StreamGraphTranslator)</span></span><br><span class="line">	FlinkPipelineTranslator pipelineTranslator = getPipelineTranslator(pipeline);</span><br><span class="line">	<span class="keyword">return</span> pipelineTranslator.translateToJobGraph(pipeline,</span><br><span class="line">			optimizerConfiguration,</span><br><span class="line">			defaultParallelism);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="StreamGraphTranslator"><a href="#StreamGraphTranslator" class="headerlink" title="StreamGraphTranslator"></a>StreamGraphTranslator</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> JobGraph <span class="title">translateToJobGraph</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">		Pipeline pipeline,</span></span></span><br><span class="line"><span class="function"><span class="params">		Configuration optimizerConfiguration,</span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="keyword">int</span> defaultParallelism)</span> </span>&#123;</span><br><span class="line">	checkArgument(pipeline <span class="keyword">instanceof</span> StreamGraph,</span><br><span class="line">			<span class="string">"Given pipeline is not a DataStream StreamGraph."</span>);</span><br><span class="line">	StreamGraph streamGraph = (StreamGraph) pipeline;</span><br><span class="line">    <span class="comment">// 直接调用StreamGraph.getJobGraph就可以获取JobGraph</span></span><br><span class="line">	<span class="keyword">return</span> streamGraph.getJobGraph(<span class="keyword">null</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="StreamingJobGraphGenerator入口"><a href="#StreamingJobGraphGenerator入口" class="headerlink" title="StreamingJobGraphGenerator入口"></a>StreamingJobGraphGenerator入口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> JobGraph <span class="title">getJobGraph</span><span class="params">(@Nullable JobID jobID)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 可以看见JobGraph的入口函数是StreamingJobGraphGenerator.createJobGraph()</span></span><br><span class="line">    <span class="keyword">return</span> StreamingJobGraphGenerator.createJobGraph(<span class="keyword">this</span>, jobID);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// StreamingJobGraphGenerator</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> JobGraph <span class="title">createJobGraph</span><span class="params">(StreamGraph streamGraph, @Nullable JobID jobID)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 初始化StreamingJobGraphGenerator,再调用createJobGraph</span></span><br><span class="line">	<span class="keyword">return</span> <span class="keyword">new</span> StreamingJobGraphGenerator(streamGraph, jobID).createJobGraph();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="createJobGraph"><a href="#createJobGraph" class="headerlink" title="createJobGraph"></a>createJobGraph</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> JobGraph <span class="title">createJobGraph</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	preValidate();</span><br><span class="line">	<span class="comment">// make sure that all vertices start immediately</span></span><br><span class="line">	jobGraph.setScheduleMode(streamGraph.getScheduleMode());</span><br><span class="line">	<span class="comment">// Generate deterministic hashes for the nodes in order to identify them across</span></span><br><span class="line">	<span class="comment">// submission iff they didn't change.</span></span><br><span class="line">	Map&lt;Integer, <span class="keyword">byte</span>[]&gt; hashes = defaultStreamGraphHasher.traverseStreamGraphAndGenerateHashes(streamGraph);</span><br><span class="line">	<span class="comment">// Generate legacy version hashes for backwards compatibility</span></span><br><span class="line">	List&lt;Map&lt;Integer, <span class="keyword">byte</span>[]&gt;&gt; legacyHashes = <span class="keyword">new</span> ArrayList&lt;&gt;(legacyStreamGraphHashers.size());</span><br><span class="line">	<span class="keyword">for</span> (StreamGraphHasher hasher : legacyStreamGraphHashers) &#123;</span><br><span class="line">		legacyHashes.add(hasher.traverseStreamGraphAndGenerateHashes(streamGraph));</span><br><span class="line">	&#125;</span><br><span class="line">	Map&lt;Integer, List&lt;Tuple2&lt;<span class="keyword">byte</span>[], <span class="keyword">byte</span>[]&gt;&gt;&gt; chainedOperatorHashes = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	setChaining(hashes, legacyHashes, chainedOperatorHashes);</span><br><span class="line">	setPhysicalEdges();</span><br><span class="line">	setSlotSharingAndCoLocation();</span><br><span class="line">	setManagedMemoryFraction(</span><br><span class="line">		Collections.unmodifiableMap(jobVertices),</span><br><span class="line">		Collections.unmodifiableMap(vertexConfigs),</span><br><span class="line">		Collections.unmodifiableMap(chainedConfigs),</span><br><span class="line">		id -&gt; streamGraph.getStreamNode(id).getMinResources(),</span><br><span class="line">		id -&gt; streamGraph.getStreamNode(id).getManagedMemoryWeight());</span><br><span class="line">	configureCheckpointing();</span><br><span class="line">	jobGraph.setSavepointRestoreSettings(streamGraph.getSavepointRestoreSettings());</span><br><span class="line">	JobGraphGenerator.addUserArtifactEntries(streamGraph.getUserArtifacts(), jobGraph);</span><br><span class="line">	<span class="comment">// set the ExecutionConfig last when it has been finalized</span></span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		jobGraph.setExecutionConfig(streamGraph.getExecutionConfig());</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> IllegalConfigurationException(<span class="string">"Could not serialize the ExecutionConfig."</span> +</span><br><span class="line">				<span class="string">"This indicates that non-serializable types (like custom serializers) were registered"</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> jobGraph;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>
