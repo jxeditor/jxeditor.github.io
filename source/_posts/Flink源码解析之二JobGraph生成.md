@@ -9,8 +9,12 @@ tags: flink
 
 <!-- more -->
 
+StreamGraph和JobGraph都是在Client端生成的
+
+
 ## 结构
 ```
+# PipelineExecutor类
 PipelineExecutor
     AbstractJobClusterExecutor
     AbstractSessionClusterExecutor
@@ -120,9 +124,9 @@ public CompletableFuture<JobClient> execute(@Nonnull final Pipeline pipeline, @N
 public static JobGraph getJobGraph(@Nonnull final Pipeline pipeline, @Nonnull final Configuration configuration) {
 	checkNotNull(pipeline);
 	checkNotNull(configuration);
-    // Configuration公开的配置访问器
+        // Configuration公开的配置访问器
 	final ExecutionConfigAccessor executionConfigAccessor = ExecutionConfigAccessor.fromConfiguration(configuration);
-    // 获取JobGraph,并行度传递过去了
+        // 获取JobGraph,并行度传递过去了
 	final JobGraph jobGraph = FlinkPipelineTranslationUtil
 			.getJobGraph(pipeline, configuration, executionConfigAccessor.getParallelism());
         // Jar,ClassPath,检查点设置
@@ -138,7 +142,7 @@ public static JobGraph getJobGraph(
 		Pipeline pipeline,
 		Configuration optimizerConfiguration,
 		int defaultParallelism) {
-    // 将Pipeline转换为JobGraph,Flink支持不同PipelineAPI实现(这里使用StreamGraphTranslator)
+        // 将Pipeline转换为JobGraph,Flink支持不同PipelineAPI实现(这里使用StreamGraphTranslator)
 	FlinkPipelineTranslator pipelineTranslator = getPipelineTranslator(pipeline);
 	return pipelineTranslator.translateToJobGraph(pipeline,
 			optimizerConfiguration,
@@ -151,33 +155,51 @@ public JobGraph translateToJobGraph(
 		Pipeline pipeline,
 		Configuration optimizerConfiguration,
 		int defaultParallelism) {
-	checkArgument(pipeline instanceof StreamGraph,
+        checkArgument(pipeline instanceof StreamGraph,
 			"Given pipeline is not a DataStream StreamGraph.");
-	StreamGraph streamGraph = (StreamGraph) pipeline;
-    // 直接调用StreamGraph.getJobGraph就可以获取JobGraph
-	return streamGraph.getJobGraph(null);
+        StreamGraph streamGraph = (StreamGraph) pipeline;
+        // 直接调用StreamGraph.getJobGraph就可以获取JobGraph
+        return streamGraph.getJobGraph(null);
 }
 ```
 ### StreamingJobGraphGenerator入口
 ```java
 public JobGraph getJobGraph(@Nullable JobID jobID) {
-	// 可以看见JobGraph的入口函数是StreamingJobGraphGenerator.createJobGraph()
+    // 可以看见JobGraph的入口函数是StreamingJobGraphGenerator.createJobGraph()
     return StreamingJobGraphGenerator.createJobGraph(this, jobID);
 }
 // StreamingJobGraphGenerator
 public static JobGraph createJobGraph(StreamGraph streamGraph, @Nullable JobID jobID) {
-    // 初始化StreamingJobGraphGenerator,再调用createJobGraph
+        // 初始化StreamingJobGraphGenerator,再调用createJobGraph
 	return new StreamingJobGraphGenerator(streamGraph, jobID).createJobGraph();
 }
+
+// 这里介绍下StreamingJobGraphGenerator中有什么成员
+private final StreamGraph streamGraph; // StreamGraph,输入
+private final Map<Integer, JobVertex> jobVertices; // id->JobVertex 
+private final JobGraph jobGraph; // JobGraph,输出
+private final Collection<Integer> builtVertices; // 已经构建的JobVertex集合
+private final List<StreamEdge> physicalEdgesInOrder; // 保存StreamEdge的集合,在connect/setPhysicalEdges方法中使用
+private final Map<Integer, Map<Integer, StreamConfig>> chainedConfigs; // 保存chain信息,部署时用来构建OperatorChain,startNodeId->(currentNodeId->StreamConfig)
+private final Map<Integer, StreamConfig> vertexConfigs; // 所有节点的配置信息,id->StreamConfig
+private final Map<Integer, String> chainedNames; // 保存每个节点的名字
+private final Map<Integer, ResourceSpec> chainedMinResources;
+private final Map<Integer, ResourceSpec> chainedPreferredResources;
+private final Map<Integer, InputOutputFormatContainer> chainedInputOutputFormats;
+private final StreamGraphHasher defaultStreamGraphHasher;
+private final List<StreamGraphHasher> legacyStreamGraphHashers;
 ```
 ### createJobGraph
 ```java
 private JobGraph createJobGraph() {
 	preValidate();
 	// make sure that all vertices start immediately
+    // 设置调度模式,streaming模式下,所有节点一起启动
 	jobGraph.setScheduleMode(streamGraph.getScheduleMode());
 	// Generate deterministic hashes for the nodes in order to identify them across
 	// submission iff they didn't change.
+    // 广度优先遍历StreamGraph并且为每个StreamNode生成hashId
+    // 保证如果提交的拓扑没有改变,则每次生成的hash一样
 	Map<Integer, byte[]> hashes = defaultStreamGraphHasher.traverseStreamGraphAndGenerateHashes(streamGraph);
 	// Generate legacy version hashes for backwards compatibility
 	List<Map<Integer, byte[]>> legacyHashes = new ArrayList<>(legacyStreamGraphHashers.size());
