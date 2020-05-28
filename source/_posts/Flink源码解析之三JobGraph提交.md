@@ -115,6 +115,140 @@ private CompletableFuture<Void> uploadAndSetJobFiles(final CompletableFuture<Ine
         }
     });
 }
+
+Dispatcher
+@Override
+public CompletableFuture<Acknowledge> submitJob(JobGraph jobGraph, Time timeout) {
+    log.info("Received JobGraph submission {} ({}).", jobGraph.getJobID(), jobGraph.getName());
+
+    try {
+        if (isDuplicateJob(jobGraph.getJobID())) {
+            return FutureUtils.completedExceptionally(
+                new DuplicateJobSubmissionException(jobGraph.getJobID()));
+        } else if (isPartialResourceConfigured(jobGraph)) {
+            return FutureUtils.completedExceptionally(
+                new JobSubmissionException(jobGraph.getJobID(), "Currently jobs is not supported if parts of the vertices have " +
+                        "resources configured. The limitation will be removed in future versions."));
+        } else {
+            // 提交JobGraph
+            return internalSubmitJob(jobGraph);
+        }
+    } catch (FlinkException e) {
+        return FutureUtils.completedExceptionally(e);
+    }
+}
+
+private CompletableFuture<Acknowledge> internalSubmitJob(JobGraph jobGraph) {
+    log.info("Submitting job {} ({}).", jobGraph.getJobID(), jobGraph.getName());
+
+    // 完成提交,并启动Job
+    final CompletableFuture<Acknowledge> persistAndRunFuture = waitForTerminatingJobManager(jobGraph.getJobID(), jobGraph, this::persistAndRunJob)
+        .thenApply(ignored -> Acknowledge.get());
+
+    return persistAndRunFuture.handleAsync((acknowledge, throwable) -> {
+        if (throwable != null) {
+            cleanUpJobData(jobGraph.getJobID(), true);
+
+            final Throwable strippedThrowable = ExceptionUtils.stripCompletionException(throwable);
+            log.error("Failed to submit job {}.", jobGraph.getJobID(), strippedThrowable);
+            throw new CompletionException(
+                new JobSubmissionException(jobGraph.getJobID(), "Failed to submit job.", strippedThrowable));
+        } else {
+            return acknowledge;
+        }
+    }, getRpcService().getExecutor());
+}
+
+private CompletableFuture<Void> persistAndRunJob(JobGraph jobGraph) throws Exception {
+    jobGraphWriter.putJobGraph(jobGraph);
+
+    // 启动Job
+    final CompletableFuture<Void> runJobFuture = runJob(jobGraph);
+
+    return runJobFuture.whenComplete(BiConsumerWithException.unchecked((Object ignored, Throwable throwable) -> {
+        if (throwable != null) {
+            jobGraphWriter.removeJobGraph(jobGraph.getJobID());
+        }
+    }));
+}
+
+private CompletableFuture<Void> runJob(JobGraph jobGraph) {
+    Preconditions.checkState(!jobManagerRunnerFutures.containsKey(jobGraph.getJobID()));
+
+    // 创建JobManagerRunner
+    final CompletableFuture<JobManagerRunner> jobManagerRunnerFuture = createJobManagerRunner(jobGraph);
+
+    jobManagerRunnerFutures.put(jobGraph.getJobID(), jobManagerRunnerFuture);
+
+    // 启动JobManagerRunner
+    return jobManagerRunnerFuture
+        .thenApply(FunctionUtils.uncheckedFunction(this::startJobManagerRunner))
+        .thenApply(FunctionUtils.nullFn())
+        .whenCompleteAsync(
+            (ignored, throwable) -> {
+                if (throwable != null) {
+                    jobManagerRunnerFutures.remove(jobGraph.getJobID());
+                }
+            },
+            getMainThreadExecutor());
+}
+
+private CompletableFuture<JobManagerRunner> createJobManagerRunner(JobGraph jobGraph) {
+    // RPC通信服务
+    final RpcService rpcService = getRpcService();
+
+    // 调用JobManagerRunnerFactory创建JobManagerRunnerImpl
+    return CompletableFuture.supplyAsync(
+        CheckedSupplier.unchecked(() ->
+            jobManagerRunnerFactory.createJobManagerRunner(
+                jobGraph,
+                configuration,
+                rpcService,
+                highAvailabilityServices,
+                heartbeatServices,
+                jobManagerSharedServices,
+                new DefaultJobManagerJobMetricGroupFactory(jobManagerMetricGroup),
+                fatalErrorHandler)),
+        rpcService.getExecutor());
+}
+
+// 启动JobManagerRunner
+private JobManagerRunner startJobManagerRunner(JobManagerRunner jobManagerRunner) throws Exception {
+    final JobID jobId = jobManagerRunner.getJobID();
+
+    FutureUtils.assertNoException(
+        jobManagerRunner.getResultFuture().handleAsync(
+            (ArchivedExecutionGraph archivedExecutionGraph, Throwable throwable) -> {
+                // check if we are still the active JobManagerRunner by checking the identity
+                final JobManagerRunner currentJobManagerRunner = Optional.ofNullable(jobManagerRunnerFutures.get(jobId))
+                    .map(future -> future.getNow(null))
+                    .orElse(null);
+                //noinspection ObjectEquality
+                if (jobManagerRunner == currentJobManagerRunner) {
+                    if (archivedExecutionGraph != null) {
+                        jobReachedGloballyTerminalState(archivedExecutionGraph);
+                    } else {
+                        final Throwable strippedThrowable = ExceptionUtils.stripCompletionException(throwable);
+
+                        if (strippedThrowable instanceof JobNotFinishedException) {
+                            jobNotFinished(jobId);
+                        } else {
+                            jobMasterFailed(jobId, strippedThrowable);
+                        }
+                    }
+                } else {
+                    log.debug("There is a newer JobManagerRunner for the job {}.", jobId);
+                }
+
+                return null;
+            }, getMainThreadExecutor()));
+
+    // 启动,使用选举器去启动JobManagerRunner
+    jobManagerRunner.start();
+
+    return jobManagerRunner;
+}
+
 ```
 ### RestClusterClient
 ```java
@@ -225,9 +359,13 @@ private <M extends MessageHeaders<R, P, U>, U extends MessageParameters, R exten
 ## 结论
 ```
 可以看到,Flink实际提交JobGraph有两种模式
-    在本地测试运行时是开启了一个BLOB服务端进行对JobGraph信息的接收,使用BLOBClient进行提交
+Mini
+    在本地测试运行时是开启了一个BLOB服务端进行对JobGraph信息的接收
+    使用BLOBClient进行提交
+    提交完之后直接启动该Job
+Rest
     而实际部署环境则是通过Rest请求进行提交
-
+    由服务端去响应任务
 实际提交的信息则是从JobGraph提取出来的Jars和GraphFiles
 
 至此Client方面的点已经梳理一遍了,关于对Job的取消,Job状态的获取
