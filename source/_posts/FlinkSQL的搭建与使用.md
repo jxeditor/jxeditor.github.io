@@ -100,3 +100,33 @@ object HiveDemoOnTable {
     case class Order(topic: String, partition: Integer, offset: Integer, msg: String, c_date: String)
 }
 ```
+
+---
+
+## 记录出现的问题
+```
+问题1:
+Caused by: org.apache.flink.table.client.gateway.SqlExecutionException: Could not create execution context.
+修改了默认module
+解决:
+导入flink-connector-hive_2.11-*.jar
+
+问题2:
+Caused by: java.lang.ClassNotFoundException: org.apache.hive.common.util.HiveVersionInfo
+没有找到Hive版本信息
+解决:
+导入hive-exec-*.jar
+
+问题3:
+Caused by: java.lang.ClassNotFoundException: org.apache.hadoop.io.Writable
+没有hadood依赖,导入shaded包或者hadoop依赖包
+解决:
+导入hadoop-common-*.jar等
+或者flink-shaded-hadoop-2-uber-*.jar
+
+问题4:
+Caused by: java.lang.ClassNotFoundException: com.facebook.fb303.FacebookService$Iface
+缺少libfb303
+解决:
+导入libfb303-0.9.3.jar
+```
