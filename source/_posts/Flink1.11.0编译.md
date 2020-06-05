@@ -80,6 +80,7 @@ mvn clean install -DskipTests -Pvendor-repos -Dhadoop.version=3.0.0-cdh6.2.0 -Dm
 问题2:
 [ERROR] Failed to execute goal com.github.eirslett:frontend-maven-plugin:1.6:npm (npm install) on project flink-runtime-web_2.11: Failed to run task: 'npm ci --cache-max=0 --no-save' failed. org.apache.commons.exec.ExecuteException: Process exited with an error: -4048 (Exit value: -4048) -> [Help 1]
 解决:
+先删除flink-runtime-web\web-dashboard下的node_modules文件夹
 使用了淘宝源,删除它
 npm install -g mirror-config-china --registry=https://registry.npm.taobao.org/
 npm config get registry
