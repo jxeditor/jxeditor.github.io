@@ -85,6 +85,262 @@ e.g:
 
 ---
 
+## SqlNode的产生
+```java
+// Parser.parser()->解析sql的接口类
+List<Operation> parse(String statement);
+
+// ParserImpl.parser()->实现类
+@Override
+public List<Operation> parse(String statement) {
+    // 获取CalciteParser解析器
+    CalciteParser parser = calciteParserSupplier.get();
+    FlinkPlannerImpl planner = validatorSupplier.get();
+    // parse the sql query
+    SqlNode parsed = parser.parse(statement);
+    
+    // SqlNode转换为Operation
+    Operation operation = SqlToOperationConverter.convert(planner, catalogManager, parsed)
+        .orElseThrow(() -> new TableException(
+            "Unsupported SQL query! parse() only accepts SQL queries of type " +
+                "SELECT, UNION, INTERSECT, EXCEPT, VALUES, ORDER_BY or INSERT;" +
+                "and SQL DDLs of type " +
+                "CREATE TABLE"));
+    // 返回
+    return Collections.singletonList(operation);
+}
+
+// CalciteParser.parser()->Calcite引擎解析器
+public SqlNode parse(String sql) {
+	try {
+        // 根据config创建SqlParser
+		SqlParser parser = SqlParser.create(sql, config);
+        
+        // 获取SqlNode
+		return parser.parseStmt();
+	} catch (SqlParseException e) {
+		throw new SqlParserException("SQL parse failed. " + e.getMessage());
+	}
+}
+
+// SqlParser.create()->根据config去创建SqlParser
+public static SqlParser create(String sql, SqlParser.Config config) {
+    return create((Reader)(new SourceStringReader(sql)), config);
+}
+public static SqlParser create(Reader reader, SqlParser.Config config) {
+    SqlAbstractParserImpl parser = config.parserFactory().getParser(reader);
+    return new SqlParser(parser, config);
+}
+
+// SqlParser.parseStmt()->获取SqlNode
+public SqlNode parseStmt() throws SqlParseException {
+    return this.parseQuery();
+}
+public SqlNode parseQuery() throws SqlParseException {
+    try {
+        // 切换到SQLAbstractParserImpl的实现类FlinkSqlParserImpl
+        return this.parser.parseSqlStmtEof();
+    } catch (Throwable var2) {
+        throw this.handleException(var2);
+    }
+}
+
+// FlinkSqlParserImpl.parseSqlStmtEof()->获取SqlNode
+public SqlNode parseSqlStmtEof() throws Exception {
+    return this.SqlStmtEof();
+}
+public final SqlNode SqlStmtEof() throws ParseException {
+    // 在SqlStmt方法中有着各种可能性
+    SqlNode stmt = this.SqlStmt();
+    this.jj_consume_token(0);
+    return stmt;
+}
+
+// FlinkSqlParserImpl.SqlStmt(),有几百行,这里挑一部分
+public final SqlNode SqlStmt() throws ParseException {
+    Object stmt;
+    ...
+    case 109:
+        stmt = this.SqlCreate();
+        break;
+    ...
+    return (SqlNode)stmt;
+}
+public final SqlCreate SqlCreate() throws ParseException {
+    boolean replace = false;
+    this.jj_consume_token(109);
+    Span s = this.span();
+    switch(this.jj_ntk == -1 ? this.jj_ntk() : this.jj_ntk) {
+    case 366:
+        this.jj_consume_token(366);
+        this.jj_consume_token(441);
+        replace = true;
+        break;
+    default:
+        this.jj_la1[224] = this.jj_gen;
+    }
+
+    SqlCreate create;
+    switch(this.jj_ntk == -1 ? this.jj_ntk() : this.jj_ntk) {
+    case 129:
+        create = this.SqlCreateDatabase(s, replace);
+        break;
+    case 215:
+    case 585:
+        create = this.SqlCreateFunction(s, replace);
+        break;
+    case 582:
+        create = this.SqlCreateTable(s, replace);
+        break;
+    case 650:
+        create = this.SqlCreateView(s, replace);
+        break;
+    default:
+        this.jj_la1[225] = this.jj_gen;
+        this.jj_consume_token(-1);
+        throw new ParseException();
+    }
+
+    return create;
+}
+public final SqlCreate SqlCreateTable(Span s, boolean replace) throws ParseException {
+    SqlParserPos startPos;
+    SqlIdentifier tableName;
+    SqlNodeList primaryKeyList;
+    Object uniqueKeysList;
+    SqlWatermark watermark;
+    SqlNodeList columnList;
+    SqlCharStringLiteral comment;
+    SqlNodeList propertyList;
+    SqlNodeList partitionColumns;
+    startPos = s.pos();
+    primaryKeyList = SqlNodeList.EMPTY;
+    uniqueKeysList = new ArrayList();
+    watermark = null;
+    columnList = SqlNodeList.EMPTY;
+    comment = null;
+    propertyList = SqlNodeList.EMPTY;
+    partitionColumns = SqlNodeList.EMPTY;
+    this.jj_consume_token(582);
+    tableName = this.CompoundIdentifier();
+    label61:
+    switch(this.jj_ntk == -1 ? this.jj_ntk() : this.jj_ntk) {
+    case 694:
+        this.jj_consume_token(694);
+        SqlParserPos pos = this.getPos();
+        TableCreationContext ctx = new TableCreationContext();
+        this.TableColumn(ctx);
+
+        while(true) {
+            switch(this.jj_ntk == -1 ? this.jj_ntk() : this.jj_ntk) {
+            case 706:
+                this.jj_consume_token(706);
+                this.TableColumn(ctx);
+                break;
+            default:
+                this.jj_la1[51] = this.jj_gen;
+                pos = pos.plus(this.getPos());
+                columnList = new SqlNodeList(ctx.columnList, pos);
+                primaryKeyList = ctx.primaryKeyList;
+                uniqueKeysList = ctx.uniqueKeysList;
+                watermark = ctx.watermark;
+                this.jj_consume_token(695);
+                break label61;
+            }
+        }
+    default:
+        this.jj_la1[52] = this.jj_gen;
+    }
+
+    switch(this.jj_ntk == -1 ? this.jj_ntk() : this.jj_ntk) {
+    case 666:
+        this.jj_consume_token(666);
+        this.jj_consume_token(689);
+        String p = SqlParserUtil.parseString(this.token.image);
+        comment = SqlLiteral.createCharString(p, this.getPos());
+        break;
+    default:
+        this.jj_la1[53] = this.jj_gen;
+    }
+
+    switch(this.jj_ntk == -1 ? this.jj_ntk() : this.jj_ntk) {
+    case 667:
+        this.jj_consume_token(667);
+        this.jj_consume_token(46);
+        partitionColumns = this.ParenthesizedSimpleIdentifierList();
+        if (!((FlinkSqlConformance)this.conformance).allowCreatePartitionedTable()) {
+            throw SqlUtil.newContextException(this.getPos(), ParserResource.RESOURCE.createPartitionedTableIsOnlyAllowedForHive());
+        }
+        break;
+    default:
+        this.jj_la1[54] = this.jj_gen;
+    }
+
+    switch(this.jj_ntk == -1 ? this.jj_ntk() : this.jj_ntk) {
+    case 657:
+        this.jj_consume_token(657);
+        // 获取表属性
+        propertyList = this.TableProperties();
+        break;
+    default:
+        this.jj_la1[55] = this.jj_gen;
+    }
+
+    return new SqlCreateTable(startPos.plus(this.getPos()), tableName, columnList, primaryKeyList, (List)uniqueKeysList, propertyList, partitionColumns, watermark, comment);
+}
+```
+**注意** FlinkSqlParserImpl在1.11版本被移除
+
+---
+
+## Operation的产生
+```
+// SqlToOperationConverter.convert()->将SqlNode转换为Operation
+public static Optional<Operation> convert(
+			FlinkPlannerImpl flinkPlanner,
+			CatalogManager catalogManager,
+			SqlNode sqlNode) {
+    // validate the query
+    final SqlNode validated = flinkPlanner.validate(sqlNode);
+    SqlToOperationConverter converter = new SqlToOperationConverter(flinkPlanner, catalogManager);
+    if (validated instanceof SqlCreateTable) {
+        return Optional.of(converter.convertCreateTable((SqlCreateTable) validated));
+    } else if (validated instanceof SqlDropTable) {
+        return Optional.of(converter.convertDropTable((SqlDropTable) validated));
+    } else if (validated instanceof SqlAlterTable) {
+        return Optional.of(converter.convertAlterTable((SqlAlterTable) validated));
+    } else if (validated instanceof SqlCreateFunction) {
+        return Optional.of(converter.convertCreateFunction((SqlCreateFunction) validated));
+    } else if (validated instanceof SqlAlterFunction) {
+        return Optional.of(converter.convertAlterFunction((SqlAlterFunction) validated));
+    } else if (validated instanceof SqlDropFunction) {
+        return Optional.of(converter.convertDropFunction((SqlDropFunction) validated));
+    } else if (validated instanceof RichSqlInsert) {
+        SqlNodeList targetColumnList = ((RichSqlInsert) validated).getTargetColumnList();
+        if (targetColumnList != null && targetColumnList.size() != 0) {
+            throw new ValidationException("Partial inserts are not supported");
+        }
+        return Optional.of(converter.convertSqlInsert((RichSqlInsert) validated));
+    } else if (validated instanceof SqlUseCatalog) {
+        return Optional.of(converter.convertUseCatalog((SqlUseCatalog) validated));
+    } else if (validated instanceof SqlUseDatabase) {
+        return Optional.of(converter.convertUseDatabase((SqlUseDatabase) validated));
+    } else if (validated instanceof SqlCreateDatabase) {
+        return Optional.of(converter.convertCreateDatabase((SqlCreateDatabase) validated));
+    } else if (validated instanceof SqlDropDatabase) {
+        return Optional.of(converter.convertDropDatabase((SqlDropDatabase) validated));
+    } else if (validated instanceof SqlAlterDatabase) {
+        return Optional.of(converter.convertAlterDatabase((SqlAlterDatabase) validated));
+    } else if (validated.getKind().belongsTo(SqlKind.QUERY)) {
+        return Optional.of(converter.convertSqlQuery(validated));
+    } else {
+        return Optional.empty();
+    }
+}
+```
+
+---
+
 ## 结合Demo测试
 ```
 # 打印出SQL的AST语法树,优化好的逻辑计划以及物理计划

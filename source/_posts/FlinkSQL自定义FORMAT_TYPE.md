@@ -1,5 +1,5 @@
 ---
-title: FlinkSQL自定义format.type
+title: FlinkSQL自定义FORMAT_TYPE
 date: 2020-06-11 11:18:43
 categories: 大数据
 tags: flink
