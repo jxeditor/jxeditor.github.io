@@ -243,6 +243,8 @@ CatalogSourceTable.tableSource()
 CatalogSourceTable.findAndCreateTableSource()->寻找并创建数据源表
 TableFactoryUtil.findAndCreateTableSource()
 TableFactoryUtil.findAndCreateTableSource()
+TableFactoryService.find()->获取对应的TableSourceFactory
+TableSourceFactory.createTableSource()->创建源表
 
 // TableFactoryUtil,此处去加载TableSourceFactory
 private static <T> TableSource<T> findAndCreateTableSource(Map<String, String> properties) {
@@ -254,6 +256,114 @@ private static <T> TableSource<T> findAndCreateTableSource(Map<String, String> p
             .createTableSource(properties);
     } catch (Throwable t) {
         throw new TableException("findAndCreateTableSource failed.", t);
+    }
+}
+
+// KafkaTableSourceSinkFactoryBase.createStreamTableSource()
+// 此处是流处理Kafka源表创建工厂类,继承的是TableSourceFactory
+// 需要注意,TableSourceFactory对应connector.type
+// 这里不细讲
+public StreamTableSource<Row> createStreamTableSource(Map<String, String> properties) {
+    final DescriptorProperties descriptorProperties = getValidatedProperties(properties);
+
+    // 根据配置获取topic
+    final String topic = descriptorProperties.getString(CONNECTOR_TOPIC);
+    // 获取DeserializationSchema
+    final DeserializationSchema<Row> deserializationSchema = getDeserializationSchema(properties);
+    final StartupOptions startupOptions = getStartupOptions(descriptorProperties, topic);
+
+    return createKafkaTableSource(
+        TableSchemaUtils.getPhysicalSchema(descriptorProperties.getTableSchema(SCHEMA)),
+        SchemaValidator.deriveProctimeAttribute(descriptorProperties),
+        SchemaValidator.deriveRowtimeAttributes(descriptorProperties),
+        SchemaValidator.deriveFieldMapping(
+            descriptorProperties,
+            Optional.of(deserializationSchema.getProducedType())),
+        topic,
+        getKafkaProperties(descriptorProperties),
+        deserializationSchema,
+        startupOptions.startupMode,
+        startupOptions.specificOffsets);
+}
+private DeserializationSchema<Row> getDeserializationSchema(Map<String, String> properties) {
+    // 逻辑与上面相似,通过TableFactoryService去找工厂类
+    @SuppressWarnings("unchecked")
+    final DeserializationSchemaFactory<Row> formatFactory = TableFactoryService.find(
+        DeserializationSchemaFactory.class,
+        properties,
+        this.getClass().getClassLoader());
+    return formatFactory.createDeserializationSchema(properties);
+}
+```
+
+---
+
+## TableFactoryService
+```
+// 个人感觉,这是贯穿整个流程的重点,也是用户可以自定义的一个关键
+// 需要理解TableFactory继承关系树,TableFactory是顶级节点
+public static <T extends TableFactory> T find(Class<T> factoryClass, Map<String, String> propertyMap, ClassLoader classLoader) {
+    Preconditions.checkNotNull(classLoader);
+    return findSingleInternal(factoryClass, propertyMap, Optional.of(classLoader));
+}
+
+private static <T extends TableFactory> T findSingleInternal(Class<T> factoryClass, Map<String, String> properties, Optional<ClassLoader> classLoader) {
+    // 去寻找所有工厂类
+    List<TableFactory> tableFactories = discoverFactories(classLoader);
+    // 进行根据配置文件进行过滤
+    List<T> filtered = filter(tableFactories, factoryClass, properties);
+    if (filtered.size() > 1) {
+        throw new AmbiguousTableFactoryException(filtered, factoryClass, tableFactories, properties);
+    } else {
+        return (TableFactory)filtered.get(0);
+    }
+}
+
+private static List<TableFactory> discoverFactories(Optional<ClassLoader> classLoader) {
+    try {
+        List<TableFactory> result = new LinkedList();
+        ClassLoader cl = (ClassLoader)classLoader.orElse(Thread.currentThread().getContextClassLoader());
+        ServiceLoader.load(TableFactory.class, cl).iterator().forEachRemaining(result::add);
+        return result;
+    } catch (ServiceConfigurationError var3) {
+        LOG.error("Could not load service provider for table factories.", var3);
+        throw new TableException("Could not load service provider for table factories.", var3);
+    }
+}
+```
+
+---
+## 测试
+```java
+import org.apache.flink.table.api.TableException;
+import org.apache.flink.table.factories.TableFactory;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ServiceConfigurationError;
+import java.util.ServiceLoader;
+import java.util.Optional;
+
+/**
+ * @author XiaShuai on 2020/6/11.
+ */
+public class Demo {
+    public static void main(String[] args) {
+        List<TableFactory> tableFactories = discoverFactories(Optional.empty());
+        for (int i = 0; i < tableFactories.size(); i++) {
+            System.out.println(tableFactories.get(i).toString());
+        }
+    }
+
+    private static List<TableFactory> discoverFactories(Optional<ClassLoader> classLoader) {
+        try {
+            List<TableFactory> result = new LinkedList();
+            ClassLoader cl = (ClassLoader) classLoader.orElse(Thread.currentThread().getContextClassLoader());
+            ServiceLoader.load(TableFactory.class, cl).iterator().forEachRemaining(result::add);
+            return result;
+        } catch (ServiceConfigurationError var3) {
+            throw new TableException("Could not load service provider for table factories.", var3);
+        }
     }
 }
 ```
