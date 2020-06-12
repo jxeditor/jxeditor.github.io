@@ -94,7 +94,7 @@ public JobManagerRunnerImpl(
 
         // libraries and class loader first
         try {
-            // 1.向BlobLibraryCacheManager注册Job
+            // 向BlobLibraryCacheManager注册Job
             libraryCacheManager.registerJob(
                     jobGraph.getJobID(), jobGraph.getUserJarBlobKeys(), jobGraph.getClasspaths());
         } catch (IOException e) {
