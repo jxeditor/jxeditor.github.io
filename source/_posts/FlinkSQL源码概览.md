@@ -11,6 +11,11 @@ tags: flink
 
 ## FlinkSQL引擎: Calcite
 ```
+解析SQL
+SqlNode(SQL语句转换而来的语法树)
+    SqlToOperationConverter(SqlNode转换为Operation)
+
+准备执行SQL
 RelNode(可以看做对整体数据处理的一个语法树)
     Converter(RelNode之间转换)
     FlinkRelNode(Flink的运算树)
@@ -289,7 +294,6 @@ public final SqlCreate SqlCreateTable(Span s, boolean replace) throws ParseExcep
     return new SqlCreateTable(startPos.plus(this.getPos()), tableName, columnList, primaryKeyList, (List)uniqueKeysList, propertyList, partitionColumns, watermark, comment);
 }
 ```
-**注意** FlinkSqlParserImpl在1.11版本被移除
 
 ---
 

@@ -5,7 +5,7 @@ categories: 大数据
 tags: flink
 ---
 
-> 整理下Flink1.11有什么新的功能,以及坑
+> 整理下Flink1.11有什么新的功能,以及坑,只有自己用到的
 
 <!-- more -->
 
@@ -28,4 +28,14 @@ val sink = StreamingFileSink.forBulkFormat(new Path("./resources"),
 ).build()
 
 student.addSink(sink).setParallelism(1)
+```
+
+---
+
+## execute的使用
+```
+1.11之前TableEnvironmentImpl与StreamExecutionEnvironment的execute方法实现一致
+无论用哪一个都可以
+1.11修改了TableEnvironmentImpl中execute的实现逻辑
+如果代码中涉及了DataStream的操作,则需要使用StreamExecutionEnvironment的execute方法
 ```
