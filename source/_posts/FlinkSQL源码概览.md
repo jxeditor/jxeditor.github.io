@@ -54,7 +54,7 @@ RelTraitDef
 
 ## FlinkSQL解析阶段
 ```
-Calcite使用JavaCC做SQL,JavaCC根据Parser.jj文件生成一系列java代码
+Calcite使用JavaCC做SQL,JavaCC根据Parser.jj/Parser.tdd文件生成一系列java代码
 生成的代码会将SQL转换为AST的数据结构(SqlNode,未经过验证)
 
 调用SqlToOperationConverter的convert函数将SqlNode转换为Operator
@@ -293,6 +293,41 @@ public final SqlCreate SqlCreateTable(Span s, boolean replace) throws ParseExcep
 
     return new SqlCreateTable(startPos.plus(this.getPos()), tableName, columnList, primaryKeyList, (List)uniqueKeysList, propertyList, partitionColumns, watermark, comment);
 }
+```
+**注意** FlinkParserImpl是由代码生成的类,并不是一个文件
+*flink-table/flink-sql-parser/src/main/codegen/data/Parser.tdd*
+
+---
+
+## 如何匹配SQL是什么类型
+```
+在FlinkSqlParserImpl.SqlStmt()方法中,有着switch语句进行匹配
+其实在第一个方法调用中就已经完成了匹配的必须信息的获取
+简单的讲就是在创建SqlParser时,将SQL语句转换成流的形式
+现在就是对流中的一个字符一个字符去获取解析,然后生成一个Token
+这个Token就是匹配类型的关键
+
+public final SqlNode SqlStmt() throws ParseException {
+    Object stmt;
+    // jj_2_4就是去调用jj_3_4方法然后最终调用jj_scan_token方法
+    if (this.jj_2_4(2)) {
+        stmt = this.RichSqlInsert();
+    }
+    ...
+}
+private final boolean jj_scan_token(int kind) {
+    if (this.jj_scanpos == this.jj_lastpos) {
+        --this.jj_la;
+        if (this.jj_scanpos.next == null) {
+            // 利用FlinkSqlParserImplTokenManager去获取Token
+            // Manager在CalciteParser的parse方法中创建
+            this.jj_lastpos = this.jj_scanpos = this.jj_scanpos.next = this.token_source.getNextToken();
+        } else {
+            this.jj_lastpos = this.jj_scanpos = this.jj_scanpos.next;
+        }
+    ...
+}
+// getNextToken去调用SimpleCharStream的BeginToken方法循环获取字符
 ```
 
 ---
