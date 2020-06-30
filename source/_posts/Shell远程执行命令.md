@@ -28,3 +28,12 @@ eeooff
 # eeooff之间是目标服务器执行的命令,eeooff可以改成其他的
 # 使用> /dev/null 2>&1 重定向是为了不打印目标服务器的日志
 ```
+
+---
+
+## 带密码远程执行
+```sh
+# 有时候服务器之间并没有配置免密,需要输入密码才能访问
+yum install -y sshpass
+sshpass -p "password" ssh root@ip "df -h"
+```

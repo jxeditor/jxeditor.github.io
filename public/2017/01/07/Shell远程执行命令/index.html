@@ -20,7 +20,7 @@
 <meta property="og:site_name" content="BlackC">
 <meta property="og:description" content="解决经常远程其他节点执行脚本的问题,需要ssh免密登陆">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-05-03T05:55:14.526Z">
+<meta property="og:updated_time" content="2020-06-30T03:05:02.794Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Shell远程执行命令">
 <meta name="twitter:description" content="解决经常远程其他节点执行脚本的问题,需要ssh免密登陆">
@@ -187,6 +187,8 @@
 <h2 id="命令行"><a href="#命令行" class="headerlink" title="命令行"></a>命令行</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh root@node01 <span class="string">"cd /home ; touch abc.txt"</span></span><br></pre></td></tr></table></figure>
 <hr>
 <h2 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">ssh user@remoteNode &gt; /dev/null 2&gt;&amp;1 &lt;&lt; eeooff</span><br><span class="line"><span class="built_in">cd</span> /home</span><br><span class="line">touch abcdefg.txt</span><br><span class="line"><span class="built_in">exit</span></span><br><span class="line">eeooff</span><br><span class="line"></span><br><span class="line"><span class="comment"># eeooff之间是目标服务器执行的命令,eeooff可以改成其他的</span></span><br><span class="line"><span class="comment"># 使用&gt; /dev/null 2&gt;&amp;1 重定向是为了不打印目标服务器的日志</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="带密码远程执行"><a href="#带密码远程执行" class="headerlink" title="带密码远程执行"></a>带密码远程执行</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 有时候服务器之间并没有配置免密,需要输入密码才能访问</span></span><br><span class="line">yum install -y sshpass</span><br><span class="line">sshpass -p <span class="string">"password"</span> ssh root@ip <span class="string">"df -h"</span></span><br></pre></td></tr></table></figure>
   </div>
   <footer class="article-footer">
     
