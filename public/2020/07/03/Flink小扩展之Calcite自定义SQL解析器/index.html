@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink小扩展之Calcite自定义SQL解析器
+  
+</title>
+
+<meta name="description" content="FlinkSQL其底层的SQL解析流程使用的Calcite框架,参考传送门">
+<meta name="keywords" content="flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink小扩展之Calcite自定义SQL解析器">
+<meta property="og:url" content="http://yoursite.com/2020/07/03/Flink小扩展之Calcite自定义SQL解析器/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="FlinkSQL其底层的SQL解析流程使用的Calcite框架,参考传送门">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-07-03T07:20:17.807Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flink小扩展之Calcite自定义SQL解析器">
+<meta name="twitter:description" content="FlinkSQL其底层的SQL解析流程使用的Calcite框架,参考传送门">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">142</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">6</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">82</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">16</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">68</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink小扩展之Calcite自定义SQL解析器" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink小扩展之Calcite自定义SQL解析器
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-07-03
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>FlinkSQL其底层的SQL解析流程使用的Calcite框架,参考<a href="https://blog.csdn.net/dafei1288/article/details/102735371" target="_blank" rel="noopener">传送门</a></p>
+</blockquote>
+<a id="more"></a>
+<h2 id="前期项目构建"><a href="#前期项目构建" class="headerlink" title="前期项目构建"></a>前期项目构建</h2><h3 id="maven项目"><a href="#maven项目" class="headerlink" title="maven项目"></a>maven项目</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;groupId&gt;org.example&lt;/groupId&gt;</span><br><span class="line">&lt;artifactId&gt;calcite_test&lt;/artifactId&gt;</span><br><span class="line">&lt;version&gt;1.0&lt;/version&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="pom-xml"><a href="#pom-xml" class="headerlink" title="pom.xml"></a>pom.xml</h3><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.7.25<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>net.java.dev.javacc<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>javacc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>7.0.9<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.freemarker<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>freemarker<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.30<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.calcite<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>calcite-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.23.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">source</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">target</span>&gt;</span>1.8<span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.codehaus.mojo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>javacc-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">id</span>&gt;</span>javacc<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goal</span>&gt;</span>javacc<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">sourceDirectory</span>&gt;</span>$&#123;project.build.directory&#125;/generated-sources/fmpp<span class="tag">&lt;/<span class="name">sourceDirectory</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/Parser.jj<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">lookAhead</span>&gt;</span>2<span class="tag">&lt;/<span class="name">lookAhead</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">isStatic</span>&gt;</span>false<span class="tag">&lt;/<span class="name">isStatic</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">id</span>&gt;</span>javacc-test<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">phase</span>&gt;</span>generate-test-sources<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goal</span>&gt;</span>javacc<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">sourceDirectory</span>&gt;</span>$&#123;project.build.directory&#125;/generated-test-sources/fmpp<span class="tag">&lt;/<span class="name">sourceDirectory</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>$&#123;project.build.directory&#125;/generated-test-sources/javacc<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">includes</span>&gt;</span></span><br><span class="line">                            <span class="tag">&lt;<span class="name">include</span>&gt;</span>**/Parser.jj<span class="tag">&lt;/<span class="name">include</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;/<span class="name">includes</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">lookAhead</span>&gt;</span>2<span class="tag">&lt;/<span class="name">lookAhead</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">isStatic</span>&gt;</span>false<span class="tag">&lt;/<span class="name">isStatic</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.drill.tools<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>drill-fmpp-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">config</span>&gt;</span>src/main/codegen/config.fmpp<span class="tag">&lt;/<span class="name">config</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">output</span>&gt;</span>$&#123;project.build.directory&#125;/generated-sources/fmpp<span class="tag">&lt;/<span class="name">output</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">templates</span>&gt;</span>src/main/codegen/templates<span class="tag">&lt;/<span class="name">templates</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">id</span>&gt;</span>generate-fmpp-sources<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">phase</span>&gt;</span>validate<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                        <span class="tag">&lt;<span class="name">goal</span>&gt;</span>generate<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="模板文件"><a href="#模板文件" class="headerlink" title="模板文件"></a>模板文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># 复制Calcite源码</span><br><span class="line">git clone https://github.com/apache/calcite.git</span><br><span class="line"># 复制模板文件到自己的工程下</span><br><span class="line">mv calcite\core\src\main\codegen calcite_test\src\main\</span><br><span class="line"></span><br><span class="line"># 可以了解一下模板文件</span><br><span class="line">compoundIdentifier.ftl</span><br><span class="line">parserImpls.ftl</span><br><span class="line">Parser.jj</span><br><span class="line">config.fmpp</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="代码编写"><a href="#代码编写" class="headerlink" title="代码编写"></a>代码编写</h2><h3 id="自定义SqlNode"><a href="#自定义SqlNode" class="headerlink" title="自定义SqlNode"></a>自定义SqlNode</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 需要在org.apache.calcite.sql包内,SqlNode没有public构造函数</span></span><br><span class="line"><span class="keyword">package</span> org.apache.calcite.sql;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.calcite.sql.parser.SqlParserPos;</span><br><span class="line"><span class="keyword">import</span> org.apache.calcite.sql.util.SqlVisitor;</span><br><span class="line"><span class="keyword">import</span> org.apache.calcite.sql.validate.SqlValidator;</span><br><span class="line"><span class="keyword">import</span> org.apache.calcite.sql.validate.SqlValidatorScope;</span><br><span class="line"><span class="keyword">import</span> org.apache.calcite.util.Litmus;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * SQL解析树</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> XiaShuai on 2020/7/3.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SqlExample</span> <span class="keyword">extends</span> <span class="title">SqlNode</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String exampleString;</span><br><span class="line">    <span class="keyword">private</span> SqlParserPos pos;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SqlExample</span><span class="params">(SqlParserPos pos, String exampleString)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(pos);</span><br><span class="line">        <span class="keyword">this</span>.pos = pos;</span><br><span class="line">        <span class="keyword">this</span>.exampleString = exampleString;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getExampleString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"getExampleString"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">this</span>.exampleString;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SqlNode <span class="title">clone</span><span class="params">(SqlParserPos sqlParserPos)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"clone"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">unparse</span><span class="params">(SqlWriter sqlWriter, <span class="keyword">int</span> i, <span class="keyword">int</span> i1)</span> </span>&#123;</span><br><span class="line">        sqlWriter.keyword(<span class="string">"run"</span>);</span><br><span class="line">        sqlWriter.keyword(<span class="string">"example"</span>);</span><br><span class="line">        sqlWriter.print(<span class="string">"\n"</span>);</span><br><span class="line">        sqlWriter.keyword(exampleString);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">validate</span><span class="params">(SqlValidator sqlValidator, SqlValidatorScope sqlValidatorScope)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"validate"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> &lt;R&gt; <span class="function">R <span class="title">accept</span><span class="params">(SqlVisitor&lt;R&gt; sqlVisitor)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"validate"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">equalsDeep</span><span class="params">(SqlNode sqlNode, Litmus litmus)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"equalsDeep"</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="修改config-fmpp"><a href="#修改config-fmpp" class="headerlink" title="修改config.fmpp"></a>修改config.fmpp</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">找到package: &quot;org.apache.calcite.sql.parser.impl&quot;</span><br><span class="line">修改下方class,替换成自己的类名ExampleSqlParserImpl</span><br><span class="line">Flink也是这样处理FlinkSqlParserImpl</span><br><span class="line">class: &quot;ExampleSqlParserImpl&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="修改Parser-jj文件"><a href="#修改Parser-jj文件" class="headerlink" title="修改Parser.jj文件"></a>修改Parser.jj文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">在import导入处,添加自定义SqlNode解析类的引入</span><br><span class="line">import org.apache.calcite.sql.SQLExample;</span><br><span class="line"></span><br><span class="line">在处理代码中加入解析逻辑,我是加在SqlStmtEof()后</span><br><span class="line">SqlNode SqlExample() :</span><br><span class="line">&#123;</span><br><span class="line">     SqlNode stringNode;</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">    &lt;RUN&gt; &lt;EXAMPLE&gt;</span><br><span class="line">    stringNode = StringLiteral()</span><br><span class="line">    &#123;</span><br><span class="line">        return new SqlExample(getPos(), token.image);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">找到声明语句的方法SqlNode SqlStmt() :</span><br><span class="line">适当位置加入</span><br><span class="line">|</span><br><span class="line">    stmt = SqlExample()</span><br><span class="line"></span><br><span class="line">在&lt;DEFAULT, DQID, BTID&gt; TOKEN :处加入关键字</span><br><span class="line">|   &lt; RUN: &quot;RUN&quot;&gt;</span><br><span class="line">|   &lt; EXAMPLE: &quot;EXAMPLE&quot;&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="编译"><a href="#编译" class="headerlink" title="编译"></a>编译</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn clean compile</span><br></pre></td></tr></table></figure>
+<h3 id="测试代码编写"><a href="#测试代码编写" class="headerlink" title="测试代码编写"></a>测试代码编写</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.example.devlop;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.calcite.avatica.util.Casing;</span><br><span class="line"><span class="keyword">import</span> org.apache.calcite.avatica.util.Quoting;</span><br><span class="line"><span class="keyword">import</span> org.apache.calcite.sql.SqlNode;</span><br><span class="line"><span class="keyword">import</span> org.apache.calcite.sql.parser.SqlParser;</span><br><span class="line"><span class="keyword">import</span> org.apache.calcite.sql.parser.impl.ExampleSqlParserImpl;</span><br><span class="line"><span class="keyword">import</span> org.apache.calcite.tools.FrameworkConfig;</span><br><span class="line"><span class="keyword">import</span> org.apache.calcite.tools.Frameworks;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> XiaShuai on 2020/7/3.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExampleParser</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        FrameworkConfig config = Frameworks.newConfigBuilder()</span><br><span class="line">                .parserConfig(SqlParser.configBuilder()</span><br><span class="line">                        .setParserFactory(ExampleSqlParserImpl.FACTORY)</span><br><span class="line">                        .setCaseSensitive(<span class="keyword">false</span>)</span><br><span class="line">                        .setQuoting(Quoting.BACK_TICK)</span><br><span class="line">                        .setQuotedCasing(Casing.TO_UPPER)</span><br><span class="line">                        .setUnquotedCasing(Casing.TO_UPPER)</span><br><span class="line">                        .build())</span><br><span class="line">                .build();</span><br><span class="line">        String sql = <span class="string">"run example 'select ids, name from test where id &lt; 5'"</span>;</span><br><span class="line">        SqlParser parser = SqlParser.create(sql, config.getParserConfig());</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            SqlNode sqlNode = parser.parseStmt();</span><br><span class="line">            System.out.println(sqlNode.toString());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>
