@@ -10,12 +10,14 @@ tags: flink
 <!-- more -->
 
 ## 前因
-    着手将Spark的实时项目重构成Flink项目
-    在对于数据的清洗时,原项目是将Json格式的数据转换为实体类
-    最后对其进行Kryo序列化发送给Kafka
-    在重构时,为了新老项目能够使用同一个数据源
-    新项目也采用同样的方式
-    结果发现Kryo使用的一些冲突
+```
+着手将Spark的实时项目重构成Flink项目
+在对于数据的清洗时,原项目是将Json格式的数据转换为实体类
+最后对其进行Kryo序列化发送给Kafka
+在重构时,为了新老项目能够使用同一个数据源
+新项目也采用同样的方式
+结果发现Kryo使用的一些冲突
+```
 
 ---
 
@@ -42,10 +44,11 @@ tags: flink
 ---
 
 ## 冲突
-    在使用Kryo包时,其实在引用flink-scala-2.11包时,其内部含有Kryo包(等级过低,需要排除)
-    如果直接引用Kryo包会导致项目编译通过,运行时报错,最终可能导致数据丢失
-    建议使用kryo-shaded包,很好的兼容了两者的异同
-
+```
+在使用Kryo包时,其实在引用flink-scala-2.11包时,其内部含有Kryo包(等级过低,需要排除)
+如果直接引用Kryo包会导致项目编译通过,运行时报错,最终可能导致数据丢失
+建议使用kryo-shaded包,很好的兼容了两者的异同
+```
 ---
 
 ## 注意
@@ -64,12 +67,13 @@ tags: flink
 3.实体类
     实体类需要保证字段顺序与Hive表中的顺序保持一致
     该bug在flink-1.11.0中有得到修复
-```    
+```
+
 ---
     
 ## 代码
-还有线程池的实现但是因为版本问题,这里没有使用
-[传送门](https://www.programcreek.com/java-api-examples/index.php?api=com.esotericsoftware.kryo.pool.KryoPool)
+
+还有线程池的实现但是因为版本问题,这里没有使用-[传送门](https://www.programcreek.com/java-api-examples/index.php?api=com.esotericsoftware.kryo.pool.KryoPool)
 ```scala
 package com.skuld.util
 
