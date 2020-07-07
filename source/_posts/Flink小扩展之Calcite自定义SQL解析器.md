@@ -248,9 +248,13 @@ public class ExampleParser {
         FrameworkConfig config = Frameworks.newConfigBuilder()
                 .parserConfig(SqlParser.configBuilder()
                         .setParserFactory(ExampleSqlParserImpl.FACTORY)
+                        // 设置大小写是否敏感
                         .setCaseSensitive(false)
+                        // 设置应用标识,mysql是``
                         .setQuoting(Quoting.BACK_TICK)
+                        // Quoting策略,不变,变大写或变小写
                         .setQuotedCasing(Casing.TO_UPPER)
+                        // 标识符没有被Quoting后的策略
                         .setUnquotedCasing(Casing.TO_UPPER)
                         .build())
                 .build();
