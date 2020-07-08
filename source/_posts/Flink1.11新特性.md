@@ -38,4 +38,9 @@ student.addSink(sink).setParallelism(1)
 无论用哪一个都可以
 1.11修改了TableEnvironmentImpl中execute的实现逻辑
 如果代码中涉及了DataStream的操作,则需要使用StreamExecutionEnvironment的execute方法
+
+简单概述为:
+    StreamTableEnvironment.execute() 只能执行 sqlUpdate 和 insertInto 方法执行作业
+    Table 转化为 DataStream 后只能通过 StreamExecutionEnvironment.execute() 来执行作业
+    新引入的 TableEnvironment.executeSql() 方法是直接执行sql作业 (异步提交作业)，不需要再调用 StreamTableEnvironment.execute() 或 StreamExecutionEnvironment.execute()
 ```
