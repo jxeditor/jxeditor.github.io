@@ -9,7 +9,7 @@ tags: flink
 
 <!-- more -->
 
-## SQL
+## FileSystem连接方式的SQL
 ```scala
 val sql =
   s"""
@@ -37,6 +37,36 @@ tableEnv.executeSql(
      |DATE_FORMAT(LOCALTIMESTAMP, 'HH')
      |FROM test
      |""".stripMargin)
+```
+
+---
+
+## 实时Hive
+```sql
+SET table.sql-dialect=hive;
+CREATE TABLE hive_table (
+  user_id STRING,
+  order_amount DOUBLE
+) PARTITIONED BY (dt STRING, hr STRING) STORED AS parquet TBLPROPERTIES (
+  'partition.time-extractor.timestamp-pattern'='$dt $hr:00:00',
+  'sink.partition-commit.trigger'='partition-time',
+  'sink.partition-commit.delay'='1 h',
+  'sink.partition-commit.policy.kind'='metastore,success-file'
+);
+
+SET table.sql-dialect=default;
+CREATE TABLE kafka_table (
+  user_id STRING,
+  order_amount DOUBLE,
+  log_ts TIMESTAMP(3),
+  WATERMARK FOR log_ts AS log_ts - INTERVAL '5' SECOND
+) WITH (...);
+
+-- streaming sql, insert into hive table
+INSERT INTO TABLE hive_table SELECT user_id, order_amount, DATE_FORMAT(log_ts, 'yyyy-MM-dd'), DATE_FORMAT(log_ts, 'HH') FROM kafka_table;
+
+-- batch sql, select with partition pruning
+SELECT * FROM hive_table WHERE dt='2020-05-20' and hr='12';
 ```
 
 ---
