@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    FlinkMeetup会议观后整理之OPPO
+  
+</title>
+
+<meta name="description" content="对于4月份在深圳举行的FlinkMeetup峰会,做一些知识性总结,提升一下自己,OPPO篇其实张俊张老师已经在过往记忆上做过总结整理了-传送门,本文更多的是了解自己的不足">
+<meta name="keywords" content="flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FlinkMeetup会议观后整理之OPPO">
+<meta property="og:url" content="http://yoursite.com/2019/06/04/FlinkMeetup会议观后整理之OPPO/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="对于4月份在深圳举行的FlinkMeetup峰会,做一些知识性总结,提升一下自己,OPPO篇其实张俊张老师已经在过往记忆上做过总结整理了-传送门,本文更多的是了解自己的不足">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-11-24T05:49:59.939Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="FlinkMeetup会议观后整理之OPPO">
+<meta name="twitter:description" content="对于4月份在深圳举行的FlinkMeetup峰会,做一些知识性总结,提升一下自己,OPPO篇其实张俊张老师已经在过往记忆上做过总结整理了-传送门,本文更多的是了解自己的不足">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">71</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-FlinkMeetup会议观后整理之OPPO" class="article article-type-post">
+  
+    <h1 class="article-header">
+      FlinkMeetup会议观后整理之OPPO
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-06-04
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>对于4月份在深圳举行的FlinkMeetup峰会,做一些知识性总结,提升一下自己,OPPO篇其实张俊张老师已经在过往记忆上做过总结整理了-<a href="https://mp.weixin.qq.com/s/ZZaaN0ubQgLqFwTiySi8UQ" target="_blank" rel="noopener">传送门</a>,本文更多的是了解自己的不足</p>
+</blockquote>
+<a id="more"></a>
+<hr>
+<h2 id="主要内容"><a href="#主要内容" class="headerlink" title="主要内容"></a>主要内容</h2><ul>
+<li>OPPO实时数仓的演进思路</li>
+<li>基于Flink SQL的扩展条件</li>
+<li>构建实时数仓的应用案例</li>
+<li>未来的思考和展望</li>
+</ul>
+<hr>
+<h2 id="一、OPPO实时数仓的演进思路"><a href="#一、OPPO实时数仓的演进思路" class="headerlink" title="一、OPPO实时数仓的演进思路"></a>一、OPPO实时数仓的演进思路</h2><h3 id="1-OPPO业务与数据规模"><a href="#1-OPPO业务与数据规模" class="headerlink" title="1.OPPO业务与数据规模"></a>1.OPPO业务与数据规模</h3><p>OPPO基于Android定制了自己的ColorOS系统,日活跃用户超过2亿.围绕着ColorOS,OPPO构建了很多互联网应用,比如应用商店,浏览器,信息流等.用户在使用这些互联网应用的同时,也给OPPO积累了大量的数据.目前OPPO的总数据量超过100PB,日增数据量超过200TB—<strong>数据</strong>.</p>
+<p>要支撑这么大的一个数据量,OPPO研发出一整套的数据系统与服务,并逐渐形成了自己的数据中台体系—<strong>数据中台</strong>.</p>
+<h3 id="2-OPPO数据中台"><a href="#2-OPPO数据中台" class="headerlink" title="2.OPPO数据中台"></a>2.OPPO数据中台</h3><p>数据中台是什么?数据中台是指通过数据技术,对海量数据进行采集,计算,存储,加工,同时统一标准和口径.如果将数据看做原材料,那么数据中台就是加工坊.把它分成4个层次:</p>
+<blockquote>
+<p><strong>业务支撑</strong>: 应用商店,浏览器,广告等;生产,品质,销售等;手软,ColorOs,影像等;IOT厂商</p>
+<p><strong>数据产品与服务</strong>: BI报表,用户洞察,内容标签,精准营销,舆情监测</p>
+<p><strong>全域数据体系</strong>: ID-Mapping,用户标签,内容标签</p>
+<p><strong>数据仓库</strong>: 原始层,明细层,汇总层,应用层</p>
+<p><strong>统一工具体系</strong>: 数据接入,数据治理,数据开发,数据消费</p>
+<p><strong>基础设施</strong>: 存储,计算</p>
+</blockquote>
+<ul>
+<li>最下层是统一工具体系,涵盖了”接入-治理-开发-消费”全数据链路;</li>
+<li>基于工具体系之上构建了数据仓库,划分成”原始层-明细层-汇总层-应用层”,这也是经典的数仓架构;</li>
+<li>再往上就是全域的数据体系,什么是全域呢?就是把公司所有的业务数据全部打通,形成统一的数据资产,比如ID-Mapping,用户标签等;</li>
+<li>最终,数据要能被业务用起来,需要场景驱动的数据产品与服务.</li>
+</ul>
+<p>以上就是OPPO数据中台的整个体系,而数据仓库在其中处于非常基础与核心的位置.</p>
+<h3 id="3-构建OPPO离线数仓"><a href="#3-构建OPPO离线数仓" class="headerlink" title="3.构建OPPO离线数仓"></a>3.构建OPPO离线数仓</h3><p>构建过程: 首先,数据来源基本是手机,日志文件以及DB数据库,基于Apache NiFI打造高可用,高吞吐的接入系统,将数据统一落入HDFS,形成原始层;紧接着,基于Hive的小时级ETL与天级汇总Hive任务,分别负责计算生成明细层与汇总层;最后,应用层是基于OPPO内部研发的数据产品,主要是报表分析,用户画像以及接口服务.此外,中间的明细层还支持Presto的<strong>即席查询</strong>与<strong>自助取数</strong>.</p>
+<h3 id="4-数仓实时化的诉求"><a href="#4-数仓实时化的诉求" class="headerlink" title="4.数仓实时化的诉求"></a>4.数仓实时化的诉求</h3><blockquote>
+<p><strong>业务侧</strong></p>
+</blockquote>
+<ul>
+<li>实时报表: 人群投放的到达率/曝光率/点击率</li>
+<li>实时标签: 用户当前所在的商圈</li>
+<li>实时接口: 用户最近下载某APP的时间</li>
+</ul>
+<blockquote>
+<p><strong>平台侧</strong></p>
+</blockquote>
+<ul>
+<li>调度任务: 凌晨0点大批量启动</li>
+<li>标签导入: 全量导入耗费数小时</li>
+<li>质量监控: 及时发现数据问题</li>
+</ul>
+<p>对于数仓实时化的诉求,大家通常都是从业务视角来看,但其实站在平台的角度,实时化也能带来切实的好处.首先,从业务侧来看,报表,标签,接口等都会有实时的应用场景;其次,对平台侧来说:第一,大量的批量任务都是从0点开始启动,都是通过T+1的方式去做数据处理,这会导致计算负载集中爆发,对集群的压力很大;第二,标签导入也属于一种T+1批量任务,每次全量导入都会耗费很长的时间;第三,数据质量的监控也必须是T+1的,导致没办法及时发现数据的一些问题.</p>
+<h3 id="5-离线到实现的平滑迁移"><a href="#5-离线到实现的平滑迁移" class="headerlink" title="5.离线到实现的平滑迁移"></a>5.离线到实现的平滑迁移</h3><p><table><br>    <tr><br>        <th rowspan="4">小时/天级</th><br>        <th rowspan="2">API</th><br>        <th>编程接口</th><br>        <th>SQL+UDF</th><br>    </tr><br>    <tr><br>        <th>数仓抽象</th><br>        <th>Table</th><br>    </tr><br>    <tr><br>        <th rowspan="2">RunTime</th><br>        <th>批量计算</th><br>        <th>Hive</th><br>    </tr><br>    <tr><br>        <th>离线数据</th><br>        <th>HDFS</th><br>    </tr><br></table></p>
+<p><table><br>    <tr><br>        <th rowspan="4">秒级/分级</th><br>        <th rowspan="2">API</th><br>        <th>编程接口</th><br>        <th>SQL+UDF</th><br>    </tr><br>    <tr><br>        <th>数仓抽象</th><br>        <th>Table</th><br>    </tr><br>    <tr><br>        <th rowspan="2">RunTime</th><br>        <th>流式计算</th><br>        <th>Flink</th><br>    </tr><br>    <tr><br>        <th>实时数据</th><br>        <th>Kafka</th><br>    </tr><br></table><br>无论是一个平台还是一个系统,都离不开上下两个层次的构成: 上层是API,是面向用户的编程抽象与接口;下层是RunTime,是面向内核的执行引擎.从离线到实时的迁移是平滑的,是什么意思?从API这层来看,数仓的抽象是Table,编程接口是SQL+UDF,离线数仓时代用户已经习惯了这样的API,迁移到实时数仓最好也能保持一致.而从RunTime层来看,计算引擎从Hive演进到了Flink,存储引擎从HDFS演进到了Kakfa.</p>
+<h3 id="6-构建OPPO实时数仓"><a href="#6-构建OPPO实时数仓" class="headerlink" title="6.构建OPPO实时数仓"></a>6.构建OPPO实时数仓</h3><p>构建过程: 与离线数仓基本相似,只是把Hive替换成Flink,把HDFS替换为Kafka.总体流程来看,基本模型是不变的,还是由原始层,明细层,汇总层,应用层的级联计算来构成.</p>
+<p>核心问题: 如何基于Flink构建实时数仓.</p>
+<hr>
+<h2 id="二、基于Flink-SQL的扩展工作"><a href="#二、基于Flink-SQL的扩展工作" class="headerlink" title="二、基于Flink SQL的扩展工作"></a>二、基于Flink SQL的扩展工作</h2><h3 id="1-Why-Flink-SQL"><a href="#1-Why-Flink-SQL" class="headerlink" title="1.Why Flink SQL"></a>1.Why Flink SQL</h3><blockquote>
+<p><strong>SQL</strong>: High-level Language</p>
+</blockquote>
+<ul>
+<li>ANSI SQL + UDF</li>
+<li>数据类型 + 内置函数</li>
+<li>自定义Source/Sink</li>
+<li>批流统一</li>
+</ul>
+<blockquote>
+<p><strong>Table API</strong>: Declarative DSL</p>
+</blockquote>
+<blockquote>
+<p><strong>DataStream/DataSet API</strong>: Core APIs</p>
+</blockquote>
+<blockquote>
+<p><strong>Stateful Stream Processing</strong>: Low-level building block(streams,state,[event] time)</p>
+</blockquote>
+<ul>
+<li>低延迟,高吞吐</li>
+<li>高容错的状态管理</li>
+<li>端到端exactly-once</li>
+<li>Windows &amp; Event Time</li>
+</ul>
+<p>首先,为什么要用Flink SQL?上面展示了Flink框架的基本结构,最下面是Runtime,这个执行引擎我们认为最核心的优势是四个: 第一,低延迟,高吞吐;第二,端到端的Exactly-once;第三,可容错的状态管理;第四,Window &amp; Event time的支持.基于Runtime抽象出3个层次的API,SQL处于最上层.</p>
+<p>Flink SQL API有哪些优势?也可以从四个方面去看: 第一,支持ANSI SQL的标准;第二, 支持丰富的数据类型与内置函数,包括常见的算术运算与统计聚合;第三,可自定义Source/Sink,基于此可以灵活地扩展上下游;第四,批流统一,同样的SQL,既可以跑离线也可以跑实时.</p>
+<p><strong>ps:想了解下scala怎么实现获取Kafka消息,FlinkKafkaConsumer010?</strong></p>
+<p>Flink SQL编程示例<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line"><span class="keyword">final</span> StreamTableEnvironment tblEnv = TableEnvironment.getTableEnvronment(env);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义与注册输入表</span></span><br><span class="line">tblEnv.connect(<span class="keyword">new</span> Kafka().version(<span class="string">"0.10"</span>)</span><br><span class="line">    .topic(<span class="string">"input"</span>).properties(kafkaParops).startFromGroupOffsets())</span><br><span class="line">    .withFormat(<span class="keyword">new</span> Avro().recordClass(SdkLog.class))</span><br><span class="line">    .withSchema(<span class="keyword">new</span> Schema().schema(TableSchema.fromTypeInfo(</span><br><span class="line">        AvroSchemaConverter.convertToTypeInfo(SdkLog.class))))</span><br><span class="line">    .inAppenddMode()</span><br><span class="line">    .registerTableSource(<span class="string">"srcTable"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义与注册输出表</span></span><br><span class="line">tblEnv.connect(<span class="keyword">new</span> Kafka().version(<span class="string">"0.10"</span>)</span><br><span class="line">    .topic(<span class="string">"output"</span>).properties(kafkaParops).startFromGroupOffsets())</span><br><span class="line">    .withFormat(<span class="keyword">new</span> Avro().recordClass(SdkLog.class))</span><br><span class="line">    .withSchema(<span class="keyword">new</span> Schema().schema(TableSchema.fromTypeInfo(</span><br><span class="line">        AvroSchemaConverter.convertToTypeInfo(SdkLog.class))))</span><br><span class="line">    .inAppenddMode()</span><br><span class="line">    .registerTableSource(<span class="string">"dstTable"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 注册UDF</span></span><br><span class="line">tblEnv.registerFunction(<span class="string">"doubleFunc"</span>, <span class="keyword">new</span> DoubleInt());</span><br><span class="line"><span class="comment">// 执行SQL</span></span><br><span class="line">tblEnv.sqlUpdate(<span class="string">"INSERT INTO dstTable SELECT id,name,doubleFunc(age) FROM srcTable WHERE event['eventTag'] = '10004'"</span>);</span><br><span class="line"></span><br><span class="line">env.execute(<span class="string">"Flink meetup demo"</span>);</span><br></pre></td></tr></table></figure></p>
+<p>首先定义与注册输入/输出表,创建了2张Kafka的表,指定了Kafka版本,对应哪个topic;接下来注册UDF;最后才是执行真正的SQL.可以看到,为了执行SQL,需要做这么多编码工作,这不是我们希望暴露给用户的接口.</p>
+<h3 id="2-基于WEB的开发IDE"><a href="#2-基于WEB的开发IDE" class="headerlink" title="2.基于WEB的开发IDE"></a>2.基于WEB的开发IDE</h3><p>前面提到过,数仓的抽象是Table,编程接口是SQL+UDF.对于用户来说,平台提供的编程界面应该是类似HUE的那种,有用过HUE做交互查询的应该很熟悉.左边是Table列表,右边是SQL编辑器,可以在上面直接写SQL,然后提交执行.要实现这样一种交互方式,Flink SQL默认是无法实现的,中间存在缺口,总结下来就两点:第一,元数据的管理,怎么去创建库表,怎么去上传UDF,使得之后在SQL中可直接引用;第二,SQL作业的管理,怎么去编译SQL,怎么去提交作业.</p>
+<h3 id="3-AthenaX-基于REST的SQL管理器"><a href="#3-AthenaX-基于REST的SQL管理器" class="headerlink" title="3.AthenaX: 基于REST的SQL管理器"></a>3.AthenaX: 基于REST的SQL管理器</h3><p>AthenaX可以看作一个基于REST的SQL管理器,它是怎么实现SQL作业与元数据管理的呢?</p>
+<ul>
+<li>对于SQL作业提交,AthenaX中有一个Job的抽象,封装了要执行的SQL以及作业资源等信息.所有的Job由一个JobStore来托管,它定期跟YARN当中处于Running的App做一个匹配.如果不一致,就会向YARN提交对应的Job.</li>
+<li>对于元数据管理,核心的问题是如何将外部创建的库表注入Flink,使得SQL中可以识别到.实际上,Flink本身就预留了与外部元数据对接的能力,分别提供了ExternalCatalog和ExternalCatalogTable这两个抽象.AthenaX在此基础上再封装出一个TableCatalog,在接口层面做了一定的扩展.在提交SQL作业的阶段,AthenaX会自动将TableCatalog注册到Flink,再调用Flink SQL的接口将SQL编译为Flink的可执行单元JobGraph,并最终提交到YARN生成新的App.</li>
+</ul>
+<p>AthenaX虽然定义好了TableCatalog接口,但并没有提供可直接使用的实现.那么,我们怎么来实现,以便对接到我们已有的元数据系统呢?</p>
+<h3 id="4-Flink-SQL注册库表的过程"><a href="#4-Flink-SQL注册库表的过程" class="headerlink" title="4.Flink SQL注册库表的过程"></a>4.Flink SQL注册库表的过程</h3><p>首先,我们的搞清楚Flink SQL内部是如何注册库表的.整个过程涉及到三个基本的抽象:TableDescriptor,TableFactory以及TableEnvironment.</p>
+<p>TableDescriptor顾名思义,是对表的描述,它由三个子描述符构成:第一是Connector,描述数据的来源,比如Kafka,ES等;第二是Format,描述数据的格式,比如csv,json,avro等;第三是Schema,描述每个字段的名称与类型.</p>
+<p>TableDescriptor有两个基本的实现</p>
+<ul>
+<li>ConnectTableDescriptor用于描述内部表,也就是编程方式创建的表.</li>
+<li>ExternalCatalogTable用于描述外部表.</li>
+</ul>
+<p>有了TableDescriptor,接下来需要TableFactory根据描述信息来实例化Table.不同的描述信息需要不同的TableFactory来处理,Flink如何找到匹配的TableFactory实现呢?实际上,为了保证框架的可扩展性,Flink采用了JavaSPI机制来加载所有声明过的TableFactory,通过遍历的方式去寻找哪个TableFactory是匹配该TableDescriptor的.TableDescriptor在传递给TableFactory前,被转换成一个map,所有的描述信息都用key-value的形式来表达.TableFactory定义了两个用于过滤匹配的方法,一个是requiredContext(),用于检测某些特定的key的value是否匹配,比如connector.type是否为kafka;另一个是supportedProperties(),用于检测key是否能识别,如果出现不识别的key,说明无法匹配.</p>
+<p>匹配到了正确的TableFactory,接下来就是创建真正的Table,然后将其通过TableEnvironment注册.最终注册成功的Table,才能在SQL中引用.</p>
+<h3 id="5-Flink-SQL对接外部数据源"><a href="#5-Flink-SQL对接外部数据源" class="headerlink" title="5.Flink SQL对接外部数据源"></a>5.Flink SQL对接外部数据源</h3><p>搞清楚了Flink SQL注册库表的过程,给我们带来这样一个思路:如果外部元数据创建的表也能被转换成TableFactory可识别的map,那么就能被无缝地注册到TableEnvironment.基于这个思路,我们实现了Flink SQL与已有元数据中心的对接.</p>
+<p>通过元数据中心创建的表,都会将元数据信息存储到MySQL,我们用一张表来记录Table的基本信息,然后另外三张表分别记录Connector,Format,Schema转换成key-value后的描述信息.之所以拆开成三张表,是为了能够能独立的更新这三种描述信息.接下来是定制实现的ExternalCatalog,能够读取MySQL这四张表,并转换成map结构.</p>
+<h3 id="6-实时表-维表关联"><a href="#6-实时表-维表关联" class="headerlink" title="6.实时表-维表关联"></a>6.实时表-维表关联</h3><p>到目前为止,我们的平台已经具备了元数据管理与SQL作业管理的能力,但是要真正开放给用户使用,还有一点基本特性存在缺失.通过我们去构建数仓,星型模型是无法避免的.这里有一个比较简单的案例:中间的事实表记录了广告点击流,周边是关于用户,广告,产品,渠道的维度表.</p>
+<p>假定我们有一个SQL分析,需要将点击流表与用户维表进行关联,这个目前在Flink SQL中应该怎么实现?我们有两种实现方式,一个基于UDF,一个基于SQL转换.</p>
+<h3 id="7-基于UDF的维表关联"><a href="#7-基于UDF的维表关联" class="headerlink" title="7.基于UDF的维表关联"></a>7.基于UDF的维表关联</h3><p>首先是基于UDF的实现,需要用户将原始SQL改写成带UDF调用的SQL,这里是userDimFunc,UserDimFunc继承了Flink SQL抽象的TableFunction,它是其中一种UDF类型,可以将任意一行数据转换成一行或多行数据.为了实现维表关联,在UDF初始化时需要从MySQL全量加载维表的数据,缓存在内存cache中.后续对每行数据的处理,TableFunction会调用eval()方法,在eval()中根据user_id去查找cache,从而实现关联.当然,这里是假定维表数据比较小,如果数据量很大,不适合全量的加载与缓存,这里不做展开了.</p>
+<p>基于UDF的实现,对用户与平台来说都不太友好:用户需要写奇怪的SQL语句;平台需要为每个关联场景定制特定的UDF,维护成本太高.</p>
+<h3 id="8-基于SQL转换的维表关联"><a href="#8-基于SQL转换的维表关联" class="headerlink" title="8.基于SQL转换的维表关联"></a>8.基于SQL转换的维表关联</h3><p>我们希望解决基于UDF实现所带来的问题,用户不需要改写原始SQL,平台不需要开发很多UDF.有一种思路是,是否可以在SQL交给Flink编译之前,加一层SQL的解析与改写,自动实现维表的关联?经过一定的技术调研与POC,我们发现是行得通的,所以称之为基于SQL转换的实现.</p>
+<p>首先,增加的SQL解析是为了识别SQL中是否存在预先定义的维度表.一旦识别到维表,将触发SQL改写的流程,将红框标注的join语句改写成新的Table,这个Table怎么得到?我们知道,流计算领域近年来发展出”流表二象性”的理念,Flink也是该理念的践行者.这意味着,在Flink中Stream与Table之间是可以相互转换的.flatmap怎么实现维表关联?</p>
+<p>Flink中对于Stream的flatmap操作,实际上是执行一个RichFlatmapFunction,每来一行数据就调用其flatmap()方法做转换.那么,我们可以定制一个RichFlatmapFunction,来实现维表数据的加载,缓存,查找以及关联,功能与基于UDF的TableFunction实现类似.</p>
+<p>既然RichFlatmapFunction的实现逻辑与TableFunction相似,那为什么相比基于UDF的方式,这种实现能更加通用呢?核心的点在于多了一层SQL解析,可以将维表的信息获取出来(比如维表名,关联字段,select字段等),再封装成JoinContext传递给RichFlatmapFunction,使得它的表达能力就具备通用性了.</p>
+<hr>
+<h2 id="三、构建实时数仓的应用案例"><a href="#三、构建实时数仓的应用案例" class="headerlink" title="三、构建实时数仓的应用案例"></a>三、构建实时数仓的应用案例</h2><h3 id="1-实时ETL拆分"><a href="#1-实时ETL拆分" class="headerlink" title="1.实时ETL拆分"></a>1.实时ETL拆分</h3><p>这里是一个典型的实时ETL链路,从大表中拆分各业务对应的小表: 手机-&gt;NIFI-&gt;Kafka-&gt;ETL-&gt;Kafka/HDFS</p>
+<p>OPPO的最大数据来源是手机端埋点,从手机APP过来的数据有一个特点,所有的数据是通过统一的几个通道上报过来.因为不可能每一次业务有新的埋点,都要去升级客户端,去增加新的通道.比如我们有个sdk_log通道,所有APP应用的埋点都往这个通道上报数据,导致这个通道对应的原始层表巨大,一天几十个TB.但实际上,每个业务只关心它自身的那部分数据,这就要求我们在原始层进行ETL拆分.</p>
+<p>这个SQL逻辑比较简单,无非是根据某些业务字段做筛选,插入到不同的业务表中去.它的特点是,多行SQL最终合并成一个SQL提交给Flink执行.大家担心的是,包含了4个SQL,会不会对同一份数据重复读取4次?其实,在Flink编译SQL的阶段是会做一些优化的,因为最终指向的是同一个Kakfa topic,所以只会读取1次数据.</p>
+<p>另外,同样的Flink SQL,我们同时用于离线与实时数仓的ETL拆分,分别落入HDFS与Kafka.Flink中本身支持写入HDFS的Sink,比如RollingFileSink.</p>
+<h3 id="2-实时指标统计"><a href="#2-实时指标统计" class="headerlink" title="2.实时指标统计"></a>2.实时指标统计</h3><p>这里是一个典型的计算信息流CTR的这个案例,分别计算一定时间段内的曝光与点击次数,相除得到点击率导入MySQL,然后通过我们内部的报表系统来可视化.这个SQL的特点是它用到了窗口(Tumbling Window)以及子查询.</p>
+<p><strong>窗口函数:</strong> TUMBLE函数</p>
+<h3 id="3-实时标签导入"><a href="#3-实时标签导入" class="headerlink" title="3.实时标签导入"></a>3.实时标签导入</h3><p>这个SQL的特点是用了AggregateFunction,在5分钟的窗口内,我们只关心用户最新一次上报的经纬度.AggregateFunction是一种UDF类型,通常是用于聚合指标的统计,比如计算sum或者average.在这个示例中,由于我们只关心最新的经纬度,所以每次都替换老的数据即可.</p>
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>

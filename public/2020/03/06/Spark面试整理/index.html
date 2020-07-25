@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Spark面试整理
+  
+</title>
+
+<meta name="description" content="记录面试中有关Spark的概念知识">
+<meta name="keywords" content="spark,interview">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark面试整理">
+<meta property="og:url" content="http://yoursite.com/2020/03/06/Spark面试整理/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="记录面试中有关Spark的概念知识">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-03-16T00:14:29.633Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spark面试整理">
+<meta name="twitter:description" content="记录面试中有关Spark的概念知识">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">71</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Spark面试整理" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Spark面试整理
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-03-06
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/interview/">interview</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>记录面试中有关Spark的概念知识</p>
+</blockquote>
+<a id="more"></a>
+<h1 id="Spark面试整理"><a href="#Spark面试整理" class="headerlink" title="Spark面试整理"></a>Spark面试整理</h1><h1 id="Spark概念"><a href="#Spark概念" class="headerlink" title="Spark概念"></a>Spark概念</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">三大核心数据结构</span><br><span class="line">    RDD</span><br><span class="line">    广播变量(分布式只读变量)</span><br><span class="line">    累加器(分布式只写变量)</span><br><span class="line">四大组件</span><br><span class="line">    Spark SQL</span><br><span class="line">    Spark Streaming</span><br><span class="line">    MLlib</span><br><span class="line">    GraphX</span><br></pre></td></tr></table></figure>
+<h1 id="Spark的工作机制"><a href="#Spark的工作机制" class="headerlink" title="Spark的工作机制"></a>Spark的工作机制</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">用户在客户端提交作业后,会由Driver运行main方法并创建SparkContext上下文</span><br><span class="line">SparkContext向资源管理器申请资源,启动Execotor进程</span><br><span class="line">并通过执行rdd算子,形成DAG有向无环图,输入DAGscheduler</span><br><span class="line">然后通过DAGscheduler调度器,将DAG有向无环图按照rdd之间的依赖关系划分为几个阶段,也就是stage</span><br><span class="line">输入TaskScheduler,然后通过任务调度器TaskScheduler将stage划分为Task Set分发到各个节点的Executor中执行。</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Spark的stage划分"><a href="#Spark的stage划分" class="headerlink" title="Spark的stage划分"></a>Spark的stage划分</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">在DAG调度的过程中,Stage阶段的划分是根据是否有shuffle过程</span><br><span class="line">也就是存在ShuffleDependency宽依赖的时候</span><br><span class="line">需要进行shuffle,这时候会将作业job划分成多个Stage</span><br><span class="line"></span><br><span class="line">整体思路:</span><br><span class="line">从后往前推,遇到宽依赖就断开,划分为一个stage</span><br><span class="line">遇到窄依赖就将这个RDD加入该stage中</span><br></pre></td></tr></table></figure>
+<h1 id="简单介绍一下RDD"><a href="#简单介绍一下RDD" class="headerlink" title="简单介绍一下RDD?"></a>简单介绍一下RDD?</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">一个抽象弹性分布式数据集</span><br><span class="line">可以将RDD理解为一个分布式对象集合,本质上是一个只读的分区记录集合</span><br><span class="line">每个RDD可以分成多个分区,每个分区就是一个数据集片段</span><br><span class="line">一个RDD的不同分区可以保存到集群中的不同结点上,从而可以在集群中的不同节点上进行并行计算</span><br><span class="line"></span><br><span class="line"># 五大特性</span><br><span class="line">1.分区列表</span><br><span class="line">    RDD是一个由多个partition(某个节点里的某一片连续的数据)组成的的List</span><br><span class="line">    将数据加载为RDD时,一般一个hdfs里的block会加载为一个partition</span><br><span class="line">2.每一个分区都有一个计算函数</span><br><span class="line">    RDD的每个partition上面都会有function,也就是函数应用,其作用是实现RDD之间partition的转换</span><br><span class="line">3.依赖于其他RDD列表</span><br><span class="line">    RDD会记录它的依赖,为了容错,也就是说在内存中的RDD操作时出错或丢失会进行重算</span><br><span class="line">4.Key-Value数据类型的RDD分区器</span><br><span class="line">    可选项,如果RDD里面存的数据是key-value形式,则可以传递一个自定义的Partitioner进行重新分区</span><br><span class="line">    例如这里自定义的Partitioner是基于key进行分区,那则会将不同RDD里面的相同key的数据放到同一个partition里面</span><br><span class="line">5.每个分区都有一个优先位置列表</span><br><span class="line">    可选项,最优的位置去计算,也就是数据的本地性</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Transformations-amp-Action"><a href="#Transformations-amp-Action" class="headerlink" title="Transformations &amp; Action"></a>Transformations &amp; Action</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">一个Application中有几个Action类算子执行,就会有几个Job运行</span><br><span class="line"></span><br><span class="line">转换</span><br><span class="line">    map</span><br><span class="line">    filter</span><br><span class="line">    flatMap</span><br><span class="line">    mapPartitions</span><br><span class="line">    mapPartitionsWithIndex</span><br><span class="line">    sample</span><br><span class="line">    union</span><br><span class="line">    intersection</span><br><span class="line">    distinct</span><br><span class="line">    groupByKey</span><br><span class="line">    reduceByKey</span><br><span class="line">    aggregateByKey</span><br><span class="line">    sortByKey</span><br><span class="line">    join</span><br><span class="line">    cogroup</span><br><span class="line">    cartesian</span><br><span class="line">    pipe</span><br><span class="line">    coalesce</span><br><span class="line">    repartition</span><br><span class="line">    repartitionAndSortWithinPartitions</span><br><span class="line"></span><br><span class="line">操作</span><br><span class="line">    reduce</span><br><span class="line">    collect</span><br><span class="line">    count</span><br><span class="line">    first</span><br><span class="line">    take</span><br><span class="line">    takeSample</span><br><span class="line">    takeOrdered</span><br><span class="line">    saveAsTextFile</span><br><span class="line">    saveAsSequenceFile</span><br><span class="line">    saveAsObjectFile</span><br><span class="line">    countByKey</span><br><span class="line">    foreach</span><br><span class="line">    </span><br><span class="line">注意:</span><br><span class="line">    区别宽依赖与窄依赖的算子</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="宽依赖-amp-窄依赖"><a href="#宽依赖-amp-窄依赖" class="headerlink" title="宽依赖 &amp; 窄依赖"></a>宽依赖 &amp; 窄依赖</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">宽依赖用于划分Stage,也就是一个Shuffle操作,子RDD的每个分区依赖于所有父分区</span><br><span class="line">窄依赖子RDD的每个分区依赖于常数个父分区</span><br><span class="line"></span><br><span class="line">宽依赖算子</span><br><span class="line">    groupByKey</span><br><span class="line">    reduceByKey</span><br><span class="line">    join</span><br><span class="line">    等</span><br><span class="line"></span><br><span class="line">窄依赖算子</span><br><span class="line">    map</span><br><span class="line">    flatMap</span><br><span class="line">    union</span><br><span class="line">    filter</span><br><span class="line">    distinct</span><br><span class="line">    subtract</span><br><span class="line">    sample</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="repartition-amp-coalesce"><a href="#repartition-amp-coalesce" class="headerlink" title="repartition &amp; coalesce"></a>repartition &amp; coalesce</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">注意:</span><br><span class="line">    repartition = coalesce(分区数,true)</span><br><span class="line"></span><br><span class="line">原分区数大于目标分区数,不会发生shuffle的情况使用coalesce</span><br><span class="line"></span><br><span class="line">原分区小于目标分区数,需要发生shuffle的情况下使用repartition</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="Structured-Streaming"><a href="#Structured-Streaming" class="headerlink" title="Structured Streaming"></a>Structured Streaming</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">StructuredStreaming周期性或连续不断的生成微小DataSet,然后交给SparkSQL</span><br><span class="line">跟SparkSQL原有引擎相比,增加了增量处理的功能</span><br><span class="line">增量就是为了状态和流标功能实现</span><br><span class="line">不过也是微批处理,底层执行也是依赖SparkSQL的</span><br><span class="line">不支持异步维表join</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>

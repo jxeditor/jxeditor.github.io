@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink源码解析之五读取Hive流程
+  
+</title>
+
+<meta name="description" content="此流程是基于1.10.x版本的,对于1.11.x来说存在许多不足;所以根据问题去看源码">
+<meta name="keywords" content="flink">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink源码解析之五读取Hive流程">
+<meta property="og:url" content="http://yoursite.com/2020/05/29/Flink源码解析之五读取Hive流程/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="此流程是基于1.10.x版本的,对于1.11.x来说存在许多不足;所以根据问题去看源码">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-07-25T10:51:56.341Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Flink源码解析之五读取Hive流程">
+<meta name="twitter:description" content="此流程是基于1.10.x版本的,对于1.11.x来说存在许多不足;所以根据问题去看源码">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">71</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink源码解析之五读取Hive流程" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink源码解析之五读取Hive流程
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-05-29
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>此流程是基于1.10.x版本的,对于1.11.x来说存在许多不足;所以根据问题去看源码</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">// 将SqlNode去accept一个访问类</span><br><span class="line">FlinkPlannerImpl</span><br><span class="line">    validate()</span><br><span class="line"></span><br><span class="line">// 获取Table信息</span><br><span class="line">PreValidateReWriter</span><br><span class="line">    visit()</span><br><span class="line">        appendPartitionProjects()</span><br><span class="line"></span><br><span class="line">// 将Table转换为CatalogTable</span><br><span class="line">FlinkCalciteCatalogReader</span><br><span class="line">    getTable()</span><br><span class="line">        toPreparingTable()</span><br><span class="line">            convertCatalogTable()</span><br><span class="line"></span><br><span class="line">// 查找并创建TableSource</span><br><span class="line">CatalogSourceTable</span><br><span class="line">    findAndCreateTableSource()</span><br><span class="line"></span><br><span class="line">// 创建TableSource</span><br><span class="line">HiveTableFactory&lt;-TableSourceFactory</span><br><span class="line">    createTableSource()</span><br><span class="line">        createHiveTableSource()</span><br><span class="line"></span><br><span class="line">// 从StreamExecutionEnvironment获取DataStream并获取HiveTableInputFormat</span><br><span class="line">HiveTableSource</span><br><span class="line">    getDataStream()</span><br><span class="line">        getInputFormat()</span><br><span class="line"></span><br><span class="line">// 创建InputSplit并根据HiveTableInputSplit转换为对应的Reader</span><br><span class="line">HiveTableInputFormat</span><br><span class="line">    createInputSplits()</span><br><span class="line">        open()</span><br><span class="line">            nextRecord()</span><br><span class="line"></span><br><span class="line">// 根据BaseRow添加字段信息转换为GenericRow</span><br><span class="line">HiveMapredSplitReader/HiveVectorizedOrcSplitReader</span><br><span class="line">    nextRecord()</span><br><span class="line"></span><br><span class="line">// 实际运行,通过获取InputSplit循环调用Format执行nextRecord</span><br><span class="line">DataSourceTask</span><br><span class="line">    invoke()</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><h3 id="为什么Source并行度会很高-并且程序内无法控制"><a href="#为什么Source并行度会很高-并且程序内无法控制" class="headerlink" title="为什么Source并行度会很高,并且程序内无法控制?"></a>为什么Source并行度会很高,并且程序内无法控制?</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// HiveOptions</span></span><br><span class="line">TABLE_EXEC_HIVE_FALLBACK_MAPRED_READER 默认值<span class="keyword">false</span></span><br><span class="line">    <span class="keyword">false</span>,使用FlinkNativeVectorizedReader去读取ORC文件</span><br><span class="line">    <span class="keyword">true</span>,使用HadooMapredRecordReader去读取ORC文件</span><br><span class="line">TABLE_EXEC_HIVE_INFER_SOURCE_PARALLELISM 默认值<span class="keyword">true</span></span><br><span class="line">    <span class="keyword">false</span>,Source的并行度在Config中设置</span><br><span class="line">    <span class="keyword">true</span>,并行度使用split数量</span><br><span class="line">TABLE_EXEC_HIVE_INFER_SOURCE_PARALLELISM_MAX 默认<span class="number">1000</span></span><br><span class="line">    Source的最大并行度</span><br><span class="line"></span><br><span class="line"><span class="comment">// HiveTableSource.getDataStream</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> DataStream&lt;BaseRow&gt; <span class="title">getDataStream</span><span class="params">(StreamExecutionEnvironment execEnv)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 初始化分区,去查询元数据</span></span><br><span class="line">    List&lt;HiveTablePartition&gt; allHivePartitions = initAllPartitions();</span><br><span class="line"></span><br><span class="line">    <span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line">    <span class="comment">// 将字段进行转换</span></span><br><span class="line">    TypeInformation&lt;BaseRow&gt; typeInfo =</span><br><span class="line">            (TypeInformation&lt;BaseRow&gt;) TypeInfoDataTypeConverter.fromDataTypeToTypeInfo(getProducedDataType());</span><br><span class="line">    <span class="comment">// 去获取flink-conf.yaml文件中的配置</span></span><br><span class="line">    Configuration conf = GlobalConfiguration.loadConfiguration();</span><br><span class="line">    <span class="comment">// 获取Reader</span></span><br><span class="line">    HiveTableInputFormat inputFormat = getInputFormat(allHivePartitions, conf.getBoolean(HiveOptions.TABLE_EXEC_HIVE_FALLBACK_MAPRED_READER));</span><br><span class="line">    DataStreamSource&lt;BaseRow&gt; source = execEnv.createInput(inputFormat, typeInfo);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 并行度获取,从Env中得到Source的默认并行度</span></span><br><span class="line">    <span class="keyword">int</span> parallelism = conf.get(ExecutionConfigOptions.TABLE_EXEC_RESOURCE_DEFAULT_PARALLELISM);</span><br><span class="line">    <span class="comment">// 默认为true,使用split数量</span></span><br><span class="line">    <span class="keyword">if</span> (conf.getBoolean(HiveOptions.TABLE_EXEC_HIVE_INFER_SOURCE_PARALLELISM)) &#123;</span><br><span class="line">        <span class="keyword">int</span> max = conf.getInteger(HiveOptions.TABLE_EXEC_HIVE_INFER_SOURCE_PARALLELISM_MAX);</span><br><span class="line">        <span class="keyword">if</span> (max &lt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalConfigurationException(</span><br><span class="line">                    HiveOptions.TABLE_EXEC_HIVE_INFER_SOURCE_PARALLELISM_MAX.key() +</span><br><span class="line">                            <span class="string">" cannot be less than 1"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> splitNum;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">long</span> nano1 = System.nanoTime();</span><br><span class="line">            <span class="comment">// 获取split数量</span></span><br><span class="line">            splitNum = inputFormat.createInputSplits(<span class="number">0</span>).length;</span><br><span class="line">            <span class="keyword">long</span> nano2 = System.nanoTime();</span><br><span class="line">            LOG.info(</span><br><span class="line">                    <span class="string">"Hive source(&#123;&#125;&#125;) createInputSplits use time: &#123;&#125; ms"</span>,</span><br><span class="line">                    tablePath,</span><br><span class="line">                    (nano2 - nano1) / <span class="number">1_000_000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> FlinkHiveException(e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 并行度取两者最小值</span></span><br><span class="line">        parallelism = Math.min(splitNum, max);</span><br><span class="line">    &#125;</span><br><span class="line">    parallelism = limit &gt; <span class="number">0</span> ? Math.min(parallelism, (<span class="keyword">int</span>) limit / <span class="number">1000</span>) : parallelism;</span><br><span class="line">    parallelism = Math.max(<span class="number">1</span>, parallelism);</span><br><span class="line">    source.setParallelism(parallelism);</span><br><span class="line">    <span class="keyword">return</span> source.name(explainSource());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">由于HiveOptions中TABLE_EXEC_HIVE_INFER_SOURCE_PARALLELISM为<span class="keyword">true</span></span><br><span class="line">并且conf的获取为去配置文件中加载</span><br><span class="line">所以在程序内设置并行度并不会生效</span><br></pre></td></tr></table></figure>
+<h3 id="为什么写入的Parquet文件无法读取-字段会乱"><a href="#为什么写入的Parquet文件无法读取-字段会乱" class="headerlink" title="为什么写入的Parquet文件无法读取,字段会乱?"></a>为什么写入的Parquet文件无法读取,字段会乱?</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">其实Flink去读取Hive,本质是获取分区数据路径</span></span><br><span class="line"><span class="comment">然后取读取HDFS文件,每一个文件就是一个Split,也对应一个并行度</span></span><br><span class="line"><span class="comment">读取完HDFS文件后,会根据其Parquet文件中的定义,生成一个字段数组</span></span><br><span class="line"><span class="comment">同时,SQL的SELECT操作,也会生成一个字段数组</span></span><br><span class="line"><span class="comment">由于代码的限制性,所以如果顺序错乱就会导致类型不匹配,或者数据错乱的问题</span></span><br><span class="line"><span class="comment">*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// HiveMapredSplitReader</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@SuppressWarnings</span>(<span class="string">"unchecked"</span>)</span><br><span class="line"><span class="function"><span class="keyword">public</span> BaseRow <span class="title">nextRecord</span><span class="params">(BaseRow reuse)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (reachedEnd()) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将BaseRow转换为GenericRow</span></span><br><span class="line">    <span class="keyword">final</span> GenericRow row = reuse <span class="keyword">instanceof</span> GenericRow ?</span><br><span class="line">            (GenericRow) reuse : <span class="keyword">new</span> GenericRow(selectedFields.length);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//Use HiveDeserializer to deserialize an object out of a Writable blob</span></span><br><span class="line">        Object hiveRowStruct = deserializer.deserialize(value);</span><br><span class="line">        <span class="comment">// 循环遍历查找字段,注意查找字段是Int数组,代表字段在表中的位置,就是这里不合理</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; selectedFields.length; i++) &#123;</span><br><span class="line">            <span class="comment">// set non-partition columns</span></span><br><span class="line">            <span class="keyword">if</span> (selectedFields[i] &lt; structFields.size()) &#123;</span><br><span class="line">                <span class="comment">// stuctFields是读取split文件解析出来的字段列表,所以可能存在字段顺序不匹配</span></span><br><span class="line">                StructField structField = structFields.get(selectedFields[i]);</span><br><span class="line">                <span class="comment">// 转换字段</span></span><br><span class="line">                Object object = HiveInspectors.toFlinkObject(structField.getFieldObjectInspector(),</span><br><span class="line">                        structObjectInspector.getStructFieldData(hiveRowStruct, structField), hiveShim);</span><br><span class="line">                <span class="comment">// 设置行,字段类型不一致就会报错</span></span><br><span class="line">                row.setField(i, converters[i].toInternal(object));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        LOG.error(<span class="string">"Error happens when converting hive data type to flink data type."</span>);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> FlinkHiveException(e);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!rowReused) &#123;</span><br><span class="line">        <span class="comment">// set partition columns</span></span><br><span class="line">        <span class="keyword">if</span> (!partitionKeys.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; selectedFields.length; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (selectedFields[i] &gt;= structFields.size()) &#123;</span><br><span class="line">                    String partition = partitionKeys.get(selectedFields[i] - structFields.size());</span><br><span class="line">                    row.setField(i, converters[i].toInternal(hiveTablePartition.getPartitionSpec().get(partition)));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        rowReused = <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">this</span>.fetched = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">return</span> row;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ArrayWritableObjectInspector.getStructFieldData</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">getStructFieldData</span><span class="params">(Object data, StructField fieldRef)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (data == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (data <span class="keyword">instanceof</span> ArrayWritable) &#123;</span><br><span class="line">        <span class="comment">// 整条数据,对应着数据类型的</span></span><br><span class="line">        ArrayWritable arr = (ArrayWritable)data;</span><br><span class="line">        <span class="comment">// SELECT的字段</span></span><br><span class="line">        ArrayWritableObjectInspector.StructFieldImpl structField = (ArrayWritableObjectInspector.StructFieldImpl)fieldRef;</span><br><span class="line">        <span class="comment">// 获取字段在表中的下标,去arr对应下标获取数据</span></span><br><span class="line">        <span class="comment">// 位置不对,获取到的数据就是错乱的</span></span><br><span class="line">        <span class="keyword">return</span> structField.getIndex() &lt; arr.get().length ? arr.get()[structField.getIndex()] : <span class="keyword">null</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (data <span class="keyword">instanceof</span> List) &#123;</span><br><span class="line">        <span class="keyword">return</span> ((List)data).get(((ArrayWritableObjectInspector.StructFieldImpl)fieldRef).getIndex());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">"Cannot inspect "</span> + data.getClass().getCanonicalName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>

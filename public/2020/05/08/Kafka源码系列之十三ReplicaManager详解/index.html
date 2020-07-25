@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Kafka源码系列之十三ReplicaManager详解
+  
+</title>
+
+<meta name="description" content="详细介绍ReplicaManager中有什么成员变量,又做了些什么">
+<meta name="keywords" content="kafka">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka源码系列之十三ReplicaManager详解">
+<meta property="og:url" content="http://yoursite.com/2020/05/08/Kafka源码系列之十三ReplicaManager详解/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="详细介绍ReplicaManager中有什么成员变量,又做了些什么">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-07-25T10:51:56.358Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kafka源码系列之十三ReplicaManager详解">
+<meta name="twitter:description" content="详细介绍ReplicaManager中有什么成员变量,又做了些什么">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">71</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Kafka源码系列之十三ReplicaManager详解" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Kafka源码系列之十三ReplicaManager详解
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-05-08
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/">kafka</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>详细介绍ReplicaManager中有什么成员变量,又做了些什么</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">处理的请求</span><br><span class="line">    LeaderAndIsr</span><br><span class="line">    StopReplica</span><br><span class="line">    UpdateMetadata</span><br><span class="line">    Produce</span><br><span class="line">    Fetch</span><br><span class="line">    ListOffset</span><br><span class="line"></span><br><span class="line">LogManager作为ReplicaManager的变量传入了ReplicaManager中</span><br><span class="line">ReplicaManager中的allPartitions负责管理本节点所有的Partition实例</span><br><span class="line">创建Partition实例时,ReplicaManager会作为变量传入Partition中</span><br><span class="line">Partition会为它的每一个副本创建一个Replica实例,但只会为那个在本地副本创建Log对象实例</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="启动时做了什么"><a href="#启动时做了什么" class="headerlink" title="启动时做了什么"></a>启动时做了什么</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">KafkaServer</span>在启动时,就初始化了<span class="type">ReplicaManager</span>实例</span><br><span class="line"><span class="type">KafkaServer</span>在初始化<span class="type">LogManager</span>之后,就传给了<span class="type">ReplicaManager</span></span><br><span class="line"></span><br><span class="line">replicaManager = createReplicaManager(isShuttingDown)</span><br><span class="line">replicaManager.startup()</span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="function"><span class="keyword">def</span> <span class="title">createReplicaManager</span></span>(isShuttingDown: <span class="type">AtomicBoolean</span>): <span class="type">ReplicaManager</span> =</span><br><span class="line">    <span class="keyword">new</span> <span class="type">ReplicaManager</span>(config, metrics, time, zkClient, kafkaScheduler, logManager, isShuttingDown, quotaManagers,</span><br><span class="line">      brokerTopicStats, metadataCache, logDirFailureChannel)</span><br><span class="line"></span><br><span class="line">周期性任务:</span><br><span class="line">    maybeShrinkIsr: 判断tp的isr是否有replica因为延迟或hang主需要从isr中移除</span><br><span class="line">    maybePropagateIsrChanges: 判断是不是需要对isr进行更新</span><br><span class="line">    shutdownIdleReplicaAlterLogDirsThread: 定时关闭空闲的<span class="type">ReplicaAlterDirThread</span>线程</span><br><span class="line">    </span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">startup</span></span>() &#123;</span><br><span class="line">    <span class="comment">// start ISR expiration thread</span></span><br><span class="line">    <span class="comment">// A follower can lag behind leader for up to config.replicaLagTimeMaxMs x 1.5 before it is removed from ISR</span></span><br><span class="line">    scheduler.schedule(<span class="string">"isr-expiration"</span>, maybeShrinkIsr _, period = config.replicaLagTimeMaxMs / <span class="number">2</span>, unit = <span class="type">TimeUnit</span>.<span class="type">MILLISECONDS</span>)</span><br><span class="line">    scheduler.schedule(<span class="string">"isr-change-propagation"</span>, maybePropagateIsrChanges _, period = <span class="number">2500</span>L, unit = <span class="type">TimeUnit</span>.<span class="type">MILLISECONDS</span>)</span><br><span class="line">    scheduler.schedule(<span class="string">"shutdown-idle-replica-alter-log-dirs-thread"</span>, shutdownIdleReplicaAlterLogDirsThread _, period = <span class="number">10000</span>L, unit = <span class="type">TimeUnit</span>.<span class="type">MILLISECONDS</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment">// If inter-broker protocol (IBP) &lt; 1.0, the controller will send LeaderAndIsrRequest V0 which does not include isNew field.</span></span><br><span class="line">    <span class="comment">// In this case, the broker receiving the request cannot determine whether it is safe to create a partition if a log directory has failed.</span></span><br><span class="line">    <span class="comment">// Thus, we choose to halt the broker on any log diretory failure if IBP &lt; 1.0</span></span><br><span class="line">    <span class="keyword">val</span> haltBrokerOnFailure = config.interBrokerProtocolVersion &lt; <span class="type">KAFKA_1_0_IV0</span></span><br><span class="line">    logDirFailureHandler = <span class="keyword">new</span> <span class="type">LogDirFailureHandler</span>(<span class="string">"LogDirFailureHandler"</span>, haltBrokerOnFailure)</span><br><span class="line">    logDirFailureHandler.start()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="ISR变化"><a href="#ISR变化" class="headerlink" title="ISR变化"></a>ISR变化</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">maybeShrinkIsr()是检查isr是否有replica需要被移除</span><br><span class="line">增加操作为maybeExpandIsr</span><br><span class="line"></span><br><span class="line">ReplicaManager在FetchMessages()方法对来自副本的Fetch请求进行处理</span><br><span class="line">实际上会更新相应replica的LEO信息</span><br><span class="line">这时候leader会根据副本LEO信息的变动来判断这个副本是否满足加入isr的条件</span><br></pre></td></tr></table></figure>
+<h3 id="updateFollowerLogReadResults"><a href="#updateFollowerLogReadResults" class="headerlink" title="updateFollowerLogReadResults"></a>updateFollowerLogReadResults</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">更新远程副本的信息</span><br><span class="line">找到本节点的<span class="type">Partition</span>对象,然后调用其updateReplicaLogReadResult()</span><br><span class="line">更新副本的<span class="type">LEO</span>信息和拉取时间信息</span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">def</span> <span class="title">updateFollowerLogReadResults</span></span>(replicaId: <span class="type">Int</span>,</span><br><span class="line">                                           readResults: <span class="type">Seq</span>[(<span class="type">TopicPartition</span>, <span class="type">LogReadResult</span>)]): <span class="type">Seq</span>[(<span class="type">TopicPartition</span>, <span class="type">LogReadResult</span>)] = &#123;</span><br><span class="line">    debug(<span class="string">s"Recording follower broker <span class="subst">$replicaId</span> log end offsets: <span class="subst">$readResults</span>"</span>)</span><br><span class="line">    readResults.map &#123; <span class="keyword">case</span> (topicPartition, readResult) =&gt;</span><br><span class="line">      <span class="keyword">var</span> updatedReadResult = readResult</span><br><span class="line">      nonOfflinePartition(topicPartition) <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Some</span>(partition) =&gt;</span><br><span class="line">          partition.getReplica(replicaId) <span class="keyword">match</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="type">Some</span>(replica) =&gt;</span><br><span class="line">              <span class="comment">// 更新副本的相关信息</span></span><br><span class="line">              partition.updateReplicaLogReadResult(replica, readResult)</span><br><span class="line">            <span class="keyword">case</span> <span class="type">None</span> =&gt;</span><br><span class="line">              warn(<span class="string">s"Leader <span class="subst">$localBrokerId</span> failed to record follower <span class="subst">$replicaId</span>'s position "</span> +</span><br><span class="line">                <span class="string">s"<span class="subst">$&#123;readResult.info.fetchOffsetMetadata.messageOffset&#125;</span> since the replica is not recognized to be "</span> +</span><br><span class="line">                <span class="string">s"one of the assigned replicas <span class="subst">$&#123;partition.assignedReplicas.map(_.brokerId).mkString(",")&#125;</span> "</span> +</span><br><span class="line">                <span class="string">s"for partition <span class="subst">$topicPartition</span>. Empty records will be returned for this partition."</span>)</span><br><span class="line">              updatedReadResult = readResult.withEmptyFetchInfo</span><br><span class="line">          &#125;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">None</span> =&gt;</span><br><span class="line">          warn(<span class="string">s"While recording the replica LEO, the partition <span class="subst">$topicPartition</span> hasn't been created."</span>)</span><br><span class="line">      &#125;</span><br><span class="line">      topicPartition -&gt; updatedReadResult</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="updateReplicaLogReadResult"><a href="#updateReplicaLogReadResult" class="headerlink" title="updateReplicaLogReadResult"></a>updateReplicaLogReadResult</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>updateLogReadResult(): 更新副本的相关信息,这里是更新该副本的<span class="type">LEO</span>,<span class="type">LastFetchLeaderLogEndOffset</span>和<span class="type">LastFetchTimeMs</span></span><br><span class="line"><span class="number">2.</span>maybeExpandIsr(): 判断isr是否需要扩充,即是否有不在isr内的副本满足进入isr的条件</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">updateReplicaLogReadResult</span></span>(replica: <span class="type">Replica</span>, logReadResult: <span class="type">LogReadResult</span>): <span class="type">Boolean</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> replicaId = replica.brokerId</span><br><span class="line">    <span class="comment">// No need to calculate low watermark if there is no delayed DeleteRecordsRequest</span></span><br><span class="line">    <span class="keyword">val</span> oldLeaderLW = <span class="keyword">if</span> (replicaManager.delayedDeleteRecordsPurgatory.delayed &gt; <span class="number">0</span>) lowWatermarkIfLeader <span class="keyword">else</span> <span class="number">-1</span>L</span><br><span class="line">    <span class="comment">// 更新副本的信息</span></span><br><span class="line">    replica.updateLogReadResult(logReadResult)</span><br><span class="line">    <span class="keyword">val</span> newLeaderLW = <span class="keyword">if</span> (replicaManager.delayedDeleteRecordsPurgatory.delayed &gt; <span class="number">0</span>) lowWatermarkIfLeader <span class="keyword">else</span> <span class="number">-1</span>L</span><br><span class="line">    <span class="comment">// check if the LW of the partition has incremented</span></span><br><span class="line">    <span class="comment">// since the replica's logStartOffset may have incremented</span></span><br><span class="line">    <span class="keyword">val</span> leaderLWIncremented = newLeaderLW &gt; oldLeaderLW</span><br><span class="line">    <span class="comment">// check if we need to expand ISR to include this replica</span></span><br><span class="line">    <span class="comment">// if it is not in the ISR yet</span></span><br><span class="line">    <span class="comment">// 如果副本不在ISR中,检查是否需要进行扩充</span></span><br><span class="line">    <span class="keyword">val</span> leaderHWIncremented = maybeExpandIsr(replicaId, logReadResult)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> result = leaderLWIncremented || leaderHWIncremented</span><br><span class="line">    <span class="comment">// some delayed operations may be unblocked after HW or LW changed</span></span><br><span class="line">    <span class="keyword">if</span> (result)</span><br><span class="line">      tryCompleteDelayedRequests()</span><br><span class="line"></span><br><span class="line">    debug(<span class="string">s"Recorded replica <span class="subst">$replicaId</span> log end offset (LEO) position <span class="subst">$&#123;logReadResult.info.fetchOffsetMetadata.messageOffset&#125;</span>."</span>)</span><br><span class="line">    result</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="maybeExpandIsr"><a href="#maybeExpandIsr" class="headerlink" title="maybeExpandIsr"></a>maybeExpandIsr</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">根据replicaId的<span class="type">LEO</span>来判断是否满足进入<span class="type">ISR</span>的条件</span><br><span class="line">如果满足,添加到<span class="type">ISR</span>中</span><br><span class="line">之后调用updateIsr更新这个tp的isr信息和更新<span class="type">HW</span>信息</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maybeExpandIsr</span></span>(replicaId: <span class="type">Int</span>, logReadResult: <span class="type">LogReadResult</span>): <span class="type">Boolean</span> = &#123;</span><br><span class="line">    inWriteLock(leaderIsrUpdateLock) &#123;</span><br><span class="line">      <span class="comment">// check if this replica needs to be added to the ISR</span></span><br><span class="line">      leaderReplicaIfLocal <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">Some</span>(leaderReplica) =&gt;</span><br><span class="line">          <span class="keyword">val</span> replica = getReplica(replicaId).get</span><br><span class="line">          <span class="keyword">val</span> leaderHW = leaderReplica.highWatermark</span><br><span class="line">          <span class="keyword">val</span> fetchOffset = logReadResult.info.fetchOffsetMetadata.messageOffset</span><br><span class="line">          <span class="comment">// replica LEO大于HW情况下,加入ISR列表</span></span><br><span class="line">          <span class="keyword">if</span> (!inSyncReplicas.contains(replica) &amp;&amp;</span><br><span class="line">             assignedReplicas.map(_.brokerId).contains(replicaId) &amp;&amp;</span><br><span class="line">             replica.logEndOffset.offsetDiff(leaderHW) &gt;= <span class="number">0</span> &amp;&amp;</span><br><span class="line">             leaderEpochStartOffsetOpt.exists(fetchOffset &gt;= _)) &#123;</span><br><span class="line">            <span class="keyword">val</span> newInSyncReplicas = inSyncReplicas + replica</span><br><span class="line">            info(<span class="string">s"Expanding ISR from <span class="subst">$&#123;inSyncReplicas.map(_.brokerId).mkString(",")&#125;</span> "</span> +</span><br><span class="line">              <span class="string">s"to <span class="subst">$&#123;newInSyncReplicas.map(_.brokerId).mkString(",")&#125;</span>"</span>)</span><br><span class="line">            <span class="comment">// update ISR in ZK and cache</span></span><br><span class="line">            <span class="comment">// 更新到ZK</span></span><br><span class="line">            updateIsr(newInSyncReplicas)</span><br><span class="line">            replicaManager.isrExpandRate.mark()</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// check if the HW of the partition can now be incremented</span></span><br><span class="line">          <span class="comment">// since the replica may already be in the ISR and its LEO has just incremented</span></span><br><span class="line">          <span class="comment">// 检查HW是否需要更新</span></span><br><span class="line">          maybeIncrementLeaderHW(leaderReplica, logReadResult.fetchTimeMs)</span><br><span class="line">        <span class="keyword">case</span> <span class="type">None</span> =&gt; <span class="literal">false</span> <span class="comment">// nothing to do if no longer leader</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h2 id="UpdateMetadata请求"><a href="#UpdateMetadata请求" class="headerlink" title="UpdateMetadata请求"></a>UpdateMetadata请求</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handleUpdateMetadataRequest</span></span>(request: <span class="type">RequestChannel</span>.<span class="type">Request</span>) &#123;</span><br><span class="line">    <span class="keyword">val</span> correlationId = request.header.correlationId</span><br><span class="line">    <span class="keyword">val</span> updateMetadataRequest = request.body[<span class="type">UpdateMetadataRequest</span>]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isAuthorizedClusterAction(request)) &#123;</span><br><span class="line">      <span class="comment">// 更新metadata,返回需要删除的partition</span></span><br><span class="line">      <span class="keyword">val</span> deletedPartitions = replicaManager.maybeUpdateMetadataCache(correlationId, updateMetadataRequest)</span><br><span class="line">      <span class="keyword">if</span> (deletedPartitions.nonEmpty)</span><br><span class="line">        <span class="comment">// GroupCoordinator会清除相关partition的信息</span></span><br><span class="line">        groupCoordinator.handleDeletedPartitions(deletedPartitions)</span><br><span class="line"></span><br><span class="line">      <span class="keyword">if</span> (adminManager.hasDelayedTopicOperations) &#123;</span><br><span class="line">        updateMetadataRequest.partitionStates.keySet.asScala.map(_.topic).foreach &#123; topic =&gt;</span><br><span class="line">          adminManager.tryCompleteDelayedTopicOperations(topic)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      quotas.clientQuotaCallback.foreach &#123; callback =&gt;</span><br><span class="line">        <span class="keyword">if</span> (callback.updateClusterMetadata(metadataCache.getClusterMetadata(clusterId, request.context.listenerName))) &#123;</span><br><span class="line">          quotas.fetch.updateQuotaMetricConfigs()</span><br><span class="line">          quotas.produce.updateQuotaMetricConfigs()</span><br><span class="line">          quotas.request.updateQuotaMetricConfigs()</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      sendResponseExemptThrottle(request, <span class="keyword">new</span> <span class="type">UpdateMetadataResponse</span>(<span class="type">Errors</span>.<span class="type">NONE</span>))</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      sendResponseMaybeThrottle(request, _ =&gt; <span class="keyword">new</span> <span class="type">UpdateMetadataResponse</span>(<span class="type">Errors</span>.<span class="type">CLUSTER_AUTHORIZATION_FAILED</span>))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="maybeUpdateMetadataCache"><a href="#maybeUpdateMetadataCache" class="headerlink" title="maybeUpdateMetadataCache"></a>maybeUpdateMetadataCache</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">maybeUpdateMetadataCache</span></span>(correlationId: <span class="type">Int</span>, updateMetadataRequest: <span class="type">UpdateMetadataRequest</span>) : <span class="type">Seq</span>[<span class="type">TopicPartition</span>] =  &#123;</span><br><span class="line">    replicaStateChangeLock synchronized &#123;</span><br><span class="line">      <span class="keyword">if</span>(updateMetadataRequest.controllerEpoch &lt; controllerEpoch) &#123;</span><br><span class="line">        <span class="keyword">val</span> stateControllerEpochErrorMessage = <span class="string">s"Received update metadata request with correlation id <span class="subst">$correlationId</span> "</span> +</span><br><span class="line">          <span class="string">s"from an old controller <span class="subst">$&#123;updateMetadataRequest.controllerId&#125;</span> with epoch <span class="subst">$&#123;updateMetadataRequest.controllerEpoch&#125;</span>. "</span> +</span><br><span class="line">          <span class="string">s"Latest known controller epoch is <span class="subst">$controllerEpoch</span>"</span></span><br><span class="line">        stateChangeLogger.warn(stateControllerEpochErrorMessage)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">ControllerMovedException</span>(stateChangeLogger.messageWithPrefix(stateControllerEpochErrorMessage))</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 更新metadata信息,并返回要删除的partition信息</span></span><br><span class="line">        <span class="keyword">val</span> deletedPartitions = metadataCache.updateMetadata(correlationId, updateMetadataRequest)</span><br><span class="line">        controllerEpoch = updateMetadataRequest.controllerEpoch</span><br><span class="line">        deletedPartitions</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="updateMetadata"><a href="#updateMetadata" class="headerlink" title="updateMetadata"></a>updateMetadata</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>本节点的aliveNodes和aliveBrokers记录,更新为最新的记录</span><br><span class="line"><span class="number">2.</span>对于要删除的tp,从缓存中删除,并记录下来作为这个方法的返回</span><br><span class="line"><span class="number">3.</span>对于其他的tp,addOrUpdatePartitionInfo</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">updateMetadata</span></span>(correlationId: <span class="type">Int</span>, updateMetadataRequest: <span class="type">UpdateMetadataRequest</span>): <span class="type">Seq</span>[<span class="type">TopicPartition</span>] = &#123;</span><br><span class="line">    inWriteLock(partitionMetadataLock) &#123;</span><br><span class="line"></span><br><span class="line">      <span class="comment">//since kafka may do partial metadata updates, we start by copying the previous state</span></span><br><span class="line">      <span class="keyword">val</span> partitionStates = <span class="keyword">new</span> mutable.<span class="type">AnyRefMap</span>[<span class="type">String</span>, mutable.<span class="type">LongMap</span>[<span class="type">UpdateMetadataRequest</span>.<span class="type">PartitionState</span>]](metadataSnapshot.partitionStates.size)</span><br><span class="line">      metadataSnapshot.partitionStates.foreach &#123; <span class="keyword">case</span> (topic, oldPartitionStates) =&gt;</span><br><span class="line">        <span class="keyword">val</span> copy = <span class="keyword">new</span> mutable.<span class="type">LongMap</span>[<span class="type">UpdateMetadataRequest</span>.<span class="type">PartitionState</span>](oldPartitionStates.size)</span><br><span class="line">        copy ++= oldPartitionStates</span><br><span class="line">        partitionStates += (topic -&gt; copy)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 更新</span></span><br><span class="line">      <span class="keyword">val</span> aliveBrokers = <span class="keyword">new</span> mutable.<span class="type">LongMap</span>[<span class="type">Broker</span>](metadataSnapshot.aliveBrokers.size)</span><br><span class="line">      <span class="keyword">val</span> aliveNodes = <span class="keyword">new</span> mutable.<span class="type">LongMap</span>[collection.<span class="type">Map</span>[<span class="type">ListenerName</span>, <span class="type">Node</span>]](metadataSnapshot.aliveNodes.size)</span><br><span class="line">      <span class="keyword">val</span> controllerId = updateMetadataRequest.controllerId <span class="keyword">match</span> &#123;</span><br><span class="line">          <span class="keyword">case</span> id <span class="keyword">if</span> id &lt; <span class="number">0</span> =&gt; <span class="type">None</span></span><br><span class="line">          <span class="keyword">case</span> id =&gt; <span class="type">Some</span>(id)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">      updateMetadataRequest.liveBrokers.asScala.foreach &#123; broker =&gt;</span><br><span class="line">        <span class="comment">// `aliveNodes` is a hot path for metadata requests for large clusters, so we use java.util.HashMap which</span></span><br><span class="line">        <span class="comment">// is a bit faster than scala.collection.mutable.HashMap. When we drop support for Scala 2.10, we could</span></span><br><span class="line">        <span class="comment">// move to `AnyRefMap`, which has comparable performance.</span></span><br><span class="line">        <span class="keyword">val</span> nodes = <span class="keyword">new</span> java.util.<span class="type">HashMap</span>[<span class="type">ListenerName</span>, <span class="type">Node</span>]</span><br><span class="line">        <span class="keyword">val</span> endPoints = <span class="keyword">new</span> mutable.<span class="type">ArrayBuffer</span>[<span class="type">EndPoint</span>]</span><br><span class="line">        broker.endPoints.asScala.foreach &#123; ep =&gt;</span><br><span class="line">          endPoints += <span class="type">EndPoint</span>(ep.host, ep.port, ep.listenerName, ep.securityProtocol)</span><br><span class="line">          nodes.put(ep.listenerName, <span class="keyword">new</span> <span class="type">Node</span>(broker.id, ep.host, ep.port))</span><br><span class="line">        &#125;</span><br><span class="line">        aliveBrokers(broker.id) = <span class="type">Broker</span>(broker.id, endPoints, <span class="type">Option</span>(broker.rack))</span><br><span class="line">        aliveNodes(broker.id) = nodes.asScala</span><br><span class="line">      &#125;</span><br><span class="line">      aliveNodes.get(brokerId).foreach &#123; listenerMap =&gt;</span><br><span class="line">        <span class="keyword">val</span> listeners = listenerMap.keySet</span><br><span class="line">        <span class="keyword">if</span> (!aliveNodes.values.forall(_.keySet == listeners))</span><br><span class="line">          error(<span class="string">s"Listeners are not identical across brokers: <span class="subst">$aliveNodes</span>"</span>)</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="keyword">val</span> deletedPartitions = <span class="keyword">new</span> mutable.<span class="type">ArrayBuffer</span>[<span class="type">TopicPartition</span>]</span><br><span class="line">      updateMetadataRequest.partitionStates.asScala.foreach &#123; <span class="keyword">case</span> (tp, info) =&gt;</span><br><span class="line">        <span class="keyword">val</span> controllerId = updateMetadataRequest.controllerId</span><br><span class="line">        <span class="keyword">val</span> controllerEpoch = updateMetadataRequest.controllerEpoch</span><br><span class="line">        <span class="keyword">if</span> (info.basePartitionState.leader == <span class="type">LeaderAndIsr</span>.<span class="type">LeaderDuringDelete</span>) &#123;</span><br><span class="line">          <span class="comment">// 删除</span></span><br><span class="line">          removePartitionInfo(partitionStates, tp.topic, tp.partition)</span><br><span class="line">          stateChangeLogger.trace(<span class="string">s"Deleted partition <span class="subst">$tp</span> from metadata cache in response to UpdateMetadata "</span> +</span><br><span class="line">            <span class="string">s"request sent by controller <span class="subst">$controllerId</span> epoch <span class="subst">$controllerEpoch</span> with correlation id <span class="subst">$correlationId</span>"</span>)</span><br><span class="line">          deletedPartitions += tp</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">// 更新</span></span><br><span class="line">          addOrUpdatePartitionInfo(partitionStates, tp.topic, tp.partition, info)</span><br><span class="line">          stateChangeLogger.trace(<span class="string">s"Cached leader info <span class="subst">$info</span> for partition <span class="subst">$tp</span> in response to "</span> +</span><br><span class="line">            <span class="string">s"UpdateMetadata request sent by controller <span class="subst">$controllerId</span> epoch <span class="subst">$controllerEpoch</span> with correlation id <span class="subst">$correlationId</span>"</span>)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      metadataSnapshot = <span class="type">MetadataSnapshot</span>(partitionStates, controllerId, aliveBrokers, aliveNodes)</span><br><span class="line">      deletedPartitions</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>
