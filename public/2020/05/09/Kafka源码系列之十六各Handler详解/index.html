@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Kafka源码系列之十六各Handler详解
+  
+</title>
+
+<meta name="description" content="主要介绍Controller在启动时注册的这么多监听,各自的用处">
+<meta name="keywords" content="kafka">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka源码系列之十六各Handler详解">
+<meta property="og:url" content="http://yoursite.com/2020/05/09/Kafka源码系列之十六各Handler详解/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="主要介绍Controller在启动时注册的这么多监听,各自的用处">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-07-25T09:48:23.672Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kafka源码系列之十六各Handler详解">
+<meta name="twitter:description" content="主要介绍Controller在启动时注册的这么多监听,各自的用处">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">71</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Kafka源码系列之十六各Handler详解" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Kafka源码系列之十六各Handler详解
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-05-09
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/">kafka</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>主要介绍Controller在启动时注册的这么多监听,各自的用处</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="监听概览"><a href="#监听概览" class="headerlink" title="监听概览"></a>监听概览</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// KafkaController.Startup</span></span><br><span class="line">zkClient.registerZNodeChangeHandlerAndCheckExistence(controllerChangeHandler)</span><br><span class="line"></span><br><span class="line"><span class="comment">// KafkaController.onControllerFailover()</span></span><br><span class="line"><span class="keyword">val</span> childChangeHandlers = <span class="type">Seq</span>(brokerChangeHandler, topicChangeHandler, topicDeletionHandler, logDirEventNotificationHandler, isrChangeNotificationHandler)</span><br><span class="line">childChangeHandlers.foreach(zkClient.registerZNodeChildChangeHandler)</span><br><span class="line"><span class="keyword">val</span> nodeChangeHandlers = <span class="type">Seq</span>(preferredReplicaElectionHandler, partitionReassignmentHandler)</span><br><span class="line">nodeChangeHandlers.foreach(zkClient.registerZNodeChangeHandlerAndCheckExistence)</span><br><span class="line"></span><br><span class="line">controllerChangeHandler</span><br><span class="line">brokerChangeHandler</span><br><span class="line">topicChangeHandler</span><br><span class="line">topicDeletionHandler</span><br><span class="line">logDirEventNotificationHandler</span><br><span class="line">isrChangeNotificationHandler</span><br><span class="line">preferredReplicaElectionHandler</span><br><span class="line">partitionReassignmentHandler</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="ZNodeChangeHandler"><a href="#ZNodeChangeHandler" class="headerlink" title="ZNodeChangeHandler"></a>ZNodeChangeHandler</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ZK节点变化监听</span><br></pre></td></tr></table></figure>
+
+<h3 id="ControllerChangeHandler"><a href="#ControllerChangeHandler" class="headerlink" title="ControllerChangeHandler"></a>ControllerChangeHandler</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">path</span> </span>= <span class="string">"/controller"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 主要监听controller节点的变化</span></span><br><span class="line"><span class="comment">// 对应的操作有ControllerChange,Reelect</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ControllerChangeHandler</span>(<span class="params">controller: <span class="type">KafkaController</span>, eventManager: <span class="type">ControllerEventManager</span></span>) <span class="keyword">extends</span> <span class="title">ZNodeChangeHandler</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">val</span> path: <span class="type">String</span> = <span class="type">ControllerZNode</span>.path</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">handleCreation</span></span>(): <span class="type">Unit</span> = eventManager.put(controller.<span class="type">ControllerChange</span>)</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">handleDeletion</span></span>(): <span class="type">Unit</span> = eventManager.put(controller.<span class="type">Reelect</span>)</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">handleDataChange</span></span>(): <span class="type">Unit</span> = eventManager.put(controller.<span class="type">ControllerChange</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="PreferredReplicaElectionHandler"><a href="#PreferredReplicaElectionHandler" class="headerlink" title="PreferredReplicaElectionHandler"></a>PreferredReplicaElectionHandler</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">path</span> </span>= <span class="string">s"<span class="subst">$&#123;AdminZNode.path&#125;</span>/preferred_replica_election"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听Partition最优Leader选举</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PreferredReplicaElectionHandler</span>(<span class="params">controller: <span class="type">KafkaController</span>, eventManager: <span class="type">ControllerEventManager</span></span>) <span class="keyword">extends</span> <span class="title">ZNodeChangeHandler</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">val</span> path: <span class="type">String</span> = <span class="type">PreferredReplicaElectionZNode</span>.path</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">handleCreation</span></span>(): <span class="type">Unit</span> = eventManager.put(controller.<span class="type">PreferredReplicaLeaderElection</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="PartitionReassignmentHandler"><a href="#PartitionReassignmentHandler" class="headerlink" title="PartitionReassignmentHandler"></a>PartitionReassignmentHandler</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">path</span> </span>= <span class="string">s"<span class="subst">$&#123;AdminZNode.path&#125;</span>/reassign_partitions"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听分区副本迁移</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">PartitionReassignmentHandler</span>(<span class="params">controller: <span class="type">KafkaController</span>, eventManager: <span class="type">ControllerEventManager</span></span>) <span class="keyword">extends</span> <span class="title">ZNodeChangeHandler</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">val</span> path: <span class="type">String</span> = <span class="type">ReassignPartitionsZNode</span>.path</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Note that the event is also enqueued when the znode is deleted, but we do it explicitly instead of relying on</span></span><br><span class="line">  <span class="comment">// handleDeletion(). This approach is more robust as it doesn't depend on the watcher being re-registered after</span></span><br><span class="line">  <span class="comment">// it's consumed during data changes (we ensure re-registration when the znode is deleted).</span></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">handleCreation</span></span>(): <span class="type">Unit</span> = eventManager.put(controller.<span class="type">PartitionReassignment</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="ZNodeChildChangeHandler"><a href="#ZNodeChildChangeHandler" class="headerlink" title="ZNodeChildChangeHandler"></a>ZNodeChildChangeHandler</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">监听ZK子节点信息变化</span><br></pre></td></tr></table></figure>
+
+<h3 id="BrokerChangeHandler"><a href="#BrokerChangeHandler" class="headerlink" title="BrokerChangeHandler"></a>BrokerChangeHandler</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Broker</span>上下线变化</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">path</span> </span>= <span class="string">s"<span class="subst">$&#123;BrokersZNode.path&#125;</span>/ids"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听Broker变化,对应操作BrokerChange</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BrokerChangeHandler</span>(<span class="params">controller: <span class="type">KafkaController</span>, eventManager: <span class="type">ControllerEventManager</span></span>) <span class="keyword">extends</span> <span class="title">ZNodeChildChangeHandler</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">val</span> path: <span class="type">String</span> = <span class="type">BrokerIdsZNode</span>.path</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">handleChildChange</span></span>(): <span class="type">Unit</span> = &#123;</span><br><span class="line">    eventManager.put(controller.<span class="type">BrokerChange</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="TopicChangeHandler"><a href="#TopicChangeHandler" class="headerlink" title="TopicChangeHandler"></a>TopicChangeHandler</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">path</span> </span>= <span class="string">s"<span class="subst">$&#123;BrokersZNode.path&#125;</span>/topics"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听topic变化,对应操作TopicChange</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TopicChangeHandler</span>(<span class="params">controller: <span class="type">KafkaController</span>, eventManager: <span class="type">ControllerEventManager</span></span>) <span class="keyword">extends</span> <span class="title">ZNodeChildChangeHandler</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">val</span> path: <span class="type">String</span> = <span class="type">TopicsZNode</span>.path</span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">handleChildChange</span></span>(): <span class="type">Unit</span> = eventManager.put(controller.<span class="type">TopicChange</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="TopicDeletionHandler"><a href="#TopicDeletionHandler" class="headerlink" title="TopicDeletionHandler"></a>TopicDeletionHandler</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">path</span> </span>= <span class="string">s"<span class="subst">$&#123;AdminZNode.path&#125;</span>/delete_topics"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听删除topic的变化,TopicDeletion</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TopicDeletionHandler</span>(<span class="params">controller: <span class="type">KafkaController</span>, eventManager: <span class="type">ControllerEventManager</span></span>) <span class="keyword">extends</span> <span class="title">ZNodeChildChangeHandler</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">val</span> path: <span class="type">String</span> = <span class="type">DeleteTopicsZNode</span>.path</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">handleChildChange</span></span>(): <span class="type">Unit</span> = eventManager.put(controller.<span class="type">TopicDeletion</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="LogDirEventNotificationHandler"><a href="#LogDirEventNotificationHandler" class="headerlink" title="LogDirEventNotificationHandler"></a>LogDirEventNotificationHandler</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">path</span> </span>= <span class="string">"/log_dir_event_notification"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听日志目录事件通知,LogDirEventNotification</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LogDirEventNotificationHandler</span>(<span class="params">controller: <span class="type">KafkaController</span>, eventManager: <span class="type">ControllerEventManager</span></span>) <span class="keyword">extends</span> <span class="title">ZNodeChildChangeHandler</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">val</span> path: <span class="type">String</span> = <span class="type">LogDirEventNotificationZNode</span>.path</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">handleChildChange</span></span>(): <span class="type">Unit</span> = eventManager.put(controller.<span class="type">LogDirEventNotification</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="IsrChangeNotificationHandler"><a href="#IsrChangeNotificationHandler" class="headerlink" title="IsrChangeNotificationHandler"></a>IsrChangeNotificationHandler</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">path</span> </span>= <span class="string">"/isr_change_notification"</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 监听Partition ISR变化,IsrChangeNotification</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IsrChangeNotificationHandler</span>(<span class="params">controller: <span class="type">KafkaController</span>, eventManager: <span class="type">ControllerEventManager</span></span>) <span class="keyword">extends</span> <span class="title">ZNodeChildChangeHandler</span> </span>&#123;</span><br><span class="line">  <span class="keyword">override</span> <span class="keyword">val</span> path: <span class="type">String</span> = <span class="type">IsrChangeNotificationZNode</span>.path</span><br><span class="line"></span><br><span class="line">  <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">handleChildChange</span></span>(): <span class="type">Unit</span> = eventManager.put(controller.<span class="type">IsrChangeNotification</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>

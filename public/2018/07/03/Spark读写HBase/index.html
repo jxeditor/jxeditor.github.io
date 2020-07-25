@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Spark读写HBase
+  
+</title>
+
+<meta name="description" content="不考虑HbaseUtil这种方式">
+<meta name="keywords" content="spark,hbase">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark读写HBase">
+<meta property="og:url" content="http://yoursite.com/2018/07/03/Spark读写HBase/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="不考虑HbaseUtil这种方式">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-07-25T09:48:23.683Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Spark读写HBase">
+<meta name="twitter:description" content="不考虑HbaseUtil这种方式">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">71</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Spark读写HBase" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Spark读写HBase
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2018-07-03
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/">hbase</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>不考虑HbaseUtil这种方式</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="读取HBase"><a href="#读取HBase" class="headerlink" title="读取HBase"></a>读取HBase</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获得HBase的配置</span></span><br><span class="line"><span class="keyword">val</span> hbaseConf = <span class="type">HbaseUtil</span>.getConf()</span><br><span class="line">hbaseConf.set(org.apache.hadoop.hbase.mapreduce.<span class="type">TableOutputFormat</span>.<span class="type">OUTPUT_TABLE</span>, tableName)</span><br><span class="line"><span class="keyword">val</span> admin = <span class="keyword">new</span> <span class="type">HBaseAdmin</span>(hbaseConf)</span><br><span class="line"><span class="keyword">if</span> (!admin.isTableAvailable(tableName))&#123;</span><br><span class="line">    <span class="keyword">val</span> tableDesc = <span class="keyword">new</span> <span class="type">HTableDescriptor</span>(<span class="type">TableName</span>.valueOf(tableName))</span><br><span class="line">    admin.createTable(tableDesc)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> hBaseRdd = sc.newAPIHadoopRDD(hbaseConf,classOf[<span class="type">TableInputFormat</span>],classOf[org.apache.hadoop.hbase.io.<span class="type">ImmutableBytesWritable</span>],classOf[org.apache.hadoop.hbase.client.<span class="type">Result</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> count = hBaseRdd.count()</span><br><span class="line">hBaseRdd.foreach(x=&gt;&#123;</span><br><span class="line">    <span class="keyword">val</span> result = x._2</span><br><span class="line">    <span class="comment">// 获取行键</span></span><br><span class="line">    <span class="keyword">val</span> key = <span class="type">Bytes</span>.toString(result.getRow)</span><br><span class="line">    <span class="comment">// 通过列簇和列名获取列</span></span><br><span class="line">    <span class="keyword">val</span> name = <span class="type">Bytes</span>.toString(result.getValue(<span class="string">"cf"</span>.getBytes,<span class="string">"name"</span>.getBytes))</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="写入HBase"><a href="#写入HBase" class="headerlink" title="写入HBase"></a>写入HBase</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获得HBase的配置</span></span><br><span class="line"><span class="keyword">val</span> hbaseConf = <span class="type">HbaseUtil</span>.getConf()</span><br><span class="line">messages.foreachRDD(rdd =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span> (!rdd.isEmpty()) &#123;</span><br><span class="line">    <span class="type">HbaseUtil</span>.getTable(hbaseConn, <span class="type">TABLE_NAME</span>)</span><br><span class="line">    <span class="keyword">val</span> jobConf = <span class="type">HbaseUtil</span>.getNewJobConf(hbaseConf, <span class="type">TABLE_NAME</span>)</span><br><span class="line">    <span class="comment">// 先处理消息</span></span><br><span class="line">    rdd.map(data =&gt; &#123;</span><br><span class="line">      <span class="keyword">val</span> rowKey = data._2.toString</span><br><span class="line">      <span class="keyword">val</span> put = <span class="keyword">new</span> <span class="type">Put</span>(rowKey.getBytes())</span><br><span class="line">      put.addColumn(<span class="type">TABLE_CF</span>.getBytes(), <span class="string">"count"</span>.getBytes(), <span class="string">"1"</span>.getBytes())</span><br><span class="line">      <span class="comment">// 转成(Writable,Put)形式,调用spark函数写入HBase</span></span><br><span class="line">      <span class="comment">// saveAsHadoopDataset也是同理</span></span><br><span class="line">      (<span class="keyword">new</span> <span class="type">ImmutableBytesWritable</span>(), put)</span><br><span class="line">    &#125;).saveAsNewAPIHadoopDataset(jobConf)</span><br><span class="line">    <span class="comment">// 再更新offsets</span></span><br><span class="line">    km.updateZKOffsets(rdd)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="HBaseUtil"><a href="#HBaseUtil" class="headerlink" title="HBaseUtil"></a>HBaseUtil</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br></pre></td><td class="code"><pre><span class="line">object HbaseUtil &#123;</span><br><span class="line">    var conn: Connection = null</span><br><span class="line">    var tables: HashMap[String, Table] = new HashMap[String, Table]</span><br><span class="line">    def initConn() &#123;</span><br><span class="line">        if (conn == null || conn.isClosed) &#123;</span><br><span class="line">            println(&quot;----  Init Conn  -----&quot;)</span><br><span class="line">            val conf = getConf()</span><br><span class="line">            conn = ConnectionFactory.createConnection(conf)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    def getConn() = &#123;</span><br><span class="line">        initConn</span><br><span class="line">        conn</span><br><span class="line">    &#125;</span><br><span class="line">    def getConf() = &#123;</span><br><span class="line">        val conf = HBaseConfiguration.create()</span><br><span class="line">        conf.set(&quot;hbase.zookeeper.quorum&quot;, HBASE_ZOOKEEPER)</span><br><span class="line">        conf.set(&quot;hbase.zookeeper.property.clientPort&quot;, &quot;2181&quot;)</span><br><span class="line">        conf</span><br><span class="line">    &#125;</span><br><span class="line">    def getTable(tablename: String) = &#123;</span><br><span class="line">        if (!getConn().getAdmin.tableExists(TableName.valueOf(tablename))) &#123;</span><br><span class="line">            conn.getAdmin.createTable(new HTableDescriptor(TableName.valueOf(tablename)).addFamily(new HColumnDescriptor(&quot;info&quot;)))</span><br><span class="line">        &#125;</span><br><span class="line">        tables.getOrElse(tablename, &#123;</span><br><span class="line">            initConn</span><br><span class="line">            conn.getTable(TableName.valueOf(tablename))</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    def put(tableName: String, p: Put) &#123;</span><br><span class="line">        getTable(tableName)</span><br><span class="line">        .put(p)</span><br><span class="line">    &#125;</span><br><span class="line">    def get(tableName: String, get: Get, cf: String, column: String) = &#123;</span><br><span class="line">        val r = getTable(tableName)</span><br><span class="line">        .get(get)</span><br><span class="line">        if (r != null &amp;&amp; !r.isEmpty()) &#123;</span><br><span class="line">            new String(r.getValue(cf.getBytes, column.getBytes))</span><br><span class="line">        &#125; else null</span><br><span class="line">    &#125;</span><br><span class="line">    //  接受配置文件</span><br><span class="line">    /**</span><br><span class="line">    * 用于直接建立HBase连接</span><br><span class="line">    *</span><br><span class="line">    * @param properties</span><br><span class="line">    * @return</span><br><span class="line">    */</span><br><span class="line">    def getConf(properties: Properties) = &#123;</span><br><span class="line">        val conf = HBaseConfiguration.create()</span><br><span class="line">        conf.set(&quot;hbase.zookeeper.quorum&quot;, properties.getProperty(&quot;hbase.zookeeper.quorum&quot;))</span><br><span class="line">        conf.set(&quot;hbase.zookeeper.property.clientPort&quot;, properties.getProperty(&quot;hbase.zookeeper.property.clientPort&quot;))</span><br><span class="line">        conf.set(&quot;hbase.master&quot;, properties.getProperty(&quot;hbase.master&quot;))</span><br><span class="line">        conf</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">    * 获取连接</span><br><span class="line">    *</span><br><span class="line">    * @param conf</span><br><span class="line">    * @return</span><br><span class="line">    */</span><br><span class="line">    def getConn(conf: Configuration) = &#123;</span><br><span class="line">        if (conn == null || conn.isClosed) &#123;</span><br><span class="line">            conn = ConnectionFactory.createConnection(conf)</span><br><span class="line">        &#125;</span><br><span class="line">        conn</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">    * 获取表,没有表则创建</span><br><span class="line">    *</span><br><span class="line">    * @param conn</span><br><span class="line">    * @param tableName</span><br><span class="line">    * @return</span><br><span class="line">    */</span><br><span class="line">    def getTable(conn: Connection, tableName: String) = &#123;</span><br><span class="line">        createTable(conn, tableName)</span><br><span class="line">        conn.getTable(TableName.valueOf(tableName))</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">    * 创建表</span><br><span class="line">    *</span><br><span class="line">    * @param conn</span><br><span class="line">    * @param tableName</span><br><span class="line">    */</span><br><span class="line">    def createTable(conn: Connection, tableName: String) = &#123;</span><br><span class="line">        if (!conn.getAdmin.tableExists(TableName.valueOf(tableName))) &#123;</span><br><span class="line">            val tableDescriptor = new HTableDescriptor(TableName.valueOf(tableName))</span><br><span class="line">            tableDescriptor.addFamily(new HColumnDescriptor(&quot;info&quot;.getBytes()))</span><br><span class="line">            conn.getAdmin.createTable(tableDescriptor)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">    * 提交数据</span><br><span class="line">    *</span><br><span class="line">    * @param conn</span><br><span class="line">    * @param tableName</span><br><span class="line">    * @param data</span><br><span class="line">    */</span><br><span class="line">    def putData(conn: Connection, tableName: String, data: Put) = &#123;</span><br><span class="line">        getTable(conn, tableName).put(data)</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">    * 对表直接进行批量写入时使用</span><br><span class="line">    *</span><br><span class="line">    * @param conf</span><br><span class="line">    * @param tableName</span><br><span class="line">    * @return</span><br><span class="line">    */</span><br><span class="line">    def getNewJobConf(conf: Configuration, tableName: String) = &#123;</span><br><span class="line">        conf.set(&quot;hbase.defaults.for.version.skip&quot;, &quot;true&quot;)</span><br><span class="line">        conf.set(org.apache.hadoop.hbase.mapreduce.TableOutputFormat.OUTPUT_TABLE, tableName)</span><br><span class="line">        conf.setClass(&quot;mapreduce.job.outputformat.class&quot;, classOf[org.apache.hadoop.hbase.mapreduce.TableOutputFormat[String]], classOf[org.apache.hadoop.mapreduce.OutputFormat[String, Mutation]])</span><br><span class="line">        new JobConf(conf)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    多维函数的使用
+  
+</title>
+
+<meta name="description" content="多维分析函数的使用">
+<meta name="keywords" content="spark,hive">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多维函数的使用">
+<meta property="og:url" content="http://yoursite.com/2020/05/03/多维函数的使用/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="多维分析函数的使用">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-07-25T09:48:23.704Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="多维函数的使用">
+<meta name="twitter:description" content="多维分析函数的使用">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">71</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-多维函数的使用" class="article article-type-post">
+  
+    <h1 class="article-header">
+      多维函数的使用
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-05-03
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hive/">hive</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/">spark</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>多维分析函数的使用</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="多维分析"><a href="#多维分析" class="headerlink" title="多维分析"></a>多维分析</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">在业务需要上,我们时长需要对数据进行分组,假如一个学校的学生数据</span><br><span class="line">想查看他们每个年级的人数,需要对年级进行分组</span><br><span class="line">想查看他们每个班级的人数,需要对班级进行分组</span><br><span class="line">想查看他们每个小组的人数,需要对小组进行分组</span><br><span class="line"></span><br><span class="line">可以看到年级-&gt;班级-&gt;人数,这就是多个维度,也可以说是一个维度的不同深度</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Grouping-Sets与GroupBy的优缺点"><a href="#Grouping-Sets与GroupBy的优缺点" class="headerlink" title="Grouping Sets与GroupBy的优缺点"></a>Grouping Sets与GroupBy的优缺点</h2><h3 id="GroupBy"><a href="#GroupBy" class="headerlink" title="GroupBy"></a>GroupBy</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">分组函数(常用)</span><br><span class="line"># 所有学生+各年级的学生+各班级的学生</span><br><span class="line">SELECT stuId,&apos;all&apos; key,&apos;all&apos; value,dt</span><br><span class="line">FROM school</span><br><span class="line">GROUP BY stuId,dt</span><br><span class="line">UNION ALL</span><br><span class="line">SELECT stuId,&apos;grade&apos; key, grade value,dt</span><br><span class="line">FROM school</span><br><span class="line">GROUP BY grade,stuId,dt</span><br><span class="line">UNION ALL</span><br><span class="line">SELECT stuId,&apos;class&apos; key, class value,dt</span><br><span class="line">FROM school</span><br><span class="line">GROUP BY class,stuId,dt</span><br><span class="line"></span><br><span class="line"># Job数(Spark/Hive)</span><br><span class="line">9/3</span><br><span class="line"></span><br><span class="line"># 优点</span><br><span class="line">可以灵活指定分组字段并直接添加额外字段</span><br><span class="line"></span><br><span class="line"># 缺点</span><br><span class="line">对于需要不同分组的业务,SQL过于冗余</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="Grouping-Sets"><a href="#Grouping-Sets" class="headerlink" title="Grouping Sets"></a>Grouping Sets</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">多维分析函数(不常用)</span><br><span class="line">SELECT stuId,</span><br><span class="line">CASE WHEN grade IS NULL AND class IS NULL THEN &apos;all&apos;</span><br><span class="line">WHEN grade IS NOT NULL THEN &apos;grade&apos;</span><br><span class="line">ELSE &apos;class&apos; END key,</span><br><span class="line">CASE WHEN grade IS NULL AND class IS NULL THEN &apos;all&apos;</span><br><span class="line">WHEN grade IS NOT NULL THEN grade</span><br><span class="line">ELSE class END value,dt</span><br><span class="line">FROM (</span><br><span class="line">	SELECT stuId,grade,class,dt</span><br><span class="line">	FROM school</span><br><span class="line">	GROUP BY grade,class,stuId,dt</span><br><span class="line">	grouping sets ((stuId,dt),(grade,stuId,dt),(class,stuId,dt))</span><br><span class="line">) a</span><br><span class="line"></span><br><span class="line"># Job数(Spark/Hive)</span><br><span class="line">3/1</span><br><span class="line"></span><br><span class="line"># 优点</span><br><span class="line">在Hive/Spark执行中,相较于GroupBy执行计划更优</span><br><span class="line"></span><br><span class="line"># 缺点</span><br><span class="line">最大的缺点就是,需要进行NULL值填充</span><br><span class="line">尤其是不能确定原始数据中是否有值为NULL的字段</span><br><span class="line"></span><br><span class="line"># 补充点</span><br><span class="line">对于其缺点有grouping__id函数进行完善</span><br><span class="line">grouping__id为位向量,计算逻辑如下</span><br><span class="line">grade,class,stuId,dt四个分组字段</span><br><span class="line">0000</span><br><span class="line">在分组集合内的置为1,否则置为0</span><br><span class="line">坑:</span><br><span class="line">    最右边的表示第1列,依次类推</span><br><span class="line">    然后进行反转,计算出十进制值</span><br><span class="line">(stuId,dt)-&gt;0011-&gt;1100-&gt;12</span><br><span class="line">(grade,stuId,dt)-&gt;1011-&gt;1101-&gt;13</span><br><span class="line">(class,stuId,dt)-&gt;0111-&gt;1110-&gt;14</span><br><span class="line">假如有字段为空,那么其grouping__id字段值将发生改变</span><br><span class="line">e.g:</span><br><span class="line">    其他分组字段有为空的情况</span><br><span class="line">    10086,2020-05-13,null,null,12-&gt;(选择stuId,dt)</span><br><span class="line">    10086,2020-05-13,null,null,13-&gt;(选择grade,stuId,dt,但是grade有空值)</span><br><span class="line">这样就可以很好的辨认分组字段是什么</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Cube"><a href="#Cube" class="headerlink" title="Cube"></a>Cube</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> gradeID, classID, <span class="keyword">MAX</span>(score) </span><br><span class="line"><span class="keyword">FROM</span> exam</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> gradeID, classID </span><br><span class="line"><span class="keyword">WITH</span> <span class="keyword">CUBE</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 等价于</span></span><br><span class="line"><span class="keyword">SELECT</span> gradeID, classID, <span class="keyword">MAX</span>(score) </span><br><span class="line"><span class="keyword">FROM</span> exam </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> gradeID, classID </span><br><span class="line"><span class="keyword">UNION</span> </span><br><span class="line"><span class="keyword">SELECT</span> gradeID, <span class="literal">NULL</span>, <span class="keyword">MAX</span>(score) </span><br><span class="line"><span class="keyword">FROM</span> exam </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> gradeID, <span class="literal">NULL</span> </span><br><span class="line"><span class="keyword">UNION</span> </span><br><span class="line"><span class="keyword">SELECT</span> <span class="literal">NULL</span>, classID, <span class="keyword">MAX</span>(score) </span><br><span class="line"><span class="keyword">FROM</span> exam </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="literal">NULL</span>, classID </span><br><span class="line"><span class="keyword">UNION</span> </span><br><span class="line"><span class="keyword">SELECT</span> <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="keyword">MAX</span>(score) </span><br><span class="line"><span class="keyword">FROM</span> exam </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="literal">NULL</span>, <span class="literal">NULL</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Rollup"><a href="#Rollup" class="headerlink" title="Rollup"></a>Rollup</h2><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> gradeID, classID, <span class="keyword">MAX</span>(score) </span><br><span class="line"><span class="keyword">FROM</span> exam</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> gradeID, classID </span><br><span class="line"><span class="keyword">WITH</span> <span class="keyword">ROLLUP</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 等价于</span></span><br><span class="line"><span class="keyword">SELECT</span> gradeID, classID, <span class="keyword">MAX</span>(score)</span><br><span class="line"><span class="keyword">FROM</span> exam </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> gradeID, classID </span><br><span class="line"><span class="keyword">UNION</span> </span><br><span class="line"><span class="keyword">SELECT</span> gradeID, <span class="literal">NULL</span>, <span class="keyword">MAX</span>(score) </span><br><span class="line"><span class="keyword">FROM</span> exam </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> gradeID, <span class="literal">NULL</span> </span><br><span class="line"><span class="keyword">UNION</span> </span><br><span class="line"><span class="keyword">SELECT</span> <span class="literal">NULL</span>, <span class="literal">NULL</span>, <span class="keyword">MAX</span>(score) </span><br><span class="line"><span class="keyword">FROM</span> exam </span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> <span class="literal">NULL</span>, <span class="literal">NULL</span>;</span><br></pre></td></tr></table></figure>
+
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>

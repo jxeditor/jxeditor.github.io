@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    基于CentOS7.6搭建K8S-部署Redis集群篇
+  
+</title>
+
+<meta name="description" content="搭建redis集群">
+<meta name="keywords" content="docker">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于CentOS7.6搭建K8S-部署Redis集群篇">
+<meta property="og:url" content="http://yoursite.com/2019/09/10/基于CentOS7.6搭建K8S-部署Redis集群篇/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="搭建redis集群">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-07-25T09:48:23.703Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于CentOS7.6搭建K8S-部署Redis集群篇">
+<meta name="twitter:description" content="搭建redis集群">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">71</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-基于CentOS7.6搭建K8S-部署Redis集群篇" class="article article-type-post">
+  
+    <h1 class="article-header">
+      基于CentOS7.6搭建K8S-部署Redis集群篇
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-09-10
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/">搭建</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/docker/">docker</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>搭建redis集群</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="安装NFS-共享存储"><a href="#安装NFS-共享存储" class="headerlink" title="安装NFS(共享存储)"></a>安装NFS(共享存储)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"># 所有节点安装nfs+rpcbind</span><br><span class="line">yum -y install nfs-utils rpcbind</span><br><span class="line"></span><br><span class="line"># node01设置需要共享的路径</span><br><span class="line"># rw表示读写权限</span><br><span class="line"># all_squash表示客户机上的任何用户访问该共享目录时都映射成服务器上的匿名用户(默认为nfsnobody)</span><br><span class="line"># *表示任意主机都可以访问该共享目录,也可以填写指定主机地址,同时支持正则</span><br><span class="line">vi /etc/exports</span><br><span class="line">/usr/local/kubernetes/redis/pv1 *(rw,all_squash)</span><br><span class="line">/usr/local/kubernetes/redis/pv2 *(rw,all_squash)</span><br><span class="line">/usr/local/kubernetes/redis/pv3 *(rw,all_squash)</span><br><span class="line">/usr/local/kubernetes/redis/pv4 *(rw,all_squash)</span><br><span class="line">/usr/local/kubernetes/redis/pv5 *(rw,all_squash)</span><br><span class="line">/usr/local/kubernetes/redis/pv6 *(rw,all_squash)</span><br><span class="line"># 创建目录修改权限</span><br><span class="line">mkdir -p /usr/local/kubernetes/redis/pv&#123;1..6&#125;</span><br><span class="line">chmod 777 /usr/local/kubernetes/redis/pv&#123;1..6&#125;</span><br><span class="line"># 启动服务</span><br><span class="line">systemctl enable nfs </span><br><span class="line">systemctl enable rpcbind</span><br><span class="line">systemctl start nfs</span><br><span class="line">systemctl start rpcbind</span><br><span class="line"></span><br><span class="line"># 测试一下,在node02上执行挂载</span><br><span class="line">mount -t nfs 192.168.17.129:/usr/local/kubernetes/redis/pv1 /mnt</span><br><span class="line">cd /mnt</span><br><span class="line">touch test</span><br><span class="line"># 可以在node01上看到这个文件则表示成功</span><br><span class="line">[root@node01 ~]# ll /usr/local/kubernetes/redis/pv1/</span><br><span class="line">total 0</span><br><span class="line">-rw-r--r--. 1 nfsnobody nfsnobody 0 Sep 10 15:03 test</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="创建PV"><a href="#创建PV" class="headerlink" title="创建PV"></a>创建PV</h2><pre><code>供pvc挂载使用,每一个Redis Pod都需要一个独立的PV来存储自己的数据</code></pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br></pre></td><td class="code"><pre><span class="line">vi redis_pv.yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolume</span><br><span class="line">metadata:</span><br><span class="line">  name: nfs-pv1</span><br><span class="line">spec:</span><br><span class="line">  capacity:</span><br><span class="line">    storage: 200M      #磁盘大小200M</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteMany    #多客户可读写</span><br><span class="line">  nfs:</span><br><span class="line">    server: 192.168.17.129</span><br><span class="line">    path: &quot;/usr/local/kubernetes/redis/pv1&quot;</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolume</span><br><span class="line">metadata:</span><br><span class="line">  name: nfs-vp2</span><br><span class="line">spec:</span><br><span class="line">  capacity:</span><br><span class="line">    storage: 200M</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteMany</span><br><span class="line">  nfs:</span><br><span class="line">    server: 192.168.17.129</span><br><span class="line">    path: &quot;/usr/local/kubernetes/redis/pv2&quot;</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolume</span><br><span class="line">metadata:</span><br><span class="line">  name: nfs-pv3</span><br><span class="line">spec:</span><br><span class="line">  capacity:</span><br><span class="line">    storage: 200M</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteMany</span><br><span class="line">  nfs:</span><br><span class="line">    server: 192.168.17.129</span><br><span class="line">    path: &quot;/usr/local/kubernetes/redis/pv3&quot;</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolume</span><br><span class="line">metadata:</span><br><span class="line">  name: nfs-pv4</span><br><span class="line">spec:</span><br><span class="line">  capacity:</span><br><span class="line">    storage: 200M</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteMany</span><br><span class="line">  nfs:</span><br><span class="line">    server: 192.168.17.129</span><br><span class="line">    path: &quot;/usr/local/kubernetes/redis/pv4&quot;</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolume</span><br><span class="line">metadata:</span><br><span class="line">  name: nfs-pv5</span><br><span class="line">spec:</span><br><span class="line">  capacity:</span><br><span class="line">    storage: 200M</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteMany</span><br><span class="line">  nfs:</span><br><span class="line">    server: 192.168.17.129</span><br><span class="line">    path: &quot;/usr/local/kubernetes/redis/pv5&quot;</span><br><span class="line"></span><br><span class="line">---</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolume</span><br><span class="line">metadata:</span><br><span class="line">  name: nfs-pv6</span><br><span class="line">spec:</span><br><span class="line">  capacity:</span><br><span class="line">    storage: 200M</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteMany</span><br><span class="line">  nfs:</span><br><span class="line">    server: 192.168.17.129</span><br><span class="line">    path: &quot;/usr/local/kubernetes/redis/pv6&quot;</span><br><span class="line"></span><br><span class="line"># 字段说明</span><br><span class="line">apiversion: api版本</span><br><span class="line">kind: 这个yaml是生成pv的</span><br><span class="line">metadata: 元数据</span><br><span class="line">spec.capacity: 进行资源限制的</span><br><span class="line">spec.accessmodes: 访问模式(读写模式)</span><br><span class="line">spec.nfs: 这个pv卷名是通过nfs提供的</span><br><span class="line"></span><br><span class="line"># 创建</span><br><span class="line">kubectl apply -f redis_pv.yaml</span><br><span class="line">kubectl get pv # 查看PV</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="创建ConfigMap-redis-conf文件不要有注释"><a href="#创建ConfigMap-redis-conf文件不要有注释" class="headerlink" title="创建ConfigMap(redis.conf文件不要有注释)"></a>创建ConfigMap(redis.conf文件不要有注释)</h2><pre><code>用来存放redis的配置文件,方便后期修改</code></pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">vi redis.conf</span><br><span class="line">appendonly yes # 开启Redis的AOF持久化</span><br><span class="line">cluster-enabled yes # 集群模式打开</span><br><span class="line">cluster-config-file /var/lib/redis/nodes.conf # 保存节点配置文件的路径</span><br><span class="line">cluster-node-timeout 5000 # 节点超时时间</span><br><span class="line">dir /var/lib/redis # AOF持久化文件存在的位置</span><br><span class="line">port 6379 # 开启的端口</span><br><span class="line"></span><br><span class="line"># 创建名为redis-conf的ConfigMap</span><br><span class="line">kubectl create configmap redis-conf --from-file=redis.conf</span><br><span class="line">kubectl describe cm redis-conf # 查看</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="创建Headless-Service"><a href="#创建Headless-Service" class="headerlink" title="创建Headless Service"></a>创建Headless Service</h2><pre><code>Headless Service是StatefulSet实现稳定网络标识的基础</code></pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">vi headless-service.yaml</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: redis-service</span><br><span class="line">  labels:</span><br><span class="line">    app: redis</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">  - name: redis-port</span><br><span class="line">    port: 6379</span><br><span class="line">  clusterIP: None</span><br><span class="line">  selector:</span><br><span class="line">    app: redis</span><br><span class="line">    appCluster: redis-cluster</span><br><span class="line">    </span><br><span class="line"># 创建</span><br><span class="line">kubectl apply -f headless-service.yaml</span><br><span class="line">kubectl get service redis-service # 查看</span><br><span class="line"># CLUSTER-IP为None,无头服务</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="创建Redis集群节点"><a href="#创建Redis集群节点" class="headerlink" title="创建Redis集群节点"></a>创建Redis集群节点</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line">vi redis.yaml</span><br><span class="line">apiVersion: apps/v1beta1</span><br><span class="line">kind: StatefulSet</span><br><span class="line">metadata:</span><br><span class="line">  name: redis-app</span><br><span class="line">spec:</span><br><span class="line">  serviceName: &quot;redis-service&quot;</span><br><span class="line">  replicas: 6</span><br><span class="line">  template:</span><br><span class="line">    metadata:</span><br><span class="line">      labels:</span><br><span class="line">        app: redis</span><br><span class="line">        appCluster: redis-cluster</span><br><span class="line">    spec:</span><br><span class="line">      terminationGracePeriodSeconds: 20</span><br><span class="line">      affinity:</span><br><span class="line">        podAntiAffinity:</span><br><span class="line">          preferredDuringSchedulingIgnoredDuringExecution:</span><br><span class="line">          - weight: 100</span><br><span class="line">            podAffinityTerm:</span><br><span class="line">              labelSelector:</span><br><span class="line">                matchExpressions:</span><br><span class="line">                - key: app</span><br><span class="line">                  operator: In</span><br><span class="line">                  values:</span><br><span class="line">                  - redis</span><br><span class="line">              topologyKey: kubernetes.io/hostname</span><br><span class="line">      containers:</span><br><span class="line">      - name: redis</span><br><span class="line">        image: &quot;redis&quot;</span><br><span class="line">        command:</span><br><span class="line">          - &quot;redis-server&quot;                  #redis启动命令</span><br><span class="line">        args:</span><br><span class="line">          - &quot;/etc/redis/redis.conf&quot;         #redis-server后面跟的参数,换行代表空格</span><br><span class="line">          - &quot;--protected-mode&quot;              #允许外网访问</span><br><span class="line">          - &quot;no&quot;</span><br><span class="line">        # command: redis-server /etc/redis/redis.conf --protected-mode no</span><br><span class="line">        resources:                          #资源</span><br><span class="line">          requests:                         #请求的资源</span><br><span class="line">            cpu: &quot;100m&quot;                     #m代表千分之,相当于0.1 个cpu资源</span><br><span class="line">            memory: &quot;100Mi&quot;                 #内存100m大小</span><br><span class="line">        ports:</span><br><span class="line">            - name: redis</span><br><span class="line">              containerPort: 6379</span><br><span class="line">              protocol: &quot;TCP&quot;</span><br><span class="line">            - name: cluster</span><br><span class="line">              containerPort: 16379</span><br><span class="line">              protocol: &quot;TCP&quot;</span><br><span class="line">        volumeMounts:</span><br><span class="line">          - name: &quot;redis-conf&quot;              #挂载configmap生成的文件</span><br><span class="line">            mountPath: &quot;/etc/redis&quot;         #挂载到哪个路径下</span><br><span class="line">          - name: &quot;redis-data&quot;              #挂载持久卷的路径</span><br><span class="line">            mountPath: &quot;/var/lib/redis&quot;</span><br><span class="line">      volumes:</span><br><span class="line">      - name: &quot;redis-conf&quot;                  #引用configMap卷</span><br><span class="line">        configMap:</span><br><span class="line">          name: &quot;redis-conf&quot;</span><br><span class="line">          items:</span><br><span class="line">            - key: &quot;redis.conf&quot;             #创建configMap指定的名称</span><br><span class="line">              path: &quot;redis.conf&quot;            #里面的那个文件--from-file参数后面的文件</span><br><span class="line">  volumeClaimTemplates:                     #进行pvc持久卷声明,</span><br><span class="line">  - metadata:</span><br><span class="line">      name: redis-data</span><br><span class="line">    spec:</span><br><span class="line">      accessModes:</span><br><span class="line">      - ReadWriteMany</span><br><span class="line">      resources:</span><br><span class="line">        requests:</span><br><span class="line">          storage: 200M</span><br><span class="line"></span><br><span class="line"># 创建</span><br><span class="line">kubectl apply -f redis.yaml</span><br><span class="line">kubectl get pods -o wide # 查看</span><br><span class="line"># 可以看到这些Pods在部署时是以&#123;0..N-1&#125;的顺序依次创建的,当redis-app-0启动后达到Running状态后,才会创建redis-app-1</span><br><span class="line"># 同时每个Pod都会得到集群内的一个DNS域名,格式为$(podname).$(service name).$(namespace).svc.cluster.local</span><br><span class="line">redis-app-0.redis-service.default.svc.cluster.local</span><br><span class="line">redis-app-1.redis-service.default.svc.cluster.local</span><br><span class="line">...以此类推...</span><br><span class="line"></span><br><span class="line"># 宿主机的DNS解析</span><br><span class="line">vi /etc/resolv.conf</span><br><span class="line">search localdomain default.svc.cluster.local svc.cluster.local cluster.local</span><br><span class="line">nameserver 10.96.0.10</span><br><span class="line">nameserver 192.168.17.2</span><br><span class="line"></span><br><span class="line"># 在K8S集群内部,这些Pod就可以利用该域名互相通信,我们可以使用busybox镜像的nslookup检验这些域名</span><br><span class="line">kubectl run -i --tty --image busybox dns-test --restart=Never --rm /bin/sh</span><br><span class="line">nslookup redis-app-1.redis-service.default.svc.cluster.local</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="初始化Redis集群"><a href="#初始化Redis集群" class="headerlink" title="初始化Redis集群"></a>初始化Redis集群</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"># 创建centos容器</span><br><span class="line">kubectl run -i --tty centos --image=centos --restart=Never /bin/bash</span><br><span class="line">cat &gt;&gt; /etc/yum.repos.d/epel.repo&lt;&lt;&apos;EOF&apos;</span><br><span class="line">[epel]</span><br><span class="line">name=Extra Packages for Enterprise Linux 7 - $basearch</span><br><span class="line">baseurl=https://mirrors.tuna.tsinghua.edu.cn/epel/7/$basearch</span><br><span class="line">#mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-7&amp;arch=$basearch</span><br><span class="line">failovermethod=priority</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line"># 初始化redis集群</span><br><span class="line">yum -y install redis-trib.noarch bind-utils</span><br><span class="line">redis-trib create --replicas 1 \</span><br><span class="line">`dig +short redis-app-0.redis-service.default.svc.cluster.local`:6379 \</span><br><span class="line">`dig +short redis-app-1.redis-service.default.svc.cluster.local`:6379 \</span><br><span class="line">`dig +short redis-app-2.redis-service.default.svc.cluster.local`:6379 \</span><br><span class="line">`dig +short redis-app-3.redis-service.default.svc.cluster.local`:6379 \</span><br><span class="line">`dig +short redis-app-4.redis-service.default.svc.cluster.local`:6379 \</span><br><span class="line">`dig +short redis-app-5.redis-service.default.svc.cluster.local`:6379</span><br><span class="line"></span><br><span class="line"># 进入redis pod检验</span><br><span class="line"> kubectl exec -it redis-app-0 /bin/bash</span><br><span class="line">/usr/local/bin/redis-cli -c</span><br><span class="line">cluster info</span><br><span class="line">cluster nodes</span><br><span class="line"></span><br><span class="line"># 也可以在NFS查看Redis</span><br><span class="line">tree /usr/local/kubernetes/redis/</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="创建Service"><a href="#创建Service" class="headerlink" title="创建Service"></a>创建Service</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"># 用于Redis集群访问与负载均衡</span><br><span class="line">piVersion: v1</span><br><span class="line">kind: Service</span><br><span class="line">metadata:</span><br><span class="line">  name: redis-access-service</span><br><span class="line">  labels:</span><br><span class="line">    app: redis</span><br><span class="line">spec:</span><br><span class="line">  ports:</span><br><span class="line">  - name: redis-port</span><br><span class="line">    protocol: &quot;TCP&quot;</span><br><span class="line">    port: 6379</span><br><span class="line">    targetPort: 6379</span><br><span class="line">  selector:</span><br><span class="line">    app: redis</span><br><span class="line">    appCluster: redis-cluster</span><br><span class="line">    </span><br><span class="line">kubectl get svc redis-access-service -o wide</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="测试主从切换"><a href="#测试主从切换" class="headerlink" title="测试主从切换"></a>测试主从切换</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 找到一个master,查看他的slave</span><br><span class="line">kubectl exec -it redis-app-2 /bin/bash</span><br><span class="line">redis-cli</span><br><span class="line">role</span><br><span class="line"></span><br><span class="line"># 删除redis-app-2, IP会切换成salve的IP</span><br><span class="line">kubectl delete pods redis-app-2</span><br><span class="line">kubectl exec -it redis-app-2 /bin/bash</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="动态扩容"><a href="#动态扩容" class="headerlink" title="动态扩容"></a>动态扩容</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"># 添加NFS共享目录</span><br><span class="line">cat &gt;&gt; /etc/exports &lt;&lt;&apos;EOF&apos;</span><br><span class="line">/usr/local/kubernetes/redis/pv5 *(rw,all_squash)</span><br><span class="line">/usr/local/kubernetes/redis/pv6 *(rw,all_squash)</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">systemctl restart nfs rpcbind</span><br><span class="line">mkdir /usr/local/kubernetes/redis/pv&#123;7..8&#125;</span><br><span class="line">chmod 777 /usr/local/kubernetes/redis/*</span><br><span class="line"></span><br><span class="line"># 添加PV</span><br><span class="line">vi pv.yml</span><br><span class="line">---</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolume</span><br><span class="line">metadata:</span><br><span class="line">  name: nfs-pv7</span><br><span class="line">spec:</span><br><span class="line">  capacity:</span><br><span class="line">    storage: 200M</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteMany</span><br><span class="line">  nfs:</span><br><span class="line">    server: 192.168.1.253</span><br><span class="line">    path: &quot;/usr/local/kubernetes/redis/pv7&quot;</span><br><span class="line">---</span><br><span class="line">apiVersion: v1</span><br><span class="line">kind: PersistentVolume</span><br><span class="line">metadata:</span><br><span class="line">  name: nfs-pv8</span><br><span class="line">spec:</span><br><span class="line">  capacity:</span><br><span class="line">    storage: 200M</span><br><span class="line">  accessModes:</span><br><span class="line">    - ReadWriteMany</span><br><span class="line">  nfs:</span><br><span class="line">    server: 192.168.1.253</span><br><span class="line">    path: &quot;/usr/local/kubernetes/redis/pv8&quot;</span><br><span class="line">kubectl apply -f pv.yml</span><br><span class="line">kubectl get pv</span><br><span class="line"></span><br><span class="line"># 添加redis节点</span><br><span class="line"># 更改redis的yml文件里面的replicas:字段,把这个字段改为8,然后升级运行</span><br><span class="line">kubectl apply -f redis.yml</span><br><span class="line">kubectl get  pods</span><br><span class="line"></span><br><span class="line"># 添加集群节点</span><br><span class="line">kubectl exec -it centos /bin/bash</span><br><span class="line">redis-trib add-node \</span><br><span class="line">`dig +short redis-app-6.redis-service.default.svc.cluster.local`:6379 \</span><br><span class="line">`dig +short redis-app-0.redis-service.default.svc.cluster.local`:6379</span><br><span class="line"></span><br><span class="line">redis-trib add-node \</span><br><span class="line">`dig +short redis-app-7.redis-service.default.svc.cluster.local`:6379 \</span><br><span class="line">`dig +short redis-app-0.redis-service.default.svc.cluster.local`:6379</span><br><span class="line"></span><br><span class="line"># 重新分配哈希槽</span><br><span class="line">redis-trib.rb reshard `dig +short redis-app-0.redis-service.default.svc.cluster.local`:6379</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>

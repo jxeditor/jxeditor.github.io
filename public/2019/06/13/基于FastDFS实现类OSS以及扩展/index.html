@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    基于FastDFS实现类OSS以及扩展
+  
+</title>
+
+<meta name="description" content="首先，FastDFS肯定没有OSS功能强大以及齐全，碍于成本问题，只能寻找一个类似OSS功能的替代品，所以需要考虑到以后的一些问题。">
+<meta name="keywords" content="oss">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于FastDFS实现类OSS以及扩展">
+<meta property="og:url" content="http://yoursite.com/2019/06/13/基于FastDFS实现类OSS以及扩展/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="首先，FastDFS肯定没有OSS功能强大以及齐全，碍于成本问题，只能寻找一个类似OSS功能的替代品，所以需要考虑到以后的一些问题。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-07-25T09:48:23.704Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="基于FastDFS实现类OSS以及扩展">
+<meta name="twitter:description" content="首先，FastDFS肯定没有OSS功能强大以及齐全，碍于成本问题，只能寻找一个类似OSS功能的替代品，所以需要考虑到以后的一些问题。">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">71</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-基于FastDFS实现类OSS以及扩展" class="article article-type-post">
+  
+    <h1 class="article-header">
+      基于FastDFS实现类OSS以及扩展
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-06-13
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/搭建/">搭建</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/oss/">oss</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>首先，FastDFS肯定没有OSS功能强大以及齐全，碍于成本问题，只能寻找一个类似OSS功能的替代品，所以需要考虑到以后的一些问题。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="一、未来考虑"><a href="#一、未来考虑" class="headerlink" title="一、未来考虑"></a>一、未来考虑</h2><h3 id="1-FastDFS能否实现OSS的部分功能"><a href="#1-FastDFS能否实现OSS的部分功能" class="headerlink" title="1.FastDFS能否实现OSS的部分功能"></a>1.FastDFS能否实现OSS的部分功能</h3><p><strong>基本能实现,以下是FastDFS,hdfs,OSS的区别</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">FastDFS:</span><br><span class="line">是一个开源的分布式文件系统，它对文件进行管理</span><br><span class="line">功能包括:文件存储、文件同步、文件访问(文件上传、文件下载)等，解决了大容量存储和负载均衡的问题</span><br><span class="line">特别适合以文件为载体的在线服务， 如相册网站，视频网站等等</span><br><span class="line"></span><br><span class="line">HDFS: </span><br><span class="line">默认的最基本的存储单位是64M的数据块。</span><br><span class="line">和普通的块文件系统相同的是，HDFS中的文件是被分成64M一块的数据块存储的。</span><br><span class="line">不同于普通文件系统的是，HDFS中，如果一个文件小于一个数据块的大小，会占用整个存储块的空间。</span><br><span class="line"></span><br><span class="line">OSS:</span><br><span class="line">阿里云对象存储服务（Object Storage Service，简称 OSS），是阿里云提供的海量、安全、低成本、高可靠的云存储服务;</span><br><span class="line">可以使用阿里云提供的 API、SDK 接口或者 OSS 迁移工具轻松地将海量数据移入或移出阿里云 OSS。</span><br><span class="line">数据存储到阿里云 OSS 以后，您可以选择标准类型（Standard）的阿里云 OSS 服务作为移动应用、大型网站、图片分享或热点音视频的主要存储方式</span><br><span class="line">也可以选择成本更低、存储期限更长的低频访问类型（Infrequent Access）和归档类型（Archive）的阿里云 OSS 服务作为不经常访问数据的备份和归档。</span><br></pre></td></tr></table></figure>
+
+<p>HDFS和FastDFS的上传,下载效率对比测试结果:<br><a href="https://blog.csdn.net/a519781181/article/details/79125379/" target="_blank" rel="noopener">https://blog.csdn.net/a519781181/article/details/79125379/</a></p>
+<p>使用OSS有什么优势，又有什么缺点，什么情况下我们会使用OSS来代替HDFS，到底使用什么存储方案:<br><a href="https://yq.aliyun.com/articles/371984" target="_blank" rel="noopener">https://yq.aliyun.com/articles/371984</a></p>
+<p>oss上传方式,以及对应的大小限制:<br><a href="http://www.360doc.com/content/18/0823/22/49604565_780716594.shtml" target="_blank" rel="noopener">http://www.360doc.com/content/18/0823/22/49604565_780716594.shtml</a></p>
+<hr>
+<h3 id="2-FastDFS文件上传后文件名如何保存"><a href="#2-FastDFS文件上传后文件名如何保存" class="headerlink" title="2.FastDFS文件上传后文件名如何保存"></a>2.FastDFS文件上传后文件名如何保存</h3><p><strong>上传文件的流程</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">客户端上传文件后存储服务器将文件ID返回给客户端，次文件ID用于以后访问改文件的索引信息。文件索引信息包括：</span><br><span class="line">    组名，虚拟磁盘路径，数据两级目录，文件名。</span><br><span class="line">    比如：group/M00/02/44/wKqDrE348waaaaaaaaGkEIYJK42378.sh</span><br><span class="line">组名：文件上传后所在的storage组名称，在文件上传成功后有storage服务器返回，需要客户端自行保存。</span><br><span class="line">虚拟磁盘路径：storage配置的虚拟路径，与磁盘选项store_path对应。如果配置了store_path0则是M00，如果配置了store_path1则是M01，以此类推。</span><br><span class="line">数据两级目录：storage服务器在每个虚拟磁盘路径下创建的两级目录，用于存储数据文件。</span><br><span class="line">文件名：与文件上传时不同。是由存储服务器根据特定信息生成，文件名包含：源存储服务器IP地址、文件创建时间戳、文件大小、随机数和文件拓展名等信息。</span><br></pre></td></tr></table></figure>
+
+<p><strong>上传步骤</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">加载配置文件，配置文件中的内容就是tracker服务的地址。</span><br><span class="line">配置文件内容：tracker_server=192.168.25.121:22122</span><br><span class="line">创建一个TrackerClient对象。直接new一个。</span><br><span class="line">使用TrackerClient对象创建连接，获得一个TrackerServer对象。</span><br><span class="line">创建一个StorageServer的引用，值为null</span><br><span class="line">创建一个StorageClient对象，需要两个参数TrackerServer对象、StorageServer的引用</span><br><span class="line">使用StorageClient对象上传图片。</span><br><span class="line">返回数组。包含组名和图片的路径。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-Hadoop生态体系能否像使用OSS一样使用FastDFS"><a href="#3-Hadoop生态体系能否像使用OSS一样使用FastDFS" class="headerlink" title="3.Hadoop生态体系能否像使用OSS一样使用FastDFS"></a>3.Hadoop生态体系能否像使用OSS一样使用FastDFS</h3><p><strong>可能有点悬,原因如下</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">oss是阿里收费的服务,而且是专门提供云对象的服务,设计之初就是提供给hadoop生态体系的;而fastdfs是开源的分布式文件系统;fastdfs存储方式等本身就跟hdfs有所区别;</span><br><span class="line"></span><br><span class="line">fastDFS和oss以个体上面来看,都API、SDK对其存储的文件进行使用,看业务情况,如果需要牵涉很多大数据组件的,建议使用oss,毕竟花了钱,对应的服务也很方便;如果只是简单存储,访问,涉及到的其他数据分析比较少,就可以使用fastDFS,毕竟是个开源项目</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-FastDFS数据能否迁移到OSS上"><a href="#4-FastDFS数据能否迁移到OSS上" class="headerlink" title="4.FastDFS数据能否迁移到OSS上"></a>4.FastDFS数据能否迁移到OSS上</h3><p><strong>如何迁移</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">找一台中转服务器,最好是带宽高的阿里云ECS,然后将fastDFS映射到一个目录,OSS也可以挂载一个目录,接下来通过cp命令进行拷贝即可</span><br><span class="line">如果这两个都用的不同的挂载服务器,也可以通过RSync工具来进行目录同步,支持端点续传多线程</span><br></pre></td></tr></table></figure>
+
+<hr>
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>

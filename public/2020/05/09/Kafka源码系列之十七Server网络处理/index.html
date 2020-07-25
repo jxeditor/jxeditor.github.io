@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Kafka源码系列之十七Server网络处理
+  
+</title>
+
+<meta name="description" content="Server端对于不同类型的请求处理实现">
+<meta name="keywords" content="kafka">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka源码系列之十七Server网络处理">
+<meta property="og:url" content="http://yoursite.com/2020/05/09/Kafka源码系列之十七Server网络处理/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="Server端对于不同类型的请求处理实现">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-07-25T09:48:23.671Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kafka源码系列之十七Server网络处理">
+<meta name="twitter:description" content="Server端对于不同类型的请求处理实现">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">71</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Kafka源码系列之十七Server网络处理" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Kafka源码系列之十七Server网络处理
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-05-09
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/大数据/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/">kafka</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>Server端对于不同类型的请求处理实现</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="Server网络模型整体流程"><a href="#Server网络模型整体流程" class="headerlink" title="Server网络模型整体流程"></a>Server网络模型整体流程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">KafkaServer在启动时会初始化SocketServer,KafkaApis,KafkaRequestHandlerPool对象</span><br><span class="line">这些是Server网络处理模型的主要组成部分</span><br><span class="line"></span><br><span class="line">KafkaServer的网络处理模型也是基于JavaNIO机制实现</span><br></pre></td></tr></table></figure>
+
+<h3 id="初始化以及启动"><a href="#初始化以及启动" class="headerlink" title="初始化以及启动"></a>初始化以及启动</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化SocketServer</span></span><br><span class="line">socketServer = <span class="keyword">new</span> <span class="type">SocketServer</span>(config, metrics, time, credentialProvider)</span><br><span class="line"><span class="comment">// 延时启动处理器,直到初始化序列结束</span></span><br><span class="line">socketServer.startup(startupProcessors = <span class="literal">false</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// KafkaApis</span></span><br><span class="line">apis = <span class="keyword">new</span> <span class="type">KafkaApis</span>(socketServer.requestChannel, replicaManager, adminManager, groupCoordinator, transactionCoordinator,</span><br><span class="line">          kafkaController, zkClient, config.brokerId, config, metadataCache, metrics, authorizer, quotaManagers,</span><br><span class="line">          fetchManager, brokerTopicStats, clusterId, time, tokenManager)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 请求处理响应池</span></span><br><span class="line">requestHandlerPool = <span class="keyword">new</span> <span class="type">KafkaRequestHandlerPool</span>(config.brokerId, socketServer.requestChannel, apis, time,</span><br><span class="line">          config.numIoThreads)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启动处理器</span></span><br><span class="line">socketServer.startProcessors()</span><br></pre></td></tr></table></figure>
+
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">组成部分:</span><br><span class="line">    1个Acceptor线程,负责监听Socket新的连接请求,注册了OP_ACCEPT事件</span><br><span class="line">        将新的连接按照RoundRobin方式交给对应的Processor线程处理</span><br><span class="line">    N个Processor线程,其中每个Processor都有自己的Selector</span><br><span class="line">        它会向Acceptor分配的SocketChannel注册相应的OP_READ事件</span><br><span class="line">        N的大小由num.networker.threads决定</span><br><span class="line">    M个KafkaRequestHandler线程处理请求,并将处理的结果返回给Processor线程对应的ResponseQueue中</span><br><span class="line">        由Processor将处理的结果返回给相应的请求发送者</span><br><span class="line">        M的大小由num.io.threads决定</span><br><span class="line"></span><br><span class="line">处理流程:</span><br><span class="line">    1.Acceptor监听到来自请求者(client或者server)的新连接,Acceptor将这个请求者按照RoundRobin的方式交给对应的Processor进行处理</span><br><span class="line">    2.Processor注册这个SocketChannel的OP_READ事件,如果有请求发送过来就可以被Processor的Selector选中</span><br><span class="line">    3.Processor将请求者发送的请求放入一个RequestQueue中,这是所有Processor共有的一个队列</span><br><span class="line">    4.KafkaResultHandler从RequestQueue中取出请求</span><br><span class="line">    5.调用KafkaApis进行相应的处理</span><br><span class="line">    6.处理的结果放入到该Processor对应的ResponseQueue中(每个request都标识它们来自哪个Processor),ResponseQueue与Processor数量保持一致</span><br><span class="line">    7.Processor从对应的ResponseQueue中取出response</span><br><span class="line">    8.Processor将处理的结果返回给相应的请求者</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h2><h3 id="SocketServer"><a href="#SocketServer" class="headerlink" title="SocketServer"></a>SocketServer</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SocketServer</span>(<span class="params">val config: <span class="type">KafkaConfig</span>, val metrics: <span class="type">Metrics</span>, val time: <span class="type">Time</span>, val credentialProvider: <span class="type">CredentialProvider</span></span>) <span class="keyword">extends</span> <span class="title">Logging</span> <span class="keyword">with</span> <span class="title">KafkaMetricsGroup</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// broker开放的端口</span></span><br><span class="line">  <span class="keyword">private</span> <span class="function"><span class="keyword">def</span> <span class="title">endpoints</span> </span>= config.listeners.map(l =&gt; l.listenerName -&gt; l).toMap</span><br><span class="line">  <span class="comment">// 队列中允许的最多请求数,默认是500</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> maxQueuedRequests = config.queuedMaxRequests</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 请求队列</span></span><br><span class="line">  <span class="keyword">val</span> requestChannel = <span class="keyword">new</span> <span class="type">RequestChannel</span>(maxQueuedRequests)</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> processors = <span class="keyword">new</span> <span class="type">ConcurrentHashMap</span>[<span class="type">Int</span>, <span class="type">Processor</span>]()</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">var</span> nextProcessorId = <span class="number">0</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">private</span>[network] <span class="keyword">val</span> acceptors = <span class="keyword">new</span> <span class="type">ConcurrentHashMap</span>[<span class="type">EndPoint</span>, <span class="type">Acceptor</span>]()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">RequestChannel</span>(<span class="params">val queueSize: <span class="type">Int</span></span>) <span class="keyword">extends</span> <span class="title">KafkaMetricsGroup</span> </span>&#123;</span><br><span class="line">  <span class="keyword">import</span> <span class="type">RequestChannel</span>._</span><br><span class="line">  <span class="comment">// 1个requestQueue,N个response队列(有N个processor就有N个responseQueue)</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> requestQueue = <span class="keyword">new</span> <span class="type">ArrayBlockingQueue</span>[<span class="type">BaseRequest</span>](queueSize)</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> processors = <span class="keyword">new</span> <span class="type">ConcurrentHashMap</span>[<span class="type">Int</span>, <span class="type">Processor</span>]()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">startup()方法中,初始一个<span class="type">Acceptor</span>和<span class="type">N</span>个<span class="type">Processor</span>线程(每个<span class="type">EndPoint</span>都会初始化这么多)</span><br><span class="line">connectionQuotas = <span class="keyword">new</span> <span class="type">ConnectionQuotas</span>(config.maxConnectionsPerIp, config.maxConnectionsPerIpOverrides)</span><br><span class="line"><span class="comment">// numNetworkThreads决定有多少个Processor</span></span><br><span class="line">createAcceptorAndProcessors(config.numNetworkThreads, config.listeners)</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">def</span> <span class="title">createAcceptorAndProcessors</span></span>(processorsPerListener: <span class="type">Int</span>,</span><br><span class="line">                                        endpoints: <span class="type">Seq</span>[<span class="type">EndPoint</span>]): <span class="type">Unit</span> = synchronized &#123;</span><br><span class="line">  <span class="keyword">val</span> sendBufferSize = config.socketSendBufferBytes</span><br><span class="line">  <span class="keyword">val</span> recvBufferSize = config.socketReceiveBufferBytes</span><br><span class="line">  <span class="keyword">val</span> brokerId = config.brokerId</span><br><span class="line">  endpoints.foreach &#123; endpoint =&gt;</span><br><span class="line">    <span class="keyword">val</span> listenerName = endpoint.listenerName</span><br><span class="line">    <span class="keyword">val</span> securityProtocol = endpoint.securityProtocol</span><br><span class="line">    <span class="keyword">val</span> acceptor = <span class="keyword">new</span> <span class="type">Acceptor</span>(endpoint, sendBufferSize, recvBufferSize, brokerId, connectionQuotas)</span><br><span class="line">    addProcessors(acceptor, endpoint, processorsPerListener)</span><br><span class="line">    <span class="comment">// 守护线程启动Acceptor</span></span><br><span class="line">    <span class="type">KafkaThread</span>.nonDaemon(<span class="string">s"kafka-socket-acceptor-<span class="subst">$listenerName</span>-<span class="subst">$securityProtocol</span>-<span class="subst">$&#123;endpoint.port&#125;</span>"</span>, acceptor).start()</span><br><span class="line">    <span class="comment">// Acceptor等待启动完成</span></span><br><span class="line">    acceptor.awaitStartup()</span><br><span class="line">    acceptors.put(endpoint, acceptor)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// N个Processor</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">def</span> <span class="title">addProcessors</span></span>(acceptor: <span class="type">Acceptor</span>, endpoint: <span class="type">EndPoint</span>, newProcessorsPerListener: <span class="type">Int</span>): <span class="type">Unit</span> = synchronized &#123;</span><br><span class="line">  <span class="keyword">val</span> listenerName = endpoint.listenerName</span><br><span class="line">  <span class="keyword">val</span> securityProtocol = endpoint.securityProtocol</span><br><span class="line">  <span class="keyword">val</span> listenerProcessors = <span class="keyword">new</span> <span class="type">ArrayBuffer</span>[<span class="type">Processor</span>]()</span><br><span class="line">  <span class="keyword">for</span> (_ &lt;- <span class="number">0</span> until newProcessorsPerListener) &#123;</span><br><span class="line">    <span class="keyword">val</span> processor = newProcessor(nextProcessorId, connectionQuotas, listenerName, securityProtocol, memoryPool)</span><br><span class="line">    listenerProcessors += processor</span><br><span class="line">    requestChannel.addProcessor(processor)</span><br><span class="line">    nextProcessorId += <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">  listenerProcessors.foreach(p =&gt; processors.put(p.id, p))</span><br><span class="line">  acceptor.addProcessors(listenerProcessors)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Acceptor处理"><a href="#Acceptor处理" class="headerlink" title="Acceptor处理"></a>Acceptor处理</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>() &#123;</span><br><span class="line">    <span class="comment">// 注册accept事件</span></span><br><span class="line">    serverChannel.register(nioSelector, <span class="type">SelectionKey</span>.<span class="type">OP_ACCEPT</span>)</span><br><span class="line">    startupComplete()</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">var</span> currentProcessor = <span class="number">0</span></span><br><span class="line">      <span class="keyword">while</span> (isRunning) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="keyword">val</span> ready = nioSelector.select(<span class="number">500</span>)</span><br><span class="line">          <span class="keyword">if</span> (ready &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">val</span> keys = nioSelector.selectedKeys()</span><br><span class="line">            <span class="keyword">val</span> iter = keys.iterator()</span><br><span class="line">            <span class="keyword">while</span> (iter.hasNext &amp;&amp; isRunning) &#123;</span><br><span class="line">              <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">val</span> key = iter.next</span><br><span class="line">                iter.remove()</span><br><span class="line">                <span class="keyword">if</span> (key.isAcceptable) &#123;</span><br><span class="line">                  <span class="keyword">val</span> processor = synchronized &#123;</span><br><span class="line">                    currentProcessor = currentProcessor % processors.size</span><br><span class="line">                    processors(currentProcessor)</span><br><span class="line">                  &#125;</span><br><span class="line">                  <span class="comment">// 拿到一个socket连接,轮询选一个processor进行处理</span></span><br><span class="line">                  accept(key, processor)</span><br><span class="line">                &#125; <span class="keyword">else</span></span><br><span class="line">                  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="type">IllegalStateException</span>(<span class="string">"Unrecognized key state for acceptor thread."</span>)</span><br><span class="line"></span><br><span class="line">                <span class="comment">// round robin to the next processor thread, mod(numProcessors) will be done later</span></span><br><span class="line">                <span class="comment">// 轮询算法</span></span><br><span class="line">                currentProcessor = currentProcessor + <span class="number">1</span></span><br><span class="line">              &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">                <span class="keyword">case</span> e: <span class="type">Throwable</span> =&gt; error(<span class="string">"Error while accepting connection"</span>, e)</span><br><span class="line">              &#125;</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> &#123;</span><br><span class="line">          <span class="comment">// We catch all the throwables to prevent the acceptor thread from exiting on exceptions due</span></span><br><span class="line">          <span class="comment">// to a select operation on a specific channel or a bad request. We don't want</span></span><br><span class="line">          <span class="comment">// the broker to stop responding to requests from other clients in these scenarios.</span></span><br><span class="line">          <span class="keyword">case</span> e: <span class="type">ControlThrowable</span> =&gt; <span class="keyword">throw</span> e</span><br><span class="line">          <span class="keyword">case</span> e: <span class="type">Throwable</span> =&gt; error(<span class="string">"Error occurred"</span>, e)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      debug(<span class="string">"Closing server socket and selector."</span>)</span><br><span class="line">      <span class="type">CoreUtils</span>.swallow(serverChannel.close(), <span class="keyword">this</span>, <span class="type">Level</span>.<span class="type">ERROR</span>)</span><br><span class="line">      <span class="type">CoreUtils</span>.swallow(nioSelector.close(), <span class="keyword">this</span>, <span class="type">Level</span>.<span class="type">ERROR</span>)</span><br><span class="line">      shutdownComplete()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将新连接交给对应的Processor</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">accept</span></span>(key: <span class="type">SelectionKey</span>, processor: <span class="type">Processor</span>) &#123;</span><br><span class="line">    <span class="comment">// accept事件发生时,获取注册到Selector上的ServerSocketChannel</span></span><br><span class="line">    <span class="keyword">val</span> serverSocketChannel = key.channel().asInstanceOf[<span class="type">ServerSocketChannel</span>]</span><br><span class="line">    <span class="keyword">val</span> socketChannel = serverSocketChannel.accept()</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      connectionQuotas.inc(socketChannel.socket().getInetAddress)</span><br><span class="line">      socketChannel.configureBlocking(<span class="literal">false</span>)</span><br><span class="line">      socketChannel.socket().setTcpNoDelay(<span class="literal">true</span>)</span><br><span class="line">      socketChannel.socket().setKeepAlive(<span class="literal">true</span>)</span><br><span class="line">      <span class="keyword">if</span> (sendBufferSize != <span class="type">Selectable</span>.<span class="type">USE_DEFAULT_BUFFER_SIZE</span>)</span><br><span class="line">        socketChannel.socket().setSendBufferSize(sendBufferSize)</span><br><span class="line"></span><br><span class="line">      debug(<span class="string">"Accepted connection from %s on %s and assigned it to processor %d, sendBufferSize [actual|requested]: [%d|%d] recvBufferSize [actual|requested]: [%d|%d]"</span></span><br><span class="line">            .format(socketChannel.socket.getRemoteSocketAddress, socketChannel.socket.getLocalSocketAddress, processor.id,</span><br><span class="line">                  socketChannel.socket.getSendBufferSize, sendBufferSize,</span><br><span class="line">                  socketChannel.socket.getReceiveBufferSize, recvBufferSize))</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// 轮询选择不同的Processor进行处理</span></span><br><span class="line">      processor.accept(socketChannel)</span><br><span class="line">    &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">      <span class="keyword">case</span> e: <span class="type">TooManyConnectionsException</span> =&gt;</span><br><span class="line">        info(<span class="string">"Rejected connection from %s, address already has the configured maximum of %d connections."</span>.format(e.ip, e.count))</span><br><span class="line">        close(socketChannel)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Processor处理"><a href="#Processor处理" class="headerlink" title="Processor处理"></a>Processor处理</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">实际是将该<span class="type">SocketChannel</span>添加到该<span class="type">Processor</span>的newConnections队列中</span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">accept</span></span>(socketChannel: <span class="type">SocketChannel</span>) &#123;</span><br><span class="line">  newConnections.add(socketChannel)</span><br><span class="line">  wakeup()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Processo线程做了什么</span></span><br><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">run</span></span>() &#123;</span><br><span class="line">    startupComplete()</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">while</span> (isRunning) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          <span class="comment">// setup any new connections that have been queued up</span></span><br><span class="line">          <span class="comment">// 对新的socket连接进行配置,并注册READ事件</span></span><br><span class="line">          configureNewConnections()</span><br><span class="line">          <span class="comment">// register any new responses for writing</span></span><br><span class="line">          <span class="comment">// 处理response队列中response</span></span><br><span class="line">          processNewResponses()</span><br><span class="line">          poll() <span class="comment">// 监听所有的socketchannel,是否有新的请求发送过来</span></span><br><span class="line">          processCompletedReceives() <span class="comment">// 处理接收到的请求,将其加入到requestqueue中</span></span><br><span class="line">          processCompletedSends() <span class="comment">// 处理已经完成的发送</span></span><br><span class="line">          processDisconnected() <span class="comment">// 处理断开的连接</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">          <span class="keyword">case</span> e: <span class="type">Throwable</span> =&gt; processException(<span class="string">"Processor got uncaught exception."</span>, e)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      debug(<span class="string">"Closing selector - processor "</span> + id)</span><br><span class="line">      <span class="type">CoreUtils</span>.swallow(closeAll(), <span class="keyword">this</span>, <span class="type">Level</span>.<span class="type">ERROR</span>)</span><br><span class="line">      shutdownComplete()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="KafkaRequestHandlerPool"><a href="#KafkaRequestHandlerPool" class="headerlink" title="KafkaRequestHandlerPool"></a>KafkaRequestHandlerPool</h3><h4 id="初始化-1"><a href="#初始化-1" class="headerlink" title="初始化"></a>初始化</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">KafkaRequestHandlerPool</span>(<span class="params">val brokerId: <span class="type">Int</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">                              val requestChannel: <span class="type">RequestChannel</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">                              val apis: <span class="type">KafkaApis</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">                              time: <span class="type">Time</span>,</span></span></span><br><span class="line"><span class="class"><span class="params">                              numThreads: <span class="type">Int</span></span>) <span class="keyword">extends</span> <span class="title">Logging</span> <span class="keyword">with</span> <span class="title">KafkaMetricsGroup</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 建立M个KafkaRequestHandler</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> threadPoolSize: <span class="type">AtomicInteger</span> = <span class="keyword">new</span> <span class="type">AtomicInteger</span>(numThreads)</span><br><span class="line">  <span class="comment">/* a meter to track the average free capacity of the request handlers */</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">val</span> aggregateIdleMeter = newMeter(<span class="string">"RequestHandlerAvgIdlePercent"</span>, <span class="string">"percent"</span>, <span class="type">TimeUnit</span>.<span class="type">NANOSECONDS</span>)</span><br><span class="line"></span><br><span class="line">  <span class="keyword">this</span>.logIdent = <span class="string">"[Kafka Request Handler on Broker "</span> + brokerId + <span class="string">"], "</span></span><br><span class="line">  <span class="keyword">val</span> runnables = <span class="keyword">new</span> mutable.<span class="type">ArrayBuffer</span>[<span class="type">KafkaRequestHandler</span>](numThreads)</span><br><span class="line">  <span class="keyword">for</span> (i &lt;- <span class="number">0</span> until numThreads) &#123;</span><br><span class="line">    <span class="comment">// requestChannel是Processor存放request请求的地方</span></span><br><span class="line">    <span class="comment">// 也是Handler处理完请求存放response的地方</span></span><br><span class="line">    createHandler(i)</span><br><span class="line">  &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">shutdown</span></span>(): <span class="type">Unit</span> = synchronized &#123;</span><br><span class="line">    info(<span class="string">"shutting down"</span>)</span><br><span class="line">    <span class="keyword">for</span> (handler &lt;- runnables)</span><br><span class="line">      handler.initiateShutdown()</span><br><span class="line">    <span class="keyword">for</span> (handler &lt;- runnables)</span><br><span class="line">      handler.awaitShutdown()</span><br><span class="line">    info(<span class="string">"shut down completely"</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="处理"><a href="#处理" class="headerlink" title="处理"></a>处理</h4><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">run</span></span>() &#123;</span><br><span class="line">    <span class="keyword">while</span> (!stopped) &#123;</span><br><span class="line">      <span class="comment">// We use a single meter for aggregate idle percentage for the thread pool.</span></span><br><span class="line">      <span class="comment">// Since meter is calculated as total_recorded_value / time_window and</span></span><br><span class="line">      <span class="comment">// time_window is independent of the number of threads, each recorded idle</span></span><br><span class="line">      <span class="comment">// time should be discounted by # threads.</span></span><br><span class="line">      <span class="keyword">val</span> startSelectTime = time.nanoseconds</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 从requestQueue中拿取request</span></span><br><span class="line">      <span class="keyword">val</span> req = requestChannel.receiveRequest(<span class="number">300</span>)</span><br><span class="line">      <span class="keyword">val</span> endTime = time.nanoseconds</span><br><span class="line">      <span class="keyword">val</span> idleTime = endTime - startSelectTime</span><br><span class="line">      aggregateIdleMeter.mark(idleTime / totalHandlerThreads.get)</span><br><span class="line"></span><br><span class="line">      req <span class="keyword">match</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">RequestChannel</span>.<span class="type">ShutdownRequest</span> =&gt;</span><br><span class="line">          debug(<span class="string">s"Kafka request handler <span class="subst">$id</span> on broker <span class="subst">$brokerId</span> received shut down command"</span>)</span><br><span class="line">          shutdownComplete.countDown()</span><br><span class="line">          <span class="keyword">return</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> request: <span class="type">RequestChannel</span>.<span class="type">Request</span> =&gt;</span><br><span class="line">          <span class="keyword">try</span> &#123;</span><br><span class="line">            request.requestDequeueTimeNanos = endTime</span><br><span class="line">            trace(<span class="string">s"Kafka request handler <span class="subst">$id</span> on broker <span class="subst">$brokerId</span> handling request <span class="subst">$request</span>"</span>)</span><br><span class="line">            <span class="comment">// 处理请求,并将处理的结果通过sendResponse放入responseQueue中</span></span><br><span class="line">            apis.handle(request)</span><br><span class="line">          &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> e: <span class="type">FatalExitError</span> =&gt;</span><br><span class="line">              shutdownComplete.countDown()</span><br><span class="line">              <span class="type">Exit</span>.exit(e.statusCode)</span><br><span class="line">            <span class="keyword">case</span> e: <span class="type">Throwable</span> =&gt; error(<span class="string">"Exception when handling request"</span>, e)</span><br><span class="line">          &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            request.releaseBuffer()</span><br><span class="line">          &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">case</span> <span class="literal">null</span> =&gt; <span class="comment">// continue</span></span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    shutdownComplete.countDown()</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// KafkaApis</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">def</span> <span class="title">sendResponse</span></span>(request: <span class="type">RequestChannel</span>.<span class="type">Request</span>,</span><br><span class="line">                         responseOpt: <span class="type">Option</span>[<span class="type">AbstractResponse</span>],</span><br><span class="line">                         onComplete: <span class="type">Option</span>[<span class="type">Send</span> =&gt; <span class="type">Unit</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">  <span class="comment">// Update error metrics for each error code in the response including Errors.NONE</span></span><br><span class="line">  responseOpt.foreach(response =&gt; requestChannel.updateErrorMetrics(request.header.apiKey, response.errorCounts.asScala))</span><br><span class="line">  <span class="keyword">val</span> response = responseOpt <span class="keyword">match</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">Some</span>(response) =&gt;</span><br><span class="line">      <span class="keyword">val</span> responseSend = request.context.buildResponse(response)</span><br><span class="line">      <span class="keyword">val</span> responseString =</span><br><span class="line">        <span class="keyword">if</span> (<span class="type">RequestChannel</span>.isRequestLoggingEnabled) <span class="type">Some</span>(response.toString(request.context.apiVersion))</span><br><span class="line">        <span class="keyword">else</span> <span class="type">None</span></span><br><span class="line">      <span class="keyword">new</span> <span class="type">RequestChannel</span>.<span class="type">SendResponse</span>(request, responseSend, responseString, onComplete)</span><br><span class="line">    <span class="keyword">case</span> <span class="type">None</span> =&gt;</span><br><span class="line">      <span class="keyword">new</span> <span class="type">RequestChannel</span>.<span class="type">NoOpResponse</span>(request)</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 调用对应的Processor的enqueueResponse方法添加response到responseQueue,wakeup唤醒</span></span><br><span class="line">  sendResponse(response)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// KafkaApis.handle***Request()</span></span><br><span class="line"><span class="comment">// KafkaApis.sendResponse()-&gt;sendResponse()</span></span><br><span class="line"><span class="comment">// ResultChannel.sendResponse()-&gt;获取对应的Processor</span></span><br><span class="line"><span class="comment">// Processor.enqueueResponse()-&gt;添加Response到队列</span></span><br><span class="line"><span class="comment">// wakeup()唤醒Processor线程</span></span><br></pre></td></tr></table></figure>
+
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>

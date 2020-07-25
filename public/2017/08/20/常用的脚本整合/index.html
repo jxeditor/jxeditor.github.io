@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    常用的脚本整合
+  
+</title>
+
+<meta name="description" content="有一部分命令在&amp;lt;**运维-系统常用的命令**&amp;gt;">
+<meta name="keywords" content="shell">
+<meta property="og:type" content="article">
+<meta property="og:title" content="常用的脚本整合">
+<meta property="og:url" content="http://yoursite.com/2017/08/20/常用的脚本整合/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="有一部分命令在&amp;lt;**运维-系统常用的命令**&amp;gt;">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-07-25T09:48:23.706Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="常用的脚本整合">
+<meta name="twitter:description" content="有一部分命令在&amp;lt;**运维-系统常用的命令**&amp;gt;">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+</head>
+<body class="monochrome">
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/大数据/">大数据</a><span class="category-list-count">144</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/搭建/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/教程/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/算法/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/系统/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编译/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/编辑器/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/运维/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/">algorithm</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/">flink</a><span class="tag-list-count">83</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/">learn</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/">shell</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/">spark</a><span class="tag-list-count">17</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">71</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-常用的脚本整合" class="article article-type-post">
+  
+    <h1 class="article-header">
+      常用的脚本整合
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2017-08-20
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/运维/">运维</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/shell/">shell</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>有一部分命令在&lt;**运维-系统常用的命令**&gt;</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="监控Yarn任务运行情况"><a href="#监控Yarn任务运行情况" class="headerlink" title="监控Yarn任务运行情况"></a>监控Yarn任务运行情况</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#### vi exec.sh</span></span><br><span class="line"><span class="meta">#!/bin/sh</span></span><br><span class="line"></span><br><span class="line">title=<span class="string">"SparkStreaming任务监控"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取正在运行的任务</span></span><br><span class="line">name=(`sshpass -p <span class="string">"password"</span> ssh root@ip <span class="string">"yarn application -list -appStates RUNNING|sed -n '3~1p'"</span>|awk -F <span class="string">'\t'</span> <span class="string">'&#123;print $2&#125;'</span>|sed -e <span class="string">'s/[[:space:]]//g'</span>`)</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> `dirname <span class="variable">$0</span>`</span><br><span class="line"></span><br><span class="line">base=`<span class="built_in">pwd</span>`</span><br><span class="line"></span><br><span class="line"><span class="comment">#获取name文件中的内容，去除空格</span></span><br><span class="line">arr=(`cat ./name|sed -e <span class="string">'s/[[:space:]]//g'</span>`)</span><br><span class="line">dt=`date <span class="string">"+%Y-%m-%d_%H%M%S"</span>`</span><br><span class="line"><span class="built_in">log</span>=<span class="string">"./"</span><span class="variable">$dt</span><span class="string">".stop"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="variable">$&#123;arr[@]&#125;</span></span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">     <span class="keyword">for</span> j <span class="keyword">in</span> <span class="variable">$&#123;name[@]&#125;</span></span><br><span class="line">     <span class="keyword">do</span></span><br><span class="line">           [ <span class="string">"<span class="variable">$i</span>"</span> = <span class="string">"<span class="variable">$j</span>"</span> ] &amp;&amp; flag=<span class="string">"yes"</span></span><br><span class="line">     <span class="keyword">done</span></span><br><span class="line">     [ <span class="string">"<span class="variable">$flag</span>"</span> != <span class="string">"yes"</span> ] &amp;&amp; <span class="built_in">echo</span> <span class="variable">$i</span> &gt;&gt; <span class="variable">$log</span></span><br><span class="line">     flag=<span class="string">"false"</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#-e 判断文件是否存在</span></span><br><span class="line"><span class="comment">#cat $log|xargs echo 输出到一行</span></span><br><span class="line"><span class="comment">#'s/ /,/g' 以逗号分开</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ -e <span class="variable">$log</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">   z=`cat <span class="variable">$log</span>|xargs <span class="built_in">echo</span>|sed -e <span class="string">'s/ /,/g'</span>`</span><br><span class="line">   <span class="built_in">cd</span> <span class="variable">$base</span> &amp;&amp; python <span class="variable">$base</span>/send_mail.py <span class="variable">$title</span> <span class="variable">$z</span></span><br><span class="line">   rm -rf <span class="variable">$log</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#### vi name</span></span><br><span class="line">jobname1</span><br><span class="line">jobname2</span><br><span class="line">jobname3</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="删除日志文件脚本"><a href="#删除日志文件脚本" class="headerlink" title="删除日志文件脚本"></a>删除日志文件脚本</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用find</span></span><br><span class="line">find /root/<span class="built_in">test</span>/ -<span class="built_in">type</span> f -newermt <span class="string">"Aug 19"</span> -delete <span class="comment"># 删除8月19日的文件</span></span><br><span class="line">find /root/ -<span class="built_in">type</span> f -mtime +1 -delete <span class="comment"># 删除一天前的文件</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="增删后缀"><a href="#增删后缀" class="headerlink" title="增删后缀"></a>增删后缀</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 增加后缀</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> *</span><br><span class="line">   <span class="keyword">do</span> mv <span class="variable">$i</span> <span class="variable">$i</span><span class="string">".bak"</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除后缀</span></span><br><span class="line">rename <span class="string">'s/\.xml$//'</span> *.xml</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="crontab定时脚本"><a href="#crontab定时脚本" class="headerlink" title="crontab定时脚本"></a>crontab定时脚本</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">crontab -l <span class="comment"># 列出定时任务</span></span><br><span class="line">crontab -e <span class="comment"># 编辑定时任务</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 定时任务格式</span></span><br><span class="line">* * * * * sh /root/os.sh &gt; /root/os.log</span><br><span class="line">第一个*为分(0-59)</span><br><span class="line">第二个*为时(0-23)</span><br><span class="line">第三个*为日(1-31)</span><br><span class="line">第四个*为月(1-12)</span><br><span class="line">第五个*为周(1-7)或(0-6),周日=0或7</span><br><span class="line"></span><br><span class="line">n-m表示到n到m之间</span><br><span class="line">*/n表示每n段时间</span><br><span class="line">n,m表示第n和第m</span><br><span class="line"></span><br><span class="line">&gt; /dev/null 2&gt;&amp;1</span><br><span class="line">&gt;代表重定向</span><br><span class="line">/dev/null代表空设备文件</span><br><span class="line">2&gt;&amp;1表示标准错误输出重定向等同于标准输出</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="发送邮件"><a href="#发送邮件" class="headerlink" title="发送邮件"></a>发送邮件</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#### vi send_mail.py</span></span><br><span class="line"><span class="comment"># 使用python来进行发送邮件</span></span><br><span class="line"><span class="comment">#!/usr/bin/python</span></span><br><span class="line"><span class="comment"># -*- coding: UTF-8 -*-</span></span><br><span class="line"><span class="keyword">import</span> sys </span><br><span class="line"><span class="keyword">import</span> smtplib</span><br><span class="line"><span class="keyword">from</span> email.mime.text <span class="keyword">import</span> MIMEText</span><br><span class="line"><span class="keyword">from</span> email.header <span class="keyword">import</span> Header</span><br><span class="line"><span class="keyword">from</span> email.mime.multipart <span class="keyword">import</span> MIMEMultipart</span><br><span class="line"> </span><br><span class="line"><span class="comment"># 第三方 SMTP 服务</span></span><br><span class="line">mail_host=<span class="string">"smtp.sina.com"</span>  <span class="comment">#设置服务器</span></span><br><span class="line">mail_user=<span class="string">"username"</span>    <span class="comment">#用户名</span></span><br><span class="line">mail_pass=<span class="string">"password"</span>   <span class="comment">#口令 </span></span><br><span class="line"> </span><br><span class="line">sender = <span class="string">'发送人'</span></span><br><span class="line">receivers = [<span class="string">'接收邮箱1'</span>,<span class="string">'接收邮箱2'</span>]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">send_file</span><span class="params">(title,file)</span>:</span></span><br><span class="line">    message = MIMEMultipart()</span><br><span class="line">    message[<span class="string">'From'</span>] = Header(<span class="string">"发送人"</span>)</span><br><span class="line">    subject = title</span><br><span class="line">    <span class="comment"># 标题</span></span><br><span class="line">    message[<span class="string">'Subject'</span>] = Header(subject, <span class="string">'utf-8'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 信息</span></span><br><span class="line">    message.attach(MIMEText(title, <span class="string">'plain'</span>, <span class="string">'utf-8'</span>)) </span><br><span class="line"></span><br><span class="line">    <span class="comment"># 附件</span></span><br><span class="line">    att1 = MIMEText(open(file, <span class="string">'rb'</span>).read(), <span class="string">'base64'</span>, <span class="string">'utf-8'</span>)</span><br><span class="line">    att1[<span class="string">"Content-Type"</span>] = <span class="string">'application/octet-stream'</span></span><br><span class="line">    att1[<span class="string">"Content-Disposition"</span>] = <span class="string">'attachment; filename="att.log"'</span></span><br><span class="line">    message.attach(att1)</span><br><span class="line">    </span><br><span class="line">    smtpObj = smtplib.SMTP() </span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        smtpObj.connect(mail_host, <span class="number">25</span>)    <span class="comment"># 25 为 SMTP 端口号</span></span><br><span class="line">        smtpObj.login(mail_user,mail_pass)  </span><br><span class="line">        smtpObj.sendmail(sender, receivers, message.as_string())</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"邮件发送成功"</span></span><br><span class="line">    <span class="keyword">except</span> smtplib.SMTPException:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"Error: 无法发送邮件"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">send_html</span><span class="params">(title,msg)</span>:</span></span><br><span class="line">    message = MIMEMultipart()</span><br><span class="line">    message[<span class="string">'From'</span>] = Header(<span class="string">"发送人"</span>)</span><br><span class="line">    subject = title</span><br><span class="line">    message[<span class="string">'Subject'</span>] = Header(subject, <span class="string">'utf-8'</span>)</span><br><span class="line"></span><br><span class="line">    <span class="comment"># HTML信息</span></span><br><span class="line">    message.attach(MIMEText(<span class="string">"&lt;font color='red'&gt;"</span>+msg+<span class="string">"&lt;/font&gt;"</span>, <span class="string">'html'</span>, <span class="string">'utf-8'</span>)) </span><br><span class="line">    </span><br><span class="line">    smtpObj = smtplib.SMTP() </span><br><span class="line">    <span class="keyword">try</span>:</span><br><span class="line">        smtpObj.connect(mail_host, <span class="number">25</span>)    <span class="comment"># 25 为 SMTP 端口号</span></span><br><span class="line">        smtpObj.login(mail_user,mail_pass)  </span><br><span class="line">        smtpObj.sendmail(sender, receivers, message.as_string())</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"邮件发送成功"</span></span><br><span class="line">    <span class="keyword">except</span> smtplib.SMTPException:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"Error: 无法发送邮件"</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">"__main__"</span>:</span><br><span class="line">    <span class="keyword">if</span> len(sys.argv) &lt; <span class="number">3</span>:</span><br><span class="line">        <span class="keyword">print</span> <span class="string">"usage: python send_mail.py title msg"</span></span><br><span class="line">        sys.exit(<span class="number">1</span>)</span><br><span class="line">    </span><br><span class="line">    title = sys.argv[<span class="number">1</span>]</span><br><span class="line">    msg = sys.argv[<span class="number">2</span>]</span><br><span class="line">    send_html(title,msg)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Flink任务重启脚本"><a href="#Flink任务重启脚本" class="headerlink" title="Flink任务重启脚本"></a>Flink任务重启脚本</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#### vi getConfigChk.sh</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># 获取配置文件中的ck目录</span></span><br><span class="line"><span class="comment"># fs.backend.dir=/job/flink/ck/job1</span></span><br><span class="line">dir=`cat <span class="variable">$1</span> | grep <span class="string">"fs.backend.dir"</span> | awk -F <span class="string">"="</span> <span class="string">'&#123;print $2&#125;'</span>`</span><br><span class="line"></span><br><span class="line"><span class="comment"># 获取HDFS上最新的CK文件</span></span><br><span class="line">path=`hdfs dfs -ls -R <span class="variable">$&#123;dir&#125;</span> | grep _metadata | sort -k 6,7 -r | sed -n 1p | awk <span class="string">'&#123;print $8&#125;'</span>`</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [[ ! <span class="string">"<span class="variable">$path</span>"</span> =~ ^hdfs* ]]; <span class="keyword">then</span></span><br><span class="line">  path=<span class="string">"hdfs://<span class="variable">$path</span>"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="variable">$path</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#### vi exec.sh</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">BASE=<span class="string">"/root/xiashuai/real_job/data_sync"</span></span><br><span class="line">config=<span class="string">"conf.properties"</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># flink 作业样例</span></span><br><span class="line">chk=`getConfigChk <span class="variable">$BASE</span>/<span class="variable">$config</span>`</span><br><span class="line">jarName=<span class="string">'real_data_clean-full.jar'</span></span><br><span class="line">className=<span class="string">'com.example.SyncToHiveMain'</span></span><br><span class="line">appName=<span class="string">'DataSync'</span></span><br><span class="line">parallelism=1</span><br><span class="line">slot=1</span><br><span class="line">noRecover=<span class="literal">false</span></span><br><span class="line"><span class="keyword">for</span> arg <span class="keyword">in</span> <span class="variable">$@</span>; <span class="keyword">do</span></span><br><span class="line">  <span class="keyword">if</span> [ <span class="string">"<span class="variable">$arg</span>"</span> = <span class="string">"-init"</span> ]; <span class="keyword">then</span></span><br><span class="line">   noRecover=<span class="literal">true</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$chk</span>"</span> = <span class="string">"hdfs://"</span> -o <span class="variable">$noRecover</span> = <span class="literal">true</span> ]; <span class="keyword">then</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"##########################################"</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"#              初始化运行                #"</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"##########################################"</span></span><br><span class="line"> flink run -m yarn-cluster \</span><br><span class="line"> -ynm <span class="variable">$appName</span> \</span><br><span class="line"> -p <span class="variable">$parallelism</span> -ys <span class="variable">$slot</span> -ytm 2048 \</span><br><span class="line"> -c <span class="variable">$className</span> \</span><br><span class="line"> <span class="variable">$BASE</span>/../<span class="variable">$jarName</span> \</span><br><span class="line"> <span class="variable">$BASE</span>/<span class="variable">$config</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"##########################################"</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"# 加载 checkpoint =&gt; <span class="variable">$chk</span>                 "</span></span><br><span class="line"> <span class="built_in">echo</span> <span class="string">"##########################################"</span></span><br><span class="line"> flink run -m yarn-cluster \</span><br><span class="line"> -ynm <span class="variable">$appName</span><span class="string">"-recover"</span> \</span><br><span class="line"> -p <span class="variable">$parallelism</span> -ys <span class="variable">$slot</span> -ytm 2048 \</span><br><span class="line"> -c <span class="variable">$className</span> \</span><br><span class="line"> -s <span class="variable">$chk</span> \</span><br><span class="line"> <span class="variable">$BASE</span>/../<span class="variable">$jarName</span> \</span><br><span class="line"> <span class="variable">$BASE</span>/<span class="variable">$config</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  <script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+  <link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+  <link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/PhotoSwipe/photoswipe.js"></script>
+  <script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+<script src="/scripts/main.js"></script>
+
+</body>
+</html>

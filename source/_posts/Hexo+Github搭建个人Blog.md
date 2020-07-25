@@ -16,6 +16,7 @@ tags:
 - 下载Node.js
 - 下载HexoEditor
 - **注意：**Git，Node.js和HexoEditor都已经下载好在[Github](https://github.com/jxeditor/jxeditor.github.io)上
+- 并且需要注意版本Node.js使用12.13.1
 
 ---
 
