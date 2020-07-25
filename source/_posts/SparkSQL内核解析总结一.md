@@ -1,5 +1,5 @@
 ---
-title: SparkSQL内核解析总结1
+title: SparkSQL内核解析总结一
 date: 2020-07-23 17:06:26
 categories: 大数据
 tags: spark
