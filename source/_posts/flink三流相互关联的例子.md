@@ -1,8 +1,8 @@
 ---
 title: flink三流相互关联的例子
 date: 2020-07-27 15:25:12
-categories: flink
-tags: flink实际案例
+categories: 大数据
+tags: flink
 ---
 
 > 经典案例:三流影响hbase共享课列表(教材id+schoolId为rowkey)
