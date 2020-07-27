@@ -1,7 +1,7 @@
 ---
 title: flink三流相互关联的例子
 date: 2020-07-27 15:25:12
-categories: 大数据
+categories: flink
 tags: flink实际案例
 ---
 
