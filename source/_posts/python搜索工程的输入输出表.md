@@ -7,7 +7,7 @@ tags: python
 
 > 编写python相关脚本全自动搜索的方式来取代人工查找每个作业的输入输出表
 > 主要用于作业汇总,作业流查询等用处
-
+> 对错误数据以及可忽略的部分进行过滤处理
 <!-- more -->
 
 #### 指定具体某个作业(半自动)
@@ -17,46 +17,59 @@ tags: python
 # 解析程序的输出输出表关系
 import re
 
-with open('E:/relationship-analysis/file/NodeQuestionApp.scala',encoding='UTF-8')as file:
+with open('E:/relationship-analysis/file/DoQuesAndTeachingStat.scala',encoding='UTF-8')as file:
     encoding = 'UTF-8'
     line = file.read()
 
     appName = re.findall(r"appName\(\"(.+)\"", line)[0]
     # 查找以from开头,以"结尾的内容
-    inputTable = re.findall(r"[fF][rR][oO][mM] (.+)\"", line)
+    inputTable = re.findall(r"[fF][rR][oO][mM]\s+(.+)", line)
+    input = []
     inputTable = list(set(inputTable))
     for i in range(len(inputTable)):
         #rfind返回字符串最后一次出现的位置,如果没有匹配则返回-1
-        find_ = inputTable[i].find(' ') + 1
+        inputTable[i] = inputTable[i][0:inputTable[i].find('"', 1)]
+        # find_ = inputTable[i].find(' ') + 1
+        find_ = inputTable[i].find(' ', 1) + 1
         if find_ == 0:
-            inputTable[i] = inputTable[i] + ',' + appName + "," + "INPUT"
+            if inputTable[i].find("$") == -1 and inputTable[i].find("tmp") == -1 and inputTable[i].find("temp") == -1 :
+                input.append(inputTable[i] + ',' + appName + "," + "INPUT")
         else:
-            inputTable[i] = inputTable[i][:inputTable[i].find(' ')] + ',' + appName + "," + "INPUT"
-    print(set(inputTable))
+            input.append(inputTable[i][:inputTable[i].find(' ')] + ',' + appName + "," + "INPUT")
+    print(set(input))
 
-    #outputTable = re.findall(r"(saveToEs\(|OUTPUT_TABLE\s*,\s*|saveAsTable\(|insertInto\()(.+)\)", line)
-    outputTable = re.findall(r"(saveToEs\s*\(\s*|valueOf\s*\(|OUTPUT_TABLE\s*,\s*|saveAsTable\s*\(\s*|insertInto\s*\(\s*)(.+)\)",line)
-    outputTable = list(set(outputTable))
+    #outputTable = re.findall(r"(saveToEs\s*\(\s*|valueOf\s*\(|OUTPUT_TABLE\s*,\s*|saveAsTable\s*\(\s*|insertInto\s*\(\s*)(.+)\)",line)
+    outputTable = re.findall(
+        r"(saveToEs\s*\(\s*|valueOf\s*\(|OUTPUT_TABLE\s*,\s*|saveAsTable\s*\(\s*|insertInto\s*\(\s*)(.+)\)", line)
+    out = []
+    if(line.__contains__("syncEs")):
+        tmp = re.findall(r"syncEs\s*?[\s\S]*?\)", line)
+        outTmp= list(set(tmp))
+        for j in range(len(outTmp)):
+            out_=outTmp[j].find('"')
+            if out_ != -1:
+                cin = outTmp[j].split('"')[1]
+                outputTable.append(["syncEs", '"'+cin+'"'])
     for i in range(len(outputTable)):
         find_=outputTable[i][1].find('"')+1
         if find_ == 0:
             regex = outputTable[i][1] + r"\s*=\s*\"(.+)\""
-            outputTable[i] = appName + "," + re.findall(regex, line)[0] + "," + "OUTPUT"
+            if len(re.findall(regex, line)) != 0:
+                out.append(appName[0] + "," + re.findall(regex, line)[0] + ",OUTPUT")
         else:
-            # outputTable[i] = appName + "," + outputTable[i][1][2:outputTable[i][1].find('"', 2)] + "," + "OUTPUT"
-            outputTable[i] = appName + "," + outputTable[i][1][find_:outputTable[i][1].find('"', 2)] + ",OUTPUT"
-    print(set(outputTable))
+            if (outputTable[i][1] != "snapTable") and (outputTable[i][1].find("index")==-1):
+                out.append(appName + "," + outputTable[i][1][find_:outputTable[i][1].find('"', 2)] + ",OUTPUT")
+    print(set(out))
 
     with open('E:/relationship-analysis/file/relation.csv',mode='w') as relation:
-        input = list(set(inputTable))
-        output = list(set(outputTable))
-        for i in range(len(input)):
-            relation.write(input[i])
+        inputter = list(set(input))
+        output = list(set(out))
+        for i in range(len(inputter)):
+            relation.write(inputter[i])
             relation.write("\n")
         for i in range(len(output)):
             relation.write(output[i])
             relation.write("\n")
-
 ```
 
 
@@ -89,17 +102,29 @@ def writeTable(path, fileName):
         inputTable[i] = inputTable[i][0:inputTable[i].find('"', 1)]
         find_ = inputTable[i].find(' ', 1) + 1
         if find_ == 0:
-            input.append(inputTable[i] + "," + appName[0] + ",INPUT")
+            if inputTable[i].find("$") == -1 and inputTable[i].find("tmp") == -1 and inputTable[i].find(
+                    "temp") == -1:
+                input.append(inputTable[i] + "," + appName[0] + ",INPUT")
         else:
             if not str(inputTable[i][0:inputTable[i].find(' ', 1)]).__eq__('"'):
-                input.append(inputTable[i][0:inputTable[i].find(' ', 1)] + "," + appName[0] + ",INPUT")
+                if inputTable[i].find("$") == -1 and inputTable[i].find("tmp") == -1 and inputTable[i].find(
+                        "temp") == -1:
+                    input.append(inputTable[i][0:inputTable[i].find(' ', 1)] + "," + appName[0] + ",INPUT")
     input = list(set(input))
 
     # 输出表
+    out = []
     outputTable = re.findall(
         r"(saveToEs\s*\(\s*|valueOf\s*\(|OUTPUT_TABLE\s*,\s*|saveAsTable\s*\(\s*|insertInto\s*\(\s*)(.+)\)",
         line)
-    out = []
+    if (line.__contains__("syncEs")):
+        tmp = re.findall(r"syncEs\s*?[\s\S]*?\)", line)
+        outTmp = list(set(tmp))
+        for j in range(len(outTmp)):
+            out_ = outTmp[j].find('"')
+            if out_ != -1:
+                cin = outTmp[j].split('"')[1]
+                outputTable.append(["syncEs", '"' + cin + '"'])
     for i in range(len(outputTable)):
         find_ = outputTable[i][1].find('"') + 1
         if find_ == 0:
@@ -107,7 +132,8 @@ def writeTable(path, fileName):
             if len(re.findall(regex, line)) != 0:
                 out.append(appName[0] + "," + re.findall(regex, line)[0] + ",OUTPUT")
         else:
-            out.append(appName[0] + "," + outputTable[i][1][find_:outputTable[i][1].find('"', 2)] + ",OUTPUT")
+            if (outputTable[i][1] != "snapTable") and (outputTable[i][1].find("index") == -1):
+                out.append(appName[0] + "," + outputTable[i][1][find_:outputTable[i][1].find('"', 2)] + ",OUTPUT")
     out = list(set(out))
 
     with open('E:\\relationship-analysis\\file\\' + fileName + '.csv', mode='a') as relation:
@@ -120,11 +146,12 @@ def writeTable(path, fileName):
 
 
 if __name__ == '__main__':
-    target_dir = "E:\\spark2\\chapter-data-sync"
+    target_dir = "E:\\spark2\\"
     fileName = str("relation-" + time.strftime("%Y-%m-%d-%H-%M-%S", time.localtime()))
     for root, dirs, files in os.walk(target_dir):
         for name in files:
             if name.endswith(".scala"):
                 print(os.path.join(root, name))
                 writeTable(os.path.join(root, name), fileName)
+
 ```
