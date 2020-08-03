@@ -1,5 +1,5 @@
 ---
-title: python搜索工程的输入输出表
+title: Python搜索工程的输入输出表
 date: 2020-07-31 09:53:20
 categories: 大数据
 tags: python
