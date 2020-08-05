@@ -8,22 +8,22 @@
 
 <title>
   
-    协同过滤的简单介绍
+    协同过滤和k-mean算法原理记录
   
 </title>
 
-<meta name="description" content="协同过滤的基本原理的简单介绍，便于入门和理解">
+<meta name="description" content="协同过滤的基本原理的简单介绍k-mean算法的简单介绍">
 <meta name="keywords" content="algorithm">
 <meta property="og:type" content="article">
-<meta property="og:title" content="协同过滤的简单介绍">
+<meta property="og:title" content="协同过滤和k-mean算法原理记录">
 <meta property="og:url" content="http://yoursite.com/2020/08/05/协同过滤/index.html">
 <meta property="og:site_name" content="BlackC">
-<meta property="og:description" content="协同过滤的基本原理的简单介绍，便于入门和理解">
+<meta property="og:description" content="协同过滤的基本原理的简单介绍k-mean算法的简单介绍">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-08-05T05:45:45.311Z">
+<meta property="og:updated_time" content="2020-08-05T06:06:49.788Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="协同过滤的简单介绍">
-<meta name="twitter:description" content="协同过滤的基本原理的简单介绍，便于入门和理解">
+<meta name="twitter:title" content="协同过滤和k-mean算法原理记录">
+<meta name="twitter:description" content="协同过滤的基本原理的简单介绍k-mean算法的简单介绍">
 
 
   <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
@@ -156,7 +156,7 @@
           <article id="post-协同过滤" class="article article-type-post">
   
     <h1 class="article-header">
-      协同过滤的简单介绍
+      协同过滤和k-mean算法原理记录
     </h1>
   
   
@@ -181,7 +181,7 @@
   </div>
   <div class="article-entry">
     <blockquote>
-<p>协同过滤的基本原理的简单介绍，便于入门和理解</p>
+<p>协同过滤的基本原理的简单介绍<br>k-mean算法的简单介绍</p>
 </blockquote>
 <a id="more"></a>
 
@@ -194,7 +194,14 @@
 
 <h4 id="基于项目的协同过滤推荐"><a href="#基于项目的协同过滤推荐" class="headerlink" title="基于项目的协同过滤推荐"></a>基于项目的协同过滤推荐</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">根据所有用户对物品或者信息的评价，发现物品和物品之间的相似度，然后根据用户的历史偏好信息将类似的物品推荐给该用户</span><br></pre></td></tr></table></figure>
 
-<h4 id="小结总结"><a href="#小结总结" class="headerlink" title="小结总结"></a>小结总结</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.基于内容的推荐：只考虑了对象的本身性质，将对象按标签形成集合，如果你消费集合中的一个则想你推荐集合中的其他对象</span><br><span class="line"></span><br><span class="line">2.基于协同过滤的推荐算法：充分利用集体智慧，即在大量的人群行为和数据中收集答案，以帮助我们对整个人群得到统计意义上的结论，推荐的个性化程序高，基于以下两个出发点</span><br><span class="line">1.兴趣相近的用户可能会同样的东西感兴趣</span><br><span class="line">2.用户可能较偏爱与其已购买的东西相类似的商品；考虑进了用户的历史习惯，对象客观上不一定相似，但由于人的行为可能认为其主观上是相似的，就可以产生推荐</span><br></pre></td></tr></table></figure>
+<h4 id="协同过滤小结总结"><a href="#协同过滤小结总结" class="headerlink" title="协同过滤小结总结"></a>协同过滤小结总结</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.基于内容的推荐：只考虑了对象的本身性质，将对象按标签形成集合，如果你消费集合中的一个则想你推荐集合中的其他对象</span><br><span class="line"></span><br><span class="line">2.基于协同过滤的推荐算法：充分利用集体智慧，即在大量的人群行为和数据中收集答案，以帮助我们对整个人群得到统计意义上的结论，推荐的个性化程序高，基于以下两个出发点</span><br><span class="line">1.兴趣相近的用户可能会同样的东西感兴趣</span><br><span class="line">2.用户可能较偏爱与其已购买的东西相类似的商品；考虑进了用户的历史习惯，对象客观上不一定相似，但由于人的行为可能认为其主观上是相似的，就可以产生推荐</span><br></pre></td></tr></table></figure>
+
+<h3 id="k-mean算法"><a href="#k-mean算法" class="headerlink" title="k-mean算法"></a>k-mean算法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">k均值聚类算法是一种迭代求解的聚类分析算法，其步骤是：</span><br><span class="line">1.随机选取K个对象作为初始的聚类中心</span><br><span class="line">2.然后计算每个对象与各个种子聚类中心之间的距离，把每个对象分配给据离它最近的聚类中心</span><br><span class="line">聚类中心以及分配给它们的对象就代表一个聚类</span><br><span class="line">每分配一个样本，聚类的聚类中心会根据聚类中现有的对象被重新计算；这个过程将不断重复直到满足某个终止条件</span><br><span class="line">终止条件可以是以下其中一个：</span><br><span class="line">1.没有（或最小数目）对象被重新分配给不同的聚类</span><br><span class="line">2.没有（或最小数目）聚类中心再发生变化  （一般选用这个为终止条件）</span><br><span class="line">3.误差平方和局部最小</span><br><span class="line"></span><br><span class="line">原理：k-means算法是一种基于划分的聚类算法，以距离作为数据对象间相似性度量的标准，即数据对象间的距离越小，则他们的相似性越高，则它们越有可能在同一个类簇</span><br></pre></td></tr></table></figure>
+
+<h4 id="摘取计算试题难度-能力值-回答正确概率的24个能力值"><a href="#摘取计算试题难度-能力值-回答正确概率的24个能力值" class="headerlink" title="摘取计算试题难度-能力值-回答正确概率的24个能力值"></a>摘取计算试题难度-能力值-回答正确概率的24个能力值</h4><p>一维聚类函数，points表示实数域的点集，K表示簇的个数，iterNum表示迭代次数<br>返回值为从小到大排列的中心点，List(中心点值，中心点顺序号)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line">def oneDimKmeans(points:Seq[Double], k:Int, iterNum:Int ) =&#123;</span><br><span class="line">          def doKmeans(points:Array[Vector[Double]],initCenters:Array[Vector[Double]])=&#123;</span><br><span class="line">            var centers = initCenters</span><br><span class="line">            for(index &lt;- 0 until iterNum)&#123;</span><br><span class="line"></span><br><span class="line">              //这里我们根据聚类中心利用groupBy()进行分组，最后得到的cluster是Map(Vector[Double],Array[Vector[Double]])类型</span><br><span class="line">              //cluster共k个元素，Map中key值就是聚类中心，Value就是依赖于这个中心的点集</span><br><span class="line">              val cluster = points.groupBy &#123; closestCenter(centers,_) &#125;</span><br><span class="line"></span><br><span class="line">              //通过Map集合的get()方法取出每一个簇，然后采用匹配方法match()进行求取新的中心，这里再强调一遍，Vector类型是不可更改类型，即数据存入Vector以后就不能改变</span><br><span class="line">              //所以需要你人为的定义Vector类型的加减乘除运算</span><br><span class="line">              centers = centers.map &#123; oldCenter =&gt;</span><br><span class="line">        cluster.get(oldCenter) match&#123;</span><br><span class="line">          case Some(pointsInCluster) =&gt;</span><br><span class="line">            vectorDivide(pointsInCluster.reduceLeft(vectorAdd),pointsInCluster.length)</span><br><span class="line">          case None =&gt; oldCenter</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    centers</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  def vectorDis(v1:Vector[Double],v2:Vector[Double]):Double=&#123;</span><br><span class="line">    var distance = 0d</span><br><span class="line">    for(i &lt;- v1.indices)&#123;</span><br><span class="line">      distance += (v1(i)-v2(i))*(v1(i)-v2(i))</span><br><span class="line">    &#125;</span><br><span class="line">   math.sqrt(distance)</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">  def vectorAdd(v1:Vector[Double],v2:Vector[Double])=&#123;</span><br><span class="line">    val len=v1.length</span><br><span class="line">    val av1=v1.toArray</span><br><span class="line">    val av2=v2.toArray</span><br><span class="line">    val av3=Array.fill(len)(0.0)</span><br><span class="line">    var vector = Vector[Double]()</span><br><span class="line">    for(i&lt;-0 until len)&#123;</span><br><span class="line">      av3(i)=av1(i)+av2(i)</span><br><span class="line">      vector ++= Vector(av3(i))</span><br><span class="line">    &#125;</span><br><span class="line">    vector</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  def vectorDivide(v1:Vector[Double],num:Int)=&#123;</span><br><span class="line">    val av1=v1.toArray</span><br><span class="line">    val len=v1.size</span><br><span class="line">    val av2=Array.fill(len)(0.0)</span><br><span class="line">    var vector = Vector[Double]()</span><br><span class="line">    for(i&lt;-0 until len)&#123;</span><br><span class="line">      av2(i)=av1(i)/num</span><br><span class="line">      vector ++= Vector(av2(i))</span><br><span class="line">    &#125;</span><br><span class="line">    vector</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  def closestCenter(centers:Array[Vector[Double]],point:Vector[Double]):Vector[Double]=&#123;</span><br><span class="line">    centers.reduceLeft((a, b) =&gt;</span><br><span class="line">      if (vectorDis(a,point) &lt; vectorDis(b,point)) a else b</span><br><span class="line">    )</span><br><span class="line"></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  val pointArray = points.sorted.map(List(_).toVector).toArray</span><br><span class="line">  val initCenters =Array.range(1,k+1).toList.map(_*pointArray.length/(k+1)).map(pointArray(_)).toArray</span><br><span class="line">  val finalCenter =doKmeans(pointArray,initCenters)</span><br><span class="line">  finalCenter.toList.map(x=&gt;x(0)).sorted.zipWithIndex</span><br><span class="line">&#125;</span><br><span class="line">sqlContext.udf.register(&quot;oneDimKmeans&quot;, oneDimKmeans _)</span><br></pre></td></tr></table></figure>
+
+
   </div>
   <footer class="article-footer">
     
