@@ -1,5 +1,5 @@
 ---
-title: flink作业上线以及上线前需要验证的指标内容
+title: flink技术选型相关
 date: 2020-08-10 10:28:04
 categories: 大数据
 tags: flink
