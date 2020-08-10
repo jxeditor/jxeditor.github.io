@@ -1,11 +1,11 @@
 ---
-title: shell脚本监控flink项目是否正常运行
+title: shell脚本监控flink作业状态指标
 date: 2020-08-10 09:58:06
 categories: 大数据
 tags: shell
 ---
 
-> flink基于yarn,其中一种较为简单的判断flink作业是否正常执行的方式
+> 最基础的指标为作业状态相关的,如作业是否出故障,作业是否存活,作业是否稳定运行
 
 <!-- more -->
 #### 监控flink作业的需求
