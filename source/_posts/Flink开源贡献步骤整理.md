@@ -27,3 +27,14 @@ e.解决问题
     提交pr
 f.坐等审核
 ```
+
+---
+
+## 更新本地源码项目
+```
+git remote -v
+git remote add update  https://github.com/apache/flink.git
+git fetch update
+git merge update/master
+git push origin master
+```

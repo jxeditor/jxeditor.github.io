@@ -1,5 +1,5 @@
 ---
-title: shell脚本监控flink作业状态指标
+title: Shell脚本监控Flink作业状态指标
 date: 2020-08-10 09:58:06
 categories: 大数据
 tags: shell

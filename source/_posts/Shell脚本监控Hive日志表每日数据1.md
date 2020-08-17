@@ -1,5 +1,5 @@
 ---
-title: shell脚本监控hive日志表每日数据
+title: Shell脚本监控Hive日志表每日数据
 date: 2020-08-10 09:50:38
 categories: 大数据
 tags: shell

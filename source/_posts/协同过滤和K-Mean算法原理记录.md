@@ -1,5 +1,5 @@
 ---
-title: 协同过滤和k-mean算法原理记录
+title: 协同过滤和K-Mean算法原理记录
 date: 2020-08-05 13:41:55
 categories: 大数据
 tags: algorithm

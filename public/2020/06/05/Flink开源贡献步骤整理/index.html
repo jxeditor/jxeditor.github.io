@@ -20,7 +20,7 @@
 <meta property="og:site_name" content="BlackC">
 <meta property="og:description" content="整理下步骤,以防手忙脚乱">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2020-07-23T09:04:58.842Z">
+<meta property="og:updated_time" content="2020-08-17T09:52:50.670Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Flink开源贡献步骤整理">
 <meta name="twitter:description" content="整理下步骤,以防手忙脚乱">
@@ -186,6 +186,9 @@
 <a id="more"></a>
 
 <h2 id="记录"><a href="#记录" class="headerlink" title="记录"></a>记录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">a.发现问题</span><br><span class="line">    毋庸置疑,得发现问题才能进一步去解决它</span><br><span class="line">b.整理问题说明,发布JIRA</span><br><span class="line">    百度翻译</span><br><span class="line">c.寻找问题所在</span><br><span class="line">    对应着源码模块进行筛查</span><br><span class="line">d.判断问题难度(是否自己可以解决)</span><br><span class="line">    如果自己解决不了,就@大佬解决</span><br><span class="line">e.解决问题</span><br><span class="line">    更新本地源码</span><br><span class="line">    新建JIAR分支(类似FLINK-N,对应自己issue的id)</span><br><span class="line">    解决问题</span><br><span class="line">    commit提交</span><br><span class="line">    提交pr</span><br><span class="line">f.坐等审核</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="更新本地源码项目"><a href="#更新本地源码项目" class="headerlink" title="更新本地源码项目"></a>更新本地源码项目</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">git remote -v</span><br><span class="line">git remote add update  https://github.com/apache/flink.git</span><br><span class="line">git fetch update</span><br><span class="line">git merge update/master</span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
   </div>
   <footer class="article-footer">
     

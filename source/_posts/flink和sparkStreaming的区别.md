@@ -1,5 +1,5 @@
 ---
-title: flink和sparkStreaming的区别
+title: Flink和SparkStreaming的区别
 date: 2020-08-12 16:53:57
 categories: 大数据
 tags: spark
