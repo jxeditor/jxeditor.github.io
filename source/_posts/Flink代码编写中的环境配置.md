@@ -201,6 +201,35 @@ TABLE_EXEC_RESOURCE_SORT_MEMORY 默认值128 mb
 
 ---
 
+## 常用的配置
+### RelNodeBlock
+```sh
+# 在构造公共子图时禁用union all节点作为断点
+table.optimizer.union-all-as-breakpoint-disabled 默认false
+
+# 当为true时,优化器将尝试通过摘要找出重复的子计划来构建优化块(又称公共子图),每个优化块都将独立优化
+table.optimizer.reuse-optimize-block-with-digest-enabled 默认false
+```
+
+---
+
+### WindowEmitStrategy
+```sh
+# WaterMark到达窗口结束前的发射策略(提前)
+table.exec.emit.early-fire.enabled 默认false
+
+# WaterMark到达窗口结束前的发射间隔时间
+table.exec.emit.late-fire.delay
+
+# WaterMark到达窗口结束后的发射策略(延迟)
+table.exec.emit.late-fire.enabled 默认false
+
+# WaterMark到达窗口结束后的发射间隔时间
+table.exec.emit.late-fire.delay
+```
+
+---
+
 ## 使用
 ```scala
 // BATCH
