@@ -175,6 +175,8 @@ case class Demo(platform: String, event: String, dt: String)
 ---
 
 ## 解决低版本支持问题
+[Flink-1.11使用的OrcVersion](https://github.com/apache/orc/blob/ce4329f396658648796f5b78716f8e1836f139ec/java/core/src/java/org/apache/orc/OrcFile.java#L258)
+[Hive-2.1.1使用的OrcVersion](https://github.com/apache/hive/blob/03599216cfc01fc464f1c9a4fa89e81c45327ea5/orc/src/java/org/apache/orc/OrcFile.java#L156)
 ```java
 # 主要原因为Orc在新版本后使用的WriterVersion为ORC_517
 # 导致低版本的Hive解析不了
