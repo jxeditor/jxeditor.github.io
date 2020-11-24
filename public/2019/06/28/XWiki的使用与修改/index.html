@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    XWiki的使用与修改
+  
+</title>
+
+<meta name="description" content="安装搭建  下载官方最新版本…war 部署到Tomcat 启动 localhost:8080&#x2F;xwiki">
+<meta property="og:type" content="article">
+<meta property="og:title" content="XWiki的使用与修改">
+<meta property="og:url" content="http://yoursite.com/2019/06/28/XWiki%E7%9A%84%E4%BD%BF%E7%94%A8%E4%B8%8E%E4%BF%AE%E6%94%B9/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="安装搭建  下载官方最新版本…war 部署到Tomcat 启动 localhost:8080&#x2F;xwiki">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-06-28T00:53:01.000Z">
+<meta property="article:modified_time" content="2020-07-25T09:48:23.698Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="xwiki">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">159</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">90</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">87</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-XWiki的使用与修改" class="article article-type-post">
+  
+    <h1 class="article-header">
+      XWiki的使用与修改
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-06-28
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <h2 id="安装搭建"><a href="#安装搭建" class="headerlink" title="安装搭建"></a>安装搭建</h2><blockquote>
+<ul>
+<li>下载官方最新版本…war</li>
+<li>部署到Tomcat</li>
+<li>启动 localhost:8080/xwiki</li>
+</ul>
+</blockquote>
+<a id="more"></a>
+
+<hr>
+<h2 id="启动管理员"><a href="#启动管理员" class="headerlink" title="启动管理员"></a>启动管理员</h2><blockquote>
+<p>修改Tomcat下的webapps\wiki\WEB-INF\xwiki.cfg</p>
+</blockquote>
+<blockquote>
+<p><strong>xwiki.superadminpassword=system</strong></p>
+</blockquote>
+<hr>
+<h2 id="整理样式"><a href="#整理样式" class="headerlink" title="整理样式"></a>整理样式</h2><blockquote>
+<ul>
+<li>可以下载官方一体包,然后将data/extension目录下的文件复制到Tomcat下的work\Catalina\localhost\xwiki</li>
+<li>将上述目录下的xar文件复制到Tomcat下的webapps\xwiki\WEB-INF\extensions</li>
+<li>使用import功能导入xar文件</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="全面汉化"><a href="#全面汉化" class="headerlink" title="全面汉化"></a>全面汉化</h2><h3 id="基础汉化"><a href="#基础汉化" class="headerlink" title="基础汉化"></a>基础汉化</h3><blockquote>
+<ul>
+<li>进入Tomcat下的webapps\wiki\WEB-INF\lib目录</li>
+<li>找到xwiki-platform-legacy-oldcore-x.x.x.jar文件</li>
+<li>将ApplicationResources_zh.properties文件复制出来</li>
+<li>使用<strong>native2ascii -reverse ApplicationResources_zh.properties ApplicationResources_zh1.properties</strong>命令将unicode编码文件转成本地编码文件</li>
+<li>对文件内容进行汉化</li>
+<li>使用<strong>native2ascii ApplicationResources_zh1.properties ApplicationResources_zh.properties</strong>命令将本地文件转换成unicode编码文件</li>
+<li>替换jar包中的文件</li>
+</ul>
+</blockquote>
+<h3 id="xar汉化"><a href="#xar汉化" class="headerlink" title="xar汉化"></a>xar汉化</h3><blockquote>
+<ul>
+<li>进入Tomcat下的work\Catalina\localhost\xwiki目录</li>
+<li>修改xar文件中的xml文件</li>
+<li>将文件内容汉化</li>
+<li>替换xar包中的文件</li>
+<li>重新导入xar文件</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="修改SQL"><a href="#修改SQL" class="headerlink" title="修改SQL"></a>修改SQL</h2><blockquote>
+<ul>
+<li>进入Tomcat下的webapps\wiki\WEB-INF\lib目录</li>
+<li>修改hbm.xml类似文件</li>
+<li>queries.hbm.xml可以控制查询的排序</li>
+<li>xwiki.hbm.xml是数据库表的映射</li>
+<li>修改xwiki.hbm.xml和xwiki-platform-legacy-oldcore-x.x.x.jar中的class文件可以添加表映射</li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="修改ckeditor"><a href="#修改ckeditor" class="headerlink" title="修改ckeditor"></a>修改ckeditor</h2><blockquote>
+<ul>
+<li>进入Tomcat下的work\Catalina\localhost\wiki\extension\repository目录</li>
+<li>找到org%2Exwiki%2Econtrib%3Aapplication-ckeditor-webjar.jar文件</li>
+<li>修改META-INF\resources\webjars\application-ckeditor-webjar\1.33\plugins\xwiki-resource目录下的resourcePicker.bundle.min.js文件</li>
+<li>注释掉<strong>c.prop(“disabled”,g);g&amp;&amp;c.attr(“disabled”,”disabled”);</strong></li>
+<li>可以添加新的点击事件</li>
+</ul>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br></pre></td><td class="code"><pre><span class="line"># 新点击事件</span><br><span class="line">m &#x3D; function (h) &#123;</span><br><span class="line">    h &#x3D; a(this);</span><br><span class="line">    var b &#x3D; h.closest(&quot;.resourcePicker&quot;), c &#x3D; k(b.prev(&quot;input&quot;));</span><br><span class="line">    c.type !&#x3D;&#x3D; h.val() &amp;&amp; (c &#x3D; &#123;type: h.val(), reference: b.find(&quot;input.resourceReference&quot;).val()&#125;);</span><br><span class="line">    if(c.type &#x3D;&#x3D; &#39;url&#39;)&#123;</span><br><span class="line">        window.open(&quot;http:&#x2F;&#x2F;localhost:1114&#x2F;re&quot;,window,&quot;height&#x3D;400,width&#x3D;400&quot;);</span><br><span class="line">    &#125;else if(c.type &#x3D;&#x3D; &#39;mailto&#39;)&#123;</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        e.pickers[c.type](c).done(a.proxy(l, b))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># http:&#x2F;&#x2F;localhost:1114&#x2F;re对应页面</span><br><span class="line">&lt;%@ page contentType&#x3D;&quot;text&#x2F;html;charset&#x3D;UTF-8&quot; language&#x3D;&quot;java&quot; %&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">    &lt;title&gt;Title&lt;&#x2F;title&gt;</span><br><span class="line">&lt;&#x2F;head&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">    function re() &#123;</span><br><span class="line">        window.opener.postMessage(document.getElementById(&quot;url&quot;).value,&quot;*&quot;);</span><br><span class="line">        window.close();</span><br><span class="line">    &#125;</span><br><span class="line">    function test1() &#123;</span><br><span class="line">        alert(document.getElementById(&quot;url&quot;).value)</span><br><span class="line">    &#125;</span><br><span class="line">&lt;&#x2F;script&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;input type&#x3D;&quot;button&quot; value&#x3D;&quot;返回值&quot; onclick&#x3D;&quot;re()&quot;&gt;</span><br><span class="line">&lt;br&gt;</span><br><span class="line">&lt;input type&#x3D;&quot;button&quot; value&#x3D;&quot;显示返回值&quot; onclick&#x3D;&quot;test1()&quot;&gt;</span><br><span class="line">&lt;br&gt;</span><br><span class="line">&lt;div id&#x3D;&quot;root&quot;&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;script src&#x3D;&quot;..&#x2F;demo&#x2F;js&#x2F;jquery-2.2.4.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&lt;script src&#x3D;&quot;..&#x2F;demo&#x2F;js&#x2F;bootstrap-3.3.7.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&lt;script src&#x3D;&quot;..&#x2F;window&#x2F;demo.js&quot;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&lt;&#x2F;body&gt;</span><br><span class="line">&lt;&#x2F;html&gt;</span><br><span class="line"></span><br><span class="line"># demo.js</span><br><span class="line">$(&quot;#root&quot;).html(&quot;&lt;select name&#x3D;&#39;url&#39; id&#x3D;&#39;url&#39; style&#x3D;&#39;margin-right: 2.2em;&#39;&gt;&lt;&#x2F;select&gt;&quot;)</span><br><span class="line">FillUnit();</span><br><span class="line">function FillUnit() &#123;</span><br><span class="line">    var url &#x3D; &quot;&#x2F;mysql&#x2F;selectUrlData&quot;;</span><br><span class="line">    $.ajax(&#123;</span><br><span class="line">        async: false,</span><br><span class="line">        type: &quot;get&quot;,</span><br><span class="line">        url: url,</span><br><span class="line">        dataType: &quot;json&quot;,</span><br><span class="line">        success: function (data) &#123;</span><br><span class="line">            var str &#x3D; &quot;&lt;option value&#x3D;&#39;&#39;&gt;---&lt;&#x2F;option&gt;&quot;;</span><br><span class="line">            for (var i &#x3D; 0; i &lt; data.length; i++) &#123;</span><br><span class="line">                str +&#x3D; &quot;&lt;option value&#x3D;&#39;&quot; + data[i].id + &quot;&#39;&gt;&quot; + data[i].name + &quot;&lt;&#x2F;option&gt;&quot;</span><br><span class="line">            &#125;</span><br><span class="line">            $(&quot;#url&quot;).html(str)</span><br><span class="line">        &#125;,</span><br><span class="line">        error: function () &#123;</span><br><span class="line">            alert(&#39;ERROR&#39;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># &#x2F;mysql&#x2F;selectUrlData接口实现</span><br><span class="line">@RequestMapping(&quot;&#x2F;selectUrlData&quot;)</span><br><span class="line">public String selectUrlData() &#123;</span><br><span class="line">    DBContextHolder.setDbType(&quot;secondary&quot;);</span><br><span class="line">    String sql &#x3D; &quot;SELECT id, file_name &#96;name&#96; FROM url_sample;&quot;;</span><br><span class="line">    List&lt;JSONObject&gt; list &#x3D; jdbcTemplate.query(sql, new RowMapper&lt;JSONObject&gt;() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        public JSONObject mapRow(ResultSet resultSet, int i) throws SQLException &#123;</span><br><span class="line">            JSONObject json &#x3D; new JSONObject();</span><br><span class="line">            json.put(&quot;id&quot;, resultSet.getString(&quot;id&quot;));</span><br><span class="line">            json.put(&quot;name&quot;, resultSet.getString(&quot;name&quot;));</span><br><span class="line">            return json;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    JSONArray array &#x3D; new JSONArray();</span><br><span class="line">    for (JSONObject json : list) &#123;</span><br><span class="line">        array.put(json);</span><br><span class="line">    &#125;</span><br><span class="line">    return array.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="增加目录树排序功能"><a href="#增加目录树排序功能" class="headerlink" title="增加目录树排序功能"></a>增加目录树排序功能</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"># changeSort接口实现</span><br><span class="line">@RequestMapping(&quot;&#x2F;changeSort&quot;)</span><br><span class="line">public void changeSort(String value) &#123;</span><br><span class="line">    String[] arr &#x3D; value.split(&quot;\\|&quot;);</span><br><span class="line">    ArrayList&lt;String&gt; list &#x3D; new ArrayList();</span><br><span class="line">    System.out.println(value);</span><br><span class="line">    for (String v : arr) &#123;</span><br><span class="line">        String s &#x3D; v.split(&quot;:&quot;)[2];</span><br><span class="line">        System.out.println(s.substring(0,s.lastIndexOf(&quot;.&quot;)));</span><br><span class="line">        list.add(s.substring(0,s.lastIndexOf(&quot;.&quot;)));</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; 将数据库中的sort字段修改</span><br><span class="line">    DBContextHolder.setDbType(&quot;primary&quot;);</span><br><span class="line">    for (int i &#x3D; 0; i &lt; list.size(); i++) &#123;</span><br><span class="line">        String sql &#x3D; &quot;UPDATE xwikispace SET XWS_RANK &#x3D; &#39;&quot; + (list.size() - i) + &quot;&#39; WHERE XWS_REFERENCE &#x3D; &#39;&quot; + list.get(i) + &quot;&#39;;&quot;;</span><br><span class="line">        jdbcTemplate.execute(sql);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 在wiki&#x2F;resources&#x2F;js&#x2F;custom目录下实现,并在changesort方法之上重写jquery-2.2.4.js,将jQuery改为kQuery</span><br><span class="line">function changesort()&#123;</span><br><span class="line">	var list &#x3D; new Array()</span><br><span class="line">	kQuery.each($(&quot;#sorttree li&quot;), function(k,v)&#123;</span><br><span class="line">		list.push(v.getAttribute(&#39;id&#39;))</span><br><span class="line">	&#125;)</span><br><span class="line">	var data &#x3D; &quot;&quot;</span><br><span class="line">	for(var i&#x3D;0;i&lt;list.size();i++)&#123;</span><br><span class="line">		if(i !&#x3D; list.size()-1)&#123;</span><br><span class="line">			data &#x3D; data + list[i] + &quot;|&quot;</span><br><span class="line">		&#125;else&#123;</span><br><span class="line">			data &#x3D; data + list[i]</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	var url &#x3D; &quot;http:&#x2F;&#x2F;localhost:1114&#x2F;mysql&#x2F;changeSort&quot;;</span><br><span class="line">    kQuery.ajax(&#123;</span><br><span class="line">        async: false,</span><br><span class="line">        type: &quot;get&quot;,</span><br><span class="line">        url: url,</span><br><span class="line">        data: &#123;value: data&#125;,</span><br><span class="line">        dataType: &quot;jsonp&quot;,</span><br><span class="line">        success: function (data) &#123;</span><br><span class="line">        &#125;,</span><br><span class="line">        error: function () &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 修改xar文件</span><br><span class="line">xwiki-platform-panels-ui的NavigationConfigurationSection.xml</span><br><span class="line">&#123;&#123;html clean&#x3D;false&#125;&#125;</span><br><span class="line">  &lt;fieldset&gt;</span><br><span class="line">    &lt;input type&#x3D;&quot;hidden&quot; name&#x3D;&quot;form_token&quot; value&#x3D;&quot;$!services.csrf.token&quot; &#x2F;&gt;</span><br><span class="line">    &lt;input type&#x3D;&quot;hidden&quot; name&#x3D;&quot;comment&quot; value&#x3D;&quot;$escapetool.xml($services.localization.render(</span><br><span class="line">      &#39;platform.panels.navigation.configuration.saveComment&#39;))&quot; &#x2F;&gt;</span><br><span class="line">  &lt;&#x2F;fieldset&gt;</span><br><span class="line">  &lt;div class&#x3D;&quot;bottombuttons&quot;&gt;</span><br><span class="line">    &lt;p class&#x3D;&quot;admin-buttons&quot;&gt;</span><br><span class="line">      &lt;span class&#x3D;&quot;buttonwrapper&quot;&gt;</span><br><span class="line">        &lt;input class&#x3D;&quot;button&quot; type&#x3D;&quot;submit&quot; name&#x3D;&quot;action_saveandcontinue&quot;</span><br><span class="line">          value&#x3D;&quot;$services.localization.render(&#39;admin.save&#39;)&quot; &#x2F;&gt;</span><br><span class="line">		  &lt;input class&#x3D;&quot;button&quot; type&#x3D;&quot;button&quot; name&#x3D;&quot;提交修改&quot; onclick&#x3D;&quot;changesort()&quot;</span><br><span class="line">          value&#x3D;&quot;提交修改&quot; &#x2F;&gt;</span><br><span class="line">      &lt;&#x2F;span&gt;</span><br><span class="line">    &lt;&#x2F;p&gt;</span><br><span class="line">  &lt;&#x2F;div&gt;</span><br><span class="line">&lt;&#x2F;form&gt;</span><br><span class="line">&lt;script type&#x3D;&#39;text&#x2F;javascript&#39; src&#x3D;&#39;&#x2F;wiki&#x2F;resources&#x2F;js&#x2F;custom&#x2F;demo.js&#39;&gt;&lt;&#x2F;script&gt;</span><br><span class="line">&#123;&#123;&#x2F;html&#125;&#125;</span><br><span class="line"></span><br><span class="line"># 重新导入xar文件</span><br><span class="line"></span><br><span class="line"># 修改xwiki-platform-index-tree-api下的hbm.xml文件</span><br><span class="line"># 根据XWS_RANK进行排序</span><br></pre></td></tr></table></figure>
+
+<h2 id="XWiki整合Cas"><a href="#XWiki整合Cas" class="headerlink" title="XWiki整合Cas"></a>XWiki整合Cas</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># 准备jar</span><br><span class="line">cas-client-core-3.3.3.jar</span><br><span class="line">xmlsec-1.3.0.jar</span><br><span class="line">xwiki-cas.jar</span><br><span class="line"># 拷贝进wiki&#x2F;WEB_INF&#x2F;lib下</span><br><span class="line"># 修改xwiki.conf</span><br><span class="line">xwiki.authentication.authclass&#x3D;org.xwiki.contrib.authentication.cas.XWikiCASAuthenticator</span><br><span class="line">xwiki.authentication.cas.server&#x3D;http:&#x2F;&#x2F;localhost:8443&#x2F;cas</span><br><span class="line">xwiki.authentication.cas.protocol&#x3D;CAS20</span><br><span class="line">xwiki.authentication.cas.create_user&#x3D;1</span><br><span class="line">xwiki.authentication.cas.update_user&#x3D;1</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

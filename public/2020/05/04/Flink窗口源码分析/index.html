@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink窗口源码分析
+  
+</title>
+
+<meta name="description" content="深入源码层面,学习Flink窗口操作的原理,这里只挑了各部分的一个进行分析">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink窗口源码分析">
+<meta property="og:url" content="http://yoursite.com/2020/05/04/Flink%E7%AA%97%E5%8F%A3%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="深入源码层面,学习Flink窗口操作的原理,这里只挑了各部分的一个进行分析">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-04T07:51:50.000Z">
+<meta property="article:modified_time" content="2020-07-25T09:48:23.659Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="flink">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">159</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">90</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">87</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink窗口源码分析" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink窗口源码分析
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-05-04
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>深入源码层面,学习Flink窗口操作的原理,这里只挑了各部分的一个进行分析</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="依赖关系"><a href="#依赖关系" class="headerlink" title="依赖关系"></a>依赖关系</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line">Window</span><br><span class="line">    GlobalWindow(放置所有数据的默认窗口)</span><br><span class="line">    TimeWindow(表示一段时间间隔的窗口)</span><br><span class="line"></span><br><span class="line">WindowAssigner</span><br><span class="line">    -MerginWindowAssigner(窗口是可以合并的)</span><br><span class="line">        -DynamicEventTimeSessionWindows</span><br><span class="line">        -DynamicProcessingTimeSessionWindows</span><br><span class="line">        -EventTimeSessionWindows</span><br><span class="line">        -ProcessingTimeSessionWindows</span><br><span class="line">    -SlidingEventTimeWindows(滑动窗口)</span><br><span class="line">        -SlidingTimeWindows</span><br><span class="line">    -SlidingProcessingTimeWindows(滑动窗口)</span><br><span class="line">    -TumblingEventTimeWindows(滚动窗口)</span><br><span class="line">        -TumblingTimeWindows</span><br><span class="line">    -TumblingProcessionTimeWindows(滚动窗口)</span><br><span class="line">    -GlobalWindwos(将所有元素分配在一个窗口中)</span><br><span class="line">    </span><br><span class="line">Trigger</span><br><span class="line">    -ContinuousEventTimeTrigger(基于给定时间间隔连续触发,计算基于水印)</span><br><span class="line">    -ContinuousProcessingTimeTrigger(基于给定时间间隔连续触发,计算基于ProcessingTime)</span><br><span class="line">    -CountTrigger(每maxCount触发一次计算)</span><br><span class="line">        -用于DataStream</span><br><span class="line">        -用于KeyedStream</span><br><span class="line">    -DeltaTrigger(此触发器计算上次触发的数据点与当前到达的数据点之间的增量。如果增量高于指定的阈值，则会触发。)</span><br><span class="line">        需要用户自己实现DeltaFunction</span><br><span class="line">    -EventTimeTrigger(按照EventTime判断是否触发计算)</span><br><span class="line">        -用于EventTimeWindows</span><br><span class="line">    -NeverTrigger(一个从不触发的触发器，作为GlobalWindows的默认触发器)</span><br><span class="line">        -用于GlobalWindows</span><br><span class="line">    -ProcessingTimeTrigger(按照ProcessingTime判断是否触发计算)</span><br><span class="line">        -用于ProcessingTimeWindows</span><br><span class="line">    -PurgingTrigger(包装类,将TriggerResult为FIRE的改为FIRE_AND_PURGE)</span><br><span class="line">        -用于DataStream</span><br><span class="line">        -用于KeyedStream</span><br><span class="line">        -用于DataStreamGroupWindowAggregateBase</span><br><span class="line">    -StateCleaningCountTrigger(GlobalWindow)(触发清理定时器触发或元素达到maxCount触发)</span><br><span class="line">        -用于DataStreamGroupWindowAggregateBase</span><br><span class="line"></span><br><span class="line">TriggerResult</span><br><span class="line">    CONTINUE(不做任何操作)</span><br><span class="line">    FIRE_AND_PURGE</span><br><span class="line">    FIRE(处理窗口数据)</span><br><span class="line">    PURGE(移除窗口和窗口中的数据)</span><br><span class="line">    </span><br><span class="line">Evictor</span><br><span class="line">    -CountEvictor(以maxCount为判断标准,决定元素是否被移除)</span><br><span class="line">    -DeltaEvictor(计算每个元素与最后一个元素的Delta值,与threshold进行对比,如果大于等于,则移除该元素)</span><br><span class="line">    -TimeEvictor(以时间为判断标准,决定元素是否会被移除)</span><br><span class="line"></span><br><span class="line">Timer</span><br></pre></td></tr></table></figure>
+
+<h2 id="SlidingEventTimeWindows"><a href="#SlidingEventTimeWindows" class="headerlink" title="SlidingEventTimeWindows"></a>SlidingEventTimeWindows</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 成员变量</span><br><span class="line">size:窗口大小,slide窗口步长,offset偏移量</span><br><span class="line"></span><br><span class="line"># 划分窗口</span><br><span class="line">数组结构ArrayList&lt;TimeWindow&gt;:大小为size&#x2F;slide</span><br><span class="line">窗口开始时间:timestamp - (timestamp - offset + slide) % slide;</span><br><span class="line">数组内窗口:new TimeWindow(start, start + size)</span><br><span class="line"></span><br><span class="line"># 默认Trigger</span><br><span class="line">EventTimeTrigger</span><br><span class="line"></span><br><span class="line"># 使用</span><br><span class="line">DataStream&lt;Tuple2&lt;String, Integer&gt;&gt; in &#x3D; ...;</span><br><span class="line">KeyedStream&lt;Tuple2&lt;String, Integer&gt;, String&gt; keyed &#x3D; in.keyBy(...);</span><br><span class="line">WindowedStream&lt;Tuple2&lt;String, Integer&gt;, String, TimeWindow&gt; windowed &#x3D; keyed.window(SlidingEventTimeWindows.of(Time.minutes(1), Time.seconds(10)));</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="EventTimeTrigger"><a href="#EventTimeTrigger" class="headerlink" title="EventTimeTrigger"></a>EventTimeTrigger</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"># 如果window中的最大时间戳小于当前水印</span><br><span class="line">FIRE</span><br><span class="line"># 如果window中的最大时间戳大于当前水印</span><br><span class="line">注册Timer定时器</span><br><span class="line">CONTINUE</span><br><span class="line"></span><br><span class="line"># 注册事件时间回调。当当前水印通过时，将使用此处指定的时间调用指定的时间。</span><br><span class="line">Trigger</span><br><span class="line">    TriggerContext.registerEventTimeTimer(long time)</span><br><span class="line"></span><br><span class="line"># WindowOperator</span><br><span class="line">    Context.registerEventTimeTimer(long time)</span><br><span class="line"></span><br><span class="line"># InternalTimerService</span><br><span class="line">    registerEventTimeTimer(N namespace, long time)</span><br><span class="line">    </span><br><span class="line"># 注册事件时间水印超过给定时间时要触发的计时器。计时器触发时，将提供您在此处传递的命名空间。</span><br><span class="line">InternalTimerServiceImpl</span><br><span class="line">    registerEventTimeTimer(N namespace, long time)</span><br><span class="line"></span><br><span class="line"># 当前正在运行的EventTime定时器队列</span><br><span class="line">KeyGroupedInternalPriorityQueue</span><br><span class="line">    add(new TimerHeapInternalTimer&lt;&gt;(time, (K) keyContext.getCurrentKey(), namespace))</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="CountEvictor"><a href="#CountEvictor" class="headerlink" title="CountEvictor"></a>CountEvictor</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">evict方法</span><br><span class="line">如果size小于设置的最大数值,则可以返回</span><br><span class="line">否则将迭代元素,并删除多出的元素</span><br><span class="line">int evictedCount &#x3D; 0;</span><br><span class="line">for (Iterator&lt;TimestampedValue&lt;Object&gt;&gt; iterator &#x3D; elements.iterator(); iterator.hasNext();)&#123;</span><br><span class="line">    iterator.next();</span><br><span class="line">    evictedCount++;</span><br><span class="line">    if (evictedCount &gt; size - maxCount) &#123;</span><br><span class="line">        break;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        iterator.remove();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="WindowOperator工作流程"><a href="#WindowOperator工作流程" class="headerlink" title="WindowOperator工作流程"></a>WindowOperator工作流程</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">processElement</span><span class="params">(StreamRecord&lt;IN&gt; element)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// 1.获取element归属的windows</span></span><br><span class="line">    <span class="keyword">final</span> Collection&lt;W&gt; elementWindows = windowAssigner.assignWindows(</span><br><span class="line">        element.getValue(), element.getTimestamp(), windowAssignerContext);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果元素不是由指定的元素窗口处理的</span></span><br><span class="line">    <span class="keyword">boolean</span> isSkippedElement = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取element对应的Key</span></span><br><span class="line">    <span class="keyword">final</span> K key = <span class="keyword">this</span>.&lt;K&gt;getKeyedStateBackend().getCurrentKey();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (windowAssigner <span class="keyword">instanceof</span> MergingWindowAssigner) &#123;</span><br><span class="line">        <span class="comment">// 合并窗口</span></span><br><span class="line">        MergingWindowSet&lt;W&gt; mergingWindows = getMergingWindowSet();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (W window: elementWindows) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 添加新窗口可能会导致合并，在这种情况下，实际窗口是合并的窗口，我们使用它。如果不合并，则实际窗口==窗口</span></span><br><span class="line">            W actualWindow = mergingWindows.addWindow(window, <span class="keyword">new</span> MergingWindowSet.MergeFunction&lt;W&gt;() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">merge</span><span class="params">(W mergeResult,</span></span></span><br><span class="line"><span class="function"><span class="params">                        Collection&lt;W&gt; mergedWindows, W stateWindowResult,</span></span></span><br><span class="line"><span class="function"><span class="params">                        Collection&lt;W&gt; mergedStateWindows)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> ((windowAssigner.isEventTime() &amp;&amp; mergeResult.maxTimestamp() + allowedLateness &lt;= internalTimerService.currentWatermark())) &#123;</span><br><span class="line">                        <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">&quot;The end timestamp of an &quot;</span> +</span><br><span class="line">                                <span class="string">&quot;event-time window cannot become earlier than the current watermark &quot;</span> +</span><br><span class="line">                                <span class="string">&quot;by merging. Current watermark: &quot;</span> + internalTimerService.currentWatermark() +</span><br><span class="line">                                <span class="string">&quot; window: &quot;</span> + mergeResult);</span><br><span class="line">                    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!windowAssigner.isEventTime()) &#123;</span><br><span class="line">                        <span class="keyword">long</span> currentProcessingTime = internalTimerService.currentProcessingTime();</span><br><span class="line">                        <span class="keyword">if</span> (mergeResult.maxTimestamp() &lt;= currentProcessingTime) &#123;</span><br><span class="line">                            <span class="keyword">throw</span> <span class="keyword">new</span> UnsupportedOperationException(<span class="string">&quot;The end timestamp of a &quot;</span> +</span><br><span class="line">                                <span class="string">&quot;processing-time window cannot become earlier than the current processing time &quot;</span> +</span><br><span class="line">                                <span class="string">&quot;by merging. Current processing time: &quot;</span> + currentProcessingTime +</span><br><span class="line">                                <span class="string">&quot; window: &quot;</span> + mergeResult);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    triggerContext.key = key;</span><br><span class="line">                    triggerContext.window = mergeResult;</span><br><span class="line"></span><br><span class="line">                    triggerContext.onMerge(mergedWindows);</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">for</span> (W m: mergedWindows) &#123;</span><br><span class="line">                        triggerContext.window = m;</span><br><span class="line">                        triggerContext.clear();</span><br><span class="line">                        deleteCleanupTimer(m);</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="comment">// 将合并的状态窗口合并到新生成的状态窗口中</span></span><br><span class="line">                    windowMergingState.mergeNamespaces(stateWindowResult, mergedStateWindows);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 3.如果是延迟窗口,跳过</span></span><br><span class="line">            <span class="keyword">if</span> (isWindowLate(actualWindow)) &#123;</span><br><span class="line">                mergingWindows.retireWindow(actualWindow);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            isSkippedElement = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">            W stateWindow = mergingWindows.getStateWindow(actualWindow);</span><br><span class="line">            <span class="keyword">if</span> (stateWindow == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;Window &quot;</span> + window + <span class="string">&quot; is not in in-flight window set.&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 4.将element存入windowState</span></span><br><span class="line">            windowState.setCurrentNamespace(stateWindow);</span><br><span class="line">            windowState.add(element.getValue());</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 5.判断element是否触发trigger</span></span><br><span class="line">            triggerContext.key = key;</span><br><span class="line">            triggerContext.window = actualWindow;</span><br><span class="line">            TriggerResult triggerResult = triggerContext.onElement(element);</span><br><span class="line">            <span class="keyword">if</span> (triggerResult.isFire()) &#123;</span><br><span class="line">                <span class="comment">// 6.获取windowState,注入windowFunction</span></span><br><span class="line">                ACC contents = windowState.get();</span><br><span class="line">                <span class="keyword">if</span> (contents == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                emitWindowContents(actualWindow, contents);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 7.清除windowState</span></span><br><span class="line">            <span class="keyword">if</span> (triggerResult.isPurge()) &#123;</span><br><span class="line">                windowState.clear();</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 8.注册timer,到窗口结束时清理window</span></span><br><span class="line">            registerCleanupTimer(actualWindow);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 需要确保更新状态中的合并状态</span></span><br><span class="line">        mergingWindows.persist();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 非合并窗口</span></span><br><span class="line">        <span class="keyword">for</span> (W window: elementWindows) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (isWindowLate(window)) &#123;</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            isSkippedElement = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">            windowState.setCurrentNamespace(window);</span><br><span class="line">            windowState.add(element.getValue());</span><br><span class="line"></span><br><span class="line">            triggerContext.key = key;</span><br><span class="line">            triggerContext.window = window;</span><br><span class="line"></span><br><span class="line">            TriggerResult triggerResult = triggerContext.onElement(element);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (triggerResult.isFire()) &#123;</span><br><span class="line">                ACC contents = windowState.get();</span><br><span class="line">                <span class="keyword">if</span> (contents == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                emitWindowContents(window, contents);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (triggerResult.isPurge()) &#123;</span><br><span class="line">                windowState.clear();</span><br><span class="line">            &#125;</span><br><span class="line">            registerCleanupTimer(window);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 如果已设置未由任何窗口延迟到达标记处理的元素，则侧输出输入事件windowAssigner为事件时间和当前时间戳+允许的延迟不小于元素时间戳</span></span><br><span class="line">    <span class="keyword">if</span> (isSkippedElement &amp;&amp; isElementLate(element)) &#123;</span><br><span class="line">        <span class="keyword">if</span> (lateDataOutputTag != <span class="keyword">null</span>)&#123;</span><br><span class="line">            sideOutput(element);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.numLateRecordsDropped.inc();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

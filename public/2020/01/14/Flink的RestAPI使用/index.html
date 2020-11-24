@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink的RestAPI使用
+  
+</title>
+
+<meta name="description" content="最近社区在进行Flink平台化开发,提供支持">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink的RestAPI使用">
+<meta property="og:url" content="http://yoursite.com/2020/01/14/Flink%E7%9A%84RestAPI%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="最近社区在进行Flink平台化开发,提供支持">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-01-14T01:11:25.000Z">
+<meta property="article:modified_time" content="2020-07-25T09:48:23.658Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="flink">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">159</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">90</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">87</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink的RestAPI使用" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink的RestAPI使用
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-01-14
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>最近社区在进行Flink平台化开发,提供支持</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="Rest-API"><a href="#Rest-API" class="headerlink" title="Rest API"></a>Rest API</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 默认就是8081,可以自己改</span><br><span class="line">vi flink-conf.yaml</span><br><span class="line">rest.port: 8081</span><br><span class="line"></span><br><span class="line"># Web访问</span><br><span class="line">http:&#x2F;&#x2F;cdh04:8081&#x2F;#&#x2F;overview</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="CRUL操作"><a href="#CRUL操作" class="headerlink" title="CRUL操作"></a>CRUL操作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br></pre></td><td class="code"><pre><span class="line"># 关闭集群</span><br><span class="line">curl -X DELETE http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;cluster</span><br><span class="line"></span><br><span class="line"># 查看WebUI配置信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;config</span><br><span class="line"></span><br><span class="line"># 查看通过WebUI上传集群的jar包</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jars</span><br><span class="line"></span><br><span class="line"># 上传jar包</span><br><span class="line">curl -X POST -H &quot;Expect:&quot; -F &quot;jarfile&#x3D;@&#x2F;usr&#x2F;local&#x2F;flink-1.9.1&#x2F;examples&#x2F;streaming&#x2F;SocketWindowWordCount.jar&quot; http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jars&#x2F;upload</span><br><span class="line"></span><br><span class="line"># 删除已上传的jar</span><br><span class="line">curl -X DELETE http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jars&#x2F;f2dc6af3-dabd-46b7-8f79-b0973586182d_SocketWindowWordCount.jar</span><br><span class="line"></span><br><span class="line"># 查看jar的执行计划</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jars&#x2F;24b3d9d6-8c5e-4d1b-a1e3-8609e82e2681_SocketWindowWordCount.jar&#x2F;plan</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jars&#x2F;24b3d9d6-8c5e-4d1b-a1e3-8609e82e2681_SocketWindowWordCount.jar&#x2F;plan?programArg&#x3D;--hostname,cdh04,--port,9999</span><br><span class="line">program-args(用programArg代替)</span><br><span class="line">programArg    programArg&#x3D;--hostname,cdh04,--port,9999</span><br><span class="line">entry-class   org.apache.flink.streaming.examples.socket.SocketWindowWordCount</span><br><span class="line">parallelism   4</span><br><span class="line"></span><br><span class="line"># 启动jar</span><br><span class="line">curl -X POST http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jars&#x2F;24b3d9d6-8c5e-4d1b-a1e3-8609e82e2681_SocketWindowWordCount.jar&#x2F;run?programArg&#x3D;--hostname,cdh04,--port,9999</span><br><span class="line">program-args(用programArg代替)</span><br><span class="line">programArg    programArg&#x3D;--hostname,cdh04,--port,9999</span><br><span class="line">entryClass   org.apache.flink.streaming.examples.socket.SocketWindowWordCount</span><br><span class="line">parallelism   4</span><br><span class="line">allowNonRestoredState(无法从保存点启动作业时是否拒绝提交作业)    true&#x2F;false</span><br><span class="line">savepointPath(保存点)    hdfs:&#x2F;&#x2F;path</span><br><span class="line"></span><br><span class="line"># 查看JM的配置信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobmanager&#x2F;config</span><br><span class="line"></span><br><span class="line"># 查看JM监控指标信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobmanager&#x2F;metrics</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobmanager&#x2F;metrics?get&#x3D;Status.JVM.ClassLoader.ClassesUnloaded</span><br><span class="line"></span><br><span class="line"># 查看所有的任务以及状态</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs</span><br><span class="line"></span><br><span class="line"># 查看任务监控指标信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;metrics</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;metrics?get&#x3D;downtime</span><br><span class="line">get</span><br><span class="line">agg</span><br><span class="line">jobs</span><br><span class="line"></span><br><span class="line"># 查看所有的任务概述信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;overview</span><br><span class="line"></span><br><span class="line"># 查看指定任务细节</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c</span><br><span class="line"></span><br><span class="line"># 取消某个任务</span><br><span class="line">curl -X PATCH http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;de67c4a9559ad0328f593da82b7b0819</span><br><span class="line">curl -X PATCH http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;de67c4a9559ad0328f593da82b7b0819?mode&#x3D;cancel</span><br><span class="line">curl -X GET http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;096ba3e7f51889568da14f5bcac2e98a&#x2F;yarn-cancel</span><br><span class="line"></span><br><span class="line"># 返回作业累计器</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;accumulators</span><br><span class="line"></span><br><span class="line"># 返回作业检查点统计信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;checkpoints</span><br><span class="line"></span><br><span class="line"># 返回检查点配置</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;checkpoints&#x2F;config</span><br><span class="line"></span><br><span class="line"># 返回检查点的详细信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;checkpoints&#x2F;details&#x2F;:checkpointid</span><br><span class="line"></span><br><span class="line"># 返回任务及其子任务的检查点统计信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;checkpoints&#x2F;details&#x2F;:checkpointid&#x2F;subtasks&#x2F;:vertexid</span><br><span class="line"></span><br><span class="line"># 返回作业的配置</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;config</span><br><span class="line"></span><br><span class="line"># 返回作业不可恢复的异常</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;exceptions</span><br><span class="line"></span><br><span class="line"># 返回作业执行的结果</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;execution-result</span><br><span class="line"></span><br><span class="line"># 返回作业指标信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;metrics</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;metrics?get&#x3D;lastCheckpointExternalPath</span><br><span class="line"></span><br><span class="line"># 返回作业的数据流计划</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;plan</span><br><span class="line"></span><br><span class="line"># 触发作业的缩放</span><br><span class="line">curl -X PATCH http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;rescaling</span><br><span class="line">&#123;&quot;errors&quot;:[&quot;Rescaling is temporarily disabled. See FLINK-12312.&quot;]&#125;</span><br><span class="line"></span><br><span class="line"># 返回重新调整操作的状态</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;rescaling&#x2F;:triggerid</span><br><span class="line"></span><br><span class="line"># 触发保存点</span><br><span class="line">curl -X POST http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;savepoints</span><br><span class="line"></span><br><span class="line"># 返回保存点操作的状态</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;savepoints&#x2F;:triggerid</span><br><span class="line"></span><br><span class="line"># 停止具有保存点的作业</span><br><span class="line">curl -X POST http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;stop</span><br><span class="line"></span><br><span class="line"># 返回任务的详细信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;vertices&#x2F;:vertexid</span><br><span class="line"></span><br><span class="line"># 返回任务的用户定义的累加器</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;vertices&#x2F;:vertexid&#x2F;accumulators</span><br><span class="line"></span><br><span class="line"># 返回作业的背压信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;vertices&#x2F;:vertexid&#x2F;backpressure</span><br><span class="line"></span><br><span class="line"># 任务指标信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;vertices&#x2F;:vertexid&#x2F;metrics</span><br><span class="line">get</span><br><span class="line"></span><br><span class="line"># 返回任务的所有子任务的所有用户定义的累加器</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;vertices&#x2F;:vertexid&#x2F;subtasks&#x2F;accumulators</span><br><span class="line"></span><br><span class="line"># 提供对聚合子任务指标信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;vertices&#x2F;:vertexid&#x2F;subtasks&#x2F;metrics</span><br><span class="line">get</span><br><span class="line">agg</span><br><span class="line">subtasks</span><br><span class="line"></span><br><span class="line"># 返回子任务当前或最新执行尝试的详细信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;vertices&#x2F;:vertexid&#x2F;subtasks&#x2F;:subtaskindex</span><br><span class="line"></span><br><span class="line"># 返回子任务执行尝试的详细信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;vertices&#x2F;:vertexid&#x2F;subtasks&#x2F;:subtaskindex&#x2F;attempts&#x2F;:attempt</span><br><span class="line"></span><br><span class="line"># 返回子任务执行尝试的累加器</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;vertices&#x2F;:vertexid&#x2F;subtasks&#x2F;:subtaskindex&#x2F;attempts&#x2F;:attempt&#x2F;accumulators</span><br><span class="line"></span><br><span class="line"># 子任务指标信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;vertices&#x2F;:vertexid&#x2F;subtasks&#x2F;:subtaskindex&#x2F;metrics</span><br><span class="line">get</span><br><span class="line"></span><br><span class="line"># 返回任务的所有子任务的时间相关信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;vertices&#x2F;:vertexid&#x2F;subtasktimes</span><br><span class="line"></span><br><span class="line"># 返回任务管理器汇总的任务信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;jobs&#x2F;275bc5b3f2791ea2131fdb87835cb21c&#x2F;vertices&#x2F;:vertexid&#x2F;taskmanagers</span><br><span class="line"></span><br><span class="line"># 返回Flink群集的概述</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;overview</span><br><span class="line"></span><br><span class="line"># 触发对保存点的处置</span><br><span class="line">curl -X POST http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;savepoint-disposal</span><br><span class="line"></span><br><span class="line"># 返回保存点处置操作的状态</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;savepoint-disposal&#x2F;:triggerid</span><br><span class="line"></span><br><span class="line"># 返回所有任务管理器的概述</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;taskmanagers</span><br><span class="line"></span><br><span class="line"># 任务管理器指标信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;taskmanagers&#x2F;metrics</span><br><span class="line">get</span><br><span class="line">agg</span><br><span class="line">taskmanagers</span><br><span class="line"></span><br><span class="line"># 返回任务管理器的详细信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;taskmanagers&#x2F;26250ba72b84e947dbbb8629f31740bd</span><br><span class="line"></span><br><span class="line"># 指定任务管理器指标信息</span><br><span class="line">curl http:&#x2F;&#x2F;cdh04:8081&#x2F;v1&#x2F;taskmanagers&#x2F;26250ba72b84e947dbbb8629f31740bd&#x2F;metrics</span><br><span class="line">get</span><br></pre></td></tr></table></figure>
+
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

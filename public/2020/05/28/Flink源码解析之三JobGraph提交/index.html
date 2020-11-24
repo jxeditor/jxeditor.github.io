@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink源码解析之三JobGraph提交
+  
+</title>
+
+<meta name="description" content="在Client端生成的两个Graph都已经生成完毕,这时候需要实现客户端到服务端的一个过渡">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink源码解析之三JobGraph提交">
+<meta property="og:url" content="http://yoursite.com/2020/05/28/Flink%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E4%B8%89JobGraph%E6%8F%90%E4%BA%A4/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="在Client端生成的两个Graph都已经生成完毕,这时候需要实现客户端到服务端的一个过渡">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-28T02:29:26.000Z">
+<meta property="article:modified_time" content="2020-07-25T09:48:23.655Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="flink">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">159</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">90</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">87</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink源码解析之三JobGraph提交" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink源码解析之三JobGraph提交
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-05-28
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>在Client端生成的两个Graph都已经生成完毕,这时候需要实现客户端到服务端的一个过渡</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="前提介绍"><a href="#前提介绍" class="headerlink" title="前提介绍"></a>前提介绍</h2><h3 id="JobClient"><a href="#JobClient" class="headerlink" title="JobClient"></a>JobClient</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">JobClient(接口)</span><br><span class="line">    ClusterClientJobClientAdapter</span><br><span class="line">        AbstractJobClusterExecutor</span><br><span class="line">        ClusterClientJobClientAdapter</span><br><span class="line">        RemoteExecutor</span><br><span class="line">    PerJobMiniClusterJobClient</span><br><span class="line">        LocalExecutor</span><br><span class="line">    </span><br><span class="line">getJobID</span><br><span class="line">getJobStatus</span><br><span class="line">cancel</span><br><span class="line">stopWithSavepoint 待savePoint停止任务</span><br><span class="line">triggerSavepoint 触发savePoint</span><br><span class="line">getAccumulators 获取作业累加器</span><br><span class="line">getJobExecutionResult 获取作业结果</span><br></pre></td></tr></table></figure>
+<h3 id="JobManagers"><a href="#JobManagers" class="headerlink" title="JobManagers"></a>JobManagers</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">在服务端,也称Master</span><br><span class="line">    协调分布式计算,负责调度任务,协调CK,协调故障恢复等</span><br><span class="line">    每一个Job至少有一个JobManager,高可用部署下会有多个JobManagers,其中一个作为leader,其余处于standby状态</span><br></pre></td></tr></table></figure>
+<h3 id="TaskManagers"><a href="#TaskManagers" class="headerlink" title="TaskManagers"></a>TaskManagers</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">在服务端,也称Worker</span><br><span class="line">    执行dataflow中的tasks(subtasks),并且缓存和交换数据streams</span><br><span class="line">    每一个Job至少会有一个TaskManager</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="提交过程"><a href="#提交过程" class="headerlink" title="提交过程"></a>提交过程</h2><h3 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">此处仅分析AbstractSessionClusterExecutor</span><br><span class="line">AbstractSessionClusterExecutor.execute()进行JobGraph生成,并获取Client进行提交</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;JobClient&gt; <span class="title">execute</span><span class="params">(<span class="meta">@Nonnull</span> <span class="keyword">final</span> Pipeline pipeline, <span class="meta">@Nonnull</span> <span class="keyword">final</span> Configuration configuration)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// 生成JobGraph</span></span><br><span class="line">    <span class="keyword">final</span> JobGraph jobGraph = ExecutorUtils.getJobGraph(pipeline, configuration);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 生成Cluster描述</span></span><br><span class="line">    <span class="keyword">try</span> (<span class="keyword">final</span> ClusterDescriptor&lt;ClusterID&gt; clusterDescriptor = clusterClientFactory.createClusterDescriptor(configuration)) &#123;</span><br><span class="line">        <span class="comment">// 获取ClusterID</span></span><br><span class="line">        <span class="keyword">final</span> ClusterID clusterID = clusterClientFactory.getClusterId(configuration);</span><br><span class="line">        checkState(clusterID != <span class="keyword">null</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 根据ClusterID获取ClusterClient</span></span><br><span class="line">        <span class="keyword">final</span> ClusterClientProvider&lt;ClusterID&gt; clusterClientProvider = clusterDescriptor.retrieve(clusterID);</span><br><span class="line">        </span><br><span class="line">        ClusterClient&lt;ClusterID&gt; clusterClient = clusterClientProvider.getClusterClient();</span><br><span class="line">        <span class="keyword">return</span> clusterClient</span><br><span class="line">                <span class="comment">// 提交任务,此处submitJob对应两种实现</span></span><br><span class="line">                <span class="comment">// MiniClusterClient</span></span><br><span class="line">                <span class="comment">// RestClusterClient</span></span><br><span class="line">                .submitJob(jobGraph)</span><br><span class="line">                .thenApplyAsync(jobID -&gt; (JobClient) <span class="keyword">new</span> ClusterClientJobClientAdapter&lt;&gt;(</span><br><span class="line">                        clusterClientProvider,</span><br><span class="line">                        jobID))</span><br><span class="line">                <span class="comment">// 运行完成</span></span><br><span class="line">                .whenComplete((ignored1, ignored2) -&gt; clusterClient.close());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="MiniClusterClient"><a href="#MiniClusterClient" class="headerlink" title="MiniClusterClient"></a>MiniClusterClient</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br></pre></td><td class="code"><pre><span class="line">本地微型集群</span><br><span class="line">根据JobGraph的信息,提取jar,生成JobFile</span><br><span class="line">并通过BlobClient上传到Cluster</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;JobID&gt; <span class="title">submitJob</span><span class="params">(<span class="meta">@Nonnull</span> JobGraph jobGraph)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> miniCluster.submitJob(jobGraph).thenApply(JobSubmissionResult::getJobID);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">MiniCluster</span><br><span class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;JobSubmissionResult&gt; <span class="title">submitJob</span><span class="params">(JobGraph jobGraph)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> CompletableFuture&lt;DispatcherGateway&gt; dispatcherGatewayFuture = getDispatcherGatewayFuture();</span><br><span class="line">    <span class="comment">// 获取Cluster地址信息</span></span><br><span class="line">    <span class="keyword">final</span> CompletableFuture&lt;InetSocketAddress&gt; blobServerAddressFuture = createBlobServerAddress(dispatcherGatewayFuture);</span><br><span class="line">    <span class="comment">// 提交jar并设置JobFile</span></span><br><span class="line">    <span class="keyword">final</span> CompletableFuture&lt;Void&gt; jarUploadFuture = uploadAndSetJobFiles(blobServerAddressFuture, jobGraph);</span><br><span class="line">    <span class="keyword">final</span> CompletableFuture&lt;Acknowledge&gt; acknowledgeCompletableFuture = jarUploadFuture</span><br><span class="line">        .thenCombine(</span><br><span class="line">            dispatcherGatewayFuture,</span><br><span class="line">            <span class="comment">// 最后交由Dispatcher类进行提交JobGraph</span></span><br><span class="line">            (Void ack, DispatcherGateway dispatcherGateway) -&gt; dispatcherGateway.submitJob(jobGraph, rpcTimeout))</span><br><span class="line">        .thenCompose(Function.identity());</span><br><span class="line">    <span class="keyword">return</span> acknowledgeCompletableFuture.thenApply(</span><br><span class="line">        (Acknowledge ignored) -&gt; <span class="keyword">new</span> JobSubmissionResult(jobGraph.getJobID()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 提交JobFile信息</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> CompletableFuture&lt;Void&gt; <span class="title">uploadAndSetJobFiles</span><span class="params">(<span class="keyword">final</span> CompletableFuture&lt;InetSocketAddress&gt; blobServerAddressFuture, <span class="keyword">final</span> JobGraph job)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> blobServerAddressFuture.thenAccept(blobServerAddress -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ClientUtils.extractAndUploadJobGraphFiles(job, () -&gt; <span class="keyword">new</span> BlobClient(blobServerAddress, miniClusterConfiguration.getConfiguration()));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FlinkException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> CompletionException(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Dispatcher</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;Acknowledge&gt; <span class="title">submitJob</span><span class="params">(JobGraph jobGraph, Time timeout)</span> </span>&#123;</span><br><span class="line">    log.info(<span class="string">&quot;Received JobGraph submission &#123;&#125; (&#123;&#125;).&quot;</span>, jobGraph.getJobID(), jobGraph.getName());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (isDuplicateJob(jobGraph.getJobID())) &#123;</span><br><span class="line">            <span class="keyword">return</span> FutureUtils.completedExceptionally(</span><br><span class="line">                <span class="keyword">new</span> DuplicateJobSubmissionException(jobGraph.getJobID()));</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isPartialResourceConfigured(jobGraph)) &#123;</span><br><span class="line">            <span class="keyword">return</span> FutureUtils.completedExceptionally(</span><br><span class="line">                <span class="keyword">new</span> JobSubmissionException(jobGraph.getJobID(), <span class="string">&quot;Currently jobs is not supported if parts of the vertices have &quot;</span> +</span><br><span class="line">                        <span class="string">&quot;resources configured. The limitation will be removed in future versions.&quot;</span>));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// 提交JobGraph</span></span><br><span class="line">            <span class="keyword">return</span> internalSubmitJob(jobGraph);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> (FlinkException e) &#123;</span><br><span class="line">        <span class="keyword">return</span> FutureUtils.completedExceptionally(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> CompletableFuture&lt;Acknowledge&gt; <span class="title">internalSubmitJob</span><span class="params">(JobGraph jobGraph)</span> </span>&#123;</span><br><span class="line">    log.info(<span class="string">&quot;Submitting job &#123;&#125; (&#123;&#125;).&quot;</span>, jobGraph.getJobID(), jobGraph.getName());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 完成提交,并启动Job</span></span><br><span class="line">    <span class="keyword">final</span> CompletableFuture&lt;Acknowledge&gt; persistAndRunFuture = waitForTerminatingJobManager(jobGraph.getJobID(), jobGraph, <span class="keyword">this</span>::persistAndRunJob)</span><br><span class="line">        .thenApply(ignored -&gt; Acknowledge.get());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> persistAndRunFuture.handleAsync((acknowledge, throwable) -&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (throwable != <span class="keyword">null</span>) &#123;</span><br><span class="line">            cleanUpJobData(jobGraph.getJobID(), <span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">final</span> Throwable strippedThrowable = ExceptionUtils.stripCompletionException(throwable);</span><br><span class="line">            log.error(<span class="string">&quot;Failed to submit job &#123;&#125;.&quot;</span>, jobGraph.getJobID(), strippedThrowable);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> CompletionException(</span><br><span class="line">                <span class="keyword">new</span> JobSubmissionException(jobGraph.getJobID(), <span class="string">&quot;Failed to submit job.&quot;</span>, strippedThrowable));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> acknowledge;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, getRpcService().getExecutor());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> CompletableFuture&lt;Void&gt; <span class="title">persistAndRunJob</span><span class="params">(JobGraph jobGraph)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    jobGraphWriter.putJobGraph(jobGraph);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启动Job</span></span><br><span class="line">    <span class="keyword">final</span> CompletableFuture&lt;Void&gt; runJobFuture = runJob(jobGraph);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> runJobFuture.whenComplete(BiConsumerWithException.unchecked((Object ignored, Throwable throwable) -&gt; &#123;</span><br><span class="line">        <span class="keyword">if</span> (throwable != <span class="keyword">null</span>) &#123;</span><br><span class="line">            jobGraphWriter.removeJobGraph(jobGraph.getJobID());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> CompletableFuture&lt;Void&gt; <span class="title">runJob</span><span class="params">(JobGraph jobGraph)</span> </span>&#123;</span><br><span class="line">    Preconditions.checkState(!jobManagerRunnerFutures.containsKey(jobGraph.getJobID()));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建JobManagerRunner</span></span><br><span class="line">    <span class="keyword">final</span> CompletableFuture&lt;JobManagerRunner&gt; jobManagerRunnerFuture = createJobManagerRunner(jobGraph);</span><br><span class="line"></span><br><span class="line">    jobManagerRunnerFutures.put(jobGraph.getJobID(), jobManagerRunnerFuture);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启动JobManagerRunner</span></span><br><span class="line">    <span class="keyword">return</span> jobManagerRunnerFuture</span><br><span class="line">        .thenApply(FunctionUtils.uncheckedFunction(<span class="keyword">this</span>::startJobManagerRunner))</span><br><span class="line">        .thenApply(FunctionUtils.nullFn())</span><br><span class="line">        .whenCompleteAsync(</span><br><span class="line">            (ignored, throwable) -&gt; &#123;</span><br><span class="line">                <span class="keyword">if</span> (throwable != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    jobManagerRunnerFutures.remove(jobGraph.getJobID());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;,</span><br><span class="line">            getMainThreadExecutor());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> CompletableFuture&lt;JobManagerRunner&gt; <span class="title">createJobManagerRunner</span><span class="params">(JobGraph jobGraph)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// RPC通信服务</span></span><br><span class="line">    <span class="keyword">final</span> RpcService rpcService = getRpcService();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 调用JobManagerRunnerFactory创建JobManagerRunnerImpl</span></span><br><span class="line">    <span class="keyword">return</span> CompletableFuture.supplyAsync(</span><br><span class="line">        CheckedSupplier.unchecked(() -&gt;</span><br><span class="line">            jobManagerRunnerFactory.createJobManagerRunner(</span><br><span class="line">                jobGraph,</span><br><span class="line">                configuration,</span><br><span class="line">                rpcService,</span><br><span class="line">                highAvailabilityServices,</span><br><span class="line">                heartbeatServices,</span><br><span class="line">                jobManagerSharedServices,</span><br><span class="line">                <span class="keyword">new</span> DefaultJobManagerJobMetricGroupFactory(jobManagerMetricGroup),</span><br><span class="line">                fatalErrorHandler)),</span><br><span class="line">        rpcService.getExecutor());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启动JobManagerRunner</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> JobManagerRunner <span class="title">startJobManagerRunner</span><span class="params">(JobManagerRunner jobManagerRunner)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> JobID jobId = jobManagerRunner.getJobID();</span><br><span class="line"></span><br><span class="line">    FutureUtils.assertNoException(</span><br><span class="line">        jobManagerRunner.getResultFuture().handleAsync(</span><br><span class="line">            (ArchivedExecutionGraph archivedExecutionGraph, Throwable throwable) -&gt; &#123;</span><br><span class="line">                <span class="comment">// check if we are still the active JobManagerRunner by checking the identity</span></span><br><span class="line">                <span class="keyword">final</span> JobManagerRunner currentJobManagerRunner = Optional.ofNullable(jobManagerRunnerFutures.get(jobId))</span><br><span class="line">                    .map(future -&gt; future.getNow(<span class="keyword">null</span>))</span><br><span class="line">                    .orElse(<span class="keyword">null</span>);</span><br><span class="line">                <span class="comment">//noinspection ObjectEquality</span></span><br><span class="line">                <span class="keyword">if</span> (jobManagerRunner == currentJobManagerRunner) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (archivedExecutionGraph != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        jobReachedGloballyTerminalState(archivedExecutionGraph);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        <span class="keyword">final</span> Throwable strippedThrowable = ExceptionUtils.stripCompletionException(throwable);</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">if</span> (strippedThrowable <span class="keyword">instanceof</span> JobNotFinishedException) &#123;</span><br><span class="line">                            jobNotFinished(jobId);</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            jobMasterFailed(jobId, strippedThrowable);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    log.debug(<span class="string">&quot;There is a newer JobManagerRunner for the job &#123;&#125;.&quot;</span>, jobId);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;, getMainThreadExecutor()));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 启动,使用选举器去启动JobManagerRunner</span></span><br><span class="line">    jobManagerRunner.start();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> jobManagerRunner;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="RestClusterClient"><a href="#RestClusterClient" class="headerlink" title="RestClusterClient"></a>RestClusterClient</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br></pre></td><td class="code"><pre><span class="line">HTTP REST请求通信</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;JobID&gt; <span class="title">submitJob</span><span class="params">(<span class="meta">@Nonnull</span> JobGraph jobGraph)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// JobGraph落地成JobGraphFile</span></span><br><span class="line">    CompletableFuture&lt;java.nio.file.Path&gt; jobGraphFileFuture = CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> java.nio.file.Path jobGraphFile = Files.createTempFile(<span class="string">&quot;flink-jobgraph&quot;</span>, <span class="string">&quot;.bin&quot;</span>);</span><br><span class="line">            <span class="keyword">try</span> (ObjectOutputStream objectOut = <span class="keyword">new</span> ObjectOutputStream(Files.newOutputStream(jobGraphFile))) &#123;</span><br><span class="line">                objectOut.writeObject(jobGraph);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> jobGraphFile;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> CompletionException(<span class="keyword">new</span> FlinkException(<span class="string">&quot;Failed to serialize JobGraph.&quot;</span>, e));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, executorService);</span><br><span class="line"></span><br><span class="line">    CompletableFuture&lt;Tuple2&lt;JobSubmitRequestBody, Collection&lt;FileUpload&gt;&gt;&gt; requestFuture = jobGraphFileFuture.thenApply(jobGraphFile -&gt; &#123;</span><br><span class="line">        <span class="comment">// JarFile名称</span></span><br><span class="line">        List&lt;String&gt; jarFileNames = <span class="keyword">new</span> ArrayList&lt;&gt;(<span class="number">8</span>);</span><br><span class="line">        List&lt;JobSubmitRequestBody.DistributedCacheFile&gt; artifactFileNames = <span class="keyword">new</span> ArrayList&lt;&gt;(<span class="number">8</span>);</span><br><span class="line">        <span class="comment">// 需要上传的File集合</span></span><br><span class="line">        Collection&lt;FileUpload&gt; filesToUpload = <span class="keyword">new</span> ArrayList&lt;&gt;(<span class="number">8</span>);</span><br><span class="line"></span><br><span class="line">        filesToUpload.add(<span class="keyword">new</span> FileUpload(jobGraphFile, RestConstants.CONTENT_TYPE_BINARY));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 添加Jar到FileUpload集合中</span></span><br><span class="line">        <span class="keyword">for</span> (Path jar : jobGraph.getUserJars()) &#123;</span><br><span class="line">            jarFileNames.add(jar.getName());</span><br><span class="line">            filesToUpload.add(<span class="keyword">new</span> FileUpload(Paths.get(jar.toUri()), RestConstants.CONTENT_TYPE_JAR));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 添加artifacts到FileUpload集合</span></span><br><span class="line">        <span class="keyword">for</span> (Map.Entry&lt;String, DistributedCache.DistributedCacheEntry&gt; artifacts : jobGraph.getUserArtifacts().entrySet()) &#123;</span><br><span class="line">            <span class="keyword">final</span> Path artifactFilePath = <span class="keyword">new</span> Path(artifacts.getValue().filePath);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// Only local artifacts need to be uploaded.</span></span><br><span class="line">                <span class="comment">// 只添加本地的artifacts</span></span><br><span class="line">                <span class="keyword">if</span> (!artifactFilePath.getFileSystem().isDistributedFS()) &#123;</span><br><span class="line">                    artifactFileNames.add(<span class="keyword">new</span> JobSubmitRequestBody.DistributedCacheFile(artifacts.getKey(), artifactFilePath.getName()));</span><br><span class="line">                    filesToUpload.add(<span class="keyword">new</span> FileUpload(Paths.get(artifacts.getValue().filePath), RestConstants.CONTENT_TYPE_BINARY));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> CompletionException(</span><br><span class="line">                    <span class="keyword">new</span> FlinkException(<span class="string">&quot;Failed to get the FileSystem of artifact &quot;</span> + artifactFilePath + <span class="string">&quot;.&quot;</span>, e));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 封装成requestBody</span></span><br><span class="line">        <span class="keyword">final</span> JobSubmitRequestBody requestBody = <span class="keyword">new</span> JobSubmitRequestBody(</span><br><span class="line">            jobGraphFile.getFileName().toString(),</span><br><span class="line">            jarFileNames,</span><br><span class="line">            artifactFileNames);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 返回(请求主题,FileUpload集合)</span></span><br><span class="line">        <span class="keyword">return</span> Tuple2.of(requestBody, Collections.unmodifiableCollection(filesToUpload));</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> CompletableFuture&lt;JobSubmitResponseBody&gt; submissionFuture = requestFuture.thenCompose(</span><br><span class="line">        <span class="comment">// 发送请求</span></span><br><span class="line">        requestAndFileUploads -&gt; sendRetriableRequest(</span><br><span class="line">            JobSubmitHeaders.getInstance(),</span><br><span class="line">            EmptyMessageParameters.getInstance(),</span><br><span class="line">            requestAndFileUploads.f0,</span><br><span class="line">            requestAndFileUploads.f1,</span><br><span class="line">            isConnectionProblemOrServiceUnavailable())</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除临时文件</span></span><br><span class="line">    submissionFuture</span><br><span class="line">        .thenCombine(jobGraphFileFuture, (ignored, jobGraphFile) -&gt; jobGraphFile)</span><br><span class="line">        .thenAccept(jobGraphFile -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Files.delete(jobGraphFile);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            LOG.warn(<span class="string">&quot;Could not delete temporary file &#123;&#125;.&quot;</span>, jobGraphFile, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 返回提交结果</span></span><br><span class="line">    <span class="keyword">return</span> submissionFuture</span><br><span class="line">        .thenApply(ignore -&gt; jobGraph.getJobID())</span><br><span class="line">        .exceptionally(</span><br><span class="line">            (Throwable throwable) -&gt; &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> CompletionException(<span class="keyword">new</span> JobSubmissionException(jobGraph.getJobID(), <span class="string">&quot;Failed to submit JobGraph.&quot;</span>, ExceptionUtils.stripCompletionException(throwable)));</span><br><span class="line">            &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送请求</span></span><br><span class="line"><span class="keyword">private</span> &lt;M extends MessageHeaders&lt;R, P, U&gt;, U extends MessageParameters, R extends RequestBody, P extends ResponseBody&gt; CompletableFuture&lt;P&gt;</span><br><span class="line">	sendRetriableRequest(M messageHeaders, U messageParameters, R request, Collection&lt;FileUpload&gt; filesToUpload, Predicate&lt;Throwable&gt; retryPredicate) &#123;</span><br><span class="line">    <span class="keyword">return</span> retry(() -&gt; getWebMonitorBaseUrl().thenCompose(webMonitorBaseUrl -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 通过RestClient发送请求</span></span><br><span class="line">            <span class="keyword">return</span> restClient.sendRequest(webMonitorBaseUrl.getHost(), webMonitorBaseUrl.getPort(), messageHeaders, messageParameters, request, filesToUpload);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> CompletionException(e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;), retryPredicate);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">可以看到,Flink实际提交JobGraph有两种模式</span><br><span class="line">Mini</span><br><span class="line">    在本地测试运行时是开启了一个BLOB服务端进行对JobGraph信息的接收</span><br><span class="line">    使用BLOBClient进行提交</span><br><span class="line">    提交完之后直接启动该Job</span><br><span class="line">Rest</span><br><span class="line">    而实际部署环境则是通过Rest请求进行提交</span><br><span class="line">    由服务端去响应任务</span><br><span class="line">实际提交的信息则是从JobGraph提取出来的Jars和GraphFiles</span><br><span class="line"></span><br><span class="line">至此Client方面的点已经梳理一遍了,关于对Job的取消,Job状态的获取</span><br><span class="line">可以详细阅读RestClusterClient,同样是发送Rest请求</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

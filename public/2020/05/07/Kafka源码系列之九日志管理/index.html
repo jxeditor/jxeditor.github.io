@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Kafka源码系列之九日志管理
+  
+</title>
+
+<meta name="description" content="此日志不是Kafka本身日志,介绍Kafka底层是如何存储日志数据的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka源码系列之九日志管理">
+<meta property="og:url" content="http://yoursite.com/2020/05/07/Kafka%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B9%9D%E6%97%A5%E5%BF%97%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="此日志不是Kafka本身日志,介绍Kafka底层是如何存储日志数据的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-07T09:16:34.000Z">
+<meta property="article:modified_time" content="2020-07-25T09:48:23.668Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="kafka">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">159</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">90</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">87</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Kafka源码系列之九日志管理" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Kafka源码系列之九日志管理
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-05-07
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/" rel="tag">kafka</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>此日志不是Kafka本身日志,介绍Kafka底层是如何存储日志数据的</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="日志的基本概念"><a href="#日志的基本概念" class="headerlink" title="日志的基本概念"></a>日志的基本概念</h2><p><a target="_blank" rel="noopener" href="https://jxeditor.github.io/2018/01/25/Kafka%E7%9A%84%E6%A6%82%E5%BF%B5%E6%80%A7%E7%9F%A5%E8%AF%86%E6%95%B4%E5%90%88/">传送门</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">在[Kafka的概念性知识整合]一文有细致的介绍,本文不再赘述</span><br><span class="line"></span><br><span class="line">副本概念:(假设有3个副本)</span><br><span class="line">    每个Partition都会有3个副本,三个副本在不同的Broker上</span><br><span class="line">    三个副本中会选举出来一个Leader,另外俩个就是Follower</span><br><span class="line">    Topic的读写都是在Leader上进行,Follower从Leader同步</span><br><span class="line">Follower不支持读写,为了保证数据一致性</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="日志管理"><a href="#日志管理" class="headerlink" title="日志管理"></a>日志管理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LogManager主要负责日志创建,检索,清理</span><br><span class="line">日志读写操作由日志实例对象Log来处理</span><br></pre></td></tr></table></figure>
+<h3 id="初始化LogManager"><a href="#初始化LogManager" class="headerlink" title="初始化LogManager"></a>初始化LogManager</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br></pre></td><td class="code"><pre><span class="line">logManager = LogManager(config, initialOfflineDirs, zkClient, brokerState, kafkaScheduler, time, brokerTopicStats, logDirFailureChannel)</span><br><span class="line"></span><br><span class="line">LogManager.apply()</span><br><span class="line"></span><br><span class="line">class LogManager(logDirs: Seq[File],</span><br><span class="line">     initialOfflineDirs: Seq[File],</span><br><span class="line">     val topicConfigs: Map[String, LogConfig], </span><br><span class="line">     val initialDefaultConfig: LogConfig,</span><br><span class="line">     val cleanerConfig: CleanerConfig,</span><br><span class="line">     recoveryThreadsPerDataDir: Int,</span><br><span class="line">     val flushCheckMs: Long,</span><br><span class="line">     val flushRecoveryOffsetCheckpointMs: Long,</span><br><span class="line">     val flushStartOffsetCheckpointMs: Long,</span><br><span class="line">     val retentionCheckMs: Long,</span><br><span class="line">     val maxPidExpirationMs: Int,</span><br><span class="line">     scheduler: Scheduler,</span><br><span class="line">     val brokerState: BrokerState,</span><br><span class="line">     brokerTopicStats: BrokerTopicStats,</span><br><span class="line">     logDirFailureChannel: LogDirFailureChannel,</span><br><span class="line">     time: Time) extends Logging with KafkaMetricsGroup &#123;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 检查点表示日志已经刷新到磁盘的位置,用于数据恢复</span></span><br><span class="line">  val RecoveryPointCheckpointFile = <span class="string">&quot;recovery-point-offset-checkpoint&quot;</span> <span class="comment">// 检查点文件</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">// 分区与日志实例的对应关系</span></span><br><span class="line">  <span class="keyword">private</span> val currentLogs = <span class="keyword">new</span> Pool[TopicPartition, Log]()</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 检查日志目录</span></span><br><span class="line">  <span class="keyword">private</span> val _liveLogDirs: ConcurrentLinkedQueue[File] = createAndValidateLogDirs(logDirs, initialOfflineDirs)</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 每个数据目录都有一个检查点文件,存储这个数据目录下所有分区的检查点信息</span></span><br><span class="line">  <span class="meta">@volatile</span> <span class="keyword">private</span> <span class="keyword">var</span> recoveryPointCheckpoints = liveLogDirs.map(dir =&gt;</span><br><span class="line">    (dir, <span class="keyword">new</span> OffsetCheckpointFile(<span class="keyword">new</span> File(dir, RecoveryPointCheckpointFile), logDirFailureChannel))).toMap</span><br><span class="line">    </span><br><span class="line">  <span class="comment">// 创建指定的数据目录,并做相应的检查</span></span><br><span class="line">  <span class="comment">// 确保数据,目录中没有重复的数据目录</span></span><br><span class="line">  <span class="comment">// 数据不存在的话就创建相应的目录</span></span><br><span class="line">  <span class="comment">// 检查每个目录路径是否是可读的</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> def <span class="title">createAndValidateLogDirs</span><span class="params">(dirs: Seq[File], initialOfflineDirs: Seq[File])</span>: ConcurrentLinkedQueue[File] </span>= &#123;</span><br><span class="line">    val liveLogDirs = <span class="keyword">new</span> ConcurrentLinkedQueue[File]()</span><br><span class="line">    val canonicalPaths = mutable.HashSet.empty[String]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (dir &lt;- dirs) &#123;</span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (initialOfflineDirs.contains(dir))</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> IOException(s<span class="string">&quot;Failed to load $&#123;dir.getAbsolutePath&#125; during broker startup&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!dir.exists) &#123;</span><br><span class="line">          info(s<span class="string">&quot;Log directory $&#123;dir.getAbsolutePath&#125; not found, creating it.&quot;</span>)</span><br><span class="line">          val created = dir.mkdirs()</span><br><span class="line">          <span class="keyword">if</span> (!created)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IOException(s<span class="string">&quot;Failed to create data directory $&#123;dir.getAbsolutePath&#125;&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!dir.isDirectory || !dir.canRead)</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> IOException(s<span class="string">&quot;$&#123;dir.getAbsolutePath&#125; is not a readable log directory.&quot;</span>)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!canonicalPaths.add(dir.getCanonicalPath))</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> KafkaException(s<span class="string">&quot;Duplicate log directory found: $&#123;dirs.mkString(&quot;</span>, <span class="string">&quot;)&#125;&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        liveLogDirs.add(dir)</span><br><span class="line">      &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> e: IOException =&gt;</span><br><span class="line">          logDirFailureChannel.maybeAddOfflineLogDir(dir.getAbsolutePath, s<span class="string">&quot;Failed to create or validate data directory $&#123;dir.getAbsolutePath&#125;&quot;</span>, e)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (liveLogDirs.isEmpty) &#123;</span><br><span class="line">      fatal(s<span class="string">&quot;Shutdown broker because none of the specified log dirs from $&#123;dirs.mkString(&quot;</span>, <span class="string">&quot;)&#125; can be created or validated&quot;</span>)</span><br><span class="line">      Exit.halt(<span class="number">1</span>)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    liveLogDirs</span><br><span class="line">  &#125;  </span><br><span class="line">    </span><br><span class="line">  <span class="comment">// 加载所有的日志,而每个日志也会调用loadSegments()方法加载所有的分段,过程比较慢,所以每个日志都会创建一个单独的线程</span></span><br><span class="line">  <span class="comment">// 日志管理器采用线程池提交任务,表示不用的任务可以同时运行</span></span><br><span class="line">  <span class="function"><span class="keyword">private</span> def <span class="title">loadLogs</span><span class="params">()</span>: Unit </span>= &#123;</span><br><span class="line">    info(<span class="string">&quot;Loading logs.&quot;</span>)</span><br><span class="line">    val startMs = time.milliseconds</span><br><span class="line">    val threadPools = ArrayBuffer.empty[ExecutorService]</span><br><span class="line">    val offlineDirs = mutable.Set.empty[(String, IOException)]</span><br><span class="line">    val jobs = mutable.Map.empty[File, Seq[Future[_]]]</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (dir &lt;- liveLogDirs) &#123; <span class="comment">// 处理每一个日志目录</span></span><br><span class="line">      <span class="keyword">try</span> &#123;</span><br><span class="line">        val pool = Executors.newFixedThreadPool(numRecoveryThreadsPerDataDir) <span class="comment">// 默认为1</span></span><br><span class="line">        threadPools.append(pool) <span class="comment">// 每个对应的数据目录都有一个线程池</span></span><br><span class="line"></span><br><span class="line">        val cleanShutdownFile = <span class="keyword">new</span> File(dir, Log.CleanShutdownFile)</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (cleanShutdownFile.exists) &#123;</span><br><span class="line">          debug(s<span class="string">&quot;Found clean shutdown file. Skipping recovery for all logs in data directory: $&#123;dir.getAbsolutePath&#125;&quot;</span>)</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">// log recovery itself is being performed by `Log` class during initialization</span></span><br><span class="line">          brokerState.newState(RecoveringFromUncleanShutdown)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> recoveryPoints = Map[TopicPartition, Long]()</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          recoveryPoints = <span class="keyword">this</span>.recoveryPointCheckpoints(dir).read <span class="comment">// 读取检查点文件</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">          <span class="keyword">case</span> e: Exception =&gt;</span><br><span class="line">            warn(<span class="string">&quot;Error occurred while reading recovery-point-offset-checkpoint file of directory &quot;</span> + dir, e)</span><br><span class="line">            warn(<span class="string">&quot;Resetting the recovery checkpoint to 0&quot;</span>)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> logStartOffsets = Map[TopicPartition, Long]()</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          logStartOffsets = <span class="keyword">this</span>.logStartOffsetCheckpoints(dir).read</span><br><span class="line">        &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">          <span class="keyword">case</span> e: Exception =&gt;</span><br><span class="line">            warn(<span class="string">&quot;Error occurred while reading log-start-offset-checkpoint file of directory &quot;</span> + dir, e)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        val jobsForDir = <span class="keyword">for</span> &#123;</span><br><span class="line">          dirContent &lt;- Option(dir.listFiles).toList <span class="comment">// 数据目录下所有日志目录</span></span><br><span class="line">          logDir &lt;- dirContent <span class="keyword">if</span> logDir.isDirectory <span class="comment">// 日志目录下每个分区目录</span></span><br><span class="line">        &#125; yield &#123;</span><br><span class="line">          CoreUtils.runnable &#123; <span class="comment">// 每个分区的目录都对应了一个线程</span></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">              loadLog(logDir, recoveryPoints, logStartOffsets)</span><br><span class="line">            &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">              <span class="keyword">case</span> e: IOException =&gt;</span><br><span class="line">                offlineDirs.add((dir.getAbsolutePath, e)) <span class="comment">// 失效目录</span></span><br><span class="line">                error(<span class="string">&quot;Error while loading log dir &quot;</span> + dir.getAbsolutePath, e)</span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        jobs(cleanShutdownFile) = jobsForDir.map(pool.submit) <span class="comment">// 提交任务</span></span><br><span class="line">      &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">        <span class="keyword">case</span> e: IOException =&gt;</span><br><span class="line">          offlineDirs.add((dir.getAbsolutePath, e))</span><br><span class="line">          error(<span class="string">&quot;Error while loading log dir &quot;</span> + dir.getAbsolutePath, e)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="keyword">for</span> ((cleanShutdownFile, dirJobs) &lt;- jobs) &#123;</span><br><span class="line">        dirJobs.foreach(_.get)</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">          cleanShutdownFile.delete()</span><br><span class="line">        &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">          <span class="keyword">case</span> e: IOException =&gt;</span><br><span class="line">            offlineDirs.add((cleanShutdownFile.getParent, e))</span><br><span class="line">            error(s<span class="string">&quot;Error while deleting the clean shutdown file $cleanShutdownFile&quot;</span>, e)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      offlineDirs.foreach &#123; <span class="keyword">case</span> (dir, e) =&gt;</span><br><span class="line">        logDirFailureChannel.maybeAddOfflineLogDir(dir, s<span class="string">&quot;Error while deleting the clean shutdown file in dir $dir&quot;</span>, e)</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">      <span class="keyword">case</span> e: ExecutionException =&gt;</span><br><span class="line">        error(<span class="string">&quot;There was an error in one of the threads during logs loading: &quot;</span> + e.getCause)</span><br><span class="line">        <span class="keyword">throw</span> e.getCause</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">      threadPools.foreach(_.shutdown())</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    info(s<span class="string">&quot;Logs loading complete in $&#123;time.milliseconds - startMs&#125; ms.&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="启动LogManager"><a href="#启动LogManager" class="headerlink" title="启动LogManager"></a>启动LogManager</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// KafkaServer</span></span><br><span class="line">logManager.startup()</span><br><span class="line"></span><br><span class="line"><span class="function">def <span class="title">startup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">/* 安排清理任务以删除旧日志 */</span></span><br><span class="line">    <span class="keyword">if</span> (scheduler != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="comment">// 定时清理过期的日志segment,并维护日志的大小</span></span><br><span class="line">      info(<span class="string">&quot;Starting log cleanup with a period of %d ms.&quot;</span>.format(retentionCheckMs))</span><br><span class="line">      scheduler.schedule(<span class="string">&quot;kafka-log-retention&quot;</span>,</span><br><span class="line">                         cleanupLogs _,</span><br><span class="line">                         delay = InitialTaskDelayMs,</span><br><span class="line">                         period = retentionCheckMs,</span><br><span class="line">                         TimeUnit.MILLISECONDS)</span><br><span class="line">      <span class="comment">// 定时刷新还没有写到磁盘上的日志</span></span><br><span class="line">      info(<span class="string">&quot;Starting log flusher with a default period of %d ms.&quot;</span>.format(flushCheckMs))</span><br><span class="line">      scheduler.schedule(<span class="string">&quot;kafka-log-flusher&quot;</span>,</span><br><span class="line">                         flushDirtyLogs _,</span><br><span class="line">                         delay = InitialTaskDelayMs,</span><br><span class="line">                         period = flushCheckMs,</span><br><span class="line">                         TimeUnit.MILLISECONDS)</span><br><span class="line">      <span class="comment">// 定时将所有数据目录所有日志的检查点写到检查点文件中</span></span><br><span class="line">      scheduler.schedule(<span class="string">&quot;kafka-recovery-point-checkpoint&quot;</span>,</span><br><span class="line">                         checkpointLogRecoveryOffsets _,</span><br><span class="line">                         delay = InitialTaskDelayMs,</span><br><span class="line">                         period = flushRecoveryOffsetCheckpointMs,</span><br><span class="line">                         TimeUnit.MILLISECONDS)</span><br><span class="line">      scheduler.schedule(<span class="string">&quot;kafka-log-start-offset-checkpoint&quot;</span>,</span><br><span class="line">                         checkpointLogStartOffsets _,</span><br><span class="line">                         delay = InitialTaskDelayMs,</span><br><span class="line">                         period = flushStartOffsetCheckpointMs,</span><br><span class="line">                         TimeUnit.MILLISECONDS)</span><br><span class="line">      <span class="comment">// 定时删除标记为delete的日志文件</span></span><br><span class="line">      scheduler.schedule(<span class="string">&quot;kafka-delete-logs&quot;</span>, <span class="comment">// will be rescheduled after each delete logs with a dynamic period</span></span><br><span class="line">                         deleteLogs _,</span><br><span class="line">                         delay = InitialTaskDelayMs,</span><br><span class="line">                         unit = TimeUnit.MILLISECONDS)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 如果设置为true,自动清理compaction类型的topic</span></span><br><span class="line">    <span class="keyword">if</span> (cleanerConfig.enableCleaner)</span><br><span class="line">      cleaner.startup()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="检查点文件"><a href="#检查点文件" class="headerlink" title="检查点文件"></a>检查点文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Kafka启动时创建LogManager,读取检查点文件,并把每个分区对应的检查点作为日志的恢复点,最后创建分区对应的Log实例</span><br><span class="line">消费追加到分区对应的日志,在刷新日志时,将最新的偏移量作为日志的检查点</span><br><span class="line">    刷新日志时,更新检查点位置</span><br><span class="line">LogManager会启动一个定时任务,读取所有日志的检查点,并写入全局的检查点文件</span><br><span class="line">    定时将检查点的位置更新到检查点文件中</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="日志刷新"><a href="#日志刷新" class="headerlink" title="日志刷新"></a>日志刷新</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">LogManager会定时调度flushDirtyLogs(),定期将缓存中的数据刷新到磁盘中</span><br><span class="line">    如果缓存数据在flush到磁盘之前,Broker宕机,数据就会丢失</span><br><span class="line">Kafka两种策略,将日志刷新到磁盘上</span><br><span class="line">    时间策略(log.flush.interval.ms)默认无限大,即选择大小策略</span><br><span class="line">    大小策略(log.flush.interval.messages)当未刷新的数据超过这个值后,进行刷新</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 周期调度</span><br><span class="line">private def flushDirtyLogs(): Unit &#x3D; &#123;</span><br><span class="line">  debug(&quot;Checking for dirty logs to flush...&quot;)</span><br><span class="line">  for ((topicPartition, log) &lt;- currentLogs.toList ++ futureLogs.toList) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">      &#x2F;&#x2F; 每个日志的刷新时间不相同</span><br><span class="line">      val timeSinceLastFlush &#x3D; time.milliseconds - log.lastFlushTime</span><br><span class="line">      debug(&quot;Checking if flush is needed on &quot; + topicPartition.topic + &quot; flush interval  &quot; + log.config.flushMs +</span><br><span class="line">            &quot; last flushed &quot; + log.lastFlushTime + &quot; time since last flush: &quot; + timeSinceLastFlush)</span><br><span class="line">      if(timeSinceLastFlush &gt;&#x3D; log.config.flushMs)</span><br><span class="line">        &#x2F;&#x2F; 最终还是调用Log实例的flush进行刷新操作</span><br><span class="line">        log.flush</span><br><span class="line">    &#125; catch &#123;</span><br><span class="line">      case e: Throwable &#x3D;&gt;</span><br><span class="line">        error(&quot;Error flushing topic &quot; + topicPartition.topic, e)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">def flush(offset: Long) : Unit &#x3D; &#123;</span><br><span class="line">  maybeHandleIOException(s&quot;Error while flushing log for $topicPartition in dir $&#123;dir.getParent&#125; with offset $offset&quot;) &#123;</span><br><span class="line">    if (offset &lt;&#x3D; this.recoveryPoint)</span><br><span class="line">      return</span><br><span class="line">    debug(s&quot;Flushing log up to offset $offset, last flushed: $lastFlushTime,  current time: $&#123;time.milliseconds()&#125;, &quot; +</span><br><span class="line">      s&quot;unflushed: $unflushedMessages&quot;)</span><br><span class="line">    &#x2F;&#x2F; 刷新检查点到最新偏移量之间的所有日志分段</span><br><span class="line">    for (segment &lt;- logSegments(this.recoveryPoint, offset))</span><br><span class="line">      segment.flush() &#x2F;&#x2F; 刷新数据文件以及索引文件(调用操作系统的fsync)</span><br><span class="line">    lock synchronized &#123;</span><br><span class="line">      checkIfMemoryMappedBufferClosed()</span><br><span class="line">      if (offset &gt; this.recoveryPoint) &#123; &#x2F;&#x2F; 如果检查点比最新偏移量小,直接赋值</span><br><span class="line">        this.recoveryPoint &#x3D; offset</span><br><span class="line">        lastFlushedTime.set(time.milliseconds) &#x2F;&#x2F; 更新刷新时间</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="日志清理"><a href="#日志清理" class="headerlink" title="日志清理"></a>日志清理</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">删除: 超过时间或大小阈值的旧segment,直接进行删除</span><br><span class="line">压缩: 不直接删除日志分段,而是采用合并压缩的方式进行</span><br><span class="line"></span><br><span class="line">def cleanupLogs() &#123;</span><br><span class="line">    debug(&quot;Beginning log cleanup...&quot;)</span><br><span class="line">    var total &#x3D; 0</span><br><span class="line">    val startMs &#x3D; time.milliseconds</span><br><span class="line"></span><br><span class="line">    &#x2F;&#x2F; clean current logs.</span><br><span class="line">    val deletableLogs &#x3D; &#123;</span><br><span class="line">      if (cleaner !&#x3D; null) &#123;</span><br><span class="line">        cleaner.pauseCleaningForNonCompactedPartitions()</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        currentLogs.filter &#123;</span><br><span class="line">          case (_, log) &#x3D;&gt; !log.config.compact</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    try &#123;</span><br><span class="line">      deletableLogs.foreach &#123;</span><br><span class="line">        case (topicPartition, log) &#x3D;&gt;</span><br><span class="line">          debug(&quot;Garbage collecting &#39;&quot; + log.name + &quot;&#39;&quot;)</span><br><span class="line">          &#x2F;&#x2F; 清理过期的segment</span><br><span class="line">          total +&#x3D; log.deleteOldSegments()</span><br><span class="line"></span><br><span class="line">          val futureLog &#x3D; futureLogs.get(topicPartition)</span><br><span class="line">          if (futureLog !&#x3D; null) &#123;</span><br><span class="line">            &#x2F;&#x2F; clean future logs</span><br><span class="line">            debug(&quot;Garbage collecting future log &#39;&quot; + futureLog.name + &quot;&#39;&quot;)</span><br><span class="line">            total +&#x3D; futureLog.deleteOldSegments()</span><br><span class="line">          &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; finally &#123;</span><br><span class="line">      if (cleaner !&#x3D; null) &#123;</span><br><span class="line">        cleaner.resumeCleaning(deletableLogs.map(_._1))</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    debug(&quot;Log cleanup completed. &quot; + total + &quot; files deleted in &quot; +</span><br><span class="line">                  (time.milliseconds - startMs) &#x2F; 1000 + &quot; seconds&quot;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; segment保存时间超过设置的时间,进行删除</span><br><span class="line">&#x2F;&#x2F; 如果当前最新的日志大小加上下一个即将删除的segment分段的大小超过阈值,那么就允许删除该segment</span><br><span class="line">def deleteOldSegments(): Int &#x3D; &#123;</span><br><span class="line">  if (config.delete) &#123;</span><br><span class="line">    deleteRetentionMsBreachedSegments() + deleteRetentionSizeBreachedSegments() + deleteLogStartOffsetBreachedSegments()</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    deleteLogStartOffsetBreachedSegments()</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

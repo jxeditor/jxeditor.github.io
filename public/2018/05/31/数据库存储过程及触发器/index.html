@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    数据库存储过程及触发器
+  
+</title>
+
+<meta name="description" content="存储过程和触发器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据库存储过程及触发器">
+<meta property="og:url" content="http://yoursite.com/2018/05/31/%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B%E5%8F%8A%E8%A7%A6%E5%8F%91%E5%99%A8/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="存储过程和触发器">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2018-05-31T13:20:29.000Z">
+<meta property="article:modified_time" content="2020-07-25T09:48:23.707Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">159</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">90</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">87</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-数据库存储过程及触发器" class="article article-type-post">
+  
+    <h1 class="article-header">
+      数据库存储过程及触发器
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2018-05-31
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/mysql/" rel="tag">mysql</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>存储过程和触发器</p>
+</blockquote>
+<a id="more"></a>
+
+<h3 id="一-关键语法"><a href="#一-关键语法" class="headerlink" title="一.关键语法"></a>一.关键语法</h3><ul>
+<li><strong>DELIMITER</strong> 声明语句结束符</li>
+<li><strong>CREATE PROCEDURE</strong> 声明存储过程</li>
+<li><strong>BEGIN … END</strong> 储存过程开始和结束符号</li>
+<li><strong>SET</strong> 变量赋值</li>
+<li><strong>DECLARE</strong> 变量定义</li>
+<li><strong>DEFINER</strong> 存储过程的权限</li>
+</ul>
+<hr>
+<h3 id="二-入门实例"><a href="#二-入门实例" class="headerlink" title="二.入门实例"></a>二.入门实例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER $$</span><br><span class="line">USE &#96;test&#96;$$</span><br><span class="line">DROP PROCEDURE IF EXISTS &#96;test&#96;$$</span><br><span class="line"></span><br><span class="line">CREATE DEFINER&#x3D;&#96;root&#96;@&#96;localhost&#96; PROCEDURE &#96;test&#96;()</span><br><span class="line">BEGIN</span><br><span class="line">SELECT COUNT(*) FROM &#96;test&#96;.&#96;info&#96;;</span><br><span class="line">END$$</span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="三-存储过程使用"><a href="#三-存储过程使用" class="headerlink" title="三.存储过程使用"></a>三.存储过程使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">CALL test(); 调用存储过程</span><br><span class="line">SET @ip&#x3D;1; 存储过程外定义变量</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="四-参数"><a href="#四-参数" class="headerlink" title="四.参数"></a>四.参数</h3><ul>
+<li><strong>IN</strong> 输入参数,表示该参数的值必须在调用存储过程时指定，在存储过程中修改该参数的值不能被返回，为默认值</li>
+<li><strong>OUT</strong> 输出参数,该值可在存储过程内部被改变，并可返回</li>
+<li><strong>INOUT</strong> 输入输出参数,调用时指定，并且可被改变和返回</li>
+</ul>
+<h4 id="1-IN参数实例"><a href="#1-IN参数实例" class="headerlink" title="1.IN参数实例"></a>1.IN参数实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">set @ip&#x3D;1;</span><br><span class="line"></span><br><span class="line">DELIMITER $$</span><br><span class="line">USE &#96;test&#96;$$</span><br><span class="line">DROP PROCEDURE IF EXISTS &#96;test&#96;$$</span><br><span class="line"></span><br><span class="line">CREATE DEFINER&#x3D;&#96;root&#96;@&#96;localhost&#96; PROCEDURE &#96;test&#96;(IN ip INT)</span><br><span class="line">BEGIN</span><br><span class="line">SELECT ip; &#x2F;&#x2F; 1</span><br><span class="line">SET ip&#x3D;10;</span><br><span class="line">SELECT ip; &#x2F;&#x2F; 10</span><br><span class="line">END$$</span><br><span class="line"></span><br><span class="line">DELIMITER ;</span><br><span class="line"></span><br><span class="line">CALL test(@ip);</span><br><span class="line"></span><br><span class="line">select @ip; &#x2F;&#x2F; 1</span><br></pre></td></tr></table></figure>
+<p>外影响内,内并不影响外的值</p>
+<h4 id="2-OUT参数实例"><a href="#2-OUT参数实例" class="headerlink" title="2.OUT参数实例"></a>2.OUT参数实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">set @ip&#x3D;1;</span><br><span class="line"></span><br><span class="line">DELIMITER $$</span><br><span class="line">USE &#96;test&#96;$$</span><br><span class="line">DROP PROCEDURE IF EXISTS &#96;test&#96;$$</span><br><span class="line"></span><br><span class="line">CREATE DEFINER&#x3D;&#96;root&#96;@&#96;localhost&#96; PROCEDURE &#96;test&#96;(OUT ip INT)</span><br><span class="line">BEGIN</span><br><span class="line">SELECT ip; &#x2F;&#x2F; NULL</span><br><span class="line">SET ip&#x3D;10;</span><br><span class="line">SELECT ip; &#x2F;&#x2F; 10</span><br><span class="line">END$$</span><br><span class="line"></span><br><span class="line">DELIMITER ;</span><br><span class="line"></span><br><span class="line">CALL test(@ip);</span><br><span class="line"></span><br><span class="line">select @ip; &#x2F;&#x2F; 10</span><br></pre></td></tr></table></figure>
+<p>存储过程内的会影响外部的变量,但是外部的不会影响存储过程内的变量</p>
+<h4 id="3-INOUT参数实例"><a href="#3-INOUT参数实例" class="headerlink" title="3.INOUT参数实例"></a>3.INOUT参数实例</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">set @ip&#x3D;1;</span><br><span class="line"></span><br><span class="line">DELIMITER $$</span><br><span class="line">USE &#96;test&#96;$$</span><br><span class="line">DROP PROCEDURE IF EXISTS &#96;test&#96;$$</span><br><span class="line"></span><br><span class="line">CREATE DEFINER&#x3D;&#96;root&#96;@&#96;localhost&#96; PROCEDURE &#96;test&#96;(INOUT ip INT)</span><br><span class="line">BEGIN</span><br><span class="line">SELECT ip; &#x2F;&#x2F; 1</span><br><span class="line">SET ip&#x3D;10;</span><br><span class="line">SELECT ip; &#x2F;&#x2F; 10</span><br><span class="line">END$$</span><br><span class="line"></span><br><span class="line">DELIMITER ;</span><br><span class="line"></span><br><span class="line">CALL test(@ip);</span><br><span class="line"></span><br><span class="line">select @ip; &#x2F;&#x2F; 10</span><br></pre></td></tr></table></figure>
+<p>内外都能影响</p>
+<hr>
+<h3 id="五-变量"><a href="#五-变量" class="headerlink" title="五.变量"></a>五.变量</h3><h4 id="1-变量定义"><a href="#1-变量定义" class="headerlink" title="1.变量定义"></a>1.变量定义</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">局部变量声明一定要放在存储过程体的开始</span><br><span class="line">DECLARE l_int int unsigned default 4000000;</span><br><span class="line">DECLARE l_numeric number(8,2) DEFAULT 9.95;</span><br><span class="line">DECLARE l_date date DEFAULT &#39;1999-12-31&#39;;  </span><br><span class="line">DECLARE l_datetime datetime DEFAULT &#39;1999-12-31 23:59:59&#39;;  </span><br><span class="line">DECLARE l_varchar varchar(255) DEFAULT &#39;This will not be padded&#39;;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-变量赋值"><a href="#2-变量赋值" class="headerlink" title="2.变量赋值"></a>2.变量赋值</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">set ip &#x3D; value;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-用户变量"><a href="#3-用户变量" class="headerlink" title="3.用户变量"></a>3.用户变量</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">SELECT &#39;Hello World&#39; into @x;</span><br><span class="line">SELECT @x;</span><br><span class="line">SET @y&#x3D;&#39;Goodbye Cruel World&#39;;</span><br><span class="line">SELECT @y;</span><br><span class="line">SET @z&#x3D;1+2+3;</span><br><span class="line">SELECT @z;</span><br><span class="line">&#x2F;&#x2F; 存储过程中使用用户变量</span><br><span class="line">CREATE PROCEDURE GreetWorld() SELECT CONCAT(@greeting,&#39; World&#39;);</span><br><span class="line">SET @greeting&#x3D;&#39;Hello&#39;;</span><br><span class="line">CALL GreetWorld();  </span><br><span class="line">&#x2F;&#x2F; 存储过程间传递全局范围的用户变量</span><br><span class="line">CREATE PROCEDURE p1() SET @last_procedure&#x3D;&#39;p1&#39;;</span><br><span class="line">CREATE PROCEDURE p2() SELECT CONCAT(&#39;Last procedure was &#39;,@last_procedure);</span><br><span class="line">CALL p1();</span><br><span class="line">CALL p2();</span><br></pre></td></tr></table></figure>
+<p>注意:</p>
+<ul>
+<li>用户变量名一般以@开头</li>
+<li>滥用用户变量会导致程序难以理解及管理</li>
+</ul>
+<hr>
+<h3 id="六-注释"><a href="#六-注释" class="headerlink" title="六.注释"></a>六.注释</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER $$</span><br><span class="line">USE &#96;test&#96;$$</span><br><span class="line">DROP PROCEDURE IF EXISTS &#96;test&#96;$$</span><br><span class="line"></span><br><span class="line">CREATE DEFINER&#x3D;&#96;root&#96;@&#96;localhost&#96; PROCEDURE &#96;test&#96;(INOUT ip INT) -- 创建存储过程</span><br><span class="line">BEGIN</span><br><span class="line">SELECT ip; -- 输出 1</span><br><span class="line">&#x2F;*</span><br><span class="line">SET ip&#x3D;10;</span><br><span class="line">SELECT ip; -- 输出 10</span><br><span class="line">*&#x2F;</span><br><span class="line">END$$</span><br><span class="line"></span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="七-存储过程的增删改查"><a href="#七-存储过程的增删改查" class="headerlink" title="七.存储过程的增删改查"></a>七.存储过程的增删改查</h3><h4 id="1-创建"><a href="#1-创建" class="headerlink" title="1.创建"></a>1.创建</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CREATE DEFINER&#x3D;&#96;root&#96;@&#96;localhost&#96; PROCEDURE 存储过程名;</span><br></pre></td></tr></table></figure>
+<h4 id="2-删除"><a href="#2-删除" class="headerlink" title="2.删除"></a>2.删除</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DROP PROCEDURE 存储过程名;</span><br></pre></td></tr></table></figure>
+<h4 id="3-修改"><a href="#3-修改" class="headerlink" title="3.修改"></a>3.修改</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ALTER PROCEDURE 存储过程名</span><br></pre></td></tr></table></figure>
+<h4 id="4-查看"><a href="#4-查看" class="headerlink" title="4.查看"></a>4.查看</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">SELECT NAME FROM mysql.proc WHERE db&#x3D;&#39;数据库名&#39;;</span><br><span class="line">SELECT routine_name FROM information_schema.routines WHERE routine_schema&#x3D;&#39;数据库名&#39;;</span><br><span class="line">SHOW PROCEDURE STATUS WHERE db&#x3D;&#39;数据库名&#39;;</span><br><span class="line">SHOW CREATE PROCEDURE 数据库.存储过程名;</span><br></pre></td></tr></table></figure>
+
+<h3 id="八-存储过程的控制语句"><a href="#八-存储过程的控制语句" class="headerlink" title="八.存储过程的控制语句"></a>八.存储过程的控制语句</h3><h4 id="1-变量的作用域"><a href="#1-变量的作用域" class="headerlink" title="1.变量的作用域"></a>1.变量的作用域</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER &#x2F;&#x2F;  </span><br><span class="line">CREATE PROCEDURE proc3(OUT x1 VARCHAR(5))  </span><br><span class="line">BEGIN </span><br><span class="line">DECLARE x1 VARCHAR(5) DEFAULT &#39;outer&#39;;  </span><br><span class="line">BEGIN </span><br><span class="line">DECLARE x1 VARCHAR(5) DEFAULT &#39;inner&#39;;  </span><br><span class="line">SELECT x1; -- inner</span><br><span class="line">END;  </span><br><span class="line">SELECT x1; -- outer</span><br><span class="line">END;  </span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">DELIMITER ;  </span><br></pre></td></tr></table></figure>
+<p>只在自已的定义域中有效,出了定义域无效,可以通过out参数或者将其值指派给会话变量来保存其值。</p>
+<h4 id="2-if-then-else语句"><a href="#2-if-then-else语句" class="headerlink" title="2.if -then -else语句"></a>2.if -then -else语句</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER &#x2F;&#x2F;  </span><br><span class="line">CREATE PROCEDURE proc2(IN parameter INT)  </span><br><span class="line">BEGIN </span><br><span class="line">DECLARE var INT;  </span><br><span class="line">SET var&#x3D;parameter+1;  </span><br><span class="line"></span><br><span class="line">IF var&#x3D;0 THEN </span><br><span class="line">    INSERT INTO t VALUES(17);  </span><br><span class="line">END IF;  </span><br><span class="line"></span><br><span class="line">IF parameter&#x3D;0 THEN </span><br><span class="line">    UPDATE t SET s1&#x3D;s1+1;  </span><br><span class="line">ELSE </span><br><span class="line">    UPDATE t SET s1&#x3D;s1+2;  </span><br><span class="line">END IF;  </span><br><span class="line">END;</span><br><span class="line">&#x2F;&#x2F;  </span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
+<h4 id="3-case语句"><a href="#3-case语句" class="headerlink" title="3.case语句"></a>3.case语句</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER &#x2F;&#x2F;  </span><br><span class="line">CREATE PROCEDURE proc3 (IN parameter INT)  </span><br><span class="line">BEGIN </span><br><span class="line">DECLARE var INT;  </span><br><span class="line">SET var&#x3D;parameter+1;  </span><br><span class="line">CASE var  </span><br><span class="line">WHEN 0 THEN   </span><br><span class="line">    INSERT INTO t VALUES(17);  </span><br><span class="line">WHEN 1 THEN   </span><br><span class="line">    INSERT INTO t VALUES(18);  </span><br><span class="line">ELSE   </span><br><span class="line">    INSERT INTO t VALUES(19);  </span><br><span class="line">END CASE;  </span><br><span class="line">END;  </span><br><span class="line">&#x2F;&#x2F;  </span><br><span class="line">DELIMITER ; </span><br></pre></td></tr></table></figure>
+<h4 id="4-while-条件-DO-…-end-while-语句"><a href="#4-while-条件-DO-…-end-while-语句" class="headerlink" title="4.while 条件 DO … end while;语句"></a>4.while 条件 DO … end while;语句</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER &#x2F;&#x2F;  </span><br><span class="line">CREATE PROCEDURE proc4()  </span><br><span class="line">BEGIN </span><br><span class="line">DECLARE var INT;  </span><br><span class="line">SET var&#x3D;0;  </span><br><span class="line">WHILE var&lt;6 DO  </span><br><span class="line">    INSERT INTO t VALUES(var);  </span><br><span class="line">    SET var&#x3D;var+1;  </span><br><span class="line">END WHILE;</span><br><span class="line">END;  </span><br><span class="line">&#x2F;&#x2F;  </span><br><span class="line">DELIMITER ; </span><br></pre></td></tr></table></figure>
+<p>在执行循环体之前进行判断</p>
+<h4 id="5-repeat-…until-条件-end-repeat-语句"><a href="#5-repeat-…until-条件-end-repeat-语句" class="headerlink" title="5.repeat …until 条件 end repeat;语句"></a>5.repeat …until 条件 end repeat;语句</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER &#x2F;&#x2F;  </span><br><span class="line">CREATE PROCEDURE proc5 ()  </span><br><span class="line">BEGIN   </span><br><span class="line">DECLARE v INT;  </span><br><span class="line">SET v&#x3D;0;  </span><br><span class="line">REPEAT  </span><br><span class="line">    INSERT INTO t VALUES(v);  </span><br><span class="line">    SET v&#x3D;v+1;  </span><br><span class="line">UNTIL v&gt;&#x3D;5</span><br><span class="line">END REPEAT;  </span><br><span class="line">END;  </span><br><span class="line">&#x2F;&#x2F;  </span><br><span class="line">DELIMITER ;  </span><br></pre></td></tr></table></figure>
+<p>在执行循环体之后进行判断</p>
+<h4 id="6-loop-…-leave-end-loop-语句"><a href="#6-loop-…-leave-end-loop-语句" class="headerlink" title="6.loop … leave end loop;语句"></a>6.loop … leave end loop;语句</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER &#x2F;&#x2F;  </span><br><span class="line">CREATE PROCEDURE proc6 ()  </span><br><span class="line">BEGIN </span><br><span class="line">DECLARE v INT;  </span><br><span class="line">SET v&#x3D;0;  </span><br><span class="line">LOOP_LABLE:LOOP  </span><br><span class="line">    INSERT INTO t VALUES(v);  </span><br><span class="line">    SET v&#x3D;v+1;  </span><br><span class="line">    IF v &gt;&#x3D;5 THEN </span><br><span class="line">        LEAVE LOOP_LABLE;  </span><br><span class="line">    END IF;  </span><br><span class="line">END LOOP;  </span><br><span class="line">END;  </span><br><span class="line">&#x2F;&#x2F;  </span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
+<p>leave语句的意义是离开循环,LOOP_LABEL是自定义的标号</p>
+<h4 id="7-LABLES-标号"><a href="#7-LABLES-标号" class="headerlink" title="7.LABLES 标号:"></a>7.LABLES 标号:</h4><p>在使用loop的时候，使用到的labels标号，对于labels可以用到while，loop，rrepeat等循环控制语句中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">create procedure pro13()</span><br><span class="line">label_1:begin</span><br><span class="line">label_2:while 0&#x3D;1 do leave label_2;end while;</span><br><span class="line">label_3:repeat leave label_3;until 0&#x3D;0 end repeat;</span><br><span class="line">label_4:loop leave label_4;end loop;</span><br><span class="line">end;</span><br><span class="line"></span><br><span class="line">-- 加了结束标号的语句,功能相同</span><br><span class="line">create procedure pro14()</span><br><span class="line">label_1:begin</span><br><span class="line">label_2:while 0&#x3D;1 do leave label_2;end while label_2;</span><br><span class="line">label_3:repeat leave label_3;until 0&#x3D;0 end repeat label_3;</span><br><span class="line">label_4:loop leave label_4;end loop label_4;</span><br><span class="line">end label_1;</span><br></pre></td></tr></table></figure>
+
+<h4 id="8-ITERATE迭代"><a href="#8-ITERATE迭代" class="headerlink" title="8.ITERATE迭代"></a>8.ITERATE迭代</h4><p>ITERATE只能出现在LOOP，REPEAT和WHILE语句中，它的意思是“再次循环”,类似于continue</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER &#x2F;&#x2F;  </span><br><span class="line">CREATE PROCEDURE proc11()  </span><br><span class="line">BEGIN </span><br><span class="line">DECLARE v INT;  </span><br><span class="line">SET v&#x3D;0;  </span><br><span class="line">LOOP_LABLE:LOOP  </span><br><span class="line">    IF v&#x3D;3 THEN   </span><br><span class="line">        SET v&#x3D;v+1;  </span><br><span class="line">	    ITERATE LOOP_LABLE;  </span><br><span class="line">	END IF;  </span><br><span class="line">    INSERT INTO t VALUES(v);  </span><br><span class="line">    SET v&#x3D;v+1;  </span><br><span class="line">	IF v&gt;&#x3D;5 THEN </span><br><span class="line">	    LEAVE LOOP_LABLE;  </span><br><span class="line">    END IF;  </span><br><span class="line">END LOOP;  </span><br><span class="line">END;  </span><br><span class="line">&#x2F;&#x2F;  </span><br><span class="line">DELIMITER ; </span><br></pre></td></tr></table></figure>
+<p>首先i的值为0，条件判断语句if i=3 then判断为假，跳过if语段，向数据库中插入0，然后i+1，同样后面的if i&gt;=5 then判断也为假，也跳过；继续循环，同样插入1和2；在i=3的时候条件判断语句if i=3 then判断为真，执行i=i+1，i值为4，然后执行迭代iterate loop_label;，即语句执行到iterate loop_label;后直接跳到if i=3 then判断语句，执行判断，这个时候由于i=4，if i=3 then判断为假，跳过IF语段，将4添加到表中，i变为5，条件判断if i&gt;=5 then判断为真，执行leave loop_label;跳出loop循环，然后执行end;//，结束整个存储过程。</p>
+<h3 id="九-存储过程中的基本函数"><a href="#九-存储过程中的基本函数" class="headerlink" title="九.存储过程中的基本函数"></a>九.存储过程中的基本函数</h3><h4 id="1-字符串类"><a href="#1-字符串类" class="headerlink" title="1.字符串类"></a>1.字符串类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">CHARSET(str) &#x2F;&#x2F;返回字串字符集</span><br><span class="line">CONCAT (string2 [,... ]) &#x2F;&#x2F;连接字串</span><br><span class="line">INSTR (string ,substring ) &#x2F;&#x2F;返回substring首次在string中出现的位置,不存在返回0</span><br><span class="line">LCASE (string2 ) &#x2F;&#x2F;转换成小写</span><br><span class="line">LEFT (string2 ,length ) &#x2F;&#x2F;从string2中的左边起取length个字符</span><br><span class="line">LENGTH (string ) &#x2F;&#x2F;string长度</span><br><span class="line">LOAD_FILE (file_name ) &#x2F;&#x2F;从文件读取内容</span><br><span class="line">LOCATE (substring , string [,start_position ] ) 同INSTR,但可指定开始位置</span><br><span class="line">LPAD (string2 ,length ,pad ) &#x2F;&#x2F;重复用pad加在string开头,直到字串长度为length</span><br><span class="line">LTRIM (string2 ) &#x2F;&#x2F;去除前端空格</span><br><span class="line">REPEAT (string2 ,count ) &#x2F;&#x2F;重复count次</span><br><span class="line">REPLACE (str ,search_str ,replace_str ) &#x2F;&#x2F;在str中用replace_str替换search_str</span><br><span class="line">RPAD (string2 ,length ,pad) &#x2F;&#x2F;在str后用pad补充,直到长度为length</span><br><span class="line">RTRIM (string2 ) &#x2F;&#x2F;去除后端空格</span><br><span class="line">STRCMP (string1 ,string2 ) &#x2F;&#x2F;逐字符比较两字串大小,str1比str2小返回-1,大返回1,相同返回0</span><br><span class="line">SUBSTRING (str , position [,length ]) &#x2F;&#x2F;从str的position开始,取length个字符</span><br><span class="line">注：mysql中处理字符串时，默认第一个字符下标为1，即参数position必须大于等于1</span><br><span class="line">TRIM([[BOTH|LEADING|TRAILING][padding] FROM]string2) &#x2F;&#x2F;去除指定位置的指定字符</span><br><span class="line">UCASE (string2 ) &#x2F;&#x2F;转换成大写</span><br><span class="line">RIGHT(string2,length) &#x2F;&#x2F;取string2最后length个字符</span><br><span class="line">SPACE(count) &#x2F;&#x2F;生成count个空格</span><br></pre></td></tr></table></figure>
+<h4 id="2-数学类"><a href="#2-数学类" class="headerlink" title="2.数学类"></a>2.数学类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">ABS (number2 ) &#x2F;&#x2F;绝对值</span><br><span class="line">BIN (decimal_number ) &#x2F;&#x2F;十进制转二进制</span><br><span class="line">CEILING (number2 ) &#x2F;&#x2F;向上取整</span><br><span class="line">CONV(number2,from_base,to_base) &#x2F;&#x2F;进制转换</span><br><span class="line">FLOOR (number2 ) &#x2F;&#x2F;向下取整</span><br><span class="line">FORMAT (number,decimal_places ) &#x2F;&#x2F;保留小数位数</span><br><span class="line">HEX (DecimalNumber ) &#x2F;&#x2F;转十六进制</span><br><span class="line">注：HEX()中可传入字符串，则返回其ASC-11码，如HEX(&#39;DEF&#39;)返回4142143</span><br><span class="line">也可以传入十进制整数，返回其十六进制编码，如HEX(25)返回19</span><br><span class="line">LEAST (number , number2 [,..]) &#x2F;&#x2F;求最小值</span><br><span class="line">MOD (numerator ,denominator ) &#x2F;&#x2F;求余</span><br><span class="line">POWER (number ,power ) &#x2F;&#x2F;求指数</span><br><span class="line">RAND([seed]) &#x2F;&#x2F;随机数</span><br><span class="line">ROUND (number [,decimals ]) &#x2F;&#x2F;四舍五入,decimals为小数位数]</span><br><span class="line">注：返回类型并非均为整数,默认为整数</span><br><span class="line">SQRT(number2) &#x2F;&#x2F;开平方</span><br></pre></td></tr></table></figure>
+<h4 id="3-日期时间类"><a href="#3-日期时间类" class="headerlink" title="3.日期时间类"></a>3.日期时间类</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">ADDTIME (date2 ,time_interval)&#x2F;&#x2F;将time_interval加到date2</span><br><span class="line">CONVERT_TZ (datetime2 ,fromTZ ,toTZ) &#x2F;&#x2F;转换时区</span><br><span class="line">CURRENT_DATE () &#x2F;&#x2F;当前日期</span><br><span class="line">CURRENT_TIME () &#x2F;&#x2F;当前时间</span><br><span class="line">CURRENT_TIMESTAMP () &#x2F;&#x2F;当前时间戳</span><br><span class="line">DATE (datetime) &#x2F;&#x2F;返回datetime的日期部分</span><br><span class="line">DATE_ADD (date2 , INTERVAL d_value d_type) &#x2F;&#x2F;在date2中加上日期或时间</span><br><span class="line">DATE_FORMAT (datetime ,FormatCodes) &#x2F;&#x2F;使用formatcodes格式显示datetime</span><br><span class="line">DATE_SUB (date2 , INTERVAL d_value d_type) &#x2F;&#x2F;在date2上减去一个时间</span><br><span class="line">DATEDIFF (date1 ,date2) &#x2F;&#x2F;两个日期差</span><br><span class="line">DAY (date) &#x2F;&#x2F;返回日期的天</span><br><span class="line">DAYNAME (date) &#x2F;&#x2F;英文星期</span><br><span class="line">DAYOFWEEK (date) &#x2F;&#x2F;星期(1-7) ,1为星期天</span><br><span class="line">DAYOFYEAR (date) &#x2F;&#x2F;一年中的第几天</span><br><span class="line">EXTRACT (interval_name FROM date) &#x2F;&#x2F;从date中提取日期的指定部分</span><br><span class="line">MAKEDATE (year ,day) &#x2F;&#x2F;给出年及年中的第几天,生成日期串</span><br><span class="line">MAKETIME (hour ,minute ,second) &#x2F;&#x2F;生成时间串</span><br><span class="line">MONTHNAME (date ) &#x2F;&#x2F;英文月份名</span><br><span class="line">NOW () &#x2F;&#x2F;当前时间</span><br><span class="line">SEC_TO_TIME (seconds) &#x2F;&#x2F;秒数转成时间</span><br><span class="line">STR_TO_DATE (string ,format) &#x2F;&#x2F;字串转成时间,以format格式显示</span><br><span class="line">TIMEDIFF (datetime1 ,datetime2) &#x2F;&#x2F;两个时间差</span><br><span class="line">TIME_TO_SEC (time) &#x2F;&#x2F;时间转秒数]</span><br><span class="line">WEEK (date_time [,start_of_week ]) &#x2F;&#x2F;第几周</span><br><span class="line">YEAR (datetime) &#x2F;&#x2F;年份</span><br><span class="line">DAYOFMONTH(datetime) &#x2F;&#x2F;月的第几天</span><br><span class="line">HOUR(datetime) &#x2F;&#x2F;小时</span><br><span class="line">LAST_DAY(date) &#x2F;&#x2F;date的月的最后日期</span><br><span class="line">MICROSECOND(datetime) &#x2F;&#x2F;微秒</span><br><span class="line">MONTH(datetime) &#x2F;&#x2F;月</span><br><span class="line">MINUTE(datetime) &#x2F;&#x2F;分返回符号,正负或0</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="十-分页存储过程"><a href="#十-分页存储过程" class="headerlink" title="十.分页存储过程"></a>十.分页存储过程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER &#x2F;&#x2F;  </span><br><span class="line">DROP PROCEDURE IF EXISTS pr_pager;</span><br><span class="line">CREATE PROCEDURE pr_pager(</span><br><span class="line">    IN p_table_name VARCHAR(1024),      -- 表名      </span><br><span class="line">    IN p_fields VARCHAR(1024),          -- 列名</span><br><span class="line">    IN p_page_size INT,                 -- 一页的大小</span><br><span class="line">    IN p_page_now INT,                  -- 页码</span><br><span class="line">    IN p_order_string VARCHAR(128),     -- 排序语句</span><br><span class="line">    IN p_where_string VARCHAR(1024),    -- where条件</span><br><span class="line">    OUT p_out_rows INT                    </span><br><span class="line">)</span><br><span class="line">NOT DETERMINISTIC</span><br><span class="line">SQL SECURITY DEFINER</span><br><span class="line">COMMENT &#39;分页存储过程&#39;</span><br><span class="line"></span><br><span class="line">BEGIN</span><br><span class="line">  </span><br><span class="line">DECLARE m_begin_row INT DEFAULT 0;</span><br><span class="line">DECLARE m_limit_string CHAR(64);</span><br><span class="line"></span><br><span class="line">SET m_begin_row &#x3D; (p_page_now - 1) * p_page_size;   -- 开始行&#x3D;(页面-1)*一页的大小</span><br><span class="line">SET m_limit_string &#x3D; CONCAT(&#39; LIMIT &#39;, m_begin_row, &#39;, &#39;, p_page_size);   -- 分页拼接 LIMIT 开始行,一页的大小</span><br><span class="line"></span><br><span class="line">-- SELECT COUNT(*) INTO @ROWS_TOTAL FROM 表名 where条件); 将总行数赋值给ROWS_TOTAL,作为返回值</span><br><span class="line">SET @COUNT_STRING &#x3D; CONCAT(&#39;SELECT COUNT(*) INTO @ROWS_TOTAL FROM &#39;, p_table_name, &#39; &#39;, p_where_string);</span><br><span class="line">-- SELECT 列名 FROM 表名 where条件 order排序 limit语句; 最后的输出页数据</span><br><span class="line">SET @MAIN_STRING &#x3D; CONCAT(&#39;SELECT &#39;, p_fields, &#39; FROM &#39;, p_table_name, &#39; &#39;, p_where_string, &#39; &#39;, p_order_string,m_limit_string);</span><br><span class="line"></span><br><span class="line">PREPARE count_stmt FROM @COUNT_STRING;  -- 预定义sql</span><br><span class="line">EXECUTE count_stmt;                     -- 执行sql    </span><br><span class="line">DEALLOCATE PREPARE count_stmt;          -- 释放掉连接</span><br><span class="line">SET p_out_rows &#x3D; @ROWS_TOTAL;</span><br><span class="line"></span><br><span class="line">PREPARE main_stmt FROM @MAIN_STRING;</span><br><span class="line">EXECUTE main_stmt;</span><br><span class="line">DEALLOCATE PREPARE main_stmt;</span><br><span class="line">    </span><br><span class="line">END;</span><br><span class="line">&#x2F;&#x2F;</span><br><span class="line">DELIMITER ;</span><br><span class="line"></span><br><span class="line">call pr_pager(&quot;t&quot;,&quot;var&quot;,3,3,&quot;&quot;,&quot;&quot;,@result);</span><br><span class="line">call pr_pager(&quot;t&quot;,&quot;var&quot;,3,2,&quot;&quot;,&quot;&quot;,@result);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="十一-存储过程的优点"><a href="#十一-存储过程的优点" class="headerlink" title="十一.存储过程的优点"></a>十一.存储过程的优点</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.存储过程只在创造时进行编译，以后每次执行存储过程都不需再重新编译，而一般 SQL 语句每执行一次就编译一次,所以使用存储过程可提高数据库执行速度。</span><br><span class="line">2.当对数据库进行复杂操作时(如对多个表进行 Update,Insert,Query,Delete 时），可将此复杂操作用存储过程封装起来与数据库提供的事务处理结合一起使用。这些操作，如果用程序来完成，就变成了一条条的 SQL 语句，可能要多次连接数据库。而换成存储，只需要连接一次数据库就可以了。</span><br><span class="line">3.存储过程可以重复使用,可减少数据库开发人员的工作量。</span><br><span class="line">4.安全性高,可设定只有某此用户才具有对指定存储过程的使用权。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="补充-触发器"><a href="#补充-触发器" class="headerlink" title="补充:触发器"></a>补充:触发器</h3><h4 id="1-语法"><a href="#1-语法" class="headerlink" title="1.语法"></a>1.语法</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">CREATE TRIGGER 触发器名</span><br><span class="line">触发时机(BEFORE,AFTER)</span><br><span class="line">触发事件(INSERT,UPDATE,DELETE) ON 被触发的表名</span><br><span class="line">FOR EACH ROW</span><br><span class="line">触发器程序体</span><br><span class="line"></span><br><span class="line">由此可见，可以建立6种触发器，即：BEFORE INSERT、BEFORE UPDATE、BEFORE DELETE、AFTER INSERT、AFTER UPDATE、AFTER DELETE。</span><br><span class="line"></span><br><span class="line">另外有一个限制是不能同时在一个表上建立2个相同类型的触发器，因此在一个表上最多建立6个触发器。</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-触发事件"><a href="#2-触发事件" class="headerlink" title="2.触发事件"></a>2.触发事件</h3><blockquote>
+<ul>
+<li>MySQL除了对<strong>INSERT</strong>、<strong>UPDATE</strong>、<strong>DELETE</strong>基本操作进行定义外，还定义了<strong>LOAD DATA</strong>和<strong>REPLACE</strong>语句，这两种语句也能引起上述6中类型的触发器的触发。</li>
+<li><strong>LOAD DATA</strong>语句用于将一个文件装入到一个数据表中，相当与一系列的 INSERT 操作。</li>
+<li><strong>REPLACE</strong>语句一般来说和 INSERT 语句很像，只是在表中有<strong>primary key **或</strong>unique<strong>索引时，如果插入的数据和原来</strong>primary key<strong>或</strong>unique**索引一致时，会先删除原来的数据，然后增加一条新数据，也就是说，一条 REPLACE 语句有时候等价于一条。</li>
+<li><strong>INSERT</strong>语句，有时候等价于一条<strong>DELETE</strong>语句加上一条<strong>INSERT</strong>语句。</li>
+<li><strong>INSERT型触发器</strong>：插入某一行时激活触发器，可能通过<strong>INSERT</strong>、<strong>LOAD DATA</strong>、<strong>REPLACE</strong>语句触发；</li>
+<li><strong>UPDATE型触发器</strong>：更改某一行时激活触发器，可能通过<strong>UPDATE</strong>语句触发；</li>
+<li><strong>DELETE型触发器</strong>：删除某一行时激活触发器，可能通过<strong>DELETE</strong>、<strong>REPLACE</strong>语句触发。</li>
+</ul>
+</blockquote>
+<h3 id="3-触发器程序体"><a href="#3-触发器程序体" class="headerlink" title="3.触发器程序体"></a>3.触发器程序体</h3><blockquote>
+<p>statement_list代表一个或多个语句的列表，列表内的每条语句都必须用分号（;）来结尾。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">BEGIN</span><br><span class="line">[statement_list]</span><br><span class="line">END</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-触发器实例"><a href="#4-触发器实例" class="headerlink" title="4.触发器实例"></a>4.触发器实例</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">DELIMITER $</span><br><span class="line">-- 创建一个在对student表进行INSERT事件之后进行一系列操作的触发器</span><br><span class="line">create trigger tri_stuInsert after insert</span><br><span class="line">on student for each row</span><br><span class="line">begin</span><br><span class="line">declare c int;</span><br><span class="line">-- 查询原来class表的stuCount</span><br><span class="line">set c &#x3D; (select stuCount from class where classID&#x3D;new.classID);</span><br><span class="line">-- 将stuCount+1</span><br><span class="line">update class set stuCount &#x3D; c + 1 where classID &#x3D; new.classID;</span><br><span class="line">end</span><br><span class="line">$</span><br><span class="line">DELIMITER ;</span><br></pre></td></tr></table></figure>
+
+<h3 id="5-NEW和OLD详解"><a href="#5-NEW和OLD详解" class="headerlink" title="5.NEW和OLD详解"></a>5.NEW和OLD详解</h3><blockquote>
+<p>MySQL中定义了<strong>NEW</strong>和<strong>OLD</strong>，用来表示触发器的所在表中，触发了触发器的那一行数据。</p>
+<ul>
+<li>在<strong>INSERT</strong>型触发器中，<strong>NEW</strong>用来表示将要（<strong>BEFORE</strong>）或已经（<strong>AFTER</strong>）插入的新数据；</li>
+<li>在<strong>UPDATE</strong>型触发器中，<strong>OLD</strong>用来表示将要或已经被修改的原数据，<strong>NEW</strong>用来表示将要或已经修改为的新数据；</li>
+<li>在<strong>DELETE</strong>型触发器中，<strong>OLD</strong>用来表示将要或已经被删除的原数据；</li>
+</ul>
+<p><strong>使用方法</strong>： <strong>NEW.columnName</strong>（columnName为相应数据表某一列名）</p>
+<p>另外，<strong>OLD</strong>是只读的，而<strong>NEW</strong>则可以在触发器中使用SET赋值，这样不会再次触发触发器，造成循环调用（如每插入一个学生前，都在其学号前加“2013”）。</p>
+</blockquote>
+<h3 id="6-触发器的查找与删除"><a href="#6-触发器的查找与删除" class="headerlink" title="6.触发器的查找与删除"></a>6.触发器的查找与删除</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-- 查找</span><br><span class="line">SHOW TRIGGERS [FROM schema_name]</span><br><span class="line">SELETE TRIGGER_SCHEMA,TRIGGER_NAME,DEFINER,ACTION_STATEMENT FROM TRIGGERS WHERE TRIGGER_SCHEMA&#x3D;&#39;course&#39;;</span><br><span class="line"></span><br><span class="line">-- 删除</span><br><span class="line">DROP TRIGGER [IF EXISTS] [schema_name.]trigger_name</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-触发器的执行顺序"><a href="#7-触发器的执行顺序" class="headerlink" title="7.触发器的执行顺序"></a>7.触发器的执行顺序</h3><blockquote>
+<p>建立的数据库一般都是<strong>InnoDB</strong>数据库，其上建立的表是事务性表，也就是事务安全的。这时，若SQL语句或触发器执行失败，MySQL会回滚事务，有：</p>
+<ul>
+<li>如果<strong>BEFORE</strong>触发器执行失败，SQL无法正确执行。</li>
+<li>SQL执行失败时，<strong>AFTER</strong>型触发器不会触发。</li>
+<li><strong>AFTER</strong>类型的触发器执行失败，SQL会回滚。</li>
+</ul>
+</blockquote>
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    CAS单点登录
+  
+</title>
+
+<meta name="description" content="使用Cas进行单点登录操作实践">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CAS单点登录">
+<meta property="og:url" content="http://yoursite.com/2019/07/22/CAS%E5%8D%95%E7%82%B9%E7%99%BB%E5%BD%95/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="使用Cas进行单点登录操作实践">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-07-22T01:12:30.000Z">
+<meta property="article:modified_time" content="2020-07-25T09:48:23.639Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="cas">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">159</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">90</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">87</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-CAS单点登录" class="article article-type-post">
+  
+    <h1 class="article-header">
+      CAS单点登录
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-07-22
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/cas/" rel="tag">cas</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>使用Cas进行单点登录操作实践</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="设置Https"><a href="#设置Https" class="headerlink" title="设置Https"></a>设置Https</h2><h3 id="生成证书"><a href="#生成证书" class="headerlink" title="生成证书"></a>生成证书</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias tomcat -keyalg RSA -validity 3650 -keystore D:\tomcat.keystore</span><br><span class="line"># 密钥库口令 changeit</span><br><span class="line"># 名字与姓氏输入域名 service.cas.com</span><br><span class="line">keytool -list -keystore D:\tomcat.keystore</span><br><span class="line">keytool -export -alias tomcat -file D:\tomcat.cer -keystore D:\tomcat.keystore -validity 3650</span><br><span class="line">keytool -import -keystore C:\Java\jdk1.8.0_191\jre\lib\security\cacerts -file D:\tomcat.cer -alias tomcat -storepass changeit</span><br><span class="line"># 密钥库口令 changeit</span><br><span class="line"># 删除操作</span><br><span class="line">keytool -delete -alias tomcat -keystore C:\Java\jdk1.8.0_191\jre\lib\security\cacerts</span><br><span class="line">keytool -list -v -keystore C:\Java\jdk1.8.0_191\jre\lib\security\cacerts</span><br></pre></td></tr></table></figure>
+
+<h3 id="PKIX问题"><a href="#PKIX问题" class="headerlink" title="PKIX问题"></a>PKIX问题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 如果CasClient与CasServer不在同一服务器上</span><br><span class="line"># 那么需要对将上述生成的tomcat.cer证书导入到JDK中</span><br><span class="line"># 尤其注意JDK的位置,用IDEA很可能JDK在C盘目录下</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置tomcat"><a href="#配置tomcat" class="headerlink" title="配置tomcat"></a>配置tomcat</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 修改tomcat_path&#x2F;conf&#x2F;server.xml,添加内容:</span><br><span class="line">&lt;Connector port&#x3D;&quot;8443&quot; protocol&#x3D;&quot;org.apache.coyote.http11.Http11NioProtocol&quot;</span><br><span class="line">    maxThreads&#x3D;&quot;200&quot; SSLEnabled&#x3D;&quot;true&quot; scheme&#x3D;&quot;https&quot;</span><br><span class="line">    secure&#x3D;&quot;true&quot; clientAuth&#x3D;&quot;false&quot; sslProtocol&#x3D;&quot;TLS&quot;</span><br><span class="line">    keystoreFile&#x3D;&quot;D:\tomcat.keystore&quot;</span><br><span class="line">    keystorePass&#x3D;&quot;changeit&quot;&#x2F;&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Cas服务端"><a href="#Cas服务端" class="headerlink" title="Cas服务端"></a>Cas服务端</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"># 我使用的是5.3.9</span><br><span class="line">https:&#x2F;&#x2F;github.com&#x2F;apereo&#x2F;cas-overlay-template.git</span><br><span class="line"># 按照README.md进行编译,将target&#x2F;cas下的文件复制</span><br><span class="line"># 新建Maven项目,将文件复制在src&#x2F;main&#x2F;webapp文件下</span><br><span class="line"># 复制pom.xml文件中的build,properties,repositories,profiles</span><br><span class="line"># 如若加入JDBC,需要在pom文件profiles.profile.dependencies处添加依赖</span><br><span class="line"></span><br><span class="line"># 修改application.properties</span><br><span class="line">server.ssl.enabled&#x3D;true</span><br><span class="line">server.ssl.key-store&#x3D;file:D:\tomcat.keystore</span><br><span class="line">server.ssl.key-store-password&#x3D;changeit</span><br><span class="line">server.ssl.key-password&#x3D;changeit</span><br><span class="line">server.ssl.keyAlias&#x3D;tomcat</span><br><span class="line"># 支持JSON</span><br><span class="line">cas.serviceRegistry.initFromJson&#x3D;true</span><br><span class="line">cas.logout.followServiceRedirects&#x3D;true</span><br><span class="line">cas.logout.redirectParameter&#x3D;service</span><br><span class="line">cas.logout.confirmLogout&#x3D;false</span><br><span class="line">cas.logout.removeDescendantTickets&#x3D;true</span><br><span class="line"></span><br><span class="line"># 支持Http,修改webapp&#x2F;WEB-INF&#x2F;classes&#x2F;services&#x2F;HTTPSandIMAPS-10000001.json</span><br><span class="line">&#123;</span><br><span class="line">  &quot;@class&quot; : &quot;org.apereo.cas.services.RegexRegisteredService&quot;,</span><br><span class="line">  &quot;serviceId&quot; : &quot;^(https|http|imaps):&#x2F;&#x2F;.*&quot;,</span><br><span class="line">  &quot;name&quot; : &quot;HTTPS and IMAPS&quot;,</span><br><span class="line">  &quot;id&quot; : 10000001,</span><br><span class="line">  &quot;description&quot; : &quot;This service definition authorizes all application urls that support HTTPS and IMAPS protocols.&quot;,</span><br><span class="line">  &quot;evaluationOrder&quot; : 10000,</span><br><span class="line">  &quot;logoutUrl&quot; : &quot;https:&#x2F;&#x2F;service.cas.com:8443&#x2F;logout&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Cas客户端"><a href="#Cas客户端" class="headerlink" title="Cas客户端"></a>Cas客户端</h2><h3 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># 我的2个Cas客户端与Cas服务端分布在3台服务器上</span><br><span class="line"># 服务端使用https,客户端使用http</span><br><span class="line">192.168.3.108 service.cas.com</span><br><span class="line">192.168.3.109 app1.cas.com</span><br><span class="line">192.168.3.110 app2.cas.com</span><br><span class="line"></span><br><span class="line"># 配置application.yml时尤其注意cas.client-host-url</span><br><span class="line">cas:</span><br><span class="line">    # cas服务端前缀,不是登录地址</span><br><span class="line">    server-url-prefix: https:&#x2F;&#x2F;service.cas.com:8443</span><br><span class="line">    # cas的登录地址</span><br><span class="line">    server-login-url: https:&#x2F;&#x2F;service.cas.com:8443&#x2F;login</span><br><span class="line">    # 当前客户端的地址&lt;我们这里使用域名&gt;</span><br><span class="line">    # a.配置为IP时,调用退出时只会退出域名访问</span><br><span class="line">    # b.配置为域名时,调用退出时只会退出IP访问</span><br><span class="line">    client-host-url: http:&#x2F;&#x2F;app1.cas.com:8081</span><br><span class="line">    # client-host-url: http:&#x2F;&#x2F;app2.cas.com:8082</span><br><span class="line">    # Ticket校验器</span><br><span class="line">    validation-type: CAS</span><br></pre></td></tr></table></figure>
+<h3 id="代码-lt-以Client1为例-gt"><a href="#代码-lt-以Client1为例-gt" class="headerlink" title="代码&lt;以Client1为例&gt;"></a>代码&lt;以Client1为例&gt;</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"># Application类</span><br><span class="line">@SpringBootApplication</span><br><span class="line">@EnableCasClient</span><br><span class="line">public class Application &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        SpringApplication.run(Application.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 登出接口,退出时需要注意,将子系统的也进行退出,如果想继续重定向</span><br><span class="line">@RequestMapping(&quot;&#x2F;logout&quot;)</span><br><span class="line">public String logout(HttpSession session) &#123;</span><br><span class="line">    session.invalidate();</span><br><span class="line">    &#x2F;&#x2F; 调用当前系统的退出,会去调用其他子系统的logoutRedirect接口去注销(因为使用域名所以域名不会注销)</span><br><span class="line">    return &quot;redirect:https:&#x2F;&#x2F;cas.com:8443&#x2F;logout?service&#x3D;http:&#x2F;&#x2F;app2.cas.com:8082&#x2F;logoutRedirect&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@RequestMapping(&quot;&#x2F;logoutRedirect&quot;)</span><br><span class="line">public String logoutRedirect(HttpSession session)&#123;</span><br><span class="line">    session.invalidate();</span><br><span class="line">    &#x2F;&#x2F; 重定向去其他页面,如果客户端多的话,只能重定向到下一个客户端的注销页面了,形成一个重定向流</span><br><span class="line">    return &quot;redirect:https:&#x2F;&#x2F;service.cas.com:8443&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># 如果有N个系统怎么办,让用户关闭网页么?</span><br></pre></td></tr></table></figure>
+
+<h3 id="依赖"><a href="#依赖" class="headerlink" title="依赖"></a>依赖</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br></pre></td><td class="code"><pre><span class="line"># 新建Maven项目,添加依赖</span><br><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot; encoding&#x3D;&quot;UTF-8&quot;?&gt;</span><br><span class="line">&lt;project xmlns&#x3D;&quot;http:&#x2F;&#x2F;maven.apache.org&#x2F;POM&#x2F;4.0.0&quot;</span><br><span class="line">         xmlns:xsi&#x3D;&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2001&#x2F;XMLSchema-instance&quot;</span><br><span class="line">         xsi:schemaLocation&#x3D;&quot;http:&#x2F;&#x2F;maven.apache.org&#x2F;POM&#x2F;4.0.0 http:&#x2F;&#x2F;maven.apache.org&#x2F;xsd&#x2F;maven-4.0.0.xsd&quot;&gt;</span><br><span class="line">    &lt;modelVersion&gt;4.0.0&lt;&#x2F;modelVersion&gt;</span><br><span class="line"></span><br><span class="line">    &lt;groupId&gt;com.dev&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;cas&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.0-SNAPSHOT&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;packaging&gt;war&lt;&#x2F;packaging&gt;</span><br><span class="line">    &lt;parent&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-starter-parent&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;version&gt;2.0.0.RELEASE&lt;&#x2F;version&gt;</span><br><span class="line">    &lt;&#x2F;parent&gt;</span><br><span class="line"></span><br><span class="line">    &lt;properties&gt;</span><br><span class="line">        &lt;project.build.sourceEncoding&gt;UTF-8&lt;&#x2F;project.build.sourceEncoding&gt;</span><br><span class="line">        &lt;java.cas.client.version&gt;3.5.0&lt;&#x2F;java.cas.client.version&gt;</span><br><span class="line">    &lt;&#x2F;properties&gt;</span><br><span class="line"></span><br><span class="line">    &lt;dependencies&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-web&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;javax.servlet&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;jstl&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.apache.tomcat.embed&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;tomcat-embed-jasper&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;scope&gt;provided&lt;&#x2F;scope&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.mybatis.spring.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mybatis-spring-boot-starter&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.3.0&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;mysql&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;mysql-connector-java&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;com.alibaba&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;druid-spring-boot-starter&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.1.9&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;net.unicon.cas&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;cas-client-autoconfig-support&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;1.4.0-GA&lt;&#x2F;version&gt;</span><br><span class="line">            &lt;exclusions&gt;</span><br><span class="line">                &lt;exclusion&gt;</span><br><span class="line">                    &lt;groupId&gt;org.jasig.cas.client&lt;&#x2F;groupId&gt;</span><br><span class="line">                    &lt;artifactId&gt;cas-client-core&lt;&#x2F;artifactId&gt;</span><br><span class="line">                &lt;&#x2F;exclusion&gt;</span><br><span class="line">            &lt;&#x2F;exclusions&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.jasig.cas.client&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;cas-client-core&lt;&#x2F;artifactId&gt;</span><br><span class="line">            &lt;version&gt;$&#123;java.cas.client.version&#125;&lt;&#x2F;version&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">        &lt;dependency&gt;</span><br><span class="line">            &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">            &lt;artifactId&gt;spring-boot-starter-aop&lt;&#x2F;artifactId&gt;</span><br><span class="line">        &lt;&#x2F;dependency&gt;</span><br><span class="line">    &lt;&#x2F;dependencies&gt;</span><br><span class="line"></span><br><span class="line">    &lt;build&gt;</span><br><span class="line">        &lt;!--打包后的项目名称  --&gt;</span><br><span class="line">        &lt;finalName&gt;cas-client&lt;&#x2F;finalName&gt;</span><br><span class="line">        &lt;plugins&gt;</span><br><span class="line">            &lt;!-- java编译插件 --&gt;</span><br><span class="line">            &lt;plugin&gt;</span><br><span class="line">                &lt;groupId&gt;org.apache.maven.plugins&lt;&#x2F;groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;maven-compiler-plugin&lt;&#x2F;artifactId&gt;</span><br><span class="line">                &lt;configuration&gt;</span><br><span class="line">                    &lt;source&gt;1.8&lt;&#x2F;source&gt;</span><br><span class="line">                    &lt;target&gt;1.8&lt;&#x2F;target&gt;</span><br><span class="line">                    &lt;encoding&gt;UTF-8&lt;&#x2F;encoding&gt;</span><br><span class="line">                &lt;&#x2F;configuration&gt;</span><br><span class="line">            &lt;&#x2F;plugin&gt;</span><br><span class="line">            &lt;!-- 打jar包的插件 --&gt;</span><br><span class="line">            &lt;plugin&gt;</span><br><span class="line">                &lt;groupId&gt;org.apache.maven.plugins&lt;&#x2F;groupId&gt;</span><br><span class="line">                &lt;artifactId&gt;maven-jar-plugin&lt;&#x2F;artifactId&gt;</span><br><span class="line">                &lt;configuration&gt;</span><br><span class="line">                    &lt;archive&gt;</span><br><span class="line">                        &lt;manifest&gt;</span><br><span class="line">                            &lt;addClasspath&gt;true&lt;&#x2F;addClasspath&gt;</span><br><span class="line">                            &lt;classpathPrefix&gt;lib&lt;&#x2F;classpathPrefix&gt;</span><br><span class="line">                            &lt;!-- 程序启动入口 --&gt;</span><br><span class="line">                            &lt;mainClass&gt;com.dev.cas.Application&lt;&#x2F;mainClass&gt;</span><br><span class="line">                        &lt;&#x2F;manifest&gt;</span><br><span class="line">                        &lt;manifestEntries&gt;</span><br><span class="line">                            &lt;!-- 将lib包抽到上一层文件夹中, classpathPrefix属性是包名--&gt;</span><br><span class="line">                            &lt;Class-Path&gt;.&#x2F;&lt;&#x2F;Class-Path&gt;</span><br><span class="line">                        &lt;&#x2F;manifestEntries&gt;</span><br><span class="line">                    &lt;&#x2F;archive&gt;</span><br><span class="line">                    &lt;excludes&gt;</span><br><span class="line">                        &lt;!-- 将config&#x2F;**抽离出来 --&gt;</span><br><span class="line">                        &lt;exclude&gt;config&#x2F;**&lt;&#x2F;exclude&gt;</span><br><span class="line">                    &lt;&#x2F;excludes&gt;</span><br><span class="line">                &lt;&#x2F;configuration&gt;</span><br><span class="line">            &lt;&#x2F;plugin&gt;</span><br><span class="line">            &lt;plugin&gt;</span><br><span class="line">                &lt;artifactId&gt;maven-assembly-plugin&lt;&#x2F;artifactId&gt;</span><br><span class="line">                &lt;configuration&gt;</span><br><span class="line">                    &lt;!-- not append assembly id in release file name --&gt;</span><br><span class="line">                    &lt;appendAssemblyId&gt;false&lt;&#x2F;appendAssemblyId&gt;</span><br><span class="line">                    &lt;descriptors&gt;</span><br><span class="line">                        &lt;!-- 注意这里的路径 --&gt;</span><br><span class="line">                        &lt;descriptor&gt;src&#x2F;main&#x2F;build&#x2F;package.xml&lt;&#x2F;descriptor&gt;</span><br><span class="line">                    &lt;&#x2F;descriptors&gt;</span><br><span class="line">                &lt;&#x2F;configuration&gt;</span><br><span class="line">                &lt;executions&gt;</span><br><span class="line">                    &lt;execution&gt;</span><br><span class="line">                        &lt;id&gt;make-assembly&lt;&#x2F;id&gt;</span><br><span class="line">                        &lt;phase&gt;package&lt;&#x2F;phase&gt;</span><br><span class="line">                        &lt;goals&gt;</span><br><span class="line">                            &lt;goal&gt;single&lt;&#x2F;goal&gt;</span><br><span class="line">                        &lt;&#x2F;goals&gt;</span><br><span class="line">                    &lt;&#x2F;execution&gt;</span><br><span class="line">                &lt;&#x2F;executions&gt;</span><br><span class="line">            &lt;&#x2F;plugin&gt;</span><br><span class="line">        &lt;&#x2F;plugins&gt;</span><br><span class="line">    &lt;&#x2F;build&gt;</span><br><span class="line">&lt;&#x2F;project&gt;</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

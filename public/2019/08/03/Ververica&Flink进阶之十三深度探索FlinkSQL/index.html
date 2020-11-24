@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Ververica&amp;Flink进阶之十三深度探索FlinkSQL
+  
+</title>
+
+<meta name="description" content="B站Flink教程视频观看">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ververica&amp;Flink进阶之十三深度探索FlinkSQL">
+<meta property="og:url" content="http://yoursite.com/2019/08/03/Ververica&Flink%E8%BF%9B%E9%98%B6%E4%B9%8B%E5%8D%81%E4%B8%89%E6%B7%B1%E5%BA%A6%E6%8E%A2%E7%B4%A2FlinkSQL/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="B站Flink教程视频观看">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-08-03T06:15:36.000Z">
+<meta property="article:modified_time" content="2020-07-25T09:48:23.695Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="flink">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.2.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1591944977169&amp;di=4920f7c74026501de2663d9c3d5a5f28&amp;imgtype=0&amp;src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">159</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">7</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">90</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">13</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">87</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Ververica&amp;Flink进阶之十三深度探索FlinkSQL" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Ververica&Flink进阶之十三深度探索FlinkSQL
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-08-03
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>B站Flink教程视频观看</p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="TableEnvironments"><a href="#TableEnvironments" class="headerlink" title="TableEnvironments"></a>TableEnvironments</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">两种planner</span><br><span class="line">    Blink planner</span><br><span class="line">        flink-table-runtime-blink</span><br><span class="line">        flink-table-planner-blink</span><br><span class="line">    Flink planner</span><br><span class="line">        BatchTableEnvironment</span><br><span class="line">            flink-table-planner(java&#x2F;scala)</span><br><span class="line"></span><br><span class="line">scala版本</span><br><span class="line">    StreamTableEnvironment</span><br><span class="line">        flink-table-api-scala-bridge</span><br><span class="line">            flink-table-api-scala</span><br><span class="line"></span><br><span class="line">java版本</span><br><span class="line">    StreamTableEnvironment</span><br><span class="line">        flink-table-api-java-bridge</span><br><span class="line">            TableEnvironment</span><br><span class="line">                flink-table-api-java</span><br><span class="line">                    flink-table-common</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">a.FlinkStream</span><br><span class="line">b.FlinkBatch</span><br><span class="line">c.BlinkStream</span><br><span class="line">d.BlinkBatch</span><br><span class="line">e.From&#x2F;ToDataStream</span><br><span class="line">f.From&#x2F;ToDataSet</span><br><span class="line">g.UDAF&#x2F;UDTF</span><br><span class="line"></span><br><span class="line">TableEnvironment</span><br><span class="line">    a,c,d</span><br><span class="line">(Java&#x2F;Scala)StreamTableEnvironment</span><br><span class="line">    a,c(不支持分段优化),e,g</span><br><span class="line">(Java&#x2F;Scala)BatchTableEnvironment</span><br><span class="line">    b,f,g</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="使用示例"><a href="#使用示例" class="headerlink" title="使用示例"></a>使用示例</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Blink Batch</span></span><br><span class="line">EnvironmentSettings settings = EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build();</span><br><span class="line">TableEnvironment tEnv = TableEnvironment.create(settings);</span><br><span class="line">tEnv...</span><br><span class="line">tEnv.execute(<span class="string">&quot;JobName&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Blink Stream</span></span><br><span class="line">EnvironmentSettings settings = EnvironmentSettings.newInstance().useBlinkPlanner().inStreamingMode().build();</span><br><span class="line">StreamExecutionEnvironment execEnv = ...</span><br><span class="line">StreamTableEnvironment tEnv = StreamTableEnvironment.create(execEnv,settings);</span><br><span class="line">tEnv...</span><br><span class="line"></span><br><span class="line"><span class="comment">// Flink Batch</span></span><br><span class="line">ExecutionEnvironment execEnv = ...</span><br><span class="line">BatchTableEnvironment tEnv = BatchTableEnvironment.create(execEnv);</span><br><span class="line">tEnv...</span><br><span class="line"></span><br><span class="line"><span class="comment">// Flink Stream</span></span><br><span class="line">EnvironmentSettings settings = EnvironmentSettings.newInstance().useOldPlanner().inStreamingMode().build();</span><br><span class="line">TableEnvironment tEnv = TableEnvironment.create(settings);</span><br><span class="line">tEnv...</span><br><span class="line">tEnv.execute(<span class="string">&quot;JobName&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="New-Catalog"><a href="#New-Catalog" class="headerlink" title="New Catalog"></a>New Catalog</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ExternalCatalog已废弃,Blink planner不支持</span><br><span class="line"></span><br><span class="line">GenericInMemoryCatalog+HiveCatalog</span><br><span class="line">    Catalog</span><br><span class="line">        CatalogManager</span><br><span class="line">            TableEnvironment</span><br><span class="line">                SQLClient</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="DDL"><a href="#DDL" class="headerlink" title="DDL"></a>DDL</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># in tableEnv#sqlUpdate</span><br><span class="line">CREATE TABLE</span><br><span class="line">CREATE VIEW</span><br><span class="line">DROP TABLE</span><br><span class="line">DROP VIEW</span><br><span class="line">创建表时的With属性,参考各个connector factory里的定义</span><br><span class="line">    CsvAppendTableSourceFactory</span><br><span class="line">    KafkaTableSourceSinkFactory</span><br><span class="line">    </span><br><span class="line"># in sqlClient</span><br><span class="line">CREATE VIEW</span><br><span class="line">DROP VIEW</span><br><span class="line">SHOW CATALOGS&#x2F;DATABASES&#x2F;TABLES&#x2F;FUNCTIONS</span><br><span class="line">USE CATALOG xxx</span><br><span class="line">SET xxx&#x3D;yyy</span><br><span class="line">DESCRIBE table_name</span><br><span class="line">EXPLAN SELECT xxx</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Blink-planner"><a href="#Blink-planner" class="headerlink" title="Blink planner"></a>Blink planner</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">改进</span><br><span class="line">    功能相关</span><br><span class="line">        更完整的SQL语法的支持(subquery,over,group sets等)</span><br><span class="line">        更丰富,高效的算子</span><br><span class="line">        更完善的cost模型,对接了catalog中的statistics</span><br><span class="line">        join reorder</span><br><span class="line">        shuffle service(only for batch)</span><br><span class="line">    性能相关</span><br><span class="line">        分段优化 &amp; sub-plan reuse</span><br><span class="line">        更丰富的优化rule</span><br><span class="line">        更高效的数据结构BinaryRow</span><br><span class="line">        mini-batch(only for stream)</span><br><span class="line">        省多余的shuffle &amp; sort(for batch now)</span><br><span class="line">        </span><br><span class="line">分段优化</span><br><span class="line">    Flink planner按每个Sink单独优化,各个Sink的计算链路相互独立,有重复计算</span><br><span class="line">    Blink planner先分段(能优化的最大公共子图),每段独立优化</span><br><span class="line">分段优化解决的是多Sink优化问题(DAG优化)</span><br><span class="line"></span><br><span class="line">sub-plan reuse</span><br><span class="line">    相关配置</span><br><span class="line">        table.optimizer.reuse-sub-plan-enabled,默认开启</span><br><span class="line">        table.optimizer.reuse-source-enabled,默认开启</span><br><span class="line">    在Batch模式下,sub-plan reuse可能造成死锁(hash-join,nested-loop-join先读build端再读probe端)</span><br><span class="line">    框架会将probe端数据落盘来解死锁</span><br><span class="line">    落盘会有额外开销,此时用户可根据情况来调整配置</span><br><span class="line">sub-plan reuse解决的是优化结果的子图复用问题</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="AGG分类"><a href="#AGG分类" class="headerlink" title="AGG分类"></a>AGG分类</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">group agg:   select count(a) from t group by b</span><br><span class="line">over agg:    select count(a) over (partition by b order by c) from t</span><br><span class="line">window agg:  select count(a) from t group by tumble(ts, interval &#39;10&#39; second), b</span><br><span class="line">table agg:   tEnv.scan(&quot;t&quot;).groupBy(&#39;a).flatAggregate(flatAggFunc(&#39;b as (&#39;c, &#39;d)))</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Group-AGG优化"><a href="#Group-AGG优化" class="headerlink" title="Group AGG优化"></a>Group AGG优化</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">local&#x2F;global</span><br><span class="line">    减少网络shuffle数据</span><br><span class="line">    agg function可merge(sum(a) -&gt; local sum(a) + global sum(local result))</span><br><span class="line">distinct agg</span><br><span class="line">    改写为两层agg</span><br><span class="line">    Stream下是为了解决数据热点问题(state需要存所有input数据)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Local-Global-AGG"><a href="#Local-Global-AGG" class="headerlink" title="Local/Global AGG"></a>Local/Global AGG</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">必要条件</span><br><span class="line">    agg的所有agg function都是mergeable(实现了merge方法)</span><br><span class="line">    table.optimizer.agg-phase-strategy为AUTO或TWO_PHASE</span><br><span class="line">    Stream下,mini-batch开启</span><br><span class="line">    Batch下,AUTO会根据cost选择</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Distinct-AGG"><a href="#Distinct-AGG" class="headerlink" title="Distinct AGG"></a>Distinct AGG</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">Batch下,强制改写</span><br><span class="line">    第一层求distinct值和非distinct agg function的值</span><br><span class="line">    第二层求distinct agg function的值</span><br><span class="line">    示例:</span><br><span class="line">        select color,count(distinct id),count(*)</span><br><span class="line">        from t</span><br><span class="line">        group by color</span><br><span class="line">        改写</span><br><span class="line">        select color,count(id),min(cnt)</span><br><span class="line">        from (</span><br><span class="line">            select color,id,count(*) filter (where $e &#x3D; 2) as cnt</span><br><span class="line">            from (</span><br><span class="line">                select color,id,1 as $e from t -- for distinct id</span><br><span class="line">                union all</span><br><span class="line">                select color,null as id, 2 as $e from t -- for count(*)</span><br><span class="line">            ) group by color,id,$e</span><br><span class="line">        ) group by color</span><br><span class="line">            </span><br><span class="line">    </span><br><span class="line">Stream下,必要条件</span><br><span class="line">    必须是支持的agg function</span><br><span class="line">        avg&#x2F;count&#x2F;min&#x2F;max&#x2F;sum&#x2F;first_value&#x2F;last_value&#x2F;concat_agg&#x2F;single_value</span><br><span class="line">    table.optimizer.distinct-agg.split.enabled开启(默认关闭)</span><br><span class="line">    示例:</span><br><span class="line">        select color,count(distinct id),count(*)</span><br><span class="line">        from t</span><br><span class="line">        group by color</span><br><span class="line">        改写</span><br><span class="line">        select color,sum(dcnt),sum(cnt)</span><br><span class="line">        from (</span><br><span class="line">            select color,count(distinct id) as dcnt,count(*) as cnt</span><br><span class="line">            from t</span><br><span class="line">            group by color,mod(hash_code(id),1024)</span><br><span class="line">        ) group by color</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2020 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>
