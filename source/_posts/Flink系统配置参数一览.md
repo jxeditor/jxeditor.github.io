@@ -2,7 +2,7 @@
 title: Flink系统配置参数一览
 date: 2020-12-14 17:48:10
 categories: 大数据
-tags: Flink
+tags: flink
 ---
 
 > 慢慢肝,整理下Flink的系统配置信息,不同于环境配置[Flink代码编写中的环境配置](https://jxeditor.github.io/2020/04/21/Flink%E4%BB%A3%E7%A0%81%E7%BC%96%E5%86%99%E4%B8%AD%E7%9A%84%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/)

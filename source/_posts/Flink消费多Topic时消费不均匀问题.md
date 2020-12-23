@@ -2,7 +2,7 @@
 title: Flink消费多Topic时消费不均匀问题
 date: 2020-12-21 19:29:11
 categories: 大数据
-tags: Flink
+tags: flink
 ---
 
 > 今天社区有小伙伴提出Flink在消费Kafka多Topic数据时,并行度合理,但还是存在消费不均匀的情况
