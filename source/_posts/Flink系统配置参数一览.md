@@ -184,22 +184,168 @@ Blob客户端连接超时时间间隔(毫秒).
 ## CheckpointingOptions(CK和SP的配置参数)
 ```
 state.backend
+默认值:无
+用于存储CK状态的状态后端.
 
 state.checkpoints.num-retained
+默认值:1
+要保留的已完成CK的最大数目.
 
 state.backend.async
+默认值:true
+状态后端是否使用异步快照,某些状态后端不支持异步快照或只支持异步快照.
 
 state.backend.incremental
+默认值:false
+状态后端是否创建增量CK.对于增量CK,只存储上一个CK的差异,并不是完整的CK状态.
+启用后,WebUI显示或从RestAPI获取的状态大小仅表示增量CK的大小,不是完整的CK大小.
 
 state.backend.local-recovery
+默认值:false
+是否启动状态后端的本地恢复.本地恢复目前只支持KeyedStateBackend,MemoryStateBackend不支持本地恢复.
 
 taskmanager.state.local.root-dirs
+默认值:无
+用于存储本地恢复状态的目录.
 
 state.savepoints.dir
+默认值:无
+SP的默认目录.用于将SP写入文件系统的状态后端(MemoryStateBackend,FsStateBackend,RocksDBStateBackend).
 
 state.checkpoints.dir
+默认值:无
+Flink支持的文件系统中存储CK的数据文件和元数据目录.路径必须可让所有参与者(TM/JM)访问.
 
 state.backend.fs.memory-threshold
+默认值:20kb
+状态数据文件的最小大小.所有小于该值的状态块都以内联方式存储在根检查点元数据文件中,此配置的最大内存阈值为1MB。
 
 state.backend.fs.write-buffer-size
+默认值:4 * 1024
+写入文件系统的检查点流的默认写入缓冲区大小.实际写入缓冲区大小被确定为此选项和选项state.backend.fs.memory-threshold的最大值。
+```
+
+---
+
+## ClusterOptions(控制集群行为的配置)
+```sh
+cluster.registration.initial-timeout
+默认值:100L
+群集组件之间的初始注册超时(毫秒).
+
+cluster.registration.max-timeout
+默认值:30000L
+群集组件之间的最大注册超时(毫秒).
+
+cluster.registration.error-delay
+默认值:10000L
+注册尝试后进行的暂停导致了毫秒内的异常(超时除外).
+
+cluster.registration.refused-registration-delay
+默认值:30000L
+注册尝试被拒绝后暂停时间间隔(毫秒).
+
+cluster.services.shutdown-timeout
+默认值:30000L
+Executors等待群集服务的关闭超时(毫秒).
+
+cluster.io-pool.size
+默认值:无
+集群用于执行阻塞IO操作(主进程和TaskManager进程)的IO执行器池的大小.
+默认情况下,它将使用4*集群进程可以访问的CPU cores数量.增加池大小允许同时运行更多IO操作.
+
+cluster.evenly-spread-out-slots
+默认值:false
+启用slot展开分配策略.此策略尝试在所有可用的TaskExecutors上均匀分布slot。
+
+cluster.processes.halt-on-fatal-error
+默认值:false
+进程是否应在出现致命错误时停止,而不是执行正常关闭.在某些环境中(例如带有G1垃圾收集器的java8),正常的关闭可能会导致JVM死锁.
+
+cluster.declarative-resource-management.enabled
+默认值:true
+定义群集是否使用声明性资源管理.
+```
+
+---
+
+## CoreOptions(核心配置)
+```
+classloader.resolve-order
+默认值:child-first
+定义从用户代码加载类时的类解析策略.
+child-first:检查用户代码jar.
+parent_first:应用程序路径.
+
+classloader.parent-first-patterns.default
+默认值:java.;scala.;org.apache.flink.;com.esotericsoftware.kryo;org.apache.hadoop.;javax.annotation.;org.slf4j;org.apache.log4j;org.apache.logging;org.apache.commons.logging;ch.qos.logback;org.xml;javax.xml;org.apache.xerces;org.w3c
+一个分号分割的正则列表,指定哪些类总是首先通过父类加载器解析.不建议修改,要添加另一个模式,建议使用classloader.parent-first-patterns.additional替代.
+
+classloader.parent-first-patterns.additional
+默认值:空字符串
+一个分号分割的正则列表,指定哪些类总是首先通过父类加载器解析.
+
+classloader.fail-on-metaspace-oom-error
+默认值:true
+如果在尝试加载用户代码类时抛出"OutOfMemoryError:Metaspace",则Flink JVM进程失败.
+
+classloader.check-leaked-classloader
+默认值:true
+如果作业的用户类加载器在作业终止后使用,则尝试加载类失败.
+这通常是由于延迟线程或行为不当的库泄漏了类加载器,这也可能导致类加载器被其他作业使用.只有当这种泄漏阻止进一步的作业运行时,才应禁用此检查.
+
+plugin.classloader.parent-first-patterns.default
+默认值:java.;scala.;org.apache.flink.;javax.annotation.;org.slf4j;org.apache.log4j;org.apache.logging;org.apache.commons.logging;ch.qos.logback
+插件父类加载器
+
+plugin.classloader.parent-first-patterns.additional
+默认值:空字符串
+插件父类加载器
+
+env.java.opts
+默认值:空字符串
+Java选项启动所有Flink进程的JVM.
+
+env.java.opts.jobmanager
+默认值:空字符串
+用于启动JobManager的JVM的Java选项.
+
+env.java.opts.taskmanager
+默认值:空字符串
+用于启动TaskManager的JVM的Java选项.
+
+env.java.opts.historyserver
+默认值:空字符串
+用于启动HistoryServer的JVM的Java选项.
+
+env.java.opts.client
+默认值:空字符串
+启动Flink Client的JVM的Java选项.
+
+env.log.dir
+默认值:无
+定义保存Flink日志的目录.它必须是一条绝对路径.(默认为Flink根目录下的log目录)
+
+env.pid.dir
+默认值:/tmp
+定义保存flink-<host>-<process>.pid文件的目录.
+
+env.log.max
+默认值:5
+要保留的最大旧日志文件数.
+
+env.ssh.opts
+默认值:无
+启动或停止JobManager,TaskManager和Zookeeper服务时传递给SSH客户端的其他命令行选项(start-cluster.sh,stop-cluster.sh,start-zookeeper-quorum.sh,stop-zookeeper-quorum.sh).
+
+env.hadoop.conf.dir
+默认值:无
+Hadoop配置目录的路径.需要读取HDFS和Yarn配置.也可以通过环境变量进行设置.
+
+env.yarn.conf.dir
+默认值:无
+Yarn配置目录的路径.Flink on Yarn时是必要的.也可以通过环境变量进行设置.
+
+env.hbase.conf.dir
+默认值:无
 ```
