@@ -270,7 +270,7 @@ cluster.declarative-resource-management.enabled
 ---
 
 ## CoreOptions(核心配置)
-```
+```sh
 classloader.resolve-order
 默认值:child-first
 定义从用户代码加载类时的类解析策略.
@@ -348,4 +348,125 @@ Yarn配置目录的路径.Flink on Yarn时是必要的.也可以通过环境变�
 
 env.hbase.conf.dir
 默认值:无
+HBase配置目录的路径.需要读取HBase配置.也可以通过环境变量进行设置.
+
+io.tmp.dirs
+默认值:System.getProperty("java.io.tmpdir")
+临时文件目录.
+
+parallelism.default
+默认值:1
+任务默认并行度.
+
+fs.default-scheme
+默认值:无
+默认文件系统Schema.
+
+fs.allowed-fallback-filesystems
+默认值:空字符串
+文件允许的Schema列表,可以使用Hadoop代替合适的Flink插件(S3,Wasb).
+
+fs.overwrite-files
+默认值:false
+指定默认情况下文件输出写入程序是否应覆盖现有文件.
+
+fs.output.always-create-directory
+默认值:false
+以大于1的并行度运行的文件编写器为输出文件路径创建一个目录,并将不同的结果文件(每个并行编写器任务一个)放入该目录.
+如果此选项设置为"true",则并行度为1的写入程序还将创建一个目录并将单个结果文件放入其中.
+如果该选项设置为"false",写入程序将直接在输出路径中创建文件,而不创建包含目录.
+```
+
+---
+
+## DeploymentOptions(Executor配置)
+```sh
+execution.target
+默认值:无
+执行的部署目标.这可以采用以下值之一(remote,local,yarn-per-job,yarn-session,kubernetes-session)
+
+execution.attached
+默认值:false
+指定Pipeline是以attached模式还是detached模式提交.
+
+execution.shutdown-on-attached-exit
+默认值:false
+如果作业是在attached模式下提交的,在CLI突然终止时执行群集关闭,例如响应用户中断,例如键入Ctrl+C.
+
+execution.job-listeners
+默认值:无
+要在执行环境中注册的自定义JobListener.注册的侦听器不能有带参数的构造函数.
+```
+
+---
+
+## ExecutionOptions(特定程序的单个Executor配置)
+```sh
+execution.runtime-mode
+默认值:RuntimeExecutionMode.STREAMING
+DataStream运行时执行模式.除此之外,它还控制任务调度,网络Shuffle行为和时间语义(STREAMING,BATCH,AUTOMATIC).
+
+execution.checkpointing.snapshot-compression
+默认值:false
+是否应该对状态快照数据使用压缩.
+
+execution.buffer-timeout
+默认值:Duration.ofMillis(100)
+刷新缓冲区的最大时间(毫秒).默认情况下,帮助开发人员平滑输出缓冲区.
+设置参数会导致三种逻辑模式:
+    正值按该间隔周期性地触发刷新
+    0 在每个记录之后触发刷新,从而最小化延迟
+    -1 仅在输出缓冲区已满时触发刷新,从而最大限度地提高吞吐量.
+
+execution.sorted-inputs.enabled
+默认值:true
+启用或禁用键控运算符的排序输入的标志.只在Batch模式下生效.
+
+execution.batch-state-backend.enabled
+默认值:true
+为键控运算符启用或禁用批处理运行时特定状态后端和计时器服务的标志.
+```
+
+---
+
+## ExternalResourceOptions(外部资源配置)
+```sh
+external-resources
+默认值:无
+所有外部资源的<resource_name>列表,分号分割,例如:gpu;fpga.
+
+external-resource.gpu.driver-factory.class
+默认值:无
+定义由<resource_name>标识的外部资源的工厂类名.
+工厂将用于在TaskExecutor端实例化ExternalResourceDriver.
+例如:org.apache.flink.externalresource.gpu.GPUDriverFactory.
+
+external-resource.gpu.amount
+默认值:无
+为每个TaskExecutor指定的外部资源量,例如:2.
+
+external-resource.gpu.param.type
+默认值:无
+由<resource_name>指定的外部资源的自定义配置选项的命名模式.只有遵循此模式的配置才会传递到该外部资源的驱动程序工厂.
+例如:nvidia.
+```
+
+---
+
+## HeartbeatManagerOptions(心跳管理配置)
+```sh
+heartbeat.interval
+默认值:10000L
+从发送方请求心跳信号的时间间隔.
+
+heartbeat.timeout
+默认值:50000L
+发送方和接收方请求和接收心跳超时.
+```
+
+---
+
+## HighAvailabilityOptions(高可用配置)
+```sh
+
 ```
