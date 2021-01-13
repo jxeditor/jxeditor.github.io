@@ -33,10 +33,9 @@ tags: flink
     1.配置属性的使用
         需要对Flink可配置项进行一系列梳理,最好自实现一个Configuration封装类
     2.UDF加载功能
-        借鉴阿里实时计算平台使用方式,自实现SqlCommandParser类
-        对CreateFunction进行解析,获取到AS后的类名,对其做反射操作,并加载到执行环境内
+        使用方式: create function test as 'com.test.flink.UpperUDF' LANGUAGE SCALA
         其中一个点,对于UDF加载应该在页面上有配置项,用于submitJar感知需不需要去加载UDF
-        阿里使用方式: CREATE FUNCTION FixedFieldsSplit AS 'com.alibaba.streamstudio.platform.common.udtf.FixedFieldsSplit';
+        
 ```
 
 ---
