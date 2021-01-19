@@ -39,11 +39,11 @@ tags: flink
 ```
 
 ### 方案二(Nest)
-主要是参考Hue,Zeppelin和SqlClient的想法
+主要是参考Hue,[Zeppelin](https://github.com/apache/zeppelin/blob/227fb9266d2ca232c774a72ec913ba4e97af3bf8/flink/interpreter/src/main/java/org/apache/zeppelin/flink/TableEnvFactory.java#L64)和[SqlClient](https://github.com/apache/flink/blob/56dbc24367979fdf9bd3f83ba115db1c5680effb/flink-table/flink-sql-client/src/main/java/org/apache/flink/table/client/SqlClient.java#L62)的想法
 ```
 思路
     对于SqlClient,是利用了Executor获取执行环境配置,然后使用TableEnvironment去执行任务
-    我们可以在Web项目中同样使用Executor,创建好环境,而在Flink1.12中jobName是可以通过pipeline.name设置的
+    我们可以在Web项目中同样使用TableEnvironment,创建好环境,而在Flink1.12中jobName是可以通过pipeline.name设置的
     最终的目的就是实现一个嵌套在网页上的编辑器实现在线运行
 ```
 
