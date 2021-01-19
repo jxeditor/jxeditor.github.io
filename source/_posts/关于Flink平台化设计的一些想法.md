@@ -20,7 +20,7 @@ tags: flink
 ---
 
 ## 任务提交
-
+### 方案一(submitJar)
 这方面可以考虑一下无邪的一个方案[flink-sql-submit](https://github.com/wuchong/flink-sql-submit)
 ```
 思路
@@ -36,6 +36,15 @@ tags: flink
         使用方式: create function test as 'com.test.flink.UpperUDF' LANGUAGE SCALA
         其中一个点,对于UDF加载应该在页面上有配置项,用于submitJar感知需不需要去加载UDF
         
+```
+
+### 方案二(Nest)
+主要是参考Hue,Zeppelin和SqlClient的想法
+```
+思路
+    对于SqlClient,是利用了Executor获取执行环境配置,然后使用TableEnvironment去执行任务
+    我们可以在Web项目中同样使用Executor,创建好环境,而在Flink1.12中jobName是可以通过pipeline.name设置的
+    最终的目的就是实现一个嵌套在网页上的编辑器实现在线运行
 ```
 
 ---
