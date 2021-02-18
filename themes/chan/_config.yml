@@ -8,7 +8,7 @@ favicon: /images/favicon.ico
 monochrome: true
 
 # view setting
-avatar: https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1591944977169&di=4920f7c74026501de2663d9c3d5a5f28&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201902%2F22%2F20190222143514_ujtyi.jpg
+avatar: https://github.com/jxeditor/jxeditor/blob/master/images/icon.jfif
 avatarLink: /about
 maxContentWidth: 1000px # set the main content column's max-width property. keep it blank to unlimited the width
 copyright: # the copyright text in the footer, could be richtext
