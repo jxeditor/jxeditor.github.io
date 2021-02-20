@@ -20,7 +20,7 @@
 <meta property="og:description" content="空闲整理下协议相关知识">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-02-18T07:35:16.000Z">
-<meta property="article:modified_time" content="2021-02-20T03:17:51.936Z">
+<meta property="article:modified_time" content="2021-02-20T06:01:25.271Z">
 <meta property="article:author" content="X&amp;Z">
 <meta property="article:tag" content="learn">
 <meta name="twitter:card" content="summary">
@@ -210,6 +210,9 @@
 <hr>
 <h2 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h2><h3 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">两阶段提交,强一致性,中心化的原子提交协议</span><br><span class="line">Coordinator(协调者)</span><br><span class="line">Partcipant(参与者)</span><br><span class="line">顾名思义,两阶段提交,分为两个阶段:投票阶段,提交阶段</span><br></pre></td></tr></table></figure>
 <h3 id="流程-1"><a href="#流程-1" class="headerlink" title="流程"></a>流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">第一阶段</span><br><span class="line">    Coordinator向所有的Partcipant发送Prepare,并等待反馈</span><br><span class="line">    Partcipant接收到了Prepare,先执行本地事务操作(不会真正的执行),向Coordinator发送反馈</span><br><span class="line">    结果产生:1.所有Partcipant都反馈成功,2.存在反馈不成功的情况,只有1才会进入第二阶段</span><br><span class="line">第二阶段</span><br><span class="line">    Coordinator向所有的Partcipant发送Commit</span><br><span class="line">    所有Partcipant执行Commit操作</span><br><span class="line"></span><br><span class="line">如果有出现反馈不成功情况</span><br><span class="line">    Coordinator向所有的Partcipant发送Rollback</span><br><span class="line">    Partcipant执行回滚操作</span><br><span class="line"></span><br><span class="line">2PC是有很多坑的</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Quorum"><a href="#Quorum" class="headerlink" title="Quorum"></a>Quorum</h2><h3 id="介绍-2"><a href="#介绍-2" class="headerlink" title="介绍"></a>介绍</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">准确来讲是一种机制,确保一次写操作在多个副本中有半数副本操作成功,则说明这次写操作成功</span><br><span class="line">读操作也确保读超过半数的副本,则总会读取到最新的数据</span><br><span class="line"></span><br><span class="line">使用场景:Hadoop HA的QJM(Quorum Journal Manager)</span><br><span class="line">当Active Namenode向QJM写入Editlog时,要求半数以上的QJM写入成功,才算操作成功</span><br><span class="line">Standby Namenode定期从QJM上获取最新的Editlog更新自身的数据</span><br></pre></td></tr></table></figure>
   </div>
   <footer class="article-footer">
     
