@@ -11,6 +11,8 @@ tags: flink
 
 ## 问题再现
 ```
+不太能理解TTL期间对于未命中的key,为什么保留,虽然减少了IO,也增加了数据的不准确性
+
 使用FlinkSQL创建MySQL维表时,使用了缓存
 lookup.cache.ttl
 lookup.max-retries
