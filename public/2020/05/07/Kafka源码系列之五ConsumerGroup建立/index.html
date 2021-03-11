@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>描述consumer实例怎么样加入的group</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="GroupCoordinator角色"><a href="#GroupCoordinator角色" class="headerlink" title="GroupCoordinator角色"></a>GroupCoordinator角色</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">GroupCoordinator角色是负责ConsumerGroup Member管理以及Offset管理</span><br><span class="line"></span><br><span class="line">每一个ConsumerGroup都有其对应的GroupCoordinator</span><br><span class="line"></span><br><span class="line">具体由哪个GroupCoordinator负责与groupId的hash值有关</span><br><span class="line">通过abs(GroupId.hashCode()) % NumPartitions来计算出一个值</span><br><span class="line">Numpartitions是__consumer_offsets的partition数,默认50</span><br><span class="line">这个值代表__consumer_offsets的一个partition</span><br><span class="line">这个partition的leader即为这个groupId要交互的GroupCoordinator所在节点</span><br></pre></td></tr></table></figure>
 

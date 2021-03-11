@@ -46,7 +46,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -192,7 +192,7 @@
     <blockquote>
 <p>不考虑HbaseUtil这种方式</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 <h2 id="读取HBase"><a href="#读取HBase" class="headerlink" title="读取HBase"></a>读取HBase</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 获得HBase的配置</span></span><br><span class="line"><span class="keyword">val</span> hbaseConf = <span class="type">HbaseUtil</span>.getConf()</span><br><span class="line">hbaseConf.set(org.apache.hadoop.hbase.mapreduce.<span class="type">TableOutputFormat</span>.<span class="type">OUTPUT_TABLE</span>, tableName)</span><br><span class="line"><span class="keyword">val</span> admin = <span class="keyword">new</span> <span class="type">HBaseAdmin</span>(hbaseConf)</span><br><span class="line"><span class="keyword">if</span> (!admin.isTableAvailable(tableName))&#123;</span><br><span class="line">    <span class="keyword">val</span> tableDesc = <span class="keyword">new</span> <span class="type">HTableDescriptor</span>(<span class="type">TableName</span>.valueOf(tableName))</span><br><span class="line">    admin.createTable(tableDesc)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> hBaseRdd = sc.newAPIHadoopRDD(hbaseConf,classOf[<span class="type">TableInputFormat</span>],classOf[org.apache.hadoop.hbase.io.<span class="type">ImmutableBytesWritable</span>],classOf[org.apache.hadoop.hbase.client.<span class="type">Result</span>])</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> count = hBaseRdd.count()</span><br><span class="line">hBaseRdd.foreach(x=&gt;&#123;</span><br><span class="line">    <span class="keyword">val</span> result = x._2</span><br><span class="line">    <span class="comment">// 获取行键</span></span><br><span class="line">    <span class="keyword">val</span> key = <span class="type">Bytes</span>.toString(result.getRow)</span><br><span class="line">    <span class="comment">// 通过列簇和列名获取列</span></span><br><span class="line">    <span class="keyword">val</span> name = <span class="type">Bytes</span>.toString(result.getValue(<span class="string">&quot;cf&quot;</span>.getBytes,<span class="string">&quot;name&quot;</span>.getBytes))</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
 
 <hr>

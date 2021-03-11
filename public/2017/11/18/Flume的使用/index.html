@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>Flume配置文件与使用介绍</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="端口监听"><a href="#端口监听" class="headerlink" title="端口监听"></a>端口监听</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"># 创建配置文件</span><br><span class="line">vi netcat-logger.conf</span><br><span class="line">a1.sources &#x3D; r1</span><br><span class="line">a1.sinks &#x3D; k1</span><br><span class="line">a1.channels &#x3D; c1</span><br><span class="line">a1.sources.r1.type &#x3D; netcat</span><br><span class="line">a1.sources.r1.bind &#x3D; localhost</span><br><span class="line">a1.sources.r1.port &#x3D; 44444</span><br><span class="line">a1.sinks.k1.type &#x3D; logger</span><br><span class="line">a1.channels.c1.type &#x3D; memory</span><br><span class="line">a1.channels.c1.capacity &#x3D; 1000</span><br><span class="line">a1.channels.c1.transactionCapacity &#x3D; 100</span><br><span class="line">a1.sources.r1.channels &#x3D; c1</span><br><span class="line">a1.sinks.k1.channel &#x3D; c1</span><br><span class="line"></span><br><span class="line"># 启动服务</span><br><span class="line">bin&#x2F;flume-ng agent --conf conf --conf-file conf&#x2F;netcat-logger.conf --name a1 -Dflume.root.logger&#x3D;INFO,console</span><br><span class="line"></span><br><span class="line"># 启动监听端口</span><br><span class="line">telnet localhost 44444</span><br><span class="line"></span><br><span class="line"># 传入数据</span><br><span class="line">$ telnet localhost 44444</span><br><span class="line">Trying 127.0.0.1...</span><br><span class="line">Connected to localhost.localdomain (127.0.0.1).</span><br><span class="line">Escape character is &#39;^]&#39;.</span><br><span class="line">Hello world! &lt;ENTER&gt;</span><br><span class="line">OK</span><br></pre></td></tr></table></figure>
 

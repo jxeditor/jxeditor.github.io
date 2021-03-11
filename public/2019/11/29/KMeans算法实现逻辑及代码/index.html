@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>将KMeans算法整个逻辑梳理出来,容易理解,并实现代码</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="什么是KMeans"><a href="#什么是KMeans" class="headerlink" title="什么是KMeans"></a>什么是KMeans</h2><p><strong>注意：</strong>需要与KNN区分开来</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Kmeans是聚类算法的一种,是一种迭代求解的聚类分析算法。</span><br><span class="line">其步骤是随机选取K个对象作为初始的聚类中心，然后计算每个对象与各个种子聚类中心之间的距离，把每个对象分配给距离它最近的聚类中心。</span><br><span class="line">聚类中心以及分配给它们的对象就代表一个聚类。</span><br><span class="line">每分配一个样本，聚类的聚类中心会根据聚类中现有的对象被重新计算。</span><br><span class="line">这个过程将不断重复直到满足某个终止条件。</span><br><span class="line">终止条件可以是没有（或最小数目）对象被重新分配给不同的聚类，没有（或最小数目）聚类中心再发生变化，误差平方和局部最小。</span><br></pre></td></tr></table></figure>

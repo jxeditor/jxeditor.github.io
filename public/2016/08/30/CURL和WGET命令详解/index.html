@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>简单了解一下CURL和WGET命令的使用,毕竟也是常用到的命令</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="CURL命令"><a href="#CURL命令" class="headerlink" title="CURL命令"></a>CURL命令</h2><p>curl是一种命令行工具，作用是发出网络请求，然后得到和提取数据<br>显示在”标准输出”（stdout）上面。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"># 查看网页源码</span><br><span class="line">curl www.baidu.com</span><br><span class="line"></span><br><span class="line"># 保存网页或资源文件</span><br><span class="line">curl -o test.html www.baidu.com</span><br><span class="line">curl -o test.jpg https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;jxeditor&#x2F;jxeditor.github.io&#x2F;hexo&#x2F;logo.jpg</span><br><span class="line"></span><br><span class="line"># 自动跳转</span><br><span class="line">curl -L www.baidu.com</span><br><span class="line"></span><br><span class="line"># 获取头信息(连带网页源码)-I则只显示头信息</span><br><span class="line">curl -i www.baidu.com</span><br><span class="line"></span><br><span class="line"># 显示通信过程</span><br><span class="line">curl -v www.baidu.com</span><br><span class="line">curl --trace output.txt www.baidu.com</span><br><span class="line">curl --trace-ascii output.txt www.baidu.com</span><br><span class="line"></span><br><span class="line"># 发送GET</span><br><span class="line">curl https:&#x2F;&#x2F;www.baidu.com&#x2F;s?wd&#x3D;wget</span><br><span class="line"></span><br><span class="line"># 发送POST</span><br><span class="line">curl -X POST --data &quot;wd&#x3D;wget&quot; https:&#x2F;&#x2F;www.baidu.com&#x2F;s</span><br><span class="line">curl -X POST --data-urlencode &quot;wd&#x3D;wget&quot; https:&#x2F;&#x2F;www.baidu.com&#x2F;s</span><br><span class="line"></span><br><span class="line"># 支持HEAD GET POST PUT DELETE</span><br></pre></td></tr></table></figure>

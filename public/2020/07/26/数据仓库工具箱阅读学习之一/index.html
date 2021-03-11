@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>根据目前工作内容,专注且系统化的学习下数仓方面知识</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="范式"><a href="#范式" class="headerlink" title="范式"></a>范式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">NF:</span><br><span class="line">    符合某一级别的关系模式的集合,表示一个关系内部各属性之间的联系的合理化程度</span><br><span class="line">1NF:</span><br><span class="line">    冗余情况最严重</span><br><span class="line">    符合1NF的关系中的每个属性都不可再分</span><br><span class="line">    像进货字段,还可以分为进货数量,进货单价,那么就不符合1NF的要求</span><br><span class="line">2NF:</span><br><span class="line">    对1NF表进行拆分,对重复冗余的数据进行分表</span><br><span class="line">    例如将学生院系科目成绩表,拆分为学生表+成绩表,通过学号进行关联</span><br><span class="line">    但,如果涉及到删除操作,院系信息会丢失</span><br><span class="line">3NF:</span><br><span class="line">    数据库中强调的3NF主要是为了消除冗余</span><br><span class="line">    针对2NF,进行进一步拆分,学生院系科目成绩表,拆分为学生表+成绩表+院系表</span><br><span class="line">    这样,对于删除学生操作,对于院系是没有影响的</span><br><span class="line"></span><br><span class="line">BCNF(巴斯范式)&amp;4NF&amp;5NF:</span><br><span class="line">    这一块具体还不太理解多值依赖具体意义</span><br></pre></td></tr></table></figure>
 

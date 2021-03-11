@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>整理公司业务,对于Flink离线批处理进行学习与踩坑</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h1 id="环境配置项"><a href="#环境配置项" class="headerlink" title="环境配置项"></a>环境配置项</h1><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">tEnv.getConfig.getConfiguration.setBoolean(<span class="type">OptimizerConfigOptions</span>.<span class="type">TABLE_OPTIMIZER_JOIN_REORDER_ENABLED</span>, <span class="literal">true</span>)</span><br><span class="line"><span class="comment">// 关闭SQL优化重用源表</span></span><br><span class="line">tEnv.getConfig.getConfiguration.setBoolean(<span class="type">OptimizerConfigOptions</span>.<span class="type">TABLE_OPTIMIZER_REUSE_SOURCE_ENABLED</span>, <span class="literal">false</span>)</span><br><span class="line">tEnv.getConfig.getConfiguration.setLong(<span class="type">OptimizerConfigOptions</span>.<span class="type">TABLE_OPTIMIZER_BROADCAST_JOIN_THRESHOLD</span>, <span class="number">10485760</span>L)</span><br><span class="line">tEnv.getConfig.getConfiguration.setInteger(<span class="type">ExecutionConfigOptions</span>.<span class="type">TABLE_EXEC_RESOURCE_DEFAULT_PARALLELISM</span>, <span class="number">1</span>)</span><br><span class="line">tEnv.getConfig.getConfiguration.setInteger(<span class="type">ExecutionConfigOptions</span>.<span class="type">TABLE_EXEC_SORT_DEFAULT_LIMIT</span>, <span class="number">200</span>)</span><br><span class="line">tEnv.getConfig.addConfiguration(<span class="type">GlobalConfiguration</span>.loadConfiguration)</span><br></pre></td></tr></table></figure>
 

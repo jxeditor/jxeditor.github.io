@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>B站Flink教程视频观看</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h1 id="时间语义"><a href="#时间语义" class="headerlink" title="时间语义"></a>时间语义</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">当你的应用遇到某些问题要从上一个checkpoint或者savepoint进行重放,是不是希望结果完全相同</span><br><span class="line">如果希望结果完全相同,就只能用Event Time</span><br><span class="line">如果接受结果不同,则可以用Processing Time</span><br><span class="line"></span><br><span class="line">Processing Time</span><br><span class="line">    对于Processing Time,因为我们是使用的是本地节点的时间(假设这个节点的时钟同步没有问题)</span><br><span class="line">    我们每一次取到的Processing Time肯定都是递增的</span><br><span class="line">    递增就代表着有序,所以说我们相当于拿到的是一个有序的数据流</span><br><span class="line"></span><br><span class="line">Event Time</span><br><span class="line">    而用Event Time的时候因为时间是绑定在每一条的记录上的</span><br><span class="line">    由于网络延迟,程序内部逻辑,或者其他一些分布式系统的原因</span><br><span class="line">    数据的时间可能会存在一定程度的乱序</span><br><span class="line">    在Event Time场景下,我们把每一个记录所包含的时间称作Record Timestamp</span><br><span class="line">    如果Record Timestamp所得到的时间序列存在乱序</span><br><span class="line">    我们就需要去处理这种情况</span><br></pre></td></tr></table></figure>
 

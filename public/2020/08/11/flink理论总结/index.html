@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>平时flink的实际应用太多,根据实际的应用,添加必不可少的相关理论知识</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 <h4 id="flink定义"><a href="#flink定义" class="headerlink" title="flink定义"></a>flink定义</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flink 是一个分布式大数据处理引擎,可对有限数据流和无限数据流进行有状态或无状态的计算,能够部署在各种集群环境,对各种规模大小的数据进行快速计算</span><br></pre></td></tr></table></figure>
 
 <h4 id="flink-Application"><a href="#flink-Application" class="headerlink" title="flink Application"></a>flink Application</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">streams流: 分为有限数据流和无限数据流;实际应用的比较多的还是无限数据流的方式</span><br><span class="line">state:状态是计算过程中的数据信息,在容错恢复和ck中有重要的作用,流计算在本质上是increment processing;因此需要不断查询保持状态;为了确保exactly once语义,需要数据能够写入到状态中;而持久化存储,能够保证在整个分布式系统运行失败或者挂掉的情况下做到exactly-once,这是状态的另外一个价值</span><br><span class="line">time:分为event time,ingestion time,processing time;flink的无限数据流是一个持续化的过程,时间是我们判断业务状态是否滞后,数据处理是否及时的重要依据</span><br><span class="line">event time: 相当于事件,它在数据最源头产生时带有时间戳,后面都需要用到事件戳来实现;把对应时间3点到4点的数据放在3点到4点的bucket,然后bucket产生结果</span><br></pre></td></tr></table></figure>

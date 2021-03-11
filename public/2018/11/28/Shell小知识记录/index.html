@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>记录一下日常脚本的使用</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="的使用"><a href="#的使用" class="headerlink" title="=~的使用"></a>=~的使用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 正则匹配,用来判断左侧的参数是否符合右边的规则</span><br><span class="line">$: 以什么结尾</span><br><span class="line">^: 以什么开头</span><br><span class="line">例子: 输出&#x2F;root&#x2F;目录下以.jar结尾的文件</span><br><span class="line">for row in &#96;ls -l &#x2F;root&#x2F; | awk &#39;&#123;print $9&#125;&#39;&#96;; do</span><br><span class="line">	if [[ &quot;$row&quot; &#x3D;~ \.jar$ ]]; then</span><br><span class="line">		echo &quot;$row&quot;</span><br><span class="line">	fi</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
 

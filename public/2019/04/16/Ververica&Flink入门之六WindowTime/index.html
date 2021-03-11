@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>B站Flink教程视频观看</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h1 id="Window示例"><a href="#Window示例" class="headerlink" title="Window示例"></a>Window示例</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Keyed Windows</span><br><span class="line">    stream</span><br><span class="line">        .keyBy</span><br><span class="line">        .window(必须: &quot;assigner分配器&quot;)</span><br><span class="line">        [.trigger](默认: &quot;trigger触发器&quot;)</span><br><span class="line">        [.evictor](默认没有: &quot;evictor过滤&quot;)</span><br><span class="line">        [.allowedLateness](默认为0: &quot;最迟迟到时间&quot;)</span><br><span class="line">        [.sideOutputLateData](默认没有: &quot;迟到数据&quot;)</span><br><span class="line">        .reduce&#x2F;aggregate&#x2F;fold&#x2F;apply</span><br><span class="line">        [getSideOutput](&quot;获取迟到数据&quot;)</span><br><span class="line">Non-Keyed Windows</span><br><span class="line">    stream</span><br><span class="line">        .windowAll</span><br><span class="line">        [.trigger]</span><br><span class="line">        [.evictor]</span><br><span class="line">        [.allowedLateness]</span><br><span class="line">        [.sideOutputLateData]</span><br><span class="line">        .reduce&#x2F;aggregate&#x2F;fold&#x2F;apply</span><br><span class="line">        [getSideOutput]</span><br></pre></td></tr></table></figure>
 

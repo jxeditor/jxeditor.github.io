@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>介绍Server端接收到Produce请求,是如何进行处理的,处理之后分片是如何产生的</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Client端发送Produce请求"><a href="#Client端发送Produce请求" class="headerlink" title="Client端发送Produce请求"></a>Client端发送Produce请求</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">在第一章有详细描述,Producer是如何向Server发送请求的</span><br><span class="line">主要是在Sender.sendProduceRequests()方法中实现</span><br><span class="line">发送List&lt;ProducerBatch&gt; batches</span><br></pre></td></tr></table></figure>
 

@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>针对内网机器搭建K8S集群,先联网机器将依赖之类的进行downloadonly,然后将依赖打包拷贝到不能联网机器<br>离线环境需要准备CentOS7.6的DVD版的ISO文件</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="节点内容"><a href="#节点内容" class="headerlink" title="节点内容"></a>节点内容</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 每个节点都有docker+k8s,并且k8s所需镜像都得有</span><br><span class="line">k8s.gcr.io&#x2F;kube-proxy</span><br><span class="line">k8s.gcr.io&#x2F;kube-apiserver</span><br><span class="line">k8s.gcr.io&#x2F;kube-scheduler</span><br><span class="line">k8s.gcr.io&#x2F;kube-controller-manager</span><br><span class="line">k8s.gcr.io&#x2F;coredns</span><br><span class="line">k8s.gcr.io&#x2F;etcd</span><br><span class="line">k8s.gcr.io&#x2F;pause</span><br><span class="line"># 每个节点都需要网络镜像</span><br><span class="line">calico&#x2F;node</span><br><span class="line">calico&#x2F;cni</span><br><span class="line">calico&#x2F;pod2daemon-flexvol</span><br><span class="line">calico&#x2F;kube-controllers </span><br></pre></td></tr></table></figure>
 

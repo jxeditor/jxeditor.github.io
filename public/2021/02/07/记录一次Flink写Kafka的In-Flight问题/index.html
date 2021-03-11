@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>涉及到Kafka的消息发送的问题</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="问题点"><a href="#问题点" class="headerlink" title="问题点"></a>问题点</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">场景: 简单的Flink消费数据写入kafka,无其他任何复杂操作,在晚上9点附近有峰值情况</span><br><span class="line">问题: 写入Kafka数据失败,并带有CK失败</span><br><span class="line">堆栈:</span><br><span class="line">    throw new IllegalStateException(&quot;There are no in-flight requests for node &quot; + node);</span><br></pre></td></tr></table></figure>
 

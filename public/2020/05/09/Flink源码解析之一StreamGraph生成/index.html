@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>在之前的文章中介绍过FlinkSQL底层是怎么实现的，以及Flink的一些概念性知识。一直想整理Flink执行层面的源码，但是因为过于庞大，不知道如何下手，只能一步一步来。</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">StreamGraph</span><br><span class="line">    JobGraph</span><br><span class="line">        ExecutionGraph</span><br><span class="line">            物理执行图</span><br><span class="line"></span><br><span class="line">Executor</span><br><span class="line">    ExecutorBase</span><br><span class="line">        BatchExecutor</span><br><span class="line">        StreamExecutor</span><br><span class="line">    StreamExecutor</span><br><span class="line"></span><br><span class="line">Planner</span><br><span class="line">    PlannerBase</span><br><span class="line">        BatchPlanner</span><br><span class="line">        StreamPlanner</span><br><span class="line">    StreamPlan</span><br></pre></td></tr></table></figure>
 

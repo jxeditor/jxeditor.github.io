@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>今天社区有小伙伴提出Flink在消费Kafka多Topic数据时,并行度合理,但还是存在消费不均匀的情况</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="为什么"><a href="#为什么" class="headerlink" title="为什么"></a>为什么</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">FlinkKafkaConsumerBase.open()</span><br><span class="line">    AbstractPartitionDiscoverer.discoverPartitions()</span><br><span class="line">        --setAndCheckDiscoveredPartition()</span><br><span class="line">        KafkaTopicPartitionAssigner.assign()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span> <span class="title">assign</span><span class="params">(KafkaTopicPartition partition, <span class="keyword">int</span> numParallelSubtasks)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 测试发现,对test[0-4]这5个topic,每个topic都12个分区,最终分配的结果值并不是均匀的</span></span><br><span class="line">    <span class="keyword">int</span> startIndex = ((partition.getTopic().hashCode() * <span class="number">31</span>) &amp; <span class="number">0x7FFFFFFF</span>) % numParallelSubtasks;</span><br><span class="line">    <span class="keyword">return</span> (startIndex + partition.getPartition()) % numParallelSubtasks;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 

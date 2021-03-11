@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>使用Cas进行单点登录操作实践</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="设置Https"><a href="#设置Https" class="headerlink" title="设置Https"></a>设置Https</h2><h3 id="生成证书"><a href="#生成证书" class="headerlink" title="生成证书"></a>生成证书</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">keytool -genkey -alias tomcat -keyalg RSA -validity 3650 -keystore D:\tomcat.keystore</span><br><span class="line"># 密钥库口令 changeit</span><br><span class="line"># 名字与姓氏输入域名 service.cas.com</span><br><span class="line">keytool -list -keystore D:\tomcat.keystore</span><br><span class="line">keytool -export -alias tomcat -file D:\tomcat.cer -keystore D:\tomcat.keystore -validity 3650</span><br><span class="line">keytool -import -keystore C:\Java\jdk1.8.0_191\jre\lib\security\cacerts -file D:\tomcat.cer -alias tomcat -storepass changeit</span><br><span class="line"># 密钥库口令 changeit</span><br><span class="line"># 删除操作</span><br><span class="line">keytool -delete -alias tomcat -keystore C:\Java\jdk1.8.0_191\jre\lib\security\cacerts</span><br><span class="line">keytool -list -v -keystore C:\Java\jdk1.8.0_191\jre\lib\security\cacerts</span><br></pre></td></tr></table></figure>
 

@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>基于Flink-1.10.0,此版本只能在flink-conf.yaml中控制source并行度</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="出现情况"><a href="#出现情况" class="headerlink" title="出现情况"></a>出现情况</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">读取Hive表,存在大量小文件,这时Source端的并行度不受全局并行度影响</span><br><span class="line">并行度等于文件数量导致并行度过高</span><br></pre></td></tr></table></figure>
 

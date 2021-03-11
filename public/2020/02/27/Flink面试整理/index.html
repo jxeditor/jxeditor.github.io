@@ -46,7 +46,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -192,7 +192,7 @@
     <blockquote>
 <p>记录面试中有关Flink的概念知识</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h1 id="Flink面试基础"><a href="#Flink面试基础" class="headerlink" title="Flink面试基础"></a>Flink面试基础</h1><h1 id="Flink时间类型有哪些？"><a href="#Flink时间类型有哪些？" class="headerlink" title="Flink时间类型有哪些？"></a>Flink时间类型有哪些？</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">三种时间类型</span><br><span class="line">Event Time事件生成时间，事件实际产生的时间</span><br><span class="line">Ingestion Time事件接入时间，进入Flink系统的时间</span><br><span class="line">Processing Time事件处理时间，Flink处理的时间</span><br><span class="line"></span><br><span class="line">事件处理时间处理Window时，使用机器自身时间</span><br><span class="line">可能因为机器时钟不同步导致乱序，适用于时间精确度不高的计算</span><br></pre></td></tr></table></figure>
 

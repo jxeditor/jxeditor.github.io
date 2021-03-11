@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>Controller类似于其他分布式系统的Master角色,Kafka任何一台Broker都可以作为Controller,但是同一集群同时只会有一个alive状态的Controller</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Controller简介"><a href="#Controller简介" class="headerlink" title="Controller简介"></a>Controller简介</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Broker的上线,下线处理</span><br><span class="line">新创建的topic,已经topic的分区扩容,处理分区副本的分配,leader选举</span><br><span class="line">管理所有副本的状态机和分区状态机,处理状态机变化事件</span><br><span class="line">topic删除,副本迁移,leader切换等处理</span><br></pre></td></tr></table></figure>
 

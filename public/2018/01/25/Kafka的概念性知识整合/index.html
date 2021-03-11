@@ -46,7 +46,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -192,7 +192,7 @@
     <blockquote>
 <p>主要围绕Kafka组件,文件存储机制以及常用命令的介绍</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Kafka简介"><a href="#Kafka简介" class="headerlink" title="Kafka简介"></a>Kafka简介</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Kafka最初由Linkedin公司开发的分布式、分区的、多副本的、多订阅者的消息系统。</span><br><span class="line">它提供了类似于JMS的特性，但是在设计实现上完全不同，此外它并不是JMS规范的实现。</span><br><span class="line">Kafka对消息保存是根据Topic进行归类，发送消息者称为Producer；消息接受者称为Consumer；此外Kafka集群有多个Kafka实例组成，每个实例(server)称为Broker。</span><br><span class="line">无论是Kafka集群，还是producer和consumer都依赖于zookeeper来保证系统可用性集群保存一些meta信息</span><br><span class="line"></span><br><span class="line"># 注意</span><br><span class="line">kafka的0.8版本之后，producer不在依赖zookeeper保存meta信息，而是producer自己保存meta信息。</span><br></pre></td></tr></table></figure>
 

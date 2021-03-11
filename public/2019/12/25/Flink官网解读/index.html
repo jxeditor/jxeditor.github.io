@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>上次实时维表join的事,觉得自己对于Flink官网并没有去细致了解,单开一篇,记录对Flink官网的解读,局限于scala开发</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h1 id="基本API"><a href="#基本API" class="headerlink" title="基本API"></a>基本API</h1><h2 id="数据集与数据流"><a href="#数据集与数据流" class="headerlink" title="数据集与数据流"></a>数据集与数据流</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Flink使用DataSet和DataStream表示程序中的数据</span><br></pre></td></tr></table></figure>
 <h2 id="Flink程序剖析"><a href="#Flink程序剖析" class="headerlink" title="Flink程序剖析"></a>Flink程序剖析</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// a.获得execution environment</span></span><br><span class="line"><span class="comment">// org.apache.flink.api.scala</span></span><br><span class="line"><span class="comment">// ExecutionEnvironment</span></span><br><span class="line"><span class="keyword">val</span> env = <span class="type">ExecutionEnvironment</span>.getExecutionEnvironment</span><br><span class="line"><span class="comment">// org.apache.flink.streaming.api.scala</span></span><br><span class="line"><span class="comment">// StreamExecutionEnvironment</span></span><br><span class="line"><span class="keyword">val</span> env = <span class="type">StreamExecutionEnvironment</span>.getExecutionEnvironment()</span><br><span class="line"></span><br><span class="line"><span class="comment">// b.加载/创建初始数据</span></span><br><span class="line"><span class="keyword">val</span> text = env.readTextFile(<span class="string">&quot;test.log&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// c.指定对此数据的转换</span></span><br><span class="line"><span class="keyword">val</span> counts = text.flatMap(w =&gt; &#123;w.split(<span class="string">&quot; &quot;</span>)&#125;).map((_, <span class="number">1</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment">// d.指定将计算结果放在何处</span></span><br><span class="line">counts.writeAsCsv(<span class="string">&quot;output&quot;</span>, <span class="string">&quot;\n&quot;</span>, <span class="string">&quot; &quot;</span>)</span><br><span class="line">counts.print()</span><br><span class="line"></span><br><span class="line"><span class="comment">// e.触发程序执行</span></span><br><span class="line">env.execute(<span class="string">&quot;Scala WordCount Example&quot;</span>)</span><br></pre></td></tr></table></figure>

@@ -46,7 +46,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -192,7 +192,7 @@
     <blockquote>
 <p>读取ES出现时间解析错误</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h1 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># sparkconf中设置es.mapping.date.rich为false</span><br><span class="line">conf.set(&quot;es.mapping.date.rich&quot;, &quot;false&quot;);</span><br><span class="line"></span><br><span class="line"># 在命令行提交时设置spark.es.mapping.date.rich为false</span><br><span class="line">--conf spark.es.mapping.date.rich&#x3D;false</span><br><span class="line"></span><br><span class="line"># 可以不解析为date，直接返回string。</span><br><span class="line"></span><br></pre></td></tr></table></figure>
   </div>

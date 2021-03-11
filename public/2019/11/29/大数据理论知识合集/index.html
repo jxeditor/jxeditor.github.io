@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>对于大数据理论方面知识进行搜集整理</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h1 id="Hadoop"><a href="#Hadoop" class="headerlink" title="Hadoop"></a>Hadoop</h1><h2 id="1-HDFS的组成"><a href="#1-HDFS的组成" class="headerlink" title="1.HDFS的组成"></a>1.HDFS的组成</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">1.NameNode：</span><br><span class="line">    管理HDFS的名称空间；</span><br><span class="line">    管理数据块的映射信息；</span><br><span class="line">    配置副本策略；</span><br><span class="line">    处理客户端的读写请求。</span><br><span class="line">    Fsimage：</span><br><span class="line">        存储了文件的基本信息，如文件路径，文件副本集个数，文件块的信息，文件所在的主机信息。</span><br><span class="line">    Editslog：</span><br><span class="line">        存了客户端对hdfs中各种写操作的日志（指令）。</span><br><span class="line">2.DataNode：</span><br><span class="line">    存储实际的数据块(Block，默认128M)；</span><br><span class="line">    执行数据块的读写操作。</span><br><span class="line">3.Secondary NameNode：</span><br><span class="line">    是NameNode的冷备；</span><br><span class="line">    辅助NameNode，分担其工作量；</span><br><span class="line">    定期（每一小时，editslog大小超过64M）合并fsimage和fsedits，并推送给NameNode；</span><br><span class="line">    在紧急情况下，可辅助恢复NameNode。</span><br><span class="line">4.Client：</span><br><span class="line">    文件切分；</span><br><span class="line">    与NameNode交互，获取文件的位置信息；</span><br><span class="line">    与DataNode交互，读取或者写入数据；</span><br><span class="line">    Client提供一些命令来管理HDFS，比如启动或者关闭HDFS；</span><br><span class="line">    Client可以通过一些命令来访问HDFS。</span><br></pre></td></tr></table></figure>
 

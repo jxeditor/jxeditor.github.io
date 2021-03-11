@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>记录CentOS上发生的一些稀奇古怪的事情</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="自制yum仓库"><a href="#自制yum仓库" class="headerlink" title="自制yum仓库"></a>自制yum仓库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"># 挂载镜像的仓库</span><br><span class="line">mkidr &#x2F;mnt&#x2F;iso</span><br><span class="line">mount -o loop *.iso &#x2F;mnt&#x2F;iso</span><br><span class="line">vi &#x2F;etc&#x2F;yum.repos.d&#x2F;file.repo</span><br><span class="line">[base]</span><br><span class="line">name&#x3D;rhel6repo</span><br><span class="line">baseurl&#x3D;file:&#x2F;&#x2F;&#x2F;mnt&#x2F;iso</span><br><span class="line">enabled&#x3D;1</span><br><span class="line">gpgckeck&#x3D;0</span><br><span class="line">gpgkey&#x3D;file:&#x2F;&#x2F;&#x2F;mnt&#x2F;iso&#x2F;RPM-GPG-KEY-redhat-release</span><br><span class="line"></span><br><span class="line">yum clean all</span><br><span class="line"></span><br><span class="line"># 自制仓库</span><br><span class="line">yum install --downloadonly --downloaddir&#x3D;&#x2F;temp&#x2F; mysql-community-server</span><br><span class="line">yum install createrepo -y</span><br><span class="line"></span><br><span class="line">createrepo &#x2F;temp&#x2F;</span><br><span class="line"></span><br><span class="line">此时已经可以使用file:&#x2F;&#x2F;&#x2F;temp&#x2F;的形式添加本地仓库</span><br><span class="line"></span><br><span class="line"># 内网仓库</span><br><span class="line">yum install httpd</span><br><span class="line">cd &#x2F;var&#x2F;www&#x2F;html&#x2F;</span><br><span class="line">mkdir centos&#x2F;6&#x2F;os&#x2F;x86_64&#x2F;</span><br><span class="line"># 用mv移动会出现403问题</span><br><span class="line">cp -r &#x2F;temp&#x2F;* &#x2F;var&#x2F;www&#x2F;html&#x2F;centos&#x2F;6&#x2F;os&#x2F;x86_64&#x2F;</span><br><span class="line">vi  client.repo</span><br><span class="line">[client]</span><br><span class="line">name&#x3D;httpServer</span><br><span class="line">baseurl&#x3D;http:&#x2F;&#x2F;192.168.3.201&#x2F;centos&#x2F;$releasever&#x2F;os&#x2F;$basearch</span><br><span class="line">gpgcheck&#x3D;0</span><br></pre></td></tr></table></figure>
 

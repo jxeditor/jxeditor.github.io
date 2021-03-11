@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>docker进行项目部署</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="安装docker以及加载镜像"><a href="#安装docker以及加载镜像" class="headerlink" title="安装docker以及加载镜像"></a>安装docker以及加载镜像</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 本机使用的是CentOS6.5,docker存在很多bug</span></span><br><span class="line">yum install docker-engine</span><br><span class="line"><span class="comment"># 有网情况</span></span><br><span class="line">docker pull mysql</span><br><span class="line">docker pull tomcat</span><br><span class="line"><span class="comment"># 没网情况</span></span><br><span class="line">docker save -o ./images.tar images</span><br><span class="line">docker load -i images.tar 或者 docker load &lt; images.tar</span><br></pre></td></tr></table></figure>
 

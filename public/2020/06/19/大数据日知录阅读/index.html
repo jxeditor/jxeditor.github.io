@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>架构与算法</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="数据分片与路由"><a href="#数据分片与路由" class="headerlink" title="数据分片与路由"></a>数据分片与路由</h2><h3 id="哈希分片"><a href="#哈希分片" class="headerlink" title="哈希分片"></a>哈希分片</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"># 一致性哈希算法</span><br><span class="line">给定一个由0-31组成的Hash值闭环,由5个机器存储对应的分片数据</span><br><span class="line">顺时针方向最近的节点存储分片数据</span><br><span class="line">N5-&gt;N14-&gt;N20-&gt;N25-&gt;N29-&gt;N5</span><br><span class="line">N5(30,31,0,1,2,3,4,5)</span><br><span class="line">N14(6,7,8,9,10,11,12,13,14)</span><br><span class="line">N20(15,16,17,18,19,20)</span><br><span class="line">N25(21,22,23,24,25)</span><br><span class="line">N29(26,27,28,29)</span><br><span class="line"></span><br><span class="line">举例:</span><br><span class="line">N5发起存储[test]数据请求</span><br><span class="line">先将[test]进行hash取值[0-31]得到18</span><br><span class="line">逐级寻找对应的存储节点,N5&lt;N14&lt;18&lt;N20</span><br><span class="line">最终存储入N20节点</span><br><span class="line"></span><br><span class="line">为了加快访问速度,引用了路由表</span><br><span class="line">在每一个节点上记录了距离其他节点的距离信息</span><br><span class="line">N14的路由表信息(距离-&gt;节点)</span><br><span class="line">1(2^0)-&gt;N20</span><br><span class="line">2(2^1)-&gt;N20</span><br><span class="line">4(2^2)-&gt;N20</span><br><span class="line">8(2^3)-&gt;N25</span><br><span class="line">16(2^4)-&gt;N5</span><br><span class="line">N14接收到查询Hash值为4的请求</span><br><span class="line">先确定4是否在N20节点上,不在则寻找路由表,找到小于4的最大编号节点</span><br><span class="line">发现找不到,取倒数第2项路由信息N25,请求N25取查询4的信息</span><br></pre></td></tr></table></figure>
 <h3 id="范围分片"><a href="#范围分片" class="headerlink" title="范围分片"></a>范围分片</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">将所有记录的主键进行排序,在排好序的主键空间内将记录划分成数据分片</span><br></pre></td></tr></table></figure>

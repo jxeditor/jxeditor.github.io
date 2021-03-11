@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>整理下Flink1.11有什么新的功能,以及坑,只有自己用到的</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Orc格式支持"><a href="#Orc格式支持" class="headerlink" title="Orc格式支持"></a>Orc格式支持</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">OrcBulkWriterFactory</span></span><br><span class="line">使用方式与<span class="type">ParquetAvroWriters</span></span><br><span class="line">但是,目前并没有一个完善的<span class="type">Demo</span></span><br><span class="line">本人在使用时出现有文件生成却没有数据的情况</span><br><span class="line">无法判断是使用问题,还是<span class="type">Flink</span>本身问题</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> schema: <span class="type">String</span> = <span class="string">&quot;struct&lt;platform:string,event:string,dt:string&gt;&quot;</span></span><br><span class="line"><span class="keyword">val</span> writerProperties: <span class="type">Properties</span> = <span class="keyword">new</span> <span class="type">Properties</span>()</span><br><span class="line">writerProperties.setProperty(<span class="string">&quot;orc.compress&quot;</span>, <span class="string">&quot;LZ4&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> writerFactory = <span class="keyword">new</span> <span class="type">OrcBulkWriterFactory</span>(<span class="keyword">new</span> <span class="type">DemoVectorizer</span>(schema), writerProperties, <span class="keyword">new</span> <span class="type">Configuration</span>())</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.core.fs.<span class="type">Path</span></span><br><span class="line"><span class="keyword">val</span> sink = <span class="type">StreamingFileSink</span>.forBulkFormat(<span class="keyword">new</span> <span class="type">Path</span>(<span class="string">&quot;./resources&quot;</span>),</span><br><span class="line">  writerFactory</span><br><span class="line">).build()</span><br><span class="line"></span><br><span class="line">student.addSink(sink).setParallelism(<span class="number">1</span>)</span><br></pre></td></tr></table></figure>
 

@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>经典案例:三流影响hbase共享课列表(教材id+schoolId为rowkey)</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 <h4 id="debezium结果kafka-connect实时捕获mysql变更事件-binlog"><a href="#debezium结果kafka-connect实时捕获mysql变更事件-binlog" class="headerlink" title="debezium结果kafka connect实时捕获mysql变更事件(binlog)"></a>debezium结果kafka connect实时捕获mysql变更事件(binlog)</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">主要介绍kafka的数据特点:</span><br><span class="line">只有after是插入操作</span><br><span class="line">只有before是删除操作</span><br><span class="line">有before又有after是更改操作,before是修改前的数据after是修改后的数据</span><br><span class="line">为null是debezium捕获mysql的binlog中产生的垃圾数据</span><br></pre></td></tr></table></figure>
 
 <h4 id="流一-tp-j-course-question-info-课与试题的关联表"><a href="#流一-tp-j-course-question-info-课与试题的关联表" class="headerlink" title="流一: tp_j_course_question_info 课与试题的关联表"></a>流一: tp_j_course_question_info 课与试题的关联表</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">字段选取:course_id,question_id,is_quote,local_status</span><br><span class="line">过滤条件: course_id &lt;0 and is_quote&#x3D;0 为非引用课列表内容(一课包含多个试题,一个试题在多个课下)</span><br><span class="line">注意逻辑字段:</span><br><span class="line">更新操作中local_status为2是删除操作</span><br><span class="line">后续操作:</span><br><span class="line">1.如果是有效的且是共享课,是删除操作,非引用试题列表长度为0,从共享课列表中删除</span><br><span class="line">2.如果是有效且共享课,是添加操作,非引用试题列表长度为1,在共享课列表中添加数据</span><br></pre></td></tr></table></figure>

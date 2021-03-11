@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>B站Flink教程视频观看</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h1 id="状态类型"><a href="#状态类型" class="headerlink" title="状态类型"></a>状态类型</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Managed State &amp; Raw State</span><br><span class="line">MS: Flink Runtime管理,已知数据结构,大多数情况均可使用</span><br><span class="line">RS: 用户自定义,自己管理,字节数组,需要自定义时使用</span><br><span class="line"></span><br><span class="line">MS分为两种,KeyedState,OperatorState</span><br><span class="line">KeyState</span><br><span class="line">    Datastream经过keyBy的操作可以变为KeyedStream</span><br><span class="line">    每个Key对应一个State,即一个Operator实例处理多个Key,访问相应的多个State,并由此就衍生了KeyedState</span><br><span class="line">    KeyedState只能用在KeyedStream的算子中,即在整个程序中没有keyBy的过程就没有办法使用KeyedState</span><br><span class="line">OperatorState</span><br><span class="line">     可以用于所有算子,相对于数据源有一个更好的匹配方式</span><br><span class="line">     常用于Source,例如FlinkKafkaConsumer</span><br><span class="line">     相比KeyedState,一个Operator实例对应一个State</span><br><span class="line">     随着并发的改变,KeyedState中,State随着Key在实例间迁移</span><br><span class="line">     OperatorState没有Key,并发改变时需要选择状态如何重新分配</span><br><span class="line">         均匀分配</span><br><span class="line">         所有State合并为全量State再分发给每个实例</span><br></pre></td></tr></table></figure>
 

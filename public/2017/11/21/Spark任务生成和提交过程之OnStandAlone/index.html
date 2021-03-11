@@ -46,7 +46,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -192,7 +192,7 @@
     <blockquote>
 <p>整理Spark任务生成和提交过程,最好能在脑海形成一个图</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Client-OR-Cluster"><a href="#Client-OR-Cluster" class="headerlink" title="Client OR Cluster"></a>Client OR Cluster</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Client</span><br><span class="line">Client模式提交任务,直接启动Driver,会在客户端看到task的执行情况和结果.用于测试环境</span><br><span class="line"># Cluster</span><br><span class="line">Cluster模式提交任务,会在Worker节点随机选择一个节点启动Driver,用于生产环境</span><br></pre></td></tr></table></figure>
 

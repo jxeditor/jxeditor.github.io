@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>从Spark1转换到Spark2,总体逻辑可能没有什么变化,但是小细节会有很多坑</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="连接MySQL报No-suitable-driver"><a href="#连接MySQL报No-suitable-driver" class="headerlink" title="连接MySQL报No suitable driver"></a>连接MySQL报No suitable driver</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 注册临时表</span></span><br><span class="line">df.registerTempTable(<span class="string">&quot;demo&quot;</span>)</span><br><span class="line"><span class="keyword">val</span> prop = <span class="keyword">new</span> java.util.<span class="type">Properties</span></span><br><span class="line">prop.setProperty(<span class="string">&quot;user&quot;</span>,<span class="string">&quot;root&quot;</span>)</span><br><span class="line">prop.setProperty(<span class="string">&quot;password&quot;</span>,<span class="string">&quot;123456&quot;</span>)</span><br><span class="line">prop.setProperty(<span class="string">&quot;driver&quot;</span>,<span class="string">&quot;com.mysql.jdbc.Driver&quot;</span>)</span><br><span class="line">prop.setProperty(<span class="string">&quot;url&quot;</span>,<span class="string">&quot;jdbc:mysql://127.0.0.1:3306/test&quot;</span>)</span><br><span class="line">sqlContext.sql(<span class="string">&quot;select name,age,sex from demo&quot;</span>)</span><br><span class="line">.write</span><br><span class="line">.mode(org.apache.spark.sql.<span class="type">SaveMode</span>.<span class="type">Append</span>)</span><br><span class="line">.jdbc(prop.getProperty(<span class="string">&quot;url&quot;</span>),<span class="string">&quot;demo&quot;</span>,prop) </span><br></pre></td></tr></table></figure>
 

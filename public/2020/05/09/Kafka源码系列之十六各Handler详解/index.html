@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>主要介绍Controller在启动时注册的这么多监听,各自的用处</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="监听概览"><a href="#监听概览" class="headerlink" title="监听概览"></a>监听概览</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// KafkaController.Startup</span></span><br><span class="line">zkClient.registerZNodeChangeHandlerAndCheckExistence(controllerChangeHandler)</span><br><span class="line"></span><br><span class="line"><span class="comment">// KafkaController.onControllerFailover()</span></span><br><span class="line"><span class="keyword">val</span> childChangeHandlers = <span class="type">Seq</span>(brokerChangeHandler, topicChangeHandler, topicDeletionHandler, logDirEventNotificationHandler, isrChangeNotificationHandler)</span><br><span class="line">childChangeHandlers.foreach(zkClient.registerZNodeChildChangeHandler)</span><br><span class="line"><span class="keyword">val</span> nodeChangeHandlers = <span class="type">Seq</span>(preferredReplicaElectionHandler, partitionReassignmentHandler)</span><br><span class="line">nodeChangeHandlers.foreach(zkClient.registerZNodeChangeHandlerAndCheckExistence)</span><br><span class="line"></span><br><span class="line">controllerChangeHandler</span><br><span class="line">brokerChangeHandler</span><br><span class="line">topicChangeHandler</span><br><span class="line">topicDeletionHandler</span><br><span class="line">logDirEventNotificationHandler</span><br><span class="line">isrChangeNotificationHandler</span><br><span class="line">preferredReplicaElectionHandler</span><br><span class="line">partitionReassignmentHandler</span><br></pre></td></tr></table></figure>
 

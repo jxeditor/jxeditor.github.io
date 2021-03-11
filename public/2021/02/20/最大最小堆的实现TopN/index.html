@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>需要手撸的一道面试题</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">堆-&gt;完全二叉树</span><br><span class="line">对于完全二叉树</span><br><span class="line">    有子节点的节点遵循下标小于等于一个定式值(length &#x2F; 2 - 1)</span><br><span class="line">左叶子节点 &#x3D; (i + 1) &lt;&lt; 1 - 1</span><br><span class="line">右叶子节点 &#x3D; (i + 1) &lt;&lt; 1</span><br><span class="line"></span><br><span class="line">最小堆(父节点一定小于等于子节点)</span><br><span class="line">最大堆(父节点一定大于等于子节点)</span><br><span class="line"></span><br><span class="line">遍历有叶子节点的节点</span><br><span class="line">最小堆比较顺序:</span><br><span class="line">    左子节点&lt;父节点,进行交换</span><br><span class="line">    右子节点&lt;父节点,进行交换</span><br><span class="line">最大堆比较顺序:</span><br><span class="line">    左子节点&gt;父节点,进行交换</span><br><span class="line">    右子节点&gt;父节点,进行交换</span><br><span class="line"></span><br><span class="line">注意:</span><br><span class="line">    添加新节点时需要重新构建堆</span><br></pre></td></tr></table></figure>
 

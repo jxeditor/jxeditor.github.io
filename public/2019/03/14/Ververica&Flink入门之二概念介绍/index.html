@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>B站Flink教程视频观看</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h1 id="Flink入门之二"><a href="#Flink入门之二" class="headerlink" title="Flink入门之二"></a>Flink入门之二</h1><h2 id="有状态分散式流"><a href="#有状态分散式流" class="headerlink" title="有状态分散式流"></a>有状态分散式流</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">保证精确一次的状态容错</span><br><span class="line">全域一致的快照，更改完所有State，再产生快照 </span><br><span class="line"></span><br><span class="line">分散式快照</span><br><span class="line">CheckPoint Barrier N跟随着数据流完成，并填充CheckPoint N，当填充完成或数据流完成所有计算，代表快照完成</span><br><span class="line"></span><br><span class="line">状态维护</span><br><span class="line">本地状态后端去维护</span><br><span class="line">JVM Heap状态后端</span><br><span class="line">RocksDB状态后端</span><br><span class="line"></span><br><span class="line">WaterMarks</span><br><span class="line">Flink中的特殊事件</span><br><span class="line">一个带有时间戳T的WaterMark会让运算元判定不会再收到任何时间戳&lt;T的事件</span><br><span class="line"></span><br><span class="line">状态保存与迁移</span><br><span class="line">CheckPoint&amp;SavePoint</span><br></pre></td></tr></table></figure>
 

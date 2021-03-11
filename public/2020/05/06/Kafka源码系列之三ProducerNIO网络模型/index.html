@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>Producer的网络模型,与JavaNIO模型之间关系,以及整体流程</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Producer流程概览"><a href="#Producer流程概览" class="headerlink" title="Producer流程概览"></a>Producer流程概览</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">涉及类</span><br><span class="line">KafkaProducer</span><br><span class="line"> -&gt;Sender</span><br><span class="line">  -&gt;NetworkClient</span><br><span class="line">   -&gt;Selector</span><br><span class="line">    -&gt;JavaNIO接口</span><br><span class="line"></span><br><span class="line">涉及方法</span><br><span class="line">KafkaProducer.doSend()</span><br><span class="line"> -&gt;Sender.run()</span><br><span class="line">  -&gt;NetworkClient.poll()</span><br><span class="line">   -&gt;Selector.poll()</span><br></pre></td></tr></table></figure>
 

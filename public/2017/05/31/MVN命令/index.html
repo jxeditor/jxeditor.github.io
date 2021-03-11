@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>MVN常用命令</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="1-安装包"><a href="#1-安装包" class="headerlink" title="1.安装包"></a>1.安装包</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 能够下载到jar包的情况</span><br><span class="line">1. 首先下载Maven无法加载的jar包</span><br><span class="line">2. 执行mvn命令</span><br><span class="line">mvn install:install-file</span><br><span class="line">-DgroupId&#x3D;com.oracle    # groupId</span><br><span class="line">-DartifactId&#x3D;ojdbc14 #artifactId</span><br><span class="line">-Dversion&#x3D;10.2.0.4.0    # 版本号</span><br><span class="line">-Dpackaging&#x3D;jar # 打包方式</span><br><span class="line">-Dfile&#x3D;已下载的jar位置</span><br><span class="line"></span><br><span class="line"># 只能下载到工程文件的情况</span><br><span class="line">1. 首先下载源代码</span><br><span class="line">2. 进入工程目录&lt;与src同级目录&gt;</span><br><span class="line">3. 执行mvn命令</span><br><span class="line">mvn install -Dmaven.test.skip&#x3D;true</span><br></pre></td></tr></table></figure>
 

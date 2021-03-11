@@ -46,7 +46,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -192,7 +192,7 @@
     <blockquote>
 <p>Hbase工作原理介绍</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="系统架构"><a href="#系统架构" class="headerlink" title="系统架构"></a>系统架构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># Client</span><br><span class="line">包含访问HBase的接口，Client维护着一些cache来加快对HBase的访问，比如Region的位置信息。</span><br><span class="line"></span><br><span class="line"># Zookeeper</span><br><span class="line">保证任何时候，集群中只有一个Master</span><br><span class="line">存贮所有Region的寻址入口，root表在哪台服务器上。</span><br><span class="line">实时监控Region Server的状态，将Region server的上线和下线信息实时通知给Master</span><br><span class="line">存储HBase的schema,包括有哪些table，每个table有哪些column family</span><br><span class="line"></span><br><span class="line"># Master</span><br><span class="line">为Region Server分配Region</span><br><span class="line">负责Region Server的负载均衡</span><br><span class="line">发现失效的Region Server并重新分配其上的Region</span><br><span class="line">HDFS上的垃圾文件回收</span><br><span class="line">处理schema更新请求</span><br><span class="line"></span><br><span class="line"># Region Server</span><br><span class="line">Region Server维护Master分配给它的Region，处理对这些Region的IO请求</span><br><span class="line">Region Server负责切分在运行过程中变得过大的Region</span><br><span class="line"></span><br><span class="line"># 注意</span><br><span class="line">可以看到，Client访问HBase上数据的过程并不需要Master参与（寻址访问Zookeeper和Region Server，数据读写访问Region Server），Master仅仅维护者table和region的元数据信息，负载很低。</span><br></pre></td></tr></table></figure>
 

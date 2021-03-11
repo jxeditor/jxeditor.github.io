@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>Server端对于不同类型的请求处理实现</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Server网络模型整体流程"><a href="#Server网络模型整体流程" class="headerlink" title="Server网络模型整体流程"></a>Server网络模型整体流程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">KafkaServer在启动时会初始化SocketServer,KafkaApis,KafkaRequestHandlerPool对象</span><br><span class="line">这些是Server网络处理模型的主要组成部分</span><br><span class="line"></span><br><span class="line">KafkaServer的网络处理模型也是基于JavaNIO机制实现</span><br></pre></td></tr></table></figure>
 <h3 id="初始化以及启动"><a href="#初始化以及启动" class="headerlink" title="初始化以及启动"></a>初始化以及启动</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 初始化SocketServer</span></span><br><span class="line">socketServer = <span class="keyword">new</span> <span class="type">SocketServer</span>(config, metrics, time, credentialProvider)</span><br><span class="line"><span class="comment">// 延时启动处理器,直到初始化序列结束</span></span><br><span class="line">socketServer.startup(startupProcessors = <span class="literal">false</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// KafkaApis</span></span><br><span class="line">apis = <span class="keyword">new</span> <span class="type">KafkaApis</span>(socketServer.requestChannel, replicaManager, adminManager, groupCoordinator, transactionCoordinator,</span><br><span class="line">          kafkaController, zkClient, config.brokerId, config, metadataCache, metrics, authorizer, quotaManagers,</span><br><span class="line">          fetchManager, brokerTopicStats, clusterId, time, tokenManager)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 请求处理响应池</span></span><br><span class="line">requestHandlerPool = <span class="keyword">new</span> <span class="type">KafkaRequestHandlerPool</span>(config.brokerId, socketServer.requestChannel, apis, time,</span><br><span class="line">          config.numIoThreads)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 启动处理器</span></span><br><span class="line">socketServer.startProcessors()</span><br></pre></td></tr></table></figure>

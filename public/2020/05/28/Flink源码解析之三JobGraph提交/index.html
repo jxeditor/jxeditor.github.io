@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>在Client端生成的两个Graph都已经生成完毕,这时候需要实现客户端到服务端的一个过渡</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="前提介绍"><a href="#前提介绍" class="headerlink" title="前提介绍"></a>前提介绍</h2><h3 id="JobClient"><a href="#JobClient" class="headerlink" title="JobClient"></a>JobClient</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">JobClient(接口)</span><br><span class="line">    ClusterClientJobClientAdapter</span><br><span class="line">        AbstractJobClusterExecutor</span><br><span class="line">        ClusterClientJobClientAdapter</span><br><span class="line">        RemoteExecutor</span><br><span class="line">    PerJobMiniClusterJobClient</span><br><span class="line">        LocalExecutor</span><br><span class="line">    </span><br><span class="line">getJobID</span><br><span class="line">getJobStatus</span><br><span class="line">cancel</span><br><span class="line">stopWithSavepoint 待savePoint停止任务</span><br><span class="line">triggerSavepoint 触发savePoint</span><br><span class="line">getAccumulators 获取作业累加器</span><br><span class="line">getJobExecutionResult 获取作业结果</span><br></pre></td></tr></table></figure>
 <h3 id="JobManagers"><a href="#JobManagers" class="headerlink" title="JobManagers"></a>JobManagers</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">在服务端,也称Master</span><br><span class="line">    协调分布式计算,负责调度任务,协调CK,协调故障恢复等</span><br><span class="line">    每一个Job至少有一个JobManager,高可用部署下会有多个JobManagers,其中一个作为leader,其余处于standby状态</span><br></pre></td></tr></table></figure>

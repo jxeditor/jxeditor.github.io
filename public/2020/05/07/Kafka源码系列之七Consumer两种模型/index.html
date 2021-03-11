@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>这一块主要关注tp分配方式,以及offset的commit方式</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="模型"><a href="#模型" class="headerlink" title="模型"></a>模型</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">subscribe(): 动态获取其分配的topic-partition,由group动态管理</span><br><span class="line">    subscribe(Pattern pattern, ConsumerRebalanceListener listener)</span><br><span class="line">    subscribe(Pattern pattern)</span><br><span class="line">    subscribe(Collection&lt;String&gt; topics)</span><br><span class="line">assign()</span><br><span class="line">    subscribe(Collection&lt;String&gt; topics, ConsumerRebalanceListener listener)</span><br><span class="line"></span><br><span class="line">assign(): 手动分配topic-partition列表</span><br><span class="line">    assign(Collection&lt;TopicPartition&gt; partitions)</span><br><span class="line">    </span><br><span class="line"># 注意:</span><br><span class="line">如果是来自assign的请求,但这个group的状态不为Empty,意味着这个group已经处在活跃状态了</span><br><span class="line">assign模式下的group是不会处于活跃状态的</span><br><span class="line">意味着assign模式使用的group.id与subscribe模式下使用的group相同</span><br><span class="line">这种情况下,会拒绝assign模式下的这个offset commit请求</span><br></pre></td></tr></table></figure>
 

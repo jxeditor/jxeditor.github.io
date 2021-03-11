@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>初步了解Doris的原理,与Kylin满足离线多维分析需求相对,Doris满足实时多维分析需求<a target="_blank" rel="noopener" href="https://blog.bcmeng.com/post/apache-doris-query.html">传送门</a>.</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">FE(Frontend)</span><br><span class="line">    功能:</span><br><span class="line">        存储,维护集群元数据</span><br><span class="line">        接收,解析查询请求,规划查询计划,调度查询执行,生成物理计划,返回查询结果</span><br><span class="line">    角色:</span><br><span class="line">        Leader,Follower(高可用)</span><br><span class="line">        Observer(扩展查询节点,只参与读取)</span><br><span class="line">    元数据:</span><br><span class="line">        Paxos协议以及Memory+CheckPoint+Journal机制保证元数据高性能高可靠</span><br><span class="line">        元数据更新(写入磁盘日志文件,写入内存,定期CheckPoint到本地磁盘)</span><br><span class="line">        </span><br><span class="line">BE(Backend)</span><br><span class="line">    功能:</span><br><span class="line">        存储物理数据</span><br><span class="line">        分布式执行查询</span><br></pre></td></tr></table></figure>
 

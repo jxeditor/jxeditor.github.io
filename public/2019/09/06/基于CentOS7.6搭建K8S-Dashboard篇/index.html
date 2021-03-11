@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>在集群搭建篇中,已经有了一个测试K8S集群,现在为它装上Dashboard</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="部署仪表板UI-最新版-lt-坑很多-未完成-gt"><a href="#部署仪表板UI-最新版-lt-坑很多-未完成-gt" class="headerlink" title="部署仪表板UI,最新版&lt;坑很多,未完成&gt;"></a>部署仪表板UI,最新版&lt;坑很多,未完成&gt;</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"># 下述步骤会需要镜像(所有节点都进行镜像导入)</span><br><span class="line">wget https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;kubernetes&#x2F;dashboard&#x2F;v2.0.0-beta4&#x2F;aio&#x2F;deploy&#x2F;recommended.yaml</span><br><span class="line">cat recommended.yaml | grep -i image</span><br><span class="line">docker pull kubernetesui&#x2F;dashboard:v2.0.0-beta4</span><br><span class="line">docker pull kubernetesui&#x2F;metrics-scraper:v1.0.1</span><br><span class="line"></span><br><span class="line"># 默认情况下不部署仪表板UI。要部署它，请运行以下命令：</span><br><span class="line"># 主节点</span><br><span class="line">kubectl apply -f https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;kubernetes&#x2F;dashboard&#x2F;v2.0.0-beta4&#x2F;aio&#x2F;deploy&#x2F;recommended.yaml</span><br><span class="line"></span><br><span class="line"># 这时候访问WEB可能会出现问题,需要知道Dashboard的pod被部署到哪一个节点</span><br><span class="line">kubectl get pods --all-namespaces -o wide</span><br><span class="line"></span><br><span class="line"># 执行上述命令看到以下结果,则Dashboard部署完成,restart12次是因为部署时node02&#x2F;node03没有镜像导致的</span><br><span class="line">kubernetes-dashboard   dashboard-metrics-scraper-fb986f88d-9zplq   1&#x2F;1     Running   0          51m   192.168.186.193   node03   &lt;none&gt;           &lt;none&gt;</span><br><span class="line">kubernetes-dashboard   kubernetes-dashboard-6bb65fcc49-lm2qr       1&#x2F;1     Running     12         51m   192.168.140.65    node02   &lt;none&gt;           &lt;none&gt;</span><br><span class="line"></span><br><span class="line"># 查看日志</span><br><span class="line">kubectl logs kubernetes-dashboard-6bb65fcc49-rbghp --namespace&#x3D;kubernetes-dashboard</span><br><span class="line"></span><br><span class="line"># 有可能kubernetes-dashboard-*一直处于CrashLoopBackOff,进行删除</span><br><span class="line">kubectl delete -f https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;kubernetes&#x2F;dashboard&#x2F;v2.0.0-beta4&#x2F;aio&#x2F;deploy&#x2F;recommended.yaml</span><br></pre></td></tr></table></figure>
 

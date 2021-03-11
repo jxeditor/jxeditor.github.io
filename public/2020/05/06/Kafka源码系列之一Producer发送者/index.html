@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>关注了大佬的Blog,对于自己深受打击,kafka-clients-2.1.0-CDH-6.2.0版本</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Producer简单使用"><a href="#Producer简单使用" class="headerlink" title="Producer简单使用"></a>Producer简单使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1.配置Producer需要配置</span></span><br><span class="line">Properties props = <span class="keyword">new</span> Properties();</span><br><span class="line">props.put(<span class="string">&quot;bootstrap.servers&quot;</span>, <span class="string">&quot;127.0.0.1:9092,127.0.0.2:9092&quot;</span>);</span><br><span class="line">props.put(<span class="string">&quot;key.serializer&quot;</span>, <span class="string">&quot;org.apache.kafka.common.serialization.StringSerializer&quot;</span>);</span><br><span class="line">props.put(<span class="string">&quot;value.serializer&quot;</span>, <span class="string">&quot;org.apache.kafka.common.serialization.StringSerializer&quot;</span>);</span><br><span class="line"></span><br><span class="line">topicName = <span class="string">&quot;test&quot;</span>;</span><br><span class="line">msgNum = <span class="number">10</span>; <span class="comment">// 发送的消息数</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2.初始化Producer实例</span></span><br><span class="line">Producer&lt;String, String&gt; producer = <span class="keyword">new</span> KafkaProducer&lt;&gt;(props);</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; msgNum; i++) &#123;</span><br><span class="line">    String msg = i + <span class="string">&quot; test&quot;</span>;</span><br><span class="line">    <span class="comment">// 3.调用send接口进行数据发送</span></span><br><span class="line">    producer.send(<span class="keyword">new</span> ProducerRecord&lt;String, String&gt;(topicName, msg));</span><br><span class="line">&#125;</span><br><span class="line">producer.close();</span><br></pre></td></tr></table></figure>
 

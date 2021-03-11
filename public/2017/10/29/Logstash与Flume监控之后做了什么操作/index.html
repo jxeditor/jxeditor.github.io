@@ -46,7 +46,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -192,7 +192,7 @@
     <blockquote>
 <p>对于Flume与Logstash重启后的操作</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Logstash"><a href="#Logstash" class="headerlink" title="Logstash"></a>Logstash</h2><h3 id="监控变化"><a href="#监控变化" class="headerlink" title="监控变化"></a>监控变化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># Logstash主要是通过input插件来进行监控</span><br><span class="line"># File插件中的sincedb_path</span><br><span class="line">第一次读取新文件不会有.sincedb,所以默认会根据start_position去读,如果start_position是end,则从最后读,如果start_position是begin,则从开始读</span><br><span class="line">不是第一次读取文件,则会有.sincedb文件,无论start_position是什么,都会根据.sincedb文件去读.</span><br></pre></td></tr></table></figure>
 <h3 id="Logstash持久化数据"><a href="#Logstash持久化数据" class="headerlink" title="Logstash持久化数据"></a>Logstash持久化数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 在config&#x2F;logstash.yml中进行配置以下内容</span><br><span class="line">queue.type: persisted</span><br><span class="line">path.queue: &#x2F;usr&#x2F;share&#x2F;logstash&#x2F;data #队列存储路径；如果队列类型为persisted，则生效</span><br><span class="line">queue.page_capacity: 250mb #队列为持久化，单个队列大小</span><br><span class="line">queue.max_events: 0 #当启用持久化队列时，队列中未读事件的最大数量，0为不限制</span><br><span class="line">queue.max_bytes: 1024mb #队列最大容量</span><br><span class="line">queue.checkpoint.acks: 1024 #在启用持久队列时强制执行检查点的最大数量,0为不限制</span><br><span class="line">queue.checkpoint.writes: 1024 #在启用持久队列时强制执行检查点之前的最大数量的写入事件，0为不限制</span><br><span class="line">queue.checkpoint.interval: 1000 #当启用持久队列时，在头页面上强制一个检查点的时间间隔</span><br></pre></td></tr></table></figure>

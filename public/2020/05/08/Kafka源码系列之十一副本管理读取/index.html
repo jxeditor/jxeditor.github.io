@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>Kafka处理Fetch请求以及日志读取过程</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="Fetch请求的来源"><a href="#Fetch请求的来源" class="headerlink" title="Fetch请求的来源"></a>Fetch请求的来源</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">1.Consumer消费数据产生Fetch请求</span><br><span class="line">    Consumer产生Fetch请求在之前有说过,在poll方法中构建</span><br><span class="line">2.副本同步Fetch请求</span><br><span class="line">    ReplicaManager中有一个ReplicaFetchManager实例负责开启FetchThread进行Fetch请求构建</span><br><span class="line"></span><br><span class="line">两者的区别:</span><br><span class="line">    Replica在构造FetchRequest时,调用了setReplicaId()设置了对应的replicaId</span><br><span class="line">    Consumer没有进行设置,默认为CONSUMER_REPLICA_ID,为-1</span><br><span class="line">    这个值就是区分Consumer的Fetch请求和Replica的Fetch请求的关键值</span><br></pre></td></tr></table></figure>
 <h3 id="Consumer构建"><a href="#Consumer构建" class="headerlink" title="Consumer构建"></a>Consumer构建</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Fetcher.sendFetches()</span></span><br><span class="line"><span class="keyword">final</span> FetchRequest.Builder request = FetchRequest.Builder</span><br><span class="line">        .forConsumer(<span class="keyword">this</span>.maxWaitMs, <span class="keyword">this</span>.minBytes, data.toSend())</span><br><span class="line">        .isolationLevel(isolationLevel)</span><br><span class="line">        .setMaxBytes(<span class="keyword">this</span>.maxBytes)</span><br><span class="line">        .metadata(data.metadata())</span><br><span class="line">        .toForget(data.toForget());</span><br></pre></td></tr></table></figure>

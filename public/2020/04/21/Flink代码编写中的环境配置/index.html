@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>在使用Env时可以配置调优的参数</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="OptimizerConfigOptions-优化配置"><a href="#OptimizerConfigOptions-优化配置" class="headerlink" title="OptimizerConfigOptions(优化配置)"></a>OptimizerConfigOptions(优化配置)</h2><h3 id="BATCH-STREAMING"><a href="#BATCH-STREAMING" class="headerlink" title="BATCH_STREAMING"></a>BATCH_STREAMING</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 聚合阶段策略</span></span><br><span class="line">TABLE_OPTIMIZER_AGG_PHASE_STRATEGY 默认值AUTO</span><br><span class="line">    AUTO: 聚合阶段没有特殊的执行器</span><br><span class="line">    TWO_PHASE: 强制使用具有localAggregate和globalAggregate的两阶段聚合;如果聚合调用不支持将优化分为两个阶段，则我们仍将使用一个阶段的聚合</span><br><span class="line">    ONE_PHASE: 强制使用只有CompleteGlobalAggregate的一个阶段聚合</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 重用sub-plans</span></span><br><span class="line">TABLE_OPTIMIZER_REUSE_SUB_PLAN_ENABLED 默认值<span class="literal">true</span></span><br><span class="line">    如果为<span class="literal">true</span>,优化器将尝试找出重复的sub-plans并重用它们</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重用源表</span></span><br><span class="line">TABLE_OPTIMIZER_REUSE_SOURCE_ENABLED 默认值<span class="literal">true</span></span><br><span class="line">    如果为<span class="literal">true</span>,优化器将尝试找出重复的表源并重用它们,只有当TABLE_OPTIMIZER_REUSE_SUB_PLAN_ENABLED为<span class="literal">true</span>工作</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 谓词下推</span></span><br><span class="line">TABLE_OPTIMIZER_SOURCE_PREDICATE_PUSHDOWN_ENABLED 默认值<span class="literal">true</span></span><br><span class="line">    如果为<span class="literal">true</span>,优化器将把谓词下推到FilterableTableSource中</span><br><span class="line"></span><br><span class="line"><span class="comment"># 联接排序</span></span><br><span class="line">TABLE_OPTIMIZER_JOIN_REORDER_ENABLED 默认值<span class="literal">false</span></span><br><span class="line">    在优化器中启用联接重新排序</span><br></pre></td></tr></table></figure>
 

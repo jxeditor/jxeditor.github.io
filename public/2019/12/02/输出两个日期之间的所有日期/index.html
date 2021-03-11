@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>两个日期相隔的所有日期</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="使用Scala实现"><a href="#使用Scala实现" class="headerlink" title="使用Scala实现"></a>使用Scala实现</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">getDateList</span></span>(cDate: <span class="type">String</span>, endDate: <span class="type">String</span>) = &#123;</span><br><span class="line">    <span class="keyword">val</span> formatter = <span class="type">DateTimeFormatter</span>.ofPattern(<span class="string">&quot;yyyy-MM-dd&quot;</span>)</span><br><span class="line">    <span class="keyword">val</span> date1 = <span class="type">LocalDate</span>.parse(cDate, formatter)</span><br><span class="line">    <span class="keyword">val</span> date2 = <span class="type">LocalDate</span>.parse(endDate, formatter)</span><br><span class="line">    <span class="keyword">val</span> duration = <span class="type">ChronoUnit</span>.<span class="type">DAYS</span>.between(date1, date2)</span><br><span class="line">    <span class="type">List</span>.range(<span class="number">0</span>, duration).map(date1.plusDays(_).toString)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
   </div>

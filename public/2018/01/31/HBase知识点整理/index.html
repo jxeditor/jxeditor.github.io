@@ -46,7 +46,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -192,7 +192,7 @@
     <blockquote>
 <p>整理一下HBase经常会问到的知识性的问题</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="HBase的特点是什么"><a href="#HBase的特点是什么" class="headerlink" title="HBase的特点是什么?"></a>HBase的特点是什么?</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">HBase一个分布式的基于列式存储的数据库，基于Hadoop的 hdfs存储，zookeeper进行管理。</span><br><span class="line"></span><br><span class="line">HBase适合存储半结构化或非结构化数据，对于数据结构字段不够确定或者杂乱无章很难按一个概念去抽取的数据。</span><br><span class="line"></span><br><span class="line">HBase中值为null的记录不会被存储。</span><br><span class="line"></span><br><span class="line">基于的表包含rowkey，时间戳，和列族。新写入数据时，时间戳更新，同时可以查询到以前的版本。</span><br><span class="line"></span><br><span class="line">HBase是主从架构。HMaster作为主节点，HRegionServer 作为从节点。</span><br></pre></td></tr></table></figure>
 

@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>基于Flink的Demo,从代码层深入源码,逐层逐层剖析</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="FlinkSQL引擎-Calcite"><a href="#FlinkSQL引擎-Calcite" class="headerlink" title="FlinkSQL引擎: Calcite"></a>FlinkSQL引擎: Calcite</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">解析SQL</span><br><span class="line">SqlNode(SQL语句转换而来的语法树)</span><br><span class="line">    SqlToOperationConverter(SqlNode转换为Operation)</span><br><span class="line"></span><br><span class="line">准备执行SQL</span><br><span class="line">RelNode(可以看做对整体数据处理的一个语法树)</span><br><span class="line">    Converter(RelNode之间转换)</span><br><span class="line">    FlinkRelNode(Flink的运算树)</span><br><span class="line">        DataSetRel</span><br><span class="line">        DataStreamRel</span><br><span class="line"></span><br><span class="line">RexNode(行表达式,对一行数据处理的语法树)</span><br><span class="line"></span><br><span class="line">RelOptCluster(查询优化过程中相关关系表达式的环境)</span><br><span class="line">    FlinkRelOptCluster</span><br><span class="line">    </span><br><span class="line">RelOptPlanner(查询优化器,根据给定的规则集和成本模型,将关系表达式转换为语义等价的关系表达式)</span><br><span class="line">    AbstractRelOptPlanner</span><br><span class="line">        HepPlanner</span><br><span class="line">        VolcanoPlanner</span><br><span class="line">            HiveVolcanoPlanner</span><br><span class="line"></span><br><span class="line">RelOptCost(优化器成本模型会依赖)</span><br><span class="line"></span><br><span class="line">RelOptRule(规则匹配使用)</span><br><span class="line">    ConverterRule(规则之间的转换)</span><br><span class="line"></span><br><span class="line">RelTrait(表示特性定义中关系表达式特性的表现形式)</span><br><span class="line">    Convention(代表一个单一的数据源)</span><br><span class="line">    RelMultipleTrait</span><br><span class="line">        RelCollation</span><br><span class="line">        RelDistribution</span><br><span class="line"></span><br><span class="line">RelTraitDef</span><br><span class="line">    ConventionTraitDef(代表数据源)</span><br><span class="line">    RelCollationTraitDef(定义参与排序的字段)</span><br><span class="line">    RelDistributionTraitDef(定义数据在物理存储上的分布方式)</span><br></pre></td></tr></table></figure>
 

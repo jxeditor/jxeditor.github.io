@@ -48,7 +48,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -194,7 +194,7 @@
     <blockquote>
 <p>记录关于大数据组件的常见面试题目</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h1 id="组件面试整理"><a href="#组件面试整理" class="headerlink" title="组件面试整理"></a>组件面试整理</h1><h1 id="Redis持久化机制"><a href="#Redis持久化机制" class="headerlink" title="Redis持久化机制"></a>Redis持久化机制</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">两种方式,快照(RDB),只追加文件(AOF)</span><br><span class="line"></span><br><span class="line">快照(RDB)--默认</span><br><span class="line">    Redis可以通过创建快照来获得存储在内存里面的数据在某个时间点上的副本</span><br><span class="line">    </span><br><span class="line">只追加文件(AOF)</span><br><span class="line">    开启AOF持久化后每执行一条会更改Redis中的数据的命令</span><br><span class="line">    Redis就会将该命令写入硬盘中的AOF文件</span><br></pre></td></tr></table></figure>
 

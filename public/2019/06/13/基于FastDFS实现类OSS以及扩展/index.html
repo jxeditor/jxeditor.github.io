@@ -45,7 +45,7 @@
 
 
 
-<meta name="generator" content="Hexo 5.2.0"></head>
+<meta name="generator" content="Hexo 5.4.0"></head>
 <body
   
     class="monochrome"
@@ -191,7 +191,7 @@
     <blockquote>
 <p>首先，FastDFS肯定没有OSS功能强大以及齐全，碍于成本问题，只能寻找一个类似OSS功能的替代品，所以需要考虑到以后的一些问题。</p>
 </blockquote>
-<a id="more"></a>
+<span id="more"></span>
 
 <h2 id="一、未来考虑"><a href="#一、未来考虑" class="headerlink" title="一、未来考虑"></a>一、未来考虑</h2><h3 id="1-FastDFS能否实现OSS的部分功能"><a href="#1-FastDFS能否实现OSS的部分功能" class="headerlink" title="1.FastDFS能否实现OSS的部分功能"></a>1.FastDFS能否实现OSS的部分功能</h3><p><strong>基本能实现,以下是FastDFS,hdfs,OSS的区别</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">FastDFS:</span><br><span class="line">是一个开源的分布式文件系统，它对文件进行管理</span><br><span class="line">功能包括:文件存储、文件同步、文件访问(文件上传、文件下载)等，解决了大容量存储和负载均衡的问题</span><br><span class="line">特别适合以文件为载体的在线服务， 如相册网站，视频网站等等</span><br><span class="line"></span><br><span class="line">HDFS: </span><br><span class="line">默认的最基本的存储单位是64M的数据块。</span><br><span class="line">和普通的块文件系统相同的是，HDFS中的文件是被分成64M一块的数据块存储的。</span><br><span class="line">不同于普通文件系统的是，HDFS中，如果一个文件小于一个数据块的大小，会占用整个存储块的空间。</span><br><span class="line"></span><br><span class="line">OSS:</span><br><span class="line">阿里云对象存储服务（Object Storage Service，简称 OSS），是阿里云提供的海量、安全、低成本、高可靠的云存储服务;</span><br><span class="line">可以使用阿里云提供的 API、SDK 接口或者 OSS 迁移工具轻松地将海量数据移入或移出阿里云 OSS。</span><br><span class="line">数据存储到阿里云 OSS 以后，您可以选择标准类型（Standard）的阿里云 OSS 服务作为移动应用、大型网站、图片分享或热点音视频的主要存储方式</span><br><span class="line">也可以选择成本更低、存储期限更长的低频访问类型（Infrequent Access）和归档类型（Archive）的阿里云 OSS 服务作为不经常访问数据的备份和归档。</span><br></pre></td></tr></table></figure>
