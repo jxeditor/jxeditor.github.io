@@ -1,5 +1,5 @@
 ---
-title: Flink1.3版本到flink1.9不同版本特性
+title: Flink1.3版本到Flink1.9不同版本特性
 date: 2020-01-13 15:36:25
 categories: 大数据
 tags: flink
