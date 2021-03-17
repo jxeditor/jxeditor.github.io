@@ -18,6 +18,7 @@ tags: tools
 # 修改本机的hosts文件
 140.82.114.4	github.com
 199.232.69.194	github.global.ssl.fastly.net
+185.199.108.133	raw.githubusercontent.com
 
 # ps.如果使用的是Mac本,可能需要添加更多的映射关系
 ```
