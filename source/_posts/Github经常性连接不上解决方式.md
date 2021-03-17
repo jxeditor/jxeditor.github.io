@@ -11,7 +11,7 @@ tags: tools
 
 ## 解决方式
 ```sh
-# 访问https://www.ipaddress.com/
+# 访问https://www.ipaddress.com/或者https://site.ip138.com/
 # 找到目前github的IP映射
 输入域名查询IP地址
 

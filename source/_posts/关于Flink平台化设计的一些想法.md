@@ -19,6 +19,13 @@ tags: flink
 
 ---
 
+## 前端实现
+```
+目前可以考虑CodeMirror和ACE两款在线代码编辑器
+```
+
+---
+
 ## 任务提交
 ### 方案一(submitJar)
 这方面可以考虑一下无邪的一个方案[flink-sql-submit](https://github.com/wuchong/flink-sql-submit)
@@ -34,8 +41,7 @@ tags: flink
         需要对Flink可配置项进行一系列梳理,最好自实现一个Configuration封装类
     2.UDF加载功能
         使用方式: create function test as 'com.test.flink.UpperUDF' LANGUAGE SCALA
-        其中一个点,对于UDF加载应该在页面上有配置项,用于submitJar感知需不需要去加载UDF
-        
+        其中一个点,对于UDF加载应该在页面上有配置项,用于submitJar感知需不需要去加载UDF 
 ```
 
 ### 方案二(Nest)
