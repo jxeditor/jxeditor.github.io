@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    大数据协议知识
+  
+</title>
+
+<meta name="description" content="空闲整理下协议相关知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="大数据协议知识">
+<meta property="og:url" content="http://yoursite.com/2021/02/18/%E5%A4%A7%E6%95%B0%E6%8D%AE%E5%8D%8F%E8%AE%AE%E7%9F%A5%E8%AF%86/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="空闲整理下协议相关知识">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-02-18T07:35:16.000Z">
+<meta property="article:modified_time" content="2021-03-21T12:33:13.859Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="learn">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">169</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-大数据协议知识" class="article article-type-post">
+  
+    <h1 class="article-header">
+      大数据协议知识
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2021-02-18
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/learn/" rel="tag">learn</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>空闲整理下协议相关知识</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="协议总览"><a href="#协议总览" class="headerlink" title="协议总览"></a>协议总览</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ZAB</span><br><span class="line">Paxos</span><br><span class="line">Raft</span><br><span class="line">2PC</span><br><span class="line">Quorum</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="ZAB协议"><a href="#ZAB协议" class="headerlink" title="ZAB协议"></a>ZAB协议</h2><h3 id="介绍-ZK选举"><a href="#介绍-ZK选举" class="headerlink" title="介绍_ZK选举"></a>介绍_<a target="_blank" rel="noopener" href="https://jxeditor.github.io/2017/08/28/Zookeeper%E7%9A%84%E9%A2%86%E5%AF%BC%E8%80%85%E9%80%89%E4%B8%BE%E5%92%8C%E5%8E%9F%E5%AD%90%E5%B9%BF%E6%92%AD/">ZK选举</a></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">全程Zookeeper Atomic Broadcast(ZK原子广播)</span><br><span class="line">使用场景,Zookeeper</span><br><span class="line">过程:</span><br><span class="line">    实现了主备模型的系统架构来保证集群中各个副本之间数据的一致性</span><br><span class="line">    Leader将客户端的操作转化为Proposal,Leader在操作完数据后向所有Follower发送广播请求,等待反馈</span><br><span class="line">    ZAB协议中,超过半数Follower节点反馈成功,Leader向所有Follower发送Commit消息</span><br><span class="line">    Follower进行数据操作.</span><br><span class="line"></span><br><span class="line">看上面的过程,Leader先是将操作广播给Follower,等待反馈,然后再将Commit消息发送给Follower.</span><br><span class="line">这个过程和2PC很相似,只不过2PC要么全部反馈成功,要么全部反馈失败(精确一次).</span><br><span class="line">而ZAB只需要半数反馈成功即可.</span><br></pre></td></tr></table></figure>
+<h3 id="疑问点"><a href="#疑问点" class="headerlink" title="疑问点"></a>疑问点</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">1.为什么ZAB协议不会同步阻塞?</span><br><span class="line">    因为Leader和每一个Follower之间收发消息都有单独的队列,做到了异步.</span><br><span class="line">2.ZAB只要半数反馈成功,怎么保证的数据一致性?</span><br><span class="line">    首先ZAB中只能是Leader接收写请求,其次如果Leader宕机,ZAB要求集群进行崩溃恢复和Leader选举</span><br><span class="line">    其中崩溃恢复必须确保:</span><br><span class="line">        1.已经被Leader提交的Proposal必须被所有Follower提交</span><br><span class="line">        2.丢弃Leader没有提交Proposal(保证Follower没有未提交Proposal,一定比宕机Leader的Proposal小)</span><br><span class="line">    Leader宕机时存在未提交的Proposal在崩溃恢复后,新选举的Leader肯定是换了节点</span><br><span class="line">    新Leader会把自身最大Proposal的ZXID发送给其他Follower</span><br><span class="line">    Follower对比自身Proposal的ZXID,自身大则回退,自身小则进行数据同步.</span><br><span class="line">3.ZXID是什么?</span><br><span class="line">    64位的数字,低32位按照数字递增,客服端发送Proposal,低32位简单加1</span><br><span class="line">    高32位是Leader周期的epoch编号,每选举出新的Leader,Leader都从本地Proposal获取ZXID,解析出高32位epoch编号,进行加1</span><br><span class="line">    低32位全部设置为0,保证ZXID的唯一性,并且递增.</span><br><span class="line">4.Leader崩溃,已经提出但是未提交的Proposal被丢弃,是不是意味着ZK丢失了一次请求?</span><br><span class="line">    我个人认为是丢失了,没有重试机制的话,对应就应该是ZK请求失败.</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Paxos"><a href="#Paxos" class="headerlink" title="Paxos"></a>Paxos</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">解决问题:</span><br><span class="line">    每个人都有提出建议,同意建议,接受建议的权利</span><br><span class="line">    最终的采纳哪个建议,采取少数服从多数的方式</span><br><span class="line">采纳方式:</span><br><span class="line">    只有被提出的建议才能被大家同意</span><br><span class="line">    只能采纳一个建议</span><br></pre></td></tr></table></figure>
+<h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">A,B,C三个人提议吃东西(对吃什么各持己见)</span><br><span class="line">A--&gt;日料</span><br><span class="line">B--&gt;法餐</span><br><span class="line">C--&gt;中餐</span><br><span class="line"></span><br><span class="line">提议顺序 A-&gt;B-&gt;C</span><br><span class="line"></span><br><span class="line">Prepare阶段</span><br><span class="line">    A将提议(1)发送给BC</span><br><span class="line">        BC没有接受小于编号为1的提议,BC接受,并不再接受小于1的提议</span><br><span class="line">    B将提议(2)发送给AC</span><br><span class="line">        A没有接受小于编号为2的提议,A接受,并不再接受小于2的提议</span><br><span class="line">        C接受过编号为1的提议,但是2&gt;1,C接受,并不再接受小于2的提议</span><br><span class="line">    C将提议(3)发送给AB</span><br><span class="line">        A接受过编号为2的提议,但是3&gt;2,A接受,并不再接受小于3的提议</span><br><span class="line">        B接受过编号为2的提议,但是3&gt;2,B接受,并不再接受小于3的提议</span><br><span class="line"></span><br><span class="line">Accept阶段</span><br><span class="line">    A将提议(1,日料)发送给BC</span><br><span class="line">        B不接受小于3的提议,拒绝</span><br><span class="line">        C不接受小于2的提议,拒绝</span><br><span class="line">        A的票数0,再次进入Prepare阶段</span><br><span class="line">    B将提议(2,法餐)发送给AC</span><br><span class="line">        A不接受小于3的提议,拒绝</span><br><span class="line">        C不接受小于2的提议,接受</span><br><span class="line">        B的票数为1</span><br><span class="line">    C将提议(3,中餐)发送给AB</span><br><span class="line">        A不接受小于3的提议,接受</span><br><span class="line">        B不接受小于3的提议,接受</span><br><span class="line">        C的票数为2</span><br><span class="line"></span><br><span class="line">C(3,中餐)获得多数人同意</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Raft"><a href="#Raft" class="headerlink" title="Raft"></a>Raft</h2><h3 id="介绍-动画"><a href="#介绍-动画" class="headerlink" title="介绍_动画"></a>介绍_<a target="_blank" rel="noopener" href="http://thesecretlivesofdata.com/raft/">动画</a></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">个人看Raft和ZAB很是相似,也是超过半数选举成功即可</span><br><span class="line">角色:</span><br><span class="line">    Leader</span><br><span class="line">    Follower</span><br><span class="line">    Candidate(候选)</span><br></pre></td></tr></table></figure>
+<h3 id="选主"><a href="#选主" class="headerlink" title="选主"></a>选主</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">多Candidate选主</span><br><span class="line">    4个节点都是Follower,有两个Follower同时Timeout,变成Candidate</span><br><span class="line">    Candidate: A B</span><br><span class="line">    Follower: C D</span><br><span class="line">    分别给另外的Follower发送投票请求(自身给自身投一票),此处遵循先后的关系,分为下列情况:</span><br><span class="line">        A-&gt;C,B-&gt;D,A-&gt;D,B-&gt;C,投过票的Follower会拒绝请求,即AB各2票,进入下一轮投票</span><br><span class="line">        A-&gt;C,A-&gt;D,B-&gt;C,B-&gt;D,A率先获得3票,会转化为Leader,期间B可以发起投票,但CD不会同意</span><br><span class="line">    Leader进行心跳,Candidate接收到会转化为Follower</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="2PC"><a href="#2PC" class="headerlink" title="2PC"></a>2PC</h2><h3 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">两阶段提交,强一致性,中心化的原子提交协议</span><br><span class="line">Coordinator(协调者)</span><br><span class="line">Partcipant(参与者)</span><br><span class="line">顾名思义,两阶段提交,分为两个阶段:投票阶段,提交阶段</span><br></pre></td></tr></table></figure>
+<h3 id="流程-1"><a href="#流程-1" class="headerlink" title="流程"></a>流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">第一阶段</span><br><span class="line">    Coordinator向所有的Partcipant发送Prepare,并等待反馈</span><br><span class="line">    Partcipant接收到了Prepare,先执行本地事务操作(不会真正的执行),向Coordinator发送反馈</span><br><span class="line">    结果产生:1.所有Partcipant都反馈成功,2.存在反馈不成功的情况,只有1才会进入第二阶段</span><br><span class="line">第二阶段</span><br><span class="line">    Coordinator向所有的Partcipant发送Commit</span><br><span class="line">    所有Partcipant执行Commit操作</span><br><span class="line"></span><br><span class="line">如果有出现反馈不成功情况</span><br><span class="line">    Coordinator向所有的Partcipant发送Rollback</span><br><span class="line">    Partcipant执行回滚操作</span><br><span class="line"></span><br><span class="line">2PC是有很多坑的</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Quorum"><a href="#Quorum" class="headerlink" title="Quorum"></a>Quorum</h2><h3 id="介绍-2"><a href="#介绍-2" class="headerlink" title="介绍"></a>介绍</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">准确来讲是一种机制,确保一次写操作在多个副本中有半数副本操作成功,则说明这次写操作成功</span><br><span class="line">读操作也确保读超过半数的副本,则总会读取到最新的数据</span><br><span class="line"></span><br><span class="line">使用场景:Hadoop HA的QJM(Quorum Journal Manager)</span><br><span class="line">当Active Namenode向QJM写入Editlog时,要求半数以上的QJM写入成功,才算操作成功</span><br><span class="line">Standby Namenode定期从QJM上获取最新的Editlog更新自身的数据</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

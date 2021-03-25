@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Kafka使用Debezium监听MySQL
+  
+</title>
+
+<meta name="description" content="Kafka组件使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka使用Debezium监听MySQL">
+<meta property="og:url" content="http://yoursite.com/2019/06/04/Kafka%E4%BD%BF%E7%94%A8Debezium%E7%9B%91%E5%90%ACMySQL/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="Kafka组件使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-06-04T05:59:01.000Z">
+<meta property="article:modified_time" content="2021-03-21T12:33:13.851Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="kafka">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">169</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Kafka使用Debezium监听MySQL" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Kafka使用Debezium监听MySQL
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-06-04
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/" rel="tag">kafka</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>Kafka组件使用</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="理解Kafka-Connect"><a href="#理解Kafka-Connect" class="headerlink" title="理解Kafka Connect"></a>理解Kafka Connect</h2><ul>
+<li>先建立一个Connect,这个Connect可以配置一些参数,确定信息的一些格式</li>
+<li><a target="_blank" rel="noopener" href="http://192.168.142.128:8083/">http://192.168.142.128:8083/</a></li>
+<li>然后在这个Connect的基础上建立一系列的Connector,可以确定数据源,以及一系列对数据的变更</li>
+<li>PUT <a target="_blank" rel="noopener" href="http://192.168.142.128:8083/connectors/c_name/config">http://192.168.142.128:8083/connectors/c_name/config</a></li>
+</ul>
+<hr>
+<h2 id="Kafka"><a href="#Kafka" class="headerlink" title="Kafka"></a>Kafka</h2><blockquote>
+<p>使用的是CDH安装的parcels</p>
+</blockquote>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Kafka目录</span></span><br><span class="line">/opt/cloudera/parcels/KAFKA/</span><br><span class="line"><span class="comment"># Kafka配置目录</span></span><br><span class="line">/opt/cloudera/parcels/KAFKA/etc/kafka/conf.dist/</span><br><span class="line"><span class="comment"># 将配置目录中的配置文件复制一份</span></span><br><span class="line">cp -r /opt/cloudera/parcels/KAFKA/etc/kafka/conf.dist/* /opt/cloudera/parcels/KAFKA/config </span><br><span class="line"><span class="comment"># 使用CDH的kafka自带的bin目录下并不会包含connect-*的shell脚本</span></span><br><span class="line">cp -r /opt/cloudera/parcels/KAFKA/lib/kafka/bin/connect-* /opt/cloudera/parcels/KAFKA/bin</span><br><span class="line"><span class="comment"># 修改config/connect-distributed.properties</span></span><br><span class="line">plugin.path=/opt/connectors (存放debezium插件的位置)</span><br><span class="line">bootstrap.servers=hadoop01:9092,hadoop02:9092,hadoop03:9092</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Debezium"><a href="#Debezium" class="headerlink" title="Debezium"></a>Debezium</h2><blockquote>
+<p>只是一个插件,去官网下载对应的MySQL插件就行,将包解压到/opt/connectors </p>
+</blockquote>
+<hr>
+<h2 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h2><p>确保MySQL开启了binlog日志功能和query日志</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> <span class="keyword">VARIABLES</span> <span class="keyword">LIKE</span> <span class="string">&#x27;%log_bin%&#x27;</span>;</span><br><span class="line"><span class="keyword">SHOW</span> <span class="keyword">VARIABLES</span> <span class="keyword">LIKE</span> <span class="string">&#x27;%binlog%&#x27;</span>; </span><br></pre></td></tr></table></figure>
+<p>开启binlog</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/my.cnf</span><br><span class="line">    [client]</span><br><span class="line">    default-character-set=utf8mb4</span><br><span class="line"></span><br><span class="line">    [mysqld]</span><br><span class="line">    character-set-client-handshake=FALSE</span><br><span class="line">    character-set-server=utf8mb4</span><br><span class="line">    collation-server=utf8mb4_unicode_ci</span><br><span class="line">    init_connect=<span class="string">&#x27;SET NAMES utf8mb4&#x27;</span></span><br><span class="line">    server-id=1</span><br><span class="line">    log-bin=/usr/<span class="built_in">local</span>/mysql/data/my-bin</span><br><span class="line">    binlog_rows_query_log_events=ON</span><br><span class="line"></span><br><span class="line">    [mysql]</span><br><span class="line">    default-character-set=utf8mb4</span><br><span class="line">service mysqld restart</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="启动Kafka-Connect"><a href="#启动Kafka-Connect" class="headerlink" title="启动Kafka Connect"></a>启动Kafka Connect</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/connect-distributed.sh etc/kafka/conf.dist/connect-distributed.properties</span><br></pre></td></tr></table></figure>
+<p>访问Web: <a target="_blank" rel="noopener" href="http://192.168.142.128:8083/">http://192.168.142.128:8083/</a></p>
+<hr>
+<h2 id="添加connector"><a href="#添加connector" class="headerlink" title="添加connector"></a>添加connector</h2><p>使用Postman的put功能</p>
+<p>链接: <a target="_blank" rel="noopener" href="http://192.168.142.128:8083/connectors/test2/config">http://192.168.142.128:8083/connectors/test2/config</a></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">body-raw-JSON(application/JSON)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;connector.class&quot;</span>: <span class="string">&quot;io.debezium.connector.mysql.MySqlConnector&quot;</span>,</span><br><span class="line">    <span class="comment">// 设置数据源	                    </span></span><br><span class="line">    <span class="attr">&quot;database.hostname&quot;</span>: <span class="string">&quot;hadoop01&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;database.port&quot;</span>: <span class="string">&quot;3306&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;database.user&quot;</span>: <span class="string">&quot;root&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;database.password&quot;</span>: <span class="string">&quot;123456&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;database.server.id&quot;</span>: <span class="string">&quot;1&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;database.server.name&quot;</span>: <span class="string">&quot;demo&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;database.whitelist&quot;</span>: <span class="string">&quot;test1&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;database.history.kafka.bootstrap.servers&quot;</span>: <span class="string">&quot;hadoop01:9092&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;database.history.kafka.topic&quot;</span>: <span class="string">&quot;dbhistory&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;database.history.store.only.monitored.tables.ddl&quot;</span>: <span class="string">&quot;true&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;database.history.skip.unparseable.ddl&quot;</span>: <span class="string">&quot;true&quot;</span>,</span><br><span class="line">    <span class="comment">// 去除字段,多个字段用逗号分隔</span></span><br><span class="line">    <span class="attr">&quot;transforms&quot;</span>: <span class="string">&quot;dropField&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;transforms.dropField.type&quot;</span>:<span class="string">&quot;org.apache.kafka.connect.transforms.ReplaceField$Value&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;transforms.dropField.blacklist&quot;</span>:<span class="string">&quot;source&quot;</span>,</span><br><span class="line">    <span class="comment">// 监听sql语句	                    </span></span><br><span class="line">    <span class="attr">&quot;include.query&quot;</span>: <span class="string">&quot;true&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;include.schema.events&quot;</span>: <span class="string">&quot;false&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;include.schema.changes&quot;</span>: <span class="string">&quot;false&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;decimal.handling.mode&quot;</span>: <span class="string">&quot;string&quot;</span>,	                    </span><br><span class="line">    <span class="attr">&quot;snapshot.mode&quot;</span>: <span class="string">&quot;schema_only&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="消费Kafka"><a href="#消费Kafka" class="headerlink" title="消费Kafka"></a>消费Kafka</h2><p>topic的组成为:serverName.dbName.tableName</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka-console-consumer --bootstrap-server hadoop01:9092 --topic demo.test1.demo</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="遇到的一些问题"><a href="#遇到的一些问题" class="headerlink" title="遇到的一些问题"></a>遇到的一些问题</h2><blockquote>
+<p>刚开始我本身并没有对Connect进行修改,所以导致后面的数据格式是一个shcema+payload,这种数据可以说非常完美,因为本身我们是需要对schema的信息进行传递的,但是我想进一步简化数据,监听数据其实我只需要payload内的数据就可以了</p>
+</blockquote>
+<h3 id="1-如何去除schema"><a href="#1-如何去除schema" class="headerlink" title="1.如何去除schema"></a>1.如何去除schema</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改connect-distributed.properties</span></span><br><span class="line">key.converter=org.apache.kafka.connect.json.JsonConverter</span><br><span class="line">value.converter=org.apache.kafka.connect.json.JsonConverter</span><br><span class="line">key.converter.schemas.enable=<span class="literal">false</span></span><br><span class="line">value.converter.schemas.enable=<span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="2-如何去除payload的一些不需要的数据"><a href="#2-如何去除payload的一些不需要的数据" class="headerlink" title="2.如何去除payload的一些不需要的数据"></a>2.如何去除payload的一些不需要的数据</h3><p>修改config的PUT请求,上面的PUT请求中有例子</p>
+<h3 id="3-日志打印过多的INFO"><a href="#3-日志打印过多的INFO" class="headerlink" title="3.日志打印过多的INFO"></a>3.日志打印过多的INFO</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 修改connect-log4j.properties</span></span><br><span class="line">log4j.rootLogger=WARN, stdout</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-后台启动connect"><a href="#4-后台启动connect" class="headerlink" title="4.后台启动connect"></a>4.后台启动connect</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./bin/connect-distributed.sh -daemon config/connect-distributed.properties</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    FlinkSQL自定义FORMAT_TYPE
+  
+</title>
+
+<meta name="description" content="Flink本身的format.type目前支持json，avro，csv三种格式对于涉及的源码会另开一章进行介绍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="FlinkSQL自定义FORMAT_TYPE">
+<meta property="og:url" content="http://yoursite.com/2020/06/11/FlinkSQL%E8%87%AA%E5%AE%9A%E4%B9%89FORMAT_TYPE/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="Flink本身的format.type目前支持json，avro，csv三种格式对于涉及的源码会另开一章进行介绍">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-11T03:18:43.000Z">
+<meta property="article:modified_time" content="2021-03-21T12:33:13.847Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="flink">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">169</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-FlinkSQL自定义FORMAT_TYPE" class="article article-type-post">
+  
+    <h1 class="article-header">
+      FlinkSQL自定义FORMAT_TYPE
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-06-11
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>Flink本身的<code>format.type</code>目前支持<code>json</code>，<code>avro</code>，<code>csv</code>三种格式<br>对于涉及的源码会另开一章进行介绍</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="需求"><a href="#需求" class="headerlink" title="需求"></a>需求</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">FlinkSQL</span>创建<span class="type">Kafka</span>源表,数据格式为<span class="type">JSON</span>,但是数据中有一些脏数据</span><br><span class="line">这时候程序会直接报错停掉</span><br><span class="line"><span class="type">Caused</span> by: java.io.<span class="type">IOException</span>: <span class="type">Failed</span> to deserialize <span class="type">JSON</span> <span class="keyword">object</span>.</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">createKafkaTable</span></span>(): <span class="type">String</span> = &#123;</span><br><span class="line">    <span class="string">&quot;&quot;</span><span class="string">&quot;</span></span><br><span class="line"><span class="string">      |CREATE TABLE demo1 (</span></span><br><span class="line"><span class="string">      |    uid VARCHAR COMMENT &#x27;uid&#x27;,</span></span><br><span class="line"><span class="string">      |    rid VARCHAR COMMENT &#x27;rid&#x27;</span></span><br><span class="line"><span class="string">      |)</span></span><br><span class="line"><span class="string">      |WITH (</span></span><br><span class="line"><span class="string">      |    &#x27;connector.type&#x27; = &#x27;kafka&#x27;, -- 使用 kafka connector</span></span><br><span class="line"><span class="string">      |    &#x27;connector.version&#x27; = &#x27;universal&#x27;,  -- kafka 版本</span></span><br><span class="line"><span class="string">      |    &#x27;connector.topic&#x27; = &#x27;test&#x27;,  -- kafka topic</span></span><br><span class="line"><span class="string">      |    &#x27;connector.properties.0.key&#x27; = &#x27;zookeeper.connect&#x27;,  -- zk连接信息</span></span><br><span class="line"><span class="string">      |    &#x27;connector.properties.0.value&#x27; = &#x27;hosts:2181&#x27;,  -- zk连接信息</span></span><br><span class="line"><span class="string">      |    &#x27;connector.properties.1.key&#x27; = &#x27;bootstrap.servers&#x27;,  -- broker连接信息</span></span><br><span class="line"><span class="string">      |    &#x27;connector.properties.1.value&#x27; = &#x27;hosts:9092&#x27;,  -- broker连接信息</span></span><br><span class="line"><span class="string">      |    &#x27;connector.sink-partitioner&#x27; = &#x27;fixed&#x27;,</span></span><br><span class="line"><span class="string">      |    &#x27;update-mode&#x27; = &#x27;append&#x27;,</span></span><br><span class="line"><span class="string">      |    &#x27;format.type&#x27; = &#x27;json&#x27;,  -- 数据源格式为 json</span></span><br><span class="line"><span class="string">      |    &#x27;format.derive-schema&#x27; = &#x27;true&#x27; -- 从 DDL schema 确定 json 解析规则</span></span><br><span class="line"><span class="string">      |)</span></span><br><span class="line"><span class="string">    &quot;</span><span class="string">&quot;&quot;</span>.stripMargin</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="解决"><a href="#解决" class="headerlink" title="解决"></a>解决</h2><h3 id="自定义Factory"><a href="#自定义Factory" class="headerlink" title="自定义Factory"></a>自定义Factory</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> org.apache.flink.formats.custom;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.test.flink.CustomJsonRowDeserializationSchema;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.api.common.serialization.DeserializationSchema;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.api.common.serialization.SerializationSchema;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.api.common.typeinfo.TypeInformation;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.api.java.typeutils.RowTypeInfo;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.formats.json.JsonRowDeserializationSchema;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.formats.json.JsonRowSchemaConverter;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.formats.json.JsonRowSerializationSchema;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.table.descriptors.DescriptorProperties;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.table.descriptors.JsonValidator;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.table.factories.DeserializationSchemaFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.table.factories.SerializationSchemaFactory;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.table.factories.TableFormatFactoryBase;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.types.Row;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> XiaShuai on 2020/6/11.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomJsonRowFormatFactory</span> <span class="keyword">extends</span> <span class="title">TableFormatFactoryBase</span>&lt;<span class="title">Row</span>&gt;</span></span><br><span class="line"><span class="class">        <span class="keyword">implements</span> <span class="title">SerializationSchemaFactory</span>&lt;<span class="title">Row</span>&gt;, <span class="title">DeserializationSchemaFactory</span>&lt;<span class="title">Row</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 必须实现一个无参构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomJsonRowFormatFactory</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// custom就是你自定义的format.type</span></span><br><span class="line">        <span class="keyword">super</span>(<span class="string">&quot;custom&quot;</span>, <span class="number">1</span>, <span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 将参数转换为DescriptorProperties</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> DescriptorProperties <span class="title">getValidatedProperties</span><span class="params">(Map&lt;String, String&gt; propertiesMap)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> DescriptorProperties descriptorProperties = <span class="keyword">new</span> DescriptorProperties();</span><br><span class="line">        descriptorProperties.putProperties(propertiesMap);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// validate</span></span><br><span class="line">        <span class="keyword">new</span> JsonValidator().validate(descriptorProperties);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> descriptorProperties;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 重点: 创建DeserializationSchema,进行反序列化</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DeserializationSchema&lt;Row&gt; <span class="title">createDeserializationSchema</span><span class="params">(Map&lt;String, String&gt; properties)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> DescriptorProperties descriptorProperties = getValidatedProperties(properties);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// create and configure</span></span><br><span class="line">        <span class="keyword">final</span> CustomJsonRowDeserializationSchema.Builder schema =</span><br><span class="line">                <span class="keyword">new</span> CustomJsonRowDeserializationSchema.Builder(createTypeInformation(descriptorProperties));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> schema.build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 重点: 创建SerializationSchema,进行序列化</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> SerializationSchema&lt;Row&gt; <span class="title">createSerializationSchema</span><span class="params">(Map&lt;String, String&gt; properties)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> DescriptorProperties descriptorProperties = getValidatedProperties(properties);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> JsonRowSerializationSchema.Builder(createTypeInformation(descriptorProperties)).build();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建TypeInformation</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> TypeInformation&lt;Row&gt; <span class="title">createTypeInformation</span><span class="params">(DescriptorProperties descriptorProperties)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (descriptorProperties.containsKey(JsonValidator.FORMAT_SCHEMA)) &#123;</span><br><span class="line">            <span class="keyword">return</span> (RowTypeInfo) descriptorProperties.getType(JsonValidator.FORMAT_SCHEMA);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (descriptorProperties.containsKey(JsonValidator.FORMAT_JSON_SCHEMA)) &#123;</span><br><span class="line">            <span class="keyword">return</span> JsonRowSchemaConverter.convert(descriptorProperties.getString(JsonValidator.FORMAT_JSON_SCHEMA));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> deriveSchema(descriptorProperties.asMap()).toRowType();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong> 由于是自定义Factory类,所以需要在resources文件夹下进行以下操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">创建文件夹</span><br><span class="line">    META-INF&#x2F;services</span><br><span class="line">创建文件(注意文件名就是下面的字符串)</span><br><span class="line">    org.apache.flink.table.factories.TableFactory</span><br><span class="line">文件内容(自定义Factory类路径)</span><br><span class="line">org.apache.flink.formats.custom.CustomJsonRowFormatFactory</span><br></pre></td></tr></table></figure>
+<h3 id="创建自定义的DeSerializationSchema-SerializationSchema"><a href="#创建自定义的DeSerializationSchema-SerializationSchema" class="headerlink" title="创建自定义的DeSerializationSchema/SerializationSchema"></a>创建自定义的DeSerializationSchema/SerializationSchema</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">此处可以参考以下实现</span><br><span class="line">    org.apache.flink.formats.json.JsonRowSerializationSchema</span><br><span class="line">    org.apache.flink.formats.json.JsonRowDeserializationSchema</span><br><span class="line">不再赘述</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">createKafkaTable</span></span>(): <span class="type">String</span> = &#123;</span><br><span class="line">    <span class="string">&quot;&quot;</span><span class="string">&quot;</span></span><br><span class="line"><span class="string">      |CREATE TABLE demo1 (</span></span><br><span class="line"><span class="string">      |    uid VARCHAR COMMENT &#x27;uid&#x27;,</span></span><br><span class="line"><span class="string">      |    rid VARCHAR COMMENT &#x27;rid&#x27;</span></span><br><span class="line"><span class="string">      |)</span></span><br><span class="line"><span class="string">      |WITH (</span></span><br><span class="line"><span class="string">      |    &#x27;connector.type&#x27; = &#x27;kafka&#x27;, -- 使用 kafka connector</span></span><br><span class="line"><span class="string">      |    &#x27;connector.version&#x27; = &#x27;universal&#x27;,  -- kafka 版本</span></span><br><span class="line"><span class="string">      |    &#x27;connector.topic&#x27; = &#x27;test&#x27;,  -- kafka topic</span></span><br><span class="line"><span class="string">      |    &#x27;connector.properties.0.key&#x27; = &#x27;zookeeper.connect&#x27;,  -- zk连接信息</span></span><br><span class="line"><span class="string">      |    &#x27;connector.properties.0.value&#x27; = &#x27;hosts:2181&#x27;,  -- zk连接信息</span></span><br><span class="line"><span class="string">      |    &#x27;connector.properties.1.key&#x27; = &#x27;bootstrap.servers&#x27;,  -- broker连接信息</span></span><br><span class="line"><span class="string">      |    &#x27;connector.properties.1.value&#x27; = &#x27;hosts:9092&#x27;,  -- broker连接信息</span></span><br><span class="line"><span class="string">      |    &#x27;connector.sink-partitioner&#x27; = &#x27;fixed&#x27;,</span></span><br><span class="line"><span class="string">      |    &#x27;update-mode&#x27; = &#x27;append&#x27;,</span></span><br><span class="line"><span class="string">      |    &#x27;format.type&#x27; = &#x27;custom&#x27;,  -- 数据源格式为解析换为自定义</span></span><br><span class="line"><span class="string">      |    &#x27;format.derive-schema&#x27; = &#x27;true&#x27; -- 从 DDL schema 确定 json 解析规则</span></span><br><span class="line"><span class="string">      |)</span></span><br><span class="line"><span class="string">    &quot;</span><span class="string">&quot;&quot;</span>.stripMargin</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

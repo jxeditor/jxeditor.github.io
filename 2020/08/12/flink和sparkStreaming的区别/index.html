@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink和SparkStreaming的区别
+  
+</title>
+
+<meta name="description" content="一直往前走,但不妨看看曾经与现在不同技术点的闪光点与不足">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink和SparkStreaming的区别">
+<meta property="og:url" content="http://yoursite.com/2020/08/12/flink%E5%92%8CsparkStreaming%E7%9A%84%E5%8C%BA%E5%88%AB/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="一直往前走,但不妨看看曾经与现在不同技术点的闪光点与不足">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-08-12T08:53:57.000Z">
+<meta property="article:modified_time" content="2021-03-21T12:33:13.858Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="spark">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">169</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-flink和sparkStreaming的区别" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink和SparkStreaming的区别
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-08-12
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/spark/" rel="tag">spark</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>一直往前走,但不妨看看曾经与现在不同技术点的闪光点与不足</p>
+</blockquote>
+<span id="more"></span>
+<p>最开始公司使用的是spark streaming的方式来做实时数仓,根据公司对其他方面的需求对时间上的要求更加苛刻,所以开始研究flink,并在不久之后对spark streaming进行替代;对这两个技术点进行总结区分</p>
+<h4 id="编程模型对比"><a href="#编程模型对比" class="headerlink" title="编程模型对比"></a>编程模型对比</h4><p>Spark Streaming</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">与kafka的结合主要是两种模型:</span><br><span class="line">1.基于receiver dataStream[kafka高级API的形式]</span><br><span class="line">简单理解是kafka把消息全部封装好,提供给spark去调用,本来kafka的消息分布在不同的partition上面,相当于做了一步数据合并,在发送给spark,效率相对慢一些</span><br><span class="line">接收到的数据存储在executor,会出现数据漏处理或者多处理状况</span><br><span class="line">2.基于direct dataStream[kafka低级API模式]</span><br><span class="line">每次到topic的每个partition依据偏移量进行获取数据,拉取数据以后进行处理,可以实现高可用;效率更快一些,同时偏移量需要自己维护</span><br><span class="line">eg:</span><br><span class="line">val Array(brokers, topics) &#x3D; args&#x2F;&#x2F;    创建一个批处理时间是2s的context    </span><br><span class="line">val sparkConf &#x3D; new SparkConf().setAppName(&quot;DirectKafkaWordCount&quot;)    </span><br><span class="line">val ssc &#x3D; new StreamingContext(sparkConf, Seconds(2))    </span><br><span class="line">&#x2F;&#x2F;    使用broker和topic创建DirectStream    </span><br><span class="line">val topicsSet &#x3D; topics.split(&quot;,&quot;).toSet    </span><br><span class="line">val kafkaParams &#x3D; Map[String, String](&quot;metadata.broker.list&quot; -&gt; brokers)    </span><br><span class="line">val messages &#x3D; KafkaUtils.createDirectStream[String, String]( ssc, LocationStrategies.PreferConsistent,    ConsumerStrategies.Subscribe[String, String](topicsSet, kafkaParams))  </span><br><span class="line">&#x2F;&#x2F; Get the lines, split them into words, count the words and print    </span><br><span class="line">val lines &#x3D; messages.map(_.value)    </span><br><span class="line">val words &#x3D; lines.flatMap(_.split(&quot; &quot;))    </span><br><span class="line">val wordCounts &#x3D; words.map(x &#x3D;&gt; (x, 1L)).reduceByKey(_ + _)   </span><br><span class="line">wordCounts.print()     &#x2F;&#x2F;    启动流    </span><br><span class="line">ssc.start()    </span><br><span class="line">ssc.awaitTermination()</span><br><span class="line"></span><br><span class="line">一般代码涉及到的内容有:</span><br><span class="line">1.设置批处理时间</span><br><span class="line">2.创建数据流</span><br><span class="line">3.编写transform</span><br><span class="line">4.编写action</span><br><span class="line">5.启动执行</span><br></pre></td></tr></table></figure>
+<p>Flink</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">flink与kafka是事件驱动,flink内部对poll出来的数据进行了整理,然后逐条emit,形成了时间触发的机制</span><br><span class="line">StreamExecutionEnvironment env &#x3D; StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">&#x2F;&#x2F; create a checkpoint every 5 seconds</span><br><span class="line">env.enableCheckpointing(5000); </span><br><span class="line">env.setStreamTimeCharacteristic(TimeCharacteristic.EventTime); </span><br><span class="line">DataStream&lt;KafkaEvent&gt; input &#x3D; env</span><br><span class="line">           .addSource(new FlinkKafkaConsumer010&lt;&gt;(</span><br><span class="line">                   parameterTool.getRequired(&quot;input-topic&quot;),  new KafkaEventSchema(),</span><br><span class="line">                   parameterTool.getProperties())</span><br><span class="line">           .assignTimestampsAndWatermarks(new CustomWatermarkExtractor()))</span><br><span class="line">           .setParallelism(1).rebalance()</span><br><span class="line">           .keyBy(&quot;word&quot;)</span><br><span class="line">           .map(new RollingAdditionMapper()).setParallelism(0);</span><br><span class="line">input.addSink(new FlinkKafkaProducer010&lt;&gt;(parameterTool.getRequired(&quot;output-topic&quot;), new KafkaEventSchema(),</span><br><span class="line">        parameterTool.getProperties()));</span><br><span class="line">env.execute(&quot;Kafka 0.10 Example&quot;);</span><br><span class="line">flink的一般代码内容:</span><br><span class="line">1.注册数据source</span><br><span class="line">2.编写运行逻辑</span><br><span class="line">3.注册数据sink</span><br><span class="line">4.调用env.execute相比于spark streaming少了设置批处理时间,还有一个显著的区别是flink的所有算子都是lazy,调用env.execute会构建jobGraph;client端负责jobGraph生成并提交它到集群运行;而spark streaming的操作算子分action和transform,其中仅有transform是lazy形式,而且DAG生成,stage划分,任务调度是在driver端进行的</span><br></pre></td></tr></table></figure>
+
+<h4 id="任务调度原理"><a href="#任务调度原理" class="headerlink" title="任务调度原理"></a>任务调度原理</h4><p>spark 任务调度</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Spark Streaming 任务如上文提到的是基于微处理的,实际上每个批次都是一个spark core的任务;对于编码完成的spark core任务在生成到最终执行结束主要包括以下几个部分:</span><br><span class="line">1.构建DAG图</span><br><span class="line">2.划分stage</span><br><span class="line">3.生成taskset</span><br><span class="line">4.调度task</span><br></pre></td></tr></table></figure>
+<p>flink 任务调度</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">对于flink的流任务客户端首先会生成streamGraph,接着生成JobGraph,然后将jobGraph提交给JobManager,由它完成JobGraph到ExecutionGraph的转变,最后由jobManager调度执行</span><br><span class="line">flink的拓扑生成提交执行之后,除非故障,否则拓扑部件执行位置不变,并行度由每一个算子并行度决定;而spark streaming是每个批次都会根据数据本地性和资源情况进行调度,无固定的执行拓扑结构;flink是数据在拓扑结构里流动执行,而spark streaming则是对数据缓存批次并行处理</span><br></pre></td></tr></table></figure>
+
+<h4 id="容错机制及处理语义"><a href="#容错机制及处理语义" class="headerlink" title="容错机制及处理语义"></a>容错机制及处理语义</h4><p>spark streaming保证仅一次处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">对于spark streaming任务,可以设置checkpoint,然后假如发生故障并启动,我们可以从上次ck之处恢复,但是这个行为只能使得数据不丢失,可能会重复处理,不能做到恰一次处理语义</span><br><span class="line">与kafka结合的direct stream可以手动维护offset到zookeeper,要保证数据恰一次处理语义,结果输出和offset提交必须在一个事务内完成</span><br><span class="line">1.repartition(1),spark Streaming输出的action变成仅一个partition,这样可以利用事务去做</span><br><span class="line">Dstream.foreachRDD(rdd &#x3D;&gt; &#123; rdd.repartition(1).foreachPartition(partition &#x3D;&gt;&#123;  &#x2F;&#x2F;开启事务</span><br><span class="line">   partition.foreach(each &#x3D;&gt; &#123;  &#x2F;&#x2F;提交数据</span><br><span class="line">   &#125;) &#x2F;&#x2F;提交事务</span><br><span class="line">&#125;)&#125;)</span><br><span class="line">2.将结果和offset一起提交</span><br><span class="line">结果数据包括offset;这样提交结果和提交offset就是一个操作完成,不会数据丢失,也不会重复处理;故障恢复的时候可以利用上次提交结果带的offset</span><br></pre></td></tr></table></figure>
+<p>flink与kafka0.11保证仅一次处理</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">若要sink支持仅一次语义,必须以事务的方式写数据到kafka,这样当提交事务时两次ck间的所有写入操作作为一个事务被提交;这确保了出现故障或崩溃时这些写入操作能够被回滚</span><br><span class="line">一旦ck开始,flink的jobManager向输入流中写入一个ck barrier,将流中所有消息分割成属于本次ck的消息以及属于下次ck的,barrier也会在操作算子间流转,对于每个operator来说,该barrier会触发operator状态后端为该operator状态打快照;data source保存了kafka的offset,之后把ck barrier传递到后续的operator</span><br><span class="line">当barrier在所有算子中传递一遍,并触发的快照写入完成,预提交阶段完成;所有的触发状态快照都被视为ck的一部分,也可以说ck是整个应用程序的状态快照,包括预提交外部状态,出现故障可以从ck恢复;下一步通知所有的操作算子ck成功;该阶段jobmanager会为每个operator发起ck已完成的回调逻辑</span><br></pre></td></tr></table></figure>
+
+<h4 id="Back-pressure"><a href="#Back-pressure" class="headerlink" title="Back pressure"></a>Back pressure</h4><p>消费者消费的速度低于生产者生产的速度,为了使应用正常,消费者会反馈给生产者来调节生产者生产的速度,以使得消费者需要多少,生产者生产多少</p>
+<p>spark streaming的背压</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">跟kafka结合是存在背压机制,目标是根据当前job的处理情况来调节后续批次的获取kafka消息的条数;为了达到这个目的,spark streaming在原有的架构上加入了一个RateController,利用的算法是PID,需要的反馈数据是任务处理的结束时间,调度时间,处理时间,消息条数,这些数据是通过sparkListener体系获得,然后通过PIDRateEsimator的compute计算得到一个速率,进而可以计算得到一个offset,然后跟限速设置最大消费条数比较得到一个最终要消费的消息最大offset</span><br><span class="line"></span><br><span class="line">大概算法实现方式:</span><br><span class="line">def compute(time: Long, &#x2F;&#x2F; in milliseconds</span><br><span class="line">              numElements: Long,</span><br><span class="line">              processingDelay: Long, &#x2F;&#x2F; in milliseconds</span><br><span class="line">              schedulingDelay: Long &#x2F;&#x2F; in milliseconds</span><br><span class="line">             ): Option[Double] &#x3D; &#123;</span><br><span class="line">    logTrace(s&quot;\ntime &#x3D; $time, # records &#x3D; $numElements, &quot; +</span><br><span class="line">      s&quot;processing time &#x3D; $processingDelay, scheduling delay &#x3D; $schedulingDelay&quot;)</span><br><span class="line">    this.synchronized &#123;</span><br><span class="line">      if (time &gt; latestTime &amp;&amp; numElements &gt; 0 &amp;&amp; processingDelay &gt; 0) &#123;</span><br><span class="line">        val delaySinceUpdate &#x3D; (time - latestTime).toDouble &#x2F; 1000</span><br><span class="line">        val processingRate &#x3D; numElements.toDouble &#x2F; processingDelay * 1000</span><br><span class="line">        val error &#x3D; latestRate - processingRate</span><br><span class="line">        val historicalError &#x3D; schedulingDelay.toDouble * processingRate &#x2F; batchIntervalMillis</span><br><span class="line">        &#x2F;&#x2F; in elements&#x2F;(second ^ 2)</span><br><span class="line">        val dError &#x3D; (error - latestError) &#x2F; delaySinceUpdate</span><br><span class="line">        val newRate &#x3D; (latestRate - proportional * error -</span><br><span class="line">          integral * historicalError -</span><br><span class="line">          derivative * dError).max(minRate)</span><br><span class="line">        logTrace(s&quot;&quot;&quot;  | latestRate &#x3D; $latestRate, error &#x3D; $error</span><br><span class="line">                    | latestError &#x3D; $latestError, historicalError &#x3D; $historicalError</span><br><span class="line">                    | delaySinceUpdate &#x3D; $delaySinceUpdate, dError &#x3D; $dError</span><br><span class="line">                 &quot;&quot;&quot;.stripMargin)</span><br><span class="line">        latestTime &#x3D; time</span><br><span class="line">        if (firstRun) &#123;</span><br><span class="line">          latestRate &#x3D; processingRate</span><br><span class="line">          latestError &#x3D; 0D</span><br><span class="line">          firstRun &#x3D; false</span><br><span class="line">          logTrace(&quot;First run, rate estimation skipped&quot;)</span><br><span class="line">          None</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">          latestRate &#x3D; newRate</span><br><span class="line">          latestError &#x3D; error</span><br><span class="line">          logTrace(s&quot;New rate &#x3D; $newRate&quot;)</span><br><span class="line">          Some(newRate)</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        logTrace(&quot;Rate estimation skipped&quot;)</span><br><span class="line">        None</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+<p>flink背压</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">flink背压是jobmanager针对每一个task每50ms触发100次Thread.getStackTrace()调用,求出阻塞的占比</span><br><span class="line">阻塞占比在web上划分了三个等级</span><br><span class="line">1.ok:0&lt;&#x3D;Ratio&lt;&#x3D;0.10  表示状态良好</span><br><span class="line">2.low:0.10&lt;Ratio&lt;&#x3D;0.5 表示有待观察</span><br><span class="line">3.HIGH: 0.5 &lt;Ratio&lt;&#x3D;1 表示要处理了</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

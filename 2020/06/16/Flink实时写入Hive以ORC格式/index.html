@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink实时写入Hive以ORC格式
+  
+</title>
+
+<meta name="description" content="请注意版本问题,Flink使用的orc-core过新,对于老版本的hive并不支持,可以通过重写OrcFile类以支持低版本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink实时写入Hive以ORC格式">
+<meta property="og:url" content="http://yoursite.com/2020/06/16/Flink%E5%AE%9E%E6%97%B6%E5%86%99%E5%85%A5Hive%E4%BB%A5ORC%E6%A0%BC%E5%BC%8F/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="请注意版本问题,Flink使用的orc-core过新,对于老版本的hive并不支持,可以通过重写OrcFile类以支持低版本">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-16T09:58:29.000Z">
+<meta property="article:modified_time" content="2021-03-21T12:33:13.847Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="flink">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">169</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink实时写入Hive以ORC格式" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink实时写入Hive以ORC格式
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-06-16
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>请注意版本问题,Flink使用的<code>orc-core</code>过新,对于老版本的hive并不支持,可以通过重写OrcFile类以支持低版本</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="Orc格式"><a href="#Orc格式" class="headerlink" title="Orc格式"></a>Orc格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">Stripe:</span><br><span class="line">    index data</span><br><span class="line">    group of row data</span><br><span class="line">    stripe footer</span><br><span class="line">FileFooter:</span><br><span class="line">    辅助信息,文件中包含的所有Stripe信息</span><br><span class="line">    每个Stripe含有的数据行数,每一行的数据类型</span><br><span class="line">    列级别的聚合操作(count,min,max,sum)</span><br><span class="line">PostScript:</span><br><span class="line">    包含压缩参数和压缩页脚大小</span><br><span class="line">    </span><br><span class="line">Stripe:</span><br><span class="line">    MAGIC</span><br><span class="line">    stripe1&#123;</span><br><span class="line">        data</span><br><span class="line">        index</span><br><span class="line">        footer</span><br><span class="line">    &#125;,</span><br><span class="line">    stripe2&#123;</span><br><span class="line">        data</span><br><span class="line">        index</span><br><span class="line">        footer</span><br><span class="line">    &#125;,</span><br><span class="line">    ...</span><br><span class="line">    metadata</span><br><span class="line">    footer</span><br><span class="line">    PostScript + size(PostScript)</span><br></pre></td></tr></table></figure>
+<h3 id="DynamicIntArray和DynamicByteArray"><a href="#DynamicIntArray和DynamicByteArray" class="headerlink" title="DynamicIntArray和DynamicByteArray"></a>DynamicIntArray和DynamicByteArray</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">动态数组,两者一个存Int,一个存Byte</span><br><span class="line">static final int DEFAULT_CHUNKSIZE &#x3D; 8192;</span><br><span class="line">static final int INIT_CHUNKS &#x3D; 128;</span><br><span class="line">chunk初始化128个,每个size大小为8192</span><br><span class="line">增删改查操作需要根据index,计算出对应的chunk和在该chunk内的偏移量来操作数据</span><br><span class="line">public int get(int index) &#123;</span><br><span class="line">    if (index &gt;&#x3D; this.length) &#123;</span><br><span class="line">        throw new IndexOutOfBoundsException(&quot;Index &quot; + index + &quot; is outside of 0..&quot; + (this.length - 1));</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        int i &#x3D; index &#x2F; this.chunkSize;&#x2F;&#x2F; 对应的chunk</span><br><span class="line">        int j &#x3D; index % this.chunkSize;&#x2F;&#x2F; 偏移量</span><br><span class="line">        return this.data[i][j];</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="OrcFile写入数据"><a href="#OrcFile写入数据" class="headerlink" title="OrcFile写入数据"></a>OrcFile写入数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># WriterImpl.addRowBath入口</span><br><span class="line">TreeWriter 写数据</span><br><span class="line">RowIndexEntry 管理</span><br><span class="line">MemoryManager 内存管理</span><br><span class="line">Stripe 生成</span><br><span class="line"></span><br><span class="line"># useDictionaryEncoding是否使用字典压缩</span><br><span class="line">使用:</span><br><span class="line">    this.dictionary.add(val) 使用红黑树存储当前字符串的bytes值</span><br><span class="line">    this.rows.add(i) 元素存储在dictionary中的offset</span><br><span class="line">不使用:直接写入OutputStream</span><br><span class="line">    this.directStreamOutput.write();</span><br><span class="line">    this.directLengthOutput.write();</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><p>使用方式与1.10parquet的使用方式类似</p>
+<h3 id="Vectorizer"><a href="#Vectorizer" class="headerlink" title="Vectorizer"></a>Vectorizer</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> org.apache.flink.orc.vector.Vectorizer;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hive.ql.exec.vector.VectorizedRowBatch;</span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.hive.ql.exec.vector.BytesColumnVector;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> XiaShuai on 2020/6/15.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoVectorizer</span> <span class="keyword">extends</span> <span class="title">Vectorizer</span>&lt;<span class="title">Demo</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DemoVectorizer</span><span class="params">(String schema)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(schema);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">vectorize</span><span class="params">(Demo demo, VectorizedRowBatch vectorizedRowBatch)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> id = vectorizedRowBatch.size++;</span><br><span class="line">        System.out.println(vectorizedRowBatch.size);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">3</span>; ++i) &#123;</span><br><span class="line">            BytesColumnVector vector = (BytesColumnVector) vectorizedRowBatch.cols[i];</span><br><span class="line">            <span class="keyword">byte</span>[] bytes = demo.platform().getBytes();</span><br><span class="line">            vector.setVal(id, bytes, <span class="number">0</span>, bytes.length);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Main"><a href="#Main" class="headerlink" title="Main"></a>Main</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> java.nio.<span class="type">ByteBuffer</span></span><br><span class="line"><span class="keyword">import</span> java.util.<span class="type">Properties</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.<span class="type">JSON</span></span><br><span class="line"><span class="keyword">import</span> org.apache.flink.api.common.serialization.<span class="type">SimpleStringSchema</span></span><br><span class="line"><span class="keyword">import</span> org.apache.flink.orc.writer.<span class="type">OrcBulkWriterFactory</span></span><br><span class="line"><span class="keyword">import</span> org.apache.flink.runtime.state.filesystem.<span class="type">FsStateBackend</span></span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.<span class="type">CheckpointingMode</span></span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.functions.sink.filesystem.<span class="type">StreamingFileSink</span></span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.api.scala.&#123;<span class="type">StreamExecutionEnvironment</span>, _&#125;</span><br><span class="line"><span class="keyword">import</span> org.apache.flink.streaming.connectors.kafka.<span class="type">FlinkKafkaConsumer</span></span><br><span class="line"><span class="keyword">import</span> org.apache.hadoop.conf.<span class="type">Configuration</span></span><br><span class="line"><span class="keyword">import</span> org.apache.kafka.clients.producer.<span class="type">ProducerConfig</span></span><br><span class="line"><span class="keyword">import</span> org.apache.flink.core.fs.<span class="type">Path</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * @author XiaShuai on 2020/6/15.</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="class"><span class="keyword">object</span> <span class="title">OrcFileWriteDemo</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">def</span> <span class="title">main</span></span>(args: <span class="type">Array</span>[<span class="type">String</span>]): <span class="type">Unit</span> = &#123;</span><br><span class="line">    <span class="keyword">val</span> <span class="type">READ_TOPIC</span> = <span class="string">&quot;topic&quot;</span></span><br><span class="line">    <span class="keyword">val</span> env = <span class="type">StreamExecutionEnvironment</span>.getExecutionEnvironment</span><br><span class="line">    env.enableCheckpointing(<span class="number">60000</span>L, <span class="type">CheckpointingMode</span>.<span class="type">EXACTLY_ONCE</span>)</span><br><span class="line">    env.setStateBackend(<span class="keyword">new</span> <span class="type">FsStateBackend</span>(<span class="string">&quot;file:///job/flink/ck/Orc&quot;</span>))</span><br><span class="line">    <span class="keyword">val</span> props = <span class="keyword">new</span> <span class="type">Properties</span>()</span><br><span class="line">    props.put(<span class="string">&quot;bootstrap.servers&quot;</span>, <span class="string">&quot;hosts:9092&quot;</span>)</span><br><span class="line">    props.put(<span class="string">&quot;group.id&quot;</span>, <span class="string">&quot;xs_test3&quot;</span>)</span><br><span class="line">    props.put(<span class="string">&quot;key.deserializer&quot;</span>, <span class="string">&quot;org.apache.kafka.common.serialization.StringDeserializer&quot;</span>)</span><br><span class="line">    props.put(<span class="string">&quot;value.deserializer&quot;</span>, <span class="string">&quot;org.apache.kafka.common.serialization.StringDeserializer&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> producerProps = <span class="keyword">new</span> <span class="type">Properties</span>()</span><br><span class="line">    producerProps.setProperty(<span class="type">ProducerConfig</span>.<span class="type">BOOTSTRAP_SERVERS_CONFIG</span>, <span class="string">&quot;skuldcdhtest1.ktcs:9092&quot;</span>)</span><br><span class="line">    producerProps.setProperty(<span class="type">ProducerConfig</span>.<span class="type">RETRIES_CONFIG</span>, <span class="string">&quot;3&quot;</span>)</span><br><span class="line">    <span class="comment">// 如果下面配置的是exactly-once的语义 这里必须配置为all</span></span><br><span class="line">    producerProps.setProperty(<span class="type">ProducerConfig</span>.<span class="type">ACKS_CONFIG</span>, <span class="string">&quot;all&quot;</span>)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> student = env.addSource(<span class="keyword">new</span> <span class="type">FlinkKafkaConsumer</span>(</span><br><span class="line">      <span class="type">READ_TOPIC</span>, <span class="comment">//这个 kafka topic 需要和上面的工具类的 topic 一致</span></span><br><span class="line">      <span class="keyword">new</span> <span class="type">SimpleStringSchema</span>, props).setStartFromLatest()</span><br><span class="line">    ).map(x =&gt; &#123;</span><br><span class="line">      ...</span><br><span class="line">      <span class="type">Demo</span>(<span class="string">&quot;&quot;</span>,<span class="string">&quot;&quot;</span>,<span class="string">&quot;&quot;</span>)</span><br><span class="line">    &#125;).setParallelism(<span class="number">1</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> schema: <span class="type">String</span> = <span class="string">&quot;struct&lt;platform:string,event:string,dt:string&gt;&quot;</span></span><br><span class="line">    <span class="keyword">val</span> writerProperties: <span class="type">Properties</span> = <span class="keyword">new</span> <span class="type">Properties</span>()</span><br><span class="line">    writerProperties.setProperty(<span class="string">&quot;orc.compress&quot;</span>, <span class="string">&quot;ZLIB&quot;</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> vectorizer = <span class="keyword">new</span> <span class="type">DemoVectorizer</span>(schema)</span><br><span class="line">    <span class="keyword">val</span> writerFactory = <span class="keyword">new</span> <span class="type">CustomOrcBulkWriterFactory</span>(vectorizer, writerProperties, <span class="keyword">new</span> <span class="type">Configuration</span>())</span><br><span class="line">    <span class="keyword">val</span> sink = <span class="type">StreamingFileSink</span>.forBulkFormat(<span class="keyword">new</span> <span class="type">Path</span>(<span class="string">&quot;F:\\test\\Demo\\Flink11\\src\\main\\resources&quot;</span>),</span><br><span class="line">      writerFactory</span><br><span class="line">    ).build()</span><br><span class="line"></span><br><span class="line">    student.addSink(sink).setParallelism(<span class="number">1</span>)</span><br><span class="line">    env.execute(<span class="string">&quot;write hdfs&quot;</span>)</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">case</span> <span class="class"><span class="keyword">class</span> <span class="title">Demo</span>(<span class="params">platform: <span class="type">String</span>, event: <span class="type">String</span>, dt: <span class="type">String</span></span>)</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="解决低版本支持问题"><a href="#解决低版本支持问题" class="headerlink" title="解决低版本支持问题"></a>解决低版本支持问题</h2><p><a target="_blank" rel="noopener" href="https://github.com/apache/orc/blob/ce4329f396658648796f5b78716f8e1836f139ec/java/core/src/java/org/apache/orc/OrcFile.java#L258">Flink-1.11使用的OrcVersion</a><br><a target="_blank" rel="noopener" href="https://github.com/apache/hive/blob/03599216cfc01fc464f1c9a4fa89e81c45327ea5/orc/src/java/org/apache/orc/OrcFile.java#L156">Hive-2.1.1使用的OrcVersion</a></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 主要原因为Orc在新版本后使用的WriterVersion为ORC_517</span><br><span class="line"># 导致低版本的Hive解析不了</span><br><span class="line"># 自实现OrcFile类,修改回旧版本</span><br><span class="line"><span class="keyword">static</span> &#123;</span><br><span class="line">    CURRENT_WRITER = WriterVersion.HIVE_13083;</span><br><span class="line">    memoryManager = <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

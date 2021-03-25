@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Kafka源码系列之三ProducerNIO网络模型
+  
+</title>
+
+<meta name="description" content="Producer的网络模型,与JavaNIO模型之间关系,以及整体流程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka源码系列之三ProducerNIO网络模型">
+<meta property="og:url" content="http://yoursite.com/2020/05/06/Kafka%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97%E4%B9%8B%E4%B8%89ProducerNIO%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="Producer的网络模型,与JavaNIO模型之间关系,以及整体流程">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-06T09:57:40.000Z">
+<meta property="article:modified_time" content="2021-03-21T12:33:13.852Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="kafka">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">169</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Kafka源码系列之三ProducerNIO网络模型" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Kafka源码系列之三ProducerNIO网络模型
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-05-06
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/" rel="tag">kafka</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>Producer的网络模型,与JavaNIO模型之间关系,以及整体流程</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="Producer流程概览"><a href="#Producer流程概览" class="headerlink" title="Producer流程概览"></a>Producer流程概览</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">涉及类</span><br><span class="line">KafkaProducer</span><br><span class="line"> -&gt;Sender</span><br><span class="line">  -&gt;NetworkClient</span><br><span class="line">   -&gt;Selector</span><br><span class="line">    -&gt;JavaNIO接口</span><br><span class="line"></span><br><span class="line">涉及方法</span><br><span class="line">KafkaProducer.doSend()</span><br><span class="line"> -&gt;Sender.run()</span><br><span class="line">  -&gt;NetworkClient.poll()</span><br><span class="line">   -&gt;Selector.poll()</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="流程详解"><a href="#流程详解" class="headerlink" title="流程详解"></a>流程详解</h2><h3 id="KafkaProducer-doSend"><a href="#KafkaProducer-doSend" class="headerlink" title="KafkaProducer.doSend()"></a>KafkaProducer.doSend()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">waitOnMetadata(): 请求更新tp(topic-partition) meta,中间调用sender.wakeup()</span><br><span class="line">accumulator.append(): 将信息写入tp对应的deque中,如果tp对应的deque新建了Batch,最后也会调用sender.wakeup()</span><br></pre></td></tr></table></figure>
+<h4 id="sender-wakeup"><a href="#sender-wakeup" class="headerlink" title="sender.wakeup()"></a>sender.wakeup()</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// org.apache.kafka.clients.producer.internals.Sender</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">wakeup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.client.wakeup();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// KafkaClient</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">wakeup</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// org.apache.kafka.clients.NetworkClient</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">wakeup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.selector.wakeup();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Selectable</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">wakeup</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// org.apache.kafka.common.network.Selector</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">wakeup</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.nioSelector.wakeup();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Sender-run"><a href="#Sender-run" class="headerlink" title="Sender.run()"></a>Sender.run()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">此处详细在源码系列一中有详细说明</span><br><span class="line">sendProducerData()</span><br><span class="line"></span><br><span class="line">1.accumulator.ready(): 遍历所有的tp,如果其对应的ProducerBatch可以发送,就将其对应的leader选出来</span><br><span class="line">    最后会返回一个可以发送ProduceRequest的Set&lt;Node&gt;(实际是ReadyCheckResult,Set&lt;Node&gt;是最主要的成员变量)</span><br><span class="line"></span><br><span class="line">2.如果发现tp没有leader,那么将会调用requestUpdate()更新metadata</span><br><span class="line">    实际上还是在第一步对tp的遍历中,遇到没有leader的tp就将其加入到unknownLeaderTopics的set中</span><br><span class="line">    然后会请求这个tp的meta</span><br><span class="line"></span><br><span class="line">3.accumulator.drain(): 遍历每个leader上的所有tp,如果该tp对应的ProducerBatch不在backoff期间</span><br><span class="line">    并且加上这个ProducerBatch大小不超过maxSize(一个request的最大限制,默认1MB)</span><br><span class="line">    那么就把这个ProducerBatch添加到list中,最终返回Map&lt;Integer,List&lt;ProducerBatch&gt;&gt;</span><br><span class="line">    key为leaderId,value为要发送的ProducerBatch列表</span><br><span class="line">    如果ProducerBatch没有达到要求,还是有可能发送</span><br><span class="line">    这样可以减少request的频率,有利于提高发送效率</span><br><span class="line"></span><br><span class="line">4.sendProduceRequests(): 发送Produce请求,这个方法会调用NetworkClient.send()来发送clientRequest</span><br><span class="line"></span><br><span class="line">5.NetworkClient.poll(): 关于socket的IO操作都是在这个方法进行的,调用Selector进行的相应操作</span><br><span class="line">    而Selector底层则封装的JavaNIO的相关接口</span><br></pre></td></tr></table></figure>
+<h3 id="NetworkClient-poll"><a href="#NetworkClient-poll" class="headerlink" title="NetworkClient.poll()"></a>NetworkClient.poll()</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">如果有需要更新的Metadata,就发送metadata请求</span><br><span class="line">调用Selector进行相应的IO操作</span><br><span class="line">处理Server端的response以及其他一些操作</span><br></pre></td></tr></table></figure>
+<h3 id="Selector-poll"><a href="#Selector-poll" class="headerlink" title="Selector.poll()"></a>Selector.poll()</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Kafka对JavaNIO相关接口的封装</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">poll</span><span class="params">(<span class="keyword">long</span> timeout)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (timeout &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;timeout should be &gt;= 0&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">boolean</span> madeReadProgressLastCall = madeReadProgressLastPoll;</span><br><span class="line">    <span class="comment">// 清除相关记录</span></span><br><span class="line">    clear();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">boolean</span> dataInBuffers = !keysWithBufferedRead.isEmpty();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (hasStagedReceives() || !immediatelyConnectedKeys.isEmpty() || (madeReadProgressLastCall &amp;&amp; dataInBuffers))</span><br><span class="line">        timeout = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!memoryPool.isOutOfMemory() &amp;&amp; outOfMemory) &#123;</span><br><span class="line">        <span class="comment">//we have recovered from memory pressure. unmute any channel not explicitly muted for other reasons</span></span><br><span class="line">        log.trace(<span class="string">&quot;Broker no longer low on memory - unmuting incoming sockets&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (KafkaChannel channel : channels.values()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (channel.isInMutableState() &amp;&amp; !explicitlyMutedChannels.contains(channel)) &#123;</span><br><span class="line">                channel.maybeUnmute();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        outOfMemory = <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* check ready keys */</span></span><br><span class="line">    <span class="comment">// 获取就绪事件的数量</span></span><br><span class="line">    <span class="keyword">long</span> startSelect = time.nanoseconds();</span><br><span class="line">    <span class="keyword">int</span> numReadyKeys = select(timeout);</span><br><span class="line">    <span class="keyword">long</span> endSelect = time.nanoseconds();</span><br><span class="line">    <span class="keyword">this</span>.sensors.selectTime.record(endSelect - startSelect, time.milliseconds());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 处理IO操作</span></span><br><span class="line">    <span class="keyword">if</span> (numReadyKeys &gt; <span class="number">0</span> || !immediatelyConnectedKeys.isEmpty() || dataInBuffers) &#123;</span><br><span class="line">        Set&lt;SelectionKey&gt; readyKeys = <span class="keyword">this</span>.nioSelector.selectedKeys();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Poll from channels that have buffered data (but nothing more from the underlying socket)</span></span><br><span class="line">        <span class="keyword">if</span> (dataInBuffers) &#123;</span><br><span class="line">            keysWithBufferedRead.removeAll(readyKeys); <span class="comment">//so no channel gets polled twice</span></span><br><span class="line">            Set&lt;SelectionKey&gt; toPoll = keysWithBufferedRead;</span><br><span class="line">            keysWithBufferedRead = <span class="keyword">new</span> HashSet&lt;&gt;(); <span class="comment">//poll() calls will repopulate if needed</span></span><br><span class="line">            pollSelectionKeys(toPoll, <span class="keyword">false</span>, endSelect);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Poll from channels where the underlying socket has more data</span></span><br><span class="line">        pollSelectionKeys(readyKeys, <span class="keyword">false</span>, endSelect);</span><br><span class="line">        <span class="comment">// Clear all selected keys so that they are included in the ready count for the next select</span></span><br><span class="line">        readyKeys.clear();</span><br><span class="line"></span><br><span class="line">        pollSelectionKeys(immediatelyConnectedKeys, <span class="keyword">true</span>, endSelect);</span><br><span class="line">        immediatelyConnectedKeys.clear();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        madeReadProgressLastPoll = <span class="keyword">true</span>; <span class="comment">//no work is also &quot;progress&quot;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">long</span> endIo = time.nanoseconds();</span><br><span class="line">    <span class="keyword">this</span>.sensors.ioTime.record(endIo - endSelect, time.milliseconds());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Close channels that were delayed and are now ready to be closed</span></span><br><span class="line">    completeDelayedChannelClose(endIo);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// we use the time at the end of select to ensure that we don&#x27;t close any connections that</span></span><br><span class="line">    <span class="comment">// have just been processed in pollSelectionKeys</span></span><br><span class="line">    <span class="comment">// 每次poll之后会调用一次,连接虽然关闭,但是Client端的缓存依然存在</span></span><br><span class="line">    maybeCloseOldestConnection(endSelect);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Add to completedReceives after closing expired connections to avoid removing</span></span><br><span class="line">    <span class="comment">// channels with completed receives until all staged receives are completed.</span></span><br><span class="line">    <span class="comment">// 将处理得到的stagedReceives添加到completedReceives</span></span><br><span class="line">    addToCompletedReceives();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="clear"><a href="#clear" class="headerlink" title="clear()"></a>clear()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">clear方法是在每次poll()执行的第一步</span><br><span class="line">清理上一次poll过程产生的部分缓存</span><br></pre></td></tr></table></figure>
+<h4 id="select"><a href="#select" class="headerlink" title="select()"></a>select()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">如果在一次轮询,只要有一个Channel的事件就绪,就立刻返回</span><br></pre></td></tr></table></figure>
+<h4 id="pollSelectionKeys"><a href="#pollSelectionKeys" class="headerlink" title="pollSelectionKeys()"></a>pollSelectionKeys()</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">第一次调用:处理已经就绪的事件,进行相应的IO操作</span><br><span class="line">第二次调用:处理新建立的那些连接,添加缓存以及传输层的握手与认证</span><br></pre></td></tr></table></figure>
+<h4 id="addToCompletedReceives"><a href="#addToCompletedReceives" class="headerlink" title="addToCompletedReceives"></a>addToCompletedReceives</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">处理接收到的Receive,在Client和Server端都会调用</span><br><span class="line"></span><br><span class="line">Server端:</span><br><span class="line">    为保证消息的时序性,在Selector中提供了mute(String id)和unmute(String id)</span><br><span class="line">    对该KafkaChannel做标记来保证同时只能处理这个Channel的一个request(排它锁)</span><br><span class="line">    当Server端接收到request后,先将其放入stageReceives集合中</span><br><span class="line">    此时该Channel还未mute,这个Receive会被放入completedReceives集合中</span><br><span class="line">    Server在对completedReceives集合中的request进行处理时,先对该Channel mute</span><br><span class="line">    处理后的response发送完成后再对该Channel unmute</span><br><span class="line">    然后才处理该Channel的其他请求</span><br><span class="line">Client端:</span><br><span class="line">    Client不会调用Selector的mute()和unmute</span><br><span class="line">    Client的时序性通过InFlightRequests和RecordAccumulator的mutePartition来保证</span><br><span class="line">    对于Client端而言,接收到的所有Receives都会放入到completedReceives的集合中等待后续处理</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="另一个流程分支"><a href="#另一个流程分支" class="headerlink" title="另一个流程分支"></a>另一个流程分支</h2><h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Sender.doSend()-&gt;sendProducerData-&gt;sendProduceRequests-&gt;sendProduceRequest</span><br><span class="line">    -&gt;KafkaClient.send()-&gt;NetworkClient.send()</span><br><span class="line">        -&gt;NetworkClient.doSend()</span><br><span class="line">            -&gt;Selector.send()</span><br><span class="line">                -&gt;KafkaChannel.setSend()</span><br></pre></td></tr></table></figure>
+<h3 id="NetworkClient-doSend"><a href="#NetworkClient-doSend" class="headerlink" title="NetworkClient.doSend()"></a>NetworkClient.doSend()</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doSend</span><span class="params">(ClientRequest clientRequest, <span class="keyword">boolean</span> isInternalRequest, <span class="keyword">long</span> now, AbstractRequest request)</span> </span>&#123;</span><br><span class="line">    String destination = clientRequest.destination();</span><br><span class="line">    <span class="comment">// 检查版本信息,并根据apiKey构建Request</span></span><br><span class="line">    RequestHeader header = clientRequest.makeHeader(request.version());</span><br><span class="line">    <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">        <span class="keyword">int</span> latestClientVersion = clientRequest.apiKey().latestVersion();</span><br><span class="line">        <span class="keyword">if</span> (header.apiVersion() == latestClientVersion) &#123;</span><br><span class="line">            log.trace(<span class="string">&quot;Sending &#123;&#125; &#123;&#125; with correlation id &#123;&#125; to node &#123;&#125;&quot;</span>, clientRequest.apiKey(), request,</span><br><span class="line">                    clientRequest.correlationId(), destination);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            log.debug(<span class="string">&quot;Using older server API v&#123;&#125; to send &#123;&#125; &#123;&#125; with correlation id &#123;&#125; to node &#123;&#125;&quot;</span>,</span><br><span class="line">                    header.apiVersion(), clientRequest.apiKey(), request, clientRequest.correlationId(), destination);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 创建NetworkSend实例</span></span><br><span class="line">    Send send = request.toSend(destination, header);</span><br><span class="line">    InFlightRequest inFlightRequest = <span class="keyword">new</span> InFlightRequest(</span><br><span class="line">            clientRequest,</span><br><span class="line">            header,</span><br><span class="line">            isInternalRequest,</span><br><span class="line">            request,</span><br><span class="line">            send,</span><br><span class="line">            now);</span><br><span class="line">    <span class="keyword">this</span>.inFlightRequests.add(inFlightRequest);</span><br><span class="line">    <span class="comment">// 调用Selector.send发送该Send</span></span><br><span class="line">    selector.send(send);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Selector-send"><a href="#Selector-send" class="headerlink" title="Selector.send()"></a>Selector.send()</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">send</span><span class="params">(Send send)</span> </span>&#123;</span><br><span class="line">    String connectionId = send.destination();</span><br><span class="line">    <span class="comment">// 获取Send对应的KafkaChannel</span></span><br><span class="line">    KafkaChannel channel = openOrClosingChannelOrFail(connectionId);</span><br><span class="line">    <span class="keyword">if</span> (closingChannels.containsKey(connectionId)) &#123;</span><br><span class="line">        <span class="comment">// ensure notification via `disconnected`, leave channel in the state in which closing was triggered</span></span><br><span class="line">        <span class="keyword">this</span>.failedSends.add(connectionId);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 调用setSend()注册Write事件</span></span><br><span class="line">            channel.setSend(send);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="comment">// update the state for consistency, the channel will be discarded after `close`</span></span><br><span class="line">            channel.state(ChannelState.FAILED_SEND);</span><br><span class="line">            <span class="comment">// ensure notification via `disconnected` when `failedSends` are processed in the next poll</span></span><br><span class="line">            <span class="keyword">this</span>.failedSends.add(connectionId);</span><br><span class="line">            close(channel, CloseMode.DISCARD_NO_NOTIFY);</span><br><span class="line">            <span class="keyword">if</span> (!(e <span class="keyword">instanceof</span> CancelledKeyException)) &#123;</span><br><span class="line">                log.error(<span class="string">&quot;Unexpected exception during send, closing connection &#123;&#125; and rethrowing exception &#123;&#125;&quot;</span>,</span><br><span class="line">                        connectionId, e);</span><br><span class="line">                <span class="keyword">throw</span> e;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="KafkaChannel-setSend"><a href="#KafkaChannel-setSend" class="headerlink" title="KafkaChannel.setSend()"></a>KafkaChannel.setSend()</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">setSend()方法需要配置write()(在Selector.poll中调用pollSelectionKeys时使用)方法一起分析</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每次调用都会注册一个OP_WRITE事件</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setSend</span><span class="params">(Send send)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span>.send != <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;Attempt to begin a send operation with prior send operation still in progress, connection id is &quot;</span> + id);</span><br><span class="line">    <span class="keyword">this</span>.send = send;</span><br><span class="line">    <span class="keyword">this</span>.transportLayer.addInterestOps(SelectionKey.OP_WRITE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用send()发送Send</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Send <span class="title">write</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    Send result = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">if</span> (send != <span class="keyword">null</span> &amp;&amp; send(send)) &#123;</span><br><span class="line">        result = send;</span><br><span class="line">        send = <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 发送完成后,删除这个OP_WRITE事件</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">send</span><span class="params">(Send send)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    send.writeTo(transportLayer);</span><br><span class="line">    <span class="keyword">if</span> (send.completed())</span><br><span class="line">        transportLayer.removeInterestOps(SelectionKey.OP_WRITE);</span><br><span class="line">    <span class="keyword">return</span> send.completed();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

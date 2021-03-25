@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Kafka源码系列之十五状态机
+  
+</title>
+
+<meta name="description" content="介绍KafkaController中的两种状态机">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka源码系列之十五状态机">
+<meta property="og:url" content="http://yoursite.com/2020/05/09/Kafka%E6%BA%90%E7%A0%81%E7%B3%BB%E5%88%97%E4%B9%8B%E5%8D%81%E4%BA%94%E7%8A%B6%E6%80%81%E6%9C%BA/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="介绍KafkaController中的两种状态机">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-05-09T02:26:52.000Z">
+<meta property="article:modified_time" content="2021-03-21T12:33:13.853Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="kafka">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">169</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Kafka源码系列之十五状态机" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Kafka源码系列之十五状态机
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-05-09
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/" rel="tag">kafka</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>介绍KafkaController中的两种状态机</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="ReplicaStateMachine"><a href="#ReplicaStateMachine" class="headerlink" title="ReplicaStateMachine"></a>ReplicaStateMachine</h2><h3 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h3><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">ReplicaStateMachine</span>记录集群所有<span class="type">Replica</span>的状态信息</span><br><span class="line">决定着<span class="type">Replica</span>处在什么状态,能够转变为什么状态</span><br><span class="line"></span><br><span class="line"><span class="comment">// KafkaController.onControllerFailover().replicaStateMachine.startup()</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">startup</span></span>() &#123;</span><br><span class="line">  info(<span class="string">&quot;Initializing replica state&quot;</span>)</span><br><span class="line">  <span class="comment">// 初始化</span></span><br><span class="line">  initializeReplicaState()</span><br><span class="line">  info(<span class="string">&quot;Triggering online replica state changes&quot;</span>)</span><br><span class="line">  <span class="comment">// 将存活的副本状态转变为OnlineReplica</span></span><br><span class="line">  handleStateChanges(controllerContext.allLiveReplicas().toSeq, <span class="type">OnlineReplica</span>)</span><br><span class="line">  info(<span class="string">s&quot;Started replica state machine with initial state -&gt; <span class="subst">$replicaState</span>&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这里只是将Replica状态信息更新副本状态机缓存中replicaState,并没有真正进行状态转移操作</span></span><br><span class="line"><span class="keyword">private</span> <span class="function"><span class="keyword">def</span> <span class="title">initializeReplicaState</span></span>() &#123;</span><br><span class="line">  controllerContext.allPartitions.foreach &#123; partition =&gt;</span><br><span class="line">    <span class="keyword">val</span> replicas = controllerContext.partitionReplicaAssignment(partition)</span><br><span class="line">    replicas.foreach &#123; replicaId =&gt;</span><br><span class="line">      <span class="keyword">val</span> partitionAndReplica = <span class="type">PartitionAndReplica</span>(partition, replicaId)</span><br><span class="line">      <span class="comment">// 如果副本是存活的,将状态置为OnlineReplica</span></span><br><span class="line">      <span class="keyword">if</span> (controllerContext.isReplicaOnline(replicaId, partition))</span><br><span class="line">        replicaState.put(partitionAndReplica, <span class="type">OnlineReplica</span>)</span><br><span class="line">      <span class="keyword">else</span></span><br><span class="line">        <span class="comment">// 将不存活的副本状态置为ReplicaDeletionIneligible</span></span><br><span class="line">        replicaState.put(partitionAndReplica, <span class="type">ReplicaDeletionIneligible</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// handleStateChanges()才是真正进行状态转移的地方</span></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">handleStateChanges</span></span>(replicas: <span class="type">Seq</span>[<span class="type">PartitionAndReplica</span>], targetState: <span class="type">ReplicaState</span>,</span><br><span class="line">                       callbacks: <span class="type">Callbacks</span> = <span class="keyword">new</span> <span class="type">Callbacks</span>()): <span class="type">Unit</span> = &#123;</span><br><span class="line">  <span class="keyword">if</span> (replicas.nonEmpty) &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      controllerBrokerRequestBatch.newBatch()</span><br><span class="line">      replicas.groupBy(_.replica).map &#123; <span class="keyword">case</span> (replicaId, replicas) =&gt;</span><br><span class="line">        <span class="keyword">val</span> partitions = replicas.map(_.topicPartition)</span><br><span class="line">        <span class="comment">// 状态转移</span></span><br><span class="line">        doHandleStateChanges(replicaId, partitions, targetState, callbacks)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 向Broker发送相应请求</span></span><br><span class="line">      controllerBrokerRequestBatch.sendRequestsToBrokers(controllerContext.epoch)</span><br><span class="line">    &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">      <span class="keyword">case</span> e: <span class="type">Throwable</span> =&gt; error(<span class="string">s&quot;Error while moving some replicas to <span class="subst">$targetState</span> state&quot;</span>, e)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="种类"><a href="#种类" class="headerlink" title="种类"></a>种类</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">NewReplica: </span><br><span class="line">    此状态下,Controller可以创建这个Replica,该Replica只能为Follower,可以是Replica删除后的一个临时状态</span><br><span class="line">    有效前置状态: </span><br><span class="line">        NonExistentReplica</span><br><span class="line"></span><br><span class="line">OnlineReplica:</span><br><span class="line">    一旦这个Replica被分配到指定的Partition上,并且Replica创建完成,那么它会被置为这个状态,这个状态下,既可以为Leader,也可以为Follower</span><br><span class="line">    有效前置状态:</span><br><span class="line">        NewReplica</span><br><span class="line">        OnlineReplica</span><br><span class="line">        OfflineReplica</span><br><span class="line"></span><br><span class="line">OfflineReplica:</span><br><span class="line">    如果一个Replica挂掉,该Replica转换到这个状态</span><br><span class="line">    有效前置状态:</span><br><span class="line">        NewReplica</span><br><span class="line">        OnlineReplica</span><br><span class="line">        OfflineReplica</span><br><span class="line"></span><br><span class="line">ReplicaDeletionStarted:</span><br><span class="line">    Replica开始删除时被置为的状态</span><br><span class="line">    有效前置状态:</span><br><span class="line">        OfflineReplica</span><br><span class="line"></span><br><span class="line">ReplicaDeletionSuccessful:</span><br><span class="line">    Replica在删除时没有任何问题,将被置为这个状态,代表Replica的数据已经从节点上清除了</span><br><span class="line">    有效前置状态:</span><br><span class="line">        ReplicaDeletionStarted</span><br><span class="line"></span><br><span class="line">ReplicaDeletionIneligible:</span><br><span class="line">    Replica删除失败,转换为这个状态</span><br><span class="line">    有效前置状态:</span><br><span class="line">        ReplicaDeletionStarted</span><br><span class="line"></span><br><span class="line">NonExistentReplica:</span><br><span class="line">    Replica删除成功,转换为这个状态</span><br><span class="line">    有效前置状态:</span><br><span class="line">        ReplicaDeletionSuccessful</span><br></pre></td></tr></table></figure>
+<h3 id="副本状态转移"><a href="#副本状态转移" class="headerlink" title="副本状态转移"></a>副本状态转移</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">参考ReplicaStateMachine中各状态的调用情况</span><br><span class="line">doHandleStateChanges()</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="PartitionStateMachine"><a href="#PartitionStateMachine" class="headerlink" title="PartitionStateMachine"></a>PartitionStateMachine</h2><h3 id="初始化-1"><a href="#初始化-1" class="headerlink" title="初始化"></a>初始化</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line">PartitionStateMachine记录着集群所有Partition的状态信息</span><br><span class="line">决定一个Partition处在什么状态以及可以转变为什么状态</span><br><span class="line"></span><br><span class="line">def startup() &#123;</span><br><span class="line">  info(&quot;Initializing partition state&quot;)</span><br><span class="line">  &#x2F;&#x2F; 初始化</span><br><span class="line">  initializePartitionState()</span><br><span class="line">  info(&quot;Triggering online partition state changes&quot;)</span><br><span class="line">  &#x2F;&#x2F; 为所有处理NewPartition,OnlinePartition状态的Partition选举Leader</span><br><span class="line">  triggerOnlinePartitionStateChange()</span><br><span class="line">  info(s&quot;Started partition state machine with initial state -&gt; $partitionState&quot;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 如果该Partition有LeaderAndIsr信息,PartitionLeader所在的机器是alive的,那么将其状态设置OnlinePartition,否则设置为OfflinePartition</span><br><span class="line">&#x2F;&#x2F; 如果该Partition没有LeaderAndIsr信息,状态设置为NewPartition</span><br><span class="line">&#x2F;&#x2F; 同样也是缓存partitionState</span><br><span class="line">private def initializePartitionState() &#123;</span><br><span class="line">  for (topicPartition &lt;- controllerContext.allPartitions) &#123;</span><br><span class="line">    &#x2F;&#x2F; check if leader and isr path exists for partition. If not, then it is in NEW state</span><br><span class="line">    controllerContext.partitionLeadershipInfo.get(topicPartition) match &#123;</span><br><span class="line">      case Some(currentLeaderIsrAndEpoch) &#x3D;&gt;</span><br><span class="line">        &#x2F;&#x2F; else, check if the leader for partition is alive. If yes, it is in Online state, else it is in Offline state</span><br><span class="line">        if (controllerContext.isReplicaOnline(currentLeaderIsrAndEpoch.leaderAndIsr.leader, topicPartition))</span><br><span class="line">        &#x2F;&#x2F; leader is alive</span><br><span class="line">          changeStateTo(topicPartition, NonExistentPartition, OnlinePartition)</span><br><span class="line">        else</span><br><span class="line">          changeStateTo(topicPartition, NonExistentPartition, OfflinePartition)</span><br><span class="line">      case None &#x3D;&gt;</span><br><span class="line">        changeStateTo(topicPartition, NonExistentPartition, NewPartition)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 修改状态,在controller选举后或者broker上下线的时候触发</span><br><span class="line">def triggerOnlinePartitionStateChange(partitionState: Map[TopicPartition, PartitionState]) &#123;</span><br><span class="line">  &#x2F;&#x2F; try to move all partitions in NewPartition or OfflinePartition state to OnlinePartition state except partitions</span><br><span class="line">  &#x2F;&#x2F; that belong to topics to be deleted</span><br><span class="line">  val partitionsToTrigger &#x3D; partitionState.filter &#123; case (partition, partitionState) &#x3D;&gt;</span><br><span class="line">    !topicDeletionManager.isTopicQueuedUpForDeletion(partition.topic) &amp;&amp;</span><br><span class="line">      (partitionState.equals(OfflinePartition) || partitionState.equals(NewPartition))</span><br><span class="line">  &#125;.keys.toSeq</span><br><span class="line">  &#x2F;&#x2F; 更改状态</span><br><span class="line">  handleStateChanges(partitionsToTrigger, OnlinePartition, Option(OfflinePartitionLeaderElectionStrategy))</span><br><span class="line">  &#x2F;&#x2F; TODO: If handleStateChanges catches an exception, it is not enough to bail out and log an error.</span><br><span class="line">  &#x2F;&#x2F; It is important to trigger leader election for those partitions.</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">def handleStateChanges(partitions: Seq[TopicPartition], targetState: PartitionState,</span><br><span class="line">                       partitionLeaderElectionStrategyOpt: Option[PartitionLeaderElectionStrategy] &#x3D; None): Unit &#x3D; &#123;</span><br><span class="line">  if (partitions.nonEmpty) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">      controllerBrokerRequestBatch.newBatch()</span><br><span class="line">      &#x2F;&#x2F; 尝试为处在OfflinePartition或NewPartition状态的Partition选主</span><br><span class="line">      &#x2F;&#x2F; 成功后转换为OnlinePartition</span><br><span class="line">      doHandleStateChanges(partitions, targetState, partitionLeaderElectionStrategyOpt)</span><br><span class="line">      &#x2F;&#x2F; 发送请求给所有broker,包括LeaderAndIsr请求和UpdateMetadata请求,添加到队列中</span><br><span class="line">      controllerBrokerRequestBatch.sendRequestsToBrokers(controllerContext.epoch)</span><br><span class="line">    &#125; catch &#123;</span><br><span class="line">      case e: Throwable &#x3D;&gt; error(s&quot;Error while moving some partitions to $targetState state&quot;, e)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="种类-1"><a href="#种类-1" class="headerlink" title="种类"></a>种类</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">NonExistentPartition:</span><br><span class="line">    代表这个Partition之前没有被创建过或者之前创建了现在又被删除了</span><br><span class="line">    有效前置状态:</span><br><span class="line">        OfflinePartition</span><br><span class="line"></span><br><span class="line">NewPartition:</span><br><span class="line">    Partition创建之后,处于这个状态,这个状态下Partition还没有Leader和ISR</span><br><span class="line">    有效前置状态:</span><br><span class="line">        NonExistentPartition</span><br><span class="line"></span><br><span class="line">OnlinePartition:</span><br><span class="line">    一旦这个Partition的Leader被选举出来了,将处于这个状态</span><br><span class="line">    有效前置状态:</span><br><span class="line">        NewPartition</span><br><span class="line">        OnlinePartition</span><br><span class="line">        OfflinePartition</span><br><span class="line"></span><br><span class="line">OfflinePartition:</span><br><span class="line">    如果这个Partition的Leader掉线,这个Partition将被转移到这个状态</span><br><span class="line">    有效前置状态:</span><br><span class="line">        NewPartition</span><br><span class="line">        OnlinePartition</span><br><span class="line">        OfflinePartition</span><br></pre></td></tr></table></figure>
+<h3 id="分区状态转移"><a href="#分区状态转移" class="headerlink" title="分区状态转移"></a>分区状态转移</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">参考PartitionStateMachine中各状态的调用情况</span><br><span class="line">doHandleStateChanges()</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

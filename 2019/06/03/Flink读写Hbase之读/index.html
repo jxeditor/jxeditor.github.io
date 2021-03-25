@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink读写Hbase之读
+  
+</title>
+
+<meta name="description" content="主要对Flink读取HBase数据做一个整理,方便快速进行业务代码开发,只针对于具体的方法操作,并不涉及Flink搭建">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink读写Hbase之读">
+<meta property="og:url" content="http://yoursite.com/2019/06/03/Flink%E8%AF%BB%E5%86%99Hbase%E4%B9%8B%E8%AF%BB/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="主要对Flink读取HBase数据做一个整理,方便快速进行业务代码开发,只针对于具体的方法操作,并不涉及Flink搭建">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-06-03T06:53:01.000Z">
+<meta property="article:modified_time" content="2021-03-21T12:33:13.850Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="flink">
+<meta property="article:tag" content="hbase">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">169</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink读写Hbase之读" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink读写Hbase之读
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-06-03
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hbase/" rel="tag">hbase</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>主要对Flink读取HBase数据做一个整理,方便快速进行业务代码开发,只针对于具体的方法操作,并不涉及Flink搭建</p>
+</blockquote>
+<span id="more"></span>
+
+<hr>
+<h2 id="主要方式-3种"><a href="#主要方式-3种" class="headerlink" title="主要方式(3种)"></a>主要方式(3种)</h2><ul>
+<li>通过env.addSource(new RichSourceFunction)的形式</li>
+<li>通过env.createInput(new TableInputFormat)的形式</li>
+<li>通过env.createInput(new HadoopInputFormat)的形式</li>
+</ul>
+<hr>
+<h2 id="RichSourceFunction"><a href="#RichSourceFunction" class="headerlink" title="RichSourceFunction"></a>RichSourceFunction</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> dataStream = env.addSource(<span class="keyword">new</span> <span class="type">RichSourceFunction</span>[(<span class="type">String</span>, <span class="type">String</span>)] &#123;</span><br><span class="line">    <span class="keyword">var</span> conn: <span class="type">Connection</span> = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">var</span> table: <span class="type">Table</span> = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">var</span> scan: <span class="type">Scan</span> = <span class="literal">null</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">open</span></span>(parameters: <span class="type">Configuration</span>): <span class="type">Unit</span> = &#123;</span><br><span class="line">        <span class="keyword">val</span> tableName = <span class="type">TableName</span>.valueOf(<span class="type">TABLE_NAME</span>)</span><br><span class="line">        <span class="keyword">val</span> conf: org.apache.hadoop.conf.<span class="type">Configuration</span> = <span class="type">HBaseConfiguration</span>.create()</span><br><span class="line">        conf.set(<span class="string">&quot;hbase.zookeeper.quorum&quot;</span>, <span class="type">HBASE_ZOOKEEPER</span>)</span><br><span class="line">        conf.set(<span class="string">&quot;hbase.zookeeper.property.clientPort&quot;</span>, <span class="string">&quot;2181&quot;</span>)</span><br><span class="line">        conn = <span class="type">ConnectionFactory</span>.createConnection(conf)</span><br><span class="line">        table = conn.getTable(tableName)</span><br><span class="line">        scan = <span class="keyword">new</span> <span class="type">Scan</span>()</span><br><span class="line">        scan.addFamily(<span class="type">Bytes</span>.toBytes(<span class="type">TABLE_CF</span>))</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">run</span></span>(sourceContext: <span class="type">SourceFunction</span>.<span class="type">SourceContext</span>[(<span class="type">String</span>, <span class="type">String</span>)]): <span class="type">Unit</span> = &#123;</span><br><span class="line">        <span class="keyword">val</span> rs = table.getScanner(scan)</span><br><span class="line">        <span class="keyword">val</span> iterator = rs.iterator()</span><br><span class="line">        <span class="keyword">while</span> (iterator.hasNext) &#123;</span><br><span class="line">            <span class="keyword">val</span> result = iterator.next()</span><br><span class="line">            <span class="keyword">val</span> rowKey = <span class="type">Bytes</span>.toString(result.getRow)</span><br><span class="line">            <span class="keyword">val</span> value = <span class="type">Bytes</span>.toString(result.getValue(<span class="type">Bytes</span>.toBytes(<span class="type">TABLE_CF</span>), <span class="type">Bytes</span>.toBytes(<span class="string">&quot;count&quot;</span>)))</span><br><span class="line">            sourceContext.collect((rowKey, value))</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">cancel</span></span>(): <span class="type">Unit</span> = &#123;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">close</span></span>(): <span class="type">Unit</span> = &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (table != <span class="literal">null</span>) table.close()</span><br><span class="line">            <span class="keyword">if</span> (conn != <span class="literal">null</span>) conn.close()</span><br><span class="line">        &#125; <span class="keyword">catch</span> &#123;</span><br><span class="line">            <span class="keyword">case</span> e: <span class="type">Exception</span> =&gt; println(e.getMessage)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="TableInputFormat"><a href="#TableInputFormat" class="headerlink" title="TableInputFormat"></a>TableInputFormat</h2><figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> tableInputFormat = <span class="keyword">new</span> <span class="type">TableInputFormat</span>[<span class="type">Tuple2</span>[<span class="type">String</span>, <span class="type">String</span>]] &#123;</span><br><span class="line">    <span class="keyword">val</span> tuple2 = <span class="keyword">new</span> <span class="type">Tuple2</span>[<span class="type">String</span>, <span class="type">String</span>]</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">getScanner</span></span>: <span class="type">Scan</span> = &#123;</span><br><span class="line">        scan</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">getTableName</span></span>: <span class="type">String</span> = <span class="type">TABLE_NAME</span></span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">mapResultToTuple</span></span>(result: <span class="type">Result</span>): <span class="type">Tuple2</span>[<span class="type">String</span>, <span class="type">String</span>] = &#123;</span><br><span class="line">        <span class="keyword">val</span> key = <span class="type">Bytes</span>.toString(result.getRow)</span><br><span class="line">        <span class="keyword">val</span> value = <span class="type">Bytes</span>.toString(result.getValue(<span class="type">Bytes</span>.toBytes(<span class="type">TABLE_CF</span>), <span class="type">Bytes</span>.toBytes(<span class="string">&quot;count&quot;</span>)))</span><br><span class="line">        tuple2.setField(key, <span class="number">0</span>)</span><br><span class="line">        tuple2.setField(value, <span class="number">1</span>)</span><br><span class="line">        tuple2</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">override</span> <span class="function"><span class="keyword">def</span> <span class="title">configure</span></span>(parameters: <span class="type">Configuration</span>): <span class="type">Unit</span> = &#123;</span><br><span class="line">        <span class="keyword">val</span> tableName = <span class="type">TableName</span>.valueOf(<span class="type">TABLE_NAME</span>)</span><br><span class="line">        <span class="keyword">var</span> conn: <span class="type">Connection</span> = <span class="literal">null</span></span><br><span class="line">        <span class="keyword">val</span> conf: org.apache.hadoop.conf.<span class="type">Configuration</span> = <span class="type">HBaseConfiguration</span>.create()</span><br><span class="line">        conf.set(<span class="string">&quot;hbase.zookeeper.quorum&quot;</span>, <span class="type">HBASE_ZOOKEEPER</span>)</span><br><span class="line">        conf.set(<span class="string">&quot;hbase.zookeeper.property.clientPort&quot;</span>, <span class="string">&quot;2181&quot;</span>)</span><br><span class="line">        conn = <span class="type">ConnectionFactory</span>.createConnection(conf)</span><br><span class="line">        table = conn.getTable(tableName).asInstanceOf[<span class="type">HTable</span>]</span><br><span class="line">        scan = <span class="keyword">new</span> <span class="type">Scan</span>()</span><br><span class="line">        scan.addFamily(<span class="type">Bytes</span>.toBytes(<span class="type">TABLE_CF</span>))</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> hbaseDs = env.createInput(tableInputFormat)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="HadoopInputFormat"><a href="#HadoopInputFormat" class="headerlink" title="HadoopInputFormat"></a>HadoopInputFormat</h2><blockquote>
+<p>对于TableInputFormat的优化,但是有一定的缺点,只能是全量的读取HBase表,不能指定rowKey去读取</p>
+</blockquote>
+<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">val</span> conf = <span class="type">HBaseConfiguration</span>.create()</span><br><span class="line">conf.set(<span class="string">&quot;hbase.zookeeper.quorum&quot;</span>, <span class="type">HBASE_ZOOKEEPER</span>)</span><br><span class="line">conf.set(<span class="string">&quot;hbase.zookeeper.property.clientPort&quot;</span>, <span class="string">&quot;2181&quot;</span>)</span><br><span class="line">conf.set(<span class="string">&quot;hbase.defaults.for.version.skip&quot;</span>, <span class="string">&quot;true&quot;</span>)</span><br><span class="line">conf.set(<span class="string">&quot;mapred.output.dir&quot;</span>, <span class="string">&quot;hdfs://hadoop01:8020/demo&quot;</span>)</span><br><span class="line">conf.set(org.apache.hadoop.hbase.mapreduce.<span class="type">TableOutputFormat</span>.<span class="type">OUTPUT_TABLE</span>, <span class="string">&quot;test1&quot;</span>)</span><br><span class="line">conf.set(org.apache.hadoop.hbase.mapreduce.<span class="type">TableInputFormat</span>.<span class="type">INPUT_TABLE</span>, <span class="string">&quot;test&quot;</span>)</span><br><span class="line">conf.setClass(<span class="string">&quot;mapreduce.job.outputformat.class&quot;</span>,</span><br><span class="line">  classOf[org.apache.hadoop.hbase.mapreduce.<span class="type">TableOutputFormat</span>[<span class="type">String</span>]],</span><br><span class="line">  classOf[org.apache.hadoop.mapreduce.<span class="type">OutputFormat</span>[<span class="type">String</span>, <span class="type">Mutation</span>]])</span><br><span class="line"></span><br><span class="line"><span class="keyword">val</span> job = <span class="type">Job</span>.getInstance(conf)</span><br><span class="line"><span class="keyword">val</span> hadoopIF = <span class="keyword">new</span> <span class="type">HadoopInputFormat</span>(<span class="keyword">new</span> <span class="type">TableInputFormat</span>(), classOf[<span class="type">ImmutableBytesWritable</span>], classOf[<span class="type">Result</span>], job)</span><br><span class="line"><span class="keyword">val</span> value = env.createInput(hadoopIF)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><h3 id="1-在使用第三种方式HadoopInputFormat时-本地Idea运行没有问题-打包到Flink集群上运行会出现问题"><a href="#1-在使用第三种方式HadoopInputFormat时-本地Idea运行没有问题-打包到Flink集群上运行会出现问题" class="headerlink" title="1.在使用第三种方式HadoopInputFormat时,本地Idea运行没有问题,打包到Flink集群上运行会出现问题"></a>1.在使用第三种方式HadoopInputFormat时,本地Idea运行没有问题,打包到Flink集群上运行会出现问题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">org.apache.flink.client.program.ProgramInvocationException: The main method caused an error.</span><br><span class="line">	at org.apache.flink.client.program.PackagedProgram.callMainMethod(PackagedProgram.java:546)</span><br><span class="line">	at org.apache.flink.client.program.PackagedProgram.invokeInteractiveModeForExecution(PackagedProgram.java:421)</span><br><span class="line">	at org.apache.flink.client.program.ClusterClient.run(ClusterClient.java:427)</span><br><span class="line">	at org.apache.flink.client.cli.CliFrontend.executeProgram(CliFrontend.java:813)</span><br><span class="line">	at org.apache.flink.client.cli.CliFrontend.runProgram(CliFrontend.java:287)</span><br><span class="line">	at org.apache.flink.client.cli.CliFrontend.run(CliFrontend.java:213)</span><br><span class="line">	at org.apache.flink.client.cli.CliFrontend.parseParameters(CliFrontend.java:1050)</span><br><span class="line">	at org.apache.flink.client.cli.CliFrontend.lambda$main$11(CliFrontend.java:1126)</span><br><span class="line">	at java.security.AccessController.doPrivileged(Native Method)</span><br><span class="line">	at javax.security.auth.Subject.doAs(Subject.java:422)</span><br><span class="line">	at org.apache.hadoop.security.UserGroupInformation.doAs(UserGroupInformation.java:1692)</span><br><span class="line">	at org.apache.flink.runtime.security.HadoopSecurityContext.runSecured(HadoopSecurityContext.java:41)</span><br><span class="line">	at org.apache.flink.client.cli.CliFrontend.main(CliFrontend.java:1126)</span><br><span class="line">Caused by: java.lang.RuntimeException: Could not load the TypeInformation for the class &#39;org.apache.hadoop.io.Writable&#39;. You may be missing the &#39;flink-hadoop-compatibility&#39; dependency.</span><br><span class="line">	at org.apache.flink.api.java.typeutils.TypeExtractor.createHadoopWritableTypeInfo(TypeExtractor.java:2082)</span><br><span class="line">	at org.apache.flink.api.java.typeutils.TypeExtractor.privateGetForClass(TypeExtractor.java:1701)</span><br><span class="line">	at org.apache.flink.api.java.typeutils.TypeExtractor.privateGetForClass(TypeExtractor.java:1643)</span><br><span class="line">	at org.apache.flink.api.java.typeutils.TypeExtractor.createTypeInfoWithTypeHierarchy(TypeExtractor.java:921)</span><br><span class="line">	at org.apache.flink.api.java.typeutils.TypeExtractor.privateCreateTypeInfo(TypeExtractor.java:781)</span><br><span class="line">	at org.apache.flink.api.java.typeutils.TypeExtractor.createTypeInfo(TypeExtractor.java:735)</span><br><span class="line">	at org.apache.flink.api.java.typeutils.TypeExtractor.createTypeInfo(TypeExtractor.java:731)</span><br><span class="line">	at com.dev.flink.stream.hbase.develop.HBaseDemoOnFormat$$anon$3.&lt;init&gt;(HBaseDemoOnFormat.scala:66)</span><br><span class="line">	at com.dev.flink.stream.hbase.develop.HBaseDemoOnFormat$.main(HBaseDemoOnFormat.scala:66)</span><br><span class="line">	at com.dev.flink.stream.hbase.develop.HBaseDemoOnFormat.main(HBaseDemoOnFormat.scala)</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)</span><br><span class="line">	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)</span><br><span class="line">	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)</span><br><span class="line">	at java.lang.reflect.Method.invoke(Method.java:498)</span><br><span class="line">	at org.apache.flink.client.program.PackagedProgram.callMainMethod(PackagedProgram.java:529)</span><br><span class="line">	... 12 more</span><br></pre></td></tr></table></figure>
+<p><strong>解决方式:</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 将依赖包flink-hadoop-compatibility复制到Flink集群lib目录下</span><br><span class="line">mv flink-hadoop-compatibility_2.11-1.6.4.jar  &#x2F;usr&#x2F;local&#x2F;flink-1.7.2&#x2F;lib&#x2F;</span><br></pre></td></tr></table></figure>
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

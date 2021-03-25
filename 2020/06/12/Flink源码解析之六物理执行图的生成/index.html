@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Flink源码解析之六物理执行图的生成
+  
+</title>
+
+<meta name="description" content="在前面的文章里StreamGraph,JobGraph以及ExecutionGraph的生成逻辑已经整理的差不多接下来就是如何去真正执行了解用户逻辑代码最终如何被Flink执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flink源码解析之六物理执行图的生成">
+<meta property="og:url" content="http://yoursite.com/2020/06/12/Flink%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E5%85%AD%E7%89%A9%E7%90%86%E6%89%A7%E8%A1%8C%E5%9B%BE%E7%9A%84%E7%94%9F%E6%88%90/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="在前面的文章里StreamGraph,JobGraph以及ExecutionGraph的生成逻辑已经整理的差不多接下来就是如何去真正执行了解用户逻辑代码最终如何被Flink执行">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-06-12T06:56:35.000Z">
+<meta property="article:modified_time" content="2021-03-21T12:33:13.849Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="flink">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">169</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Flink源码解析之六物理执行图的生成" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Flink源码解析之六物理执行图的生成
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2020-06-12
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>在前面的文章里StreamGraph,JobGraph以及ExecutionGraph的生成逻辑已经整理的差不多<br>接下来就是如何去真正执行<br>了解用户逻辑代码最终如何被Flink执行</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="大致流程"><a href="#大致流程" class="headerlink" title="大致流程"></a>大致流程</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">a.任务代码生成Transformation</span><br><span class="line">b.StreamGraphGenerator生成StreamGraph</span><br><span class="line">c.PipelineExecutor调用ExecutorUtils转换为JobGraph</span><br><span class="line">d.JobMasterServiceFactory创建JobMaster,调用createScheduler生成ExecutionGraph</span><br><span class="line">e.JobManagerRunner调用start方法,进行选举,选举完毕后回调grantLeadership方法调用startJobMaster开始运行</span><br><span class="line">f.JobMaster调用start方法,确保RPC通信,调用startJobExecution方法</span><br><span class="line">g.resetAndStartScheduler()</span><br><span class="line">    -&gt;startScheduling()</span><br><span class="line">    -&gt;startSchedulingInternal()选取调度器执行</span><br><span class="line">    获取ExecutionGraph并进行调度executionGraph.scheduleForExecution()</span><br><span class="line">h.调用Scheduling.schedule方法进行调度</span><br><span class="line">    根据配置的调度模式选择调度方法</span><br><span class="line">    scheduleLazy</span><br><span class="line">    scheduleEager</span><br><span class="line">i.为每一个ExecutionVertex分配一个LogicalSlot</span><br><span class="line">j.封装为Execution,进行deploy</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Execution"><a href="#Execution" class="headerlink" title="Execution"></a>Execution</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deploy</span><span class="params">()</span> <span class="keyword">throws</span> JobException </span>&#123;</span><br><span class="line">    assertRunningInJobMasterMainThread();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分配的slot</span></span><br><span class="line">    <span class="keyword">final</span> LogicalSlot slot  = assignedResource;</span><br><span class="line"></span><br><span class="line">    checkNotNull(slot, <span class="string">&quot;In order to deploy the execution we first have to assign a resource via tryAssignResource.&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check if the TaskManager died in the meantime</span></span><br><span class="line">    <span class="comment">// This only speeds up the response to TaskManagers failing concurrently to deployments.</span></span><br><span class="line">    <span class="comment">// The more general check is the rpcTimeout of the deployment call</span></span><br><span class="line">    <span class="keyword">if</span> (!slot.isAlive()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> JobException(<span class="string">&quot;Target slot (TaskManager) for deployment is no longer alive.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// make sure exactly one deployment call happens from the correct state</span></span><br><span class="line">    <span class="comment">// note: the transition from CREATED to DEPLOYING is for testing purposes only</span></span><br><span class="line">    ExecutionState previous = <span class="keyword">this</span>.state;</span><br><span class="line">    <span class="keyword">if</span> (previous == SCHEDULED || previous == CREATED) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!transitionState(previous, DEPLOYING)) &#123;</span><br><span class="line">            <span class="comment">// race condition, someone else beat us to the deploying call.</span></span><br><span class="line">            <span class="comment">// this should actually not happen and indicates a race somewhere else</span></span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;Cannot deploy task: Concurrent deployment call race.&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// vertex may have been cancelled, or it was already scheduled</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">&quot;The vertex must be in CREATED or SCHEDULED state to be deployed. Found state &quot;</span> + previous);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">this</span> != slot.getPayload()) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">            String.format(<span class="string">&quot;The execution %s has not been assigned to the assigned slot.&quot;</span>, <span class="keyword">this</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// race double check, did we fail/cancel and do we need to release the slot?</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.state != DEPLOYING) &#123;</span><br><span class="line">            slot.releaseSlot(<span class="keyword">new</span> FlinkException(<span class="string">&quot;Actual state of execution &quot;</span> + <span class="keyword">this</span> + <span class="string">&quot; (&quot;</span> + state + <span class="string">&quot;) does not match expected state DEPLOYING.&quot;</span>));</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (LOG.isInfoEnabled()) &#123;</span><br><span class="line">            LOG.info(String.format(<span class="string">&quot;Deploying %s (attempt #%d) to %s&quot;</span>, vertex.getTaskNameWithSubtaskIndex(),</span><br><span class="line">                    attemptNumber, getAssignedResourceLocation()));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 将ExecutionGraph转换为物理执行图</span></span><br><span class="line">        <span class="comment">// ResultPartition的生成</span></span><br><span class="line">        <span class="comment">// InputGate的前身InputGateDeploymentDescriptor生成</span></span><br><span class="line">        <span class="keyword">final</span> TaskDeploymentDescriptor deployment = TaskDeploymentDescriptorFactory</span><br><span class="line">            .fromExecutionVertex(vertex, attemptNumber)</span><br><span class="line">            .createDeploymentDescriptor(</span><br><span class="line">                slot.getAllocationId(),</span><br><span class="line">                slot.getPhysicalSlotNumber(),</span><br><span class="line">                taskRestore,</span><br><span class="line">                producedPartitions.values());</span><br><span class="line"></span><br><span class="line">        <span class="comment">// null taskRestore to let it be GC&#x27;ed</span></span><br><span class="line">        taskRestore = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> TaskManagerGateway taskManagerGateway = slot.getTaskManagerGateway();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> ComponentMainThreadExecutor jobMasterMainThreadExecutor =</span><br><span class="line">            vertex.getExecutionGraph().getJobMasterMainThreadExecutor();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// We run the submission in the future executor so that the serialization of large TDDs does not block</span></span><br><span class="line">        <span class="comment">// the main thread and sync back to the main thread once submission is completed.</span></span><br><span class="line">        <span class="comment">// 进行任务提交,submitTask</span></span><br><span class="line">        CompletableFuture.supplyAsync(() -&gt; taskManagerGateway.submitTask(deployment, rpcTimeout), executor)</span><br><span class="line">            .thenCompose(Function.identity())</span><br><span class="line">            .whenCompleteAsync(</span><br><span class="line">                (ack, failure) -&gt; &#123;</span><br><span class="line">                    <span class="comment">// only respond to the failure case</span></span><br><span class="line">                    <span class="keyword">if</span> (failure != <span class="keyword">null</span>) &#123;</span><br><span class="line">                        <span class="keyword">if</span> (failure <span class="keyword">instanceof</span> TimeoutException) &#123;</span><br><span class="line">                            String taskname = vertex.getTaskNameWithSubtaskIndex() + <span class="string">&quot; (&quot;</span> + attemptId + <span class="string">&#x27;)&#x27;</span>;</span><br><span class="line"></span><br><span class="line">                            markFailed(<span class="keyword">new</span> Exception(</span><br><span class="line">                                <span class="string">&quot;Cannot deploy task &quot;</span> + taskname + <span class="string">&quot; - TaskManager (&quot;</span> + getAssignedResourceLocation()</span><br><span class="line">                                    + <span class="string">&quot;) not responding after a rpcTimeout of &quot;</span> + rpcTimeout, failure));</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            markFailed(failure);</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                jobMasterMainThreadExecutor);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        markFailed(t);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (isLegacyScheduling()) &#123;</span><br><span class="line">            ExceptionUtils.rethrow(t);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="TaskDeploymentDescriptorFactory"><a href="#TaskDeploymentDescriptorFactory" class="headerlink" title="TaskDeploymentDescriptorFactory"></a>TaskDeploymentDescriptorFactory</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">将IntermediateResultPartition转换为ResultPartition</span><br><span class="line">getConsumedPartitionShuffleDescriptor()</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="实际Task"><a href="#实际Task" class="headerlink" title="实际Task"></a>实际Task</h2><h3 id="RPCTaskManagerGateway"><a href="#RPCTaskManagerGateway" class="headerlink" title="RPCTaskManagerGateway"></a>RPCTaskManagerGateway</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// submitTask方法将通过RPC的方法提交Task</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;Acknowledge&gt; <span class="title">submitTask</span><span class="params">(TaskDeploymentDescriptor tdd, Time timeout)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> taskExecutorGateway.submitTask(tdd, jobMasterId, timeout);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="TaskExecutor"><a href="#TaskExecutor" class="headerlink" title="TaskExecutor"></a>TaskExecutor</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> CompletableFuture&lt;Acknowledge&gt; <span class="title">submitTask</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">			TaskDeploymentDescriptor tdd,</span></span></span><br><span class="line"><span class="function"><span class="params">			JobMasterId jobMasterId,</span></span></span><br><span class="line"><span class="function"><span class="params">			Time timeout)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">// 创建Task</span></span><br><span class="line">        <span class="comment">// InputGate,ResultPartition,ResultPartitionWriter</span></span><br><span class="line">        Task task = <span class="keyword">new</span> Task(</span><br><span class="line">            jobInformation,</span><br><span class="line">            taskInformation,</span><br><span class="line">            tdd.getExecutionAttemptId(),</span><br><span class="line">            tdd.getAllocationId(),</span><br><span class="line">            tdd.getSubtaskIndex(),</span><br><span class="line">            tdd.getAttemptNumber(),</span><br><span class="line">            tdd.getProducedPartitions(),</span><br><span class="line">            tdd.getInputGates(),</span><br><span class="line">            tdd.getTargetSlotNumber(),</span><br><span class="line">            memoryManager,</span><br><span class="line">            taskExecutorServices.getIOManager(),</span><br><span class="line">            taskExecutorServices.getShuffleEnvironment(),</span><br><span class="line">            taskExecutorServices.getKvStateService(),</span><br><span class="line">            taskExecutorServices.getBroadcastVariableManager(),</span><br><span class="line">            taskExecutorServices.getTaskEventDispatcher(),</span><br><span class="line">            taskStateManager,</span><br><span class="line">            taskManagerActions,</span><br><span class="line">            inputSplitProvider,</span><br><span class="line">            checkpointResponder,</span><br><span class="line">            aggregateManager,</span><br><span class="line">            blobCacheService,</span><br><span class="line">            libraryCache,</span><br><span class="line">            fileCache,</span><br><span class="line">            taskManagerConfiguration,</span><br><span class="line">            taskMetricGroup,</span><br><span class="line">            resultPartitionConsumableNotifier,</span><br><span class="line">            partitionStateChecker,</span><br><span class="line">            getRpcService().getExecutor());</span><br><span class="line"></span><br><span class="line">        taskMetricGroup.gauge(MetricNames.IS_BACKPRESSURED, task::isBackPressured);</span><br><span class="line"></span><br><span class="line">        log.info(<span class="string">&quot;Received task &#123;&#125;.&quot;</span>, task.getTaskInfo().getTaskNameWithSubtasks());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">boolean</span> taskAdded;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            taskAdded = taskSlotTable.addTask(task);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (SlotNotFoundException | SlotNotActiveException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> TaskSubmissionException(<span class="string">&quot;Could not submit task.&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (taskAdded) &#123;</span><br><span class="line">            <span class="comment">// 启动Task</span></span><br><span class="line">            task.startTaskThread();</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">    &#125; <span class="keyword">catch</span> (TaskSubmissionException e) &#123;</span><br><span class="line">        <span class="keyword">return</span> FutureUtils.completedExceptionally(e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="Task"><a href="#Task" class="headerlink" title="Task"></a>Task</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startTaskThread</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 调用Task.run()方法</span></span><br><span class="line">	executingThread.start();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        doRun();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        terminationFuture.complete(executionState);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 太长,省略点</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">doRun</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// 用户代码加载</span></span><br><span class="line">    invokable = loadAndInstantiateInvokable(userCodeClassLoader, nameOfInvokableClass, env);</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 运行invokable,实际上最后会去调用AbstractInvokable派生类的init方法以及runThrowing方法</span></span><br><span class="line">    invokable.invoke();</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="AbstractInvokable派生类举例"><a href="#AbstractInvokable派生类举例" class="headerlink" title="AbstractInvokable派生类举例"></a>AbstractInvokable派生类举例</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">其包括Flink中的各种Task类</span><br><span class="line">StreamTask</span><br><span class="line">BatchTask</span><br><span class="line">等等</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; StreamTask</span><br><span class="line">private void initializeStateAndOpen() throws Exception &#123;</span><br><span class="line"></span><br><span class="line">    StreamOperator&lt;?&gt;[] allOperators &#x3D; operatorChain.getAllOperators();</span><br><span class="line"></span><br><span class="line">    for (StreamOperator&lt;?&gt; operator : allOperators) &#123;</span><br><span class="line">        if (null !&#x3D; operator) &#123;</span><br><span class="line">            &#x2F;&#x2F; 运行StreamOperator</span><br><span class="line">            operator.initializeState();</span><br><span class="line">            operator.open();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="用户代码调用"><a href="#用户代码调用" class="headerlink" title="用户代码调用"></a>用户代码调用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">用户写的代码,其实会生成为一个个的Operator,用户代码就是它的userFunction</span><br><span class="line">AbstractInvokable.invoke()</span><br><span class="line">-&gt; StreamTask -&gt;循环调用processInput</span><br><span class="line">-&gt; StreamInputProcessor.processInput[StreamOneInputProcessor]</span><br><span class="line">-&gt; PushingAsyncDataInput.emitNext[StreamTaskNetworkInput]</span><br><span class="line">-&gt; StreamTaskNetworkInput.processElement</span><br><span class="line">-&gt; PushingAsyncDataInput.DataOutput.emitRecord[OneInputStreamTask]</span><br><span class="line">-&gt; OneInputStreamOperator.processElement[StreamFlatMap]</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public void processElement(StreamRecord&lt;IN&gt; element) throws Exception &#123;</span><br><span class="line">    collector.setTimestamp(element);</span><br><span class="line">    userFunction.flatMap(element.getValue(), collector);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

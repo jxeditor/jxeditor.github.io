@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Ververica&amp;Flink进阶之九Connector分享
+  
+</title>
+
+<meta name="description" content="B站Flink教程视频观看">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Ververica&amp;Flink进阶之九Connector分享">
+<meta property="og:url" content="http://yoursite.com/2019/06/27/Ververica&Flink%E8%BF%9B%E9%98%B6%E4%B9%8B%E4%B9%9DConnector%E5%88%86%E4%BA%AB/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="B站Flink教程视频观看">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-06-27T07:47:34.000Z">
+<meta property="article:modified_time" content="2021-03-21T12:33:13.857Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="flink">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">169</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">17</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">11</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Ververica&amp;Flink进阶之九Connector分享" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Ververica&Flink进阶之九Connector分享
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2019-06-27
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>B站Flink教程视频观看</p>
+</blockquote>
+<span id="more"></span>
+
+<h1 id="预定义的Source和Sink"><a href="#预定义的Source和Sink" class="headerlink" title="预定义的Source和Sink"></a>预定义的Source和Sink</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">基于文件的Source</span><br><span class="line">    readTextFile(path)</span><br><span class="line">    readFile(fileInputFormat,path)</span><br><span class="line">基于文件的Sink</span><br><span class="line">    writeAsText</span><br><span class="line">    writeAsCsv</span><br><span class="line">基于Socket的Source</span><br><span class="line">    socketTextStream</span><br><span class="line">基于Socket的Sink</span><br><span class="line">    writeToSocket</span><br><span class="line">基于Collections,Iterators的Source</span><br><span class="line">    fromCollection</span><br><span class="line">    fromElements</span><br><span class="line">标准输出,标准错误</span><br><span class="line">    print</span><br><span class="line">    printToError</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Bundled-Connectors"><a href="#Bundled-Connectors" class="headerlink" title="Bundled Connectors"></a>Bundled Connectors</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Apache Kafka(source&#x2F;sink)</span><br><span class="line">Apache Cassandra(sink)</span><br><span class="line">Amazon Kinesis Streams(source&#x2F;sink)</span><br><span class="line">ElasticSearch(sink)</span><br><span class="line">Hadoop FileSystem(sink)</span><br><span class="line">RabbitMQ(source&#x2F;sink)</span><br><span class="line">Apache NiFi(source&#x2F;sink)</span><br><span class="line">Twitter Streaming API(source)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Apache-Bahir中的连接器"><a href="#Apache-Bahir中的连接器" class="headerlink" title="Apache Bahir中的连接器"></a>Apache Bahir中的连接器</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Apache ActiveMQ(source&#x2F;sink)</span><br><span class="line">Apache Flume(sink)</span><br><span class="line">Redis(sink)</span><br><span class="line">Akka(sink)</span><br><span class="line">Netty(source)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Async-I-O"><a href="#Async-I-O" class="headerlink" title="Async I/O"></a>Async I/O</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">使用connector并不是数据输入输出Flink的唯一方式</span><br><span class="line">在Map,FlatMap中使用Async I&#x2F;O方式读取外部数据库等</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Flink-Kafka-Consumer反序列化数据"><a href="#Flink-Kafka-Consumer反序列化数据" class="headerlink" title="Flink Kafka Consumer反序列化数据"></a>Flink Kafka Consumer反序列化数据</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">将kafka中二进制数据转化为具体的java,scala对象</span><br><span class="line">DeserializationSchema,T deserialize(byte[] message)</span><br><span class="line">KeyedDeserializationSchema,T deserialize(byte[] messageKey,byte[] message,String topic,int partition,long offset):对于访问kafka key&#x2F;value</span><br><span class="line"></span><br><span class="line">常用</span><br><span class="line">SimpleStringSchema:按字符串方式进行序列化,反序列化</span><br><span class="line">TypeInformationSerializationSchema:基于Flink的TypeInformation来创建schema</span><br><span class="line">JsonDeserializationSchema:使用jackson反序列化json格式消息,并返回ObjectNode,可以使用.get(&quot;property&quot;)方法来访问字段</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Flink-Kafka-Consumer消费起始位置"><a href="#Flink-Kafka-Consumer消费起始位置" class="headerlink" title="Flink Kafka Consumer消费起始位置"></a>Flink Kafka Consumer消费起始位置</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">setStartFromGroupOffsets(默认)</span><br><span class="line">    从Kafka记录的group.id的位置开始读取,如果没有根据anto.offset.reset设置</span><br><span class="line">setStratFromEarliest</span><br><span class="line">    从Kafka最早的位置读取</span><br><span class="line">setStartFromLatest</span><br><span class="line">    从Kafka最新数据开始读取</span><br><span class="line">setStartFromTimestamp(long)</span><br><span class="line">    从时间戳大于或等于指定时间戳的位置开始读取</span><br><span class="line">setStartFromSpecificOffsets</span><br><span class="line">    从指定的分区的offset位置开始读取,如指定的offsets中不存在某个分区,该分区从group offset位置开始读取</span><br><span class="line"></span><br><span class="line">注意</span><br><span class="line">    作业故障从CK自动恢复,以及手动做SP时,消费的位置从保存状态中恢复,与该配置无关</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Flink-Kafka-Consumer-Topic-Partition自动发现"><a href="#Flink-Kafka-Consumer-Topic-Partition自动发现" class="headerlink" title="Flink Kafka Consumer Topic Partition自动发现"></a>Flink Kafka Consumer Topic Partition自动发现</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">原理:</span><br><span class="line">    内部单独的线程获取kafka meta信息进行更新</span><br><span class="line">flink.partition-discovery.interval-millis:发现时间间隔.默认false,设置为非负值开启</span><br><span class="line"></span><br><span class="line">分区发现</span><br><span class="line">    消费的Source Kafka Topic进行partition扩容</span><br><span class="line">    新发现的分区,从earliest位置开始读取</span><br><span class="line">Topic发现</span><br><span class="line">    支持正则表达式描述topic名字</span><br><span class="line">Pattern topicPattern &#x3D; java.util.regex.Pattern.compile(&quot;topic[0-9]&quot;);</span><br><span class="line">FlinkKafkaConsumer010&lt;String&gt; consumer &#x3D; new FlinkKafkaConsumer010(topicPattern,new SimpleStringSchema(),properties);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Flink-Kafka-Consumer-Commit-Offset方式"><a href="#Flink-Kafka-Consumer-Commit-Offset方式" class="headerlink" title="Flink Kafka Consumer Commit Offset方式"></a>Flink Kafka Consumer Commit Offset方式</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CK关闭</span><br><span class="line">    依赖kafka客户端的auto commit定期提交offset</span><br><span class="line">    需设置enable.anto.commit,auto.commit.interval.ms参数到consumer properties</span><br><span class="line"></span><br><span class="line">CK开启</span><br><span class="line">    Offset自己在ck state中管理和容错,提交Kafka仅作为外部监视消费进度</span><br><span class="line">    通过setCommitOffsetsOnCheckpoints控制,CK成功之后,是否提交offset到kafka</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Flink-Kafka-Consumer时间戳提取-水位生成"><a href="#Flink-Kafka-Consumer时间戳提取-水位生成" class="headerlink" title="Flink Kafka Consumer时间戳提取/水位生成"></a>Flink Kafka Consumer时间戳提取/水位生成</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">per Kafka Partition WaterMark</span><br><span class="line">    assignTimestampsAndWatermarks,每个partition一个assigner,水位为对个partition对齐后值</span><br><span class="line">    不在KafkaSource生成WaterMark,会出现扔掉部分数据情况</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Flink-Kafka-Producer-Producer分区"><a href="#Flink-Kafka-Producer-Producer分区" class="headerlink" title="Flink Kafka Producer Producer分区"></a>Flink Kafka Producer Producer分区</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Producer分区</span><br><span class="line">    FlinkFixedPartitioner(默认):parallellnstanceld % partitions.length</span><br><span class="line">    Partitioner设置为null:round-robin kafka partitioner,维持过多链接</span><br><span class="line">    Custom Partitioner:自定义分区</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="Flink-Kafka-Producer-Producer容错"><a href="#Flink-Kafka-Producer-Producer容错" class="headerlink" title="Flink Kafka Producer Producer容错"></a>Flink Kafka Producer Producer容错</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Kafka 0.9 and 0.10</span><br><span class="line">    setLogFailuresOnly:默认false.写失败时,是否打印失败log,不抛异常</span><br><span class="line">    setFlushOnCheckpoint:默认true.ck时保证数据写到kafka</span><br><span class="line">    at-least-once语义:setLogFailuresOnly(false)+setFlushOnCheckPoint(true)</span><br><span class="line"></span><br><span class="line">Kafka 0.11</span><br><span class="line">    FlinkKafkaProducer011,两阶段提交Sink结合Kafka事务,保证端到端精准一次</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>
