@@ -21,4 +21,5 @@ tags: tools
 185.199.108.133	raw.githubusercontent.com
 
 # ps.如果使用的是Mac本,可能需要添加更多的映射关系
+---Mac本直接别用Safari浏览器,换Google浏览器就可以访问了
 ```
