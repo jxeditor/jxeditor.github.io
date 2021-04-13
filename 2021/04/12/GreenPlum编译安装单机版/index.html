@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    GreenPlum编译安装单机版
+  
+</title>
+
+<meta name="description" content="网上教程过于零散,而且有不正确的地方">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GreenPlum编译安装单机版">
+<meta property="og:url" content="http://yoursite.com/2021/04/12/GreenPlum%E7%BC%96%E8%AF%91%E5%AE%89%E8%A3%85%E5%8D%95%E6%9C%BA%E7%89%88/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="网上教程过于零散,而且有不正确的地方">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-12T09:37:48.000Z">
+<meta property="article:modified_time" content="2021-04-12T10:06:53.669Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="greenplum">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">170</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">14</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-GreenPlum编译安装单机版" class="article article-type-post">
+  
+    <h1 class="article-header">
+      GreenPlum编译安装单机版
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2021-04-12
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>网上教程过于零散,而且有不正确的地方</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="基本情况"><a href="#基本情况" class="headerlink" title="基本情况"></a>基本情况</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">CentOS7</span><br><span class="line">GP_6X_STABLE</span><br><span class="line">1 master 1 primary 1 mirror</span><br></pre></td></tr></table></figure>
+
+<h3 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">systemctl stop firewalld # 关闭防火墙</span><br><span class="line"></span><br><span class="line">systemctl disable firewalld # 禁用防火墙</span><br><span class="line"></span><br><span class="line">hostnamectl set-hostname master # 修改主机名</span><br><span class="line"></span><br><span class="line">vi &#x2F;etc&#x2F;hosts # 配置主机域名</span><br><span class="line">192.168.157.168    master</span><br><span class="line"></span><br><span class="line">vi &#x2F;etc&#x2F;selinux&#x2F;config # 关闭selinux</span><br><span class="line">SELINUX&#x3D;disabled</span><br><span class="line"></span><br><span class="line">vi &#x2F;etc&#x2F;sysctl.conf # 修改内核(可不修改) </span><br><span class="line">net.ipv4.ip_forward &#x3D; 0 </span><br><span class="line">net.ipv4.conf.default.accept_source_route &#x3D; 0 </span><br><span class="line">net.ipv4.tcp_syncookies &#x3D; 1</span><br><span class="line">net.ipv4.tcp_tw_recycle &#x3D; 1 </span><br><span class="line">net.ipv4.tcp_max_syn_backlog &#x3D; 4096 </span><br><span class="line">net.ipv4.conf.all.arp_filter &#x3D; 1</span><br><span class="line">net.ipv4.ip_local_port_range &#x3D; 1025 65535</span><br><span class="line">net.core.netdev_max_backlog&#x3D; 10000 </span><br><span class="line">net.core.rmem_max &#x3D; 2097152</span><br><span class="line">net.core.wmem_max &#x3D; 2097152</span><br><span class="line">net.core.somaxconn &#x3D; 2048</span><br><span class="line">kernel.sysrq &#x3D; 1 </span><br><span class="line">kernel.core_uses_pid &#x3D; 1 </span><br><span class="line">kernel.msgmni &#x3D; 2048 </span><br><span class="line">kernel.msgmax &#x3D; 65536</span><br><span class="line">kernel.msgmnb &#x3D; 65536 </span><br><span class="line">kernel.shmmni &#x3D; 4096 </span><br><span class="line">kernel.shmmax &#x3D; 500000000 </span><br><span class="line">kernel.shmall &#x3D; 4000000000 </span><br><span class="line">kernel.sem &#x3D; 250 64000 100 512 </span><br><span class="line">vm.overcommit_memory &#x3D; 2</span><br><span class="line"></span><br><span class="line">vi &#x2F;etc&#x2F;security&#x2F;limits.conf # 修改文件描述符文件(可不修改)</span><br><span class="line">* soft nofile 65536</span><br><span class="line">* hard nofile 65536</span><br><span class="line">* soft nproc 131072</span><br><span class="line">* hard nproc 131072</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="编译安装启动"><a href="#编译安装启动" class="headerlink" title="编译安装启动"></a>编译安装启动</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;opt&#x2F;gpdb-6X_STABLE</span><br><span class="line">.&#x2F;README.CentOS.bash</span><br><span class="line">sudo ln -sf &#x2F;usr&#x2F;bin&#x2F;cmake3 &#x2F;usr&#x2F;local&#x2F;bin&#x2F;cmake</span><br><span class="line">sudo yum install -y centos-release-scl</span><br><span class="line">sudo yum install -y devtoolset-7-toolchain</span><br><span class="line">echo &#39;source scl_source enable devtoolset-7&#39; &gt;&gt; ~&#x2F;.bashrc</span><br><span class="line">.&#x2F;configure --with-perl --with-python --with-libxml --with-gssapi --prefix&#x3D;&#x2F;usr&#x2F;local&#x2F;gpdb</span><br><span class="line">make -j8</span><br><span class="line">make -j8 install</span><br><span class="line">## 编译完成</span><br><span class="line"></span><br><span class="line">useradd gpadmin # 创建gpadmin用户并授权</span><br><span class="line">passwd gpadmin</span><br><span class="line">chown -R gpadmin &#x2F;usr&#x2F;local&#x2F;gpdb</span><br><span class="line">chgrp -R gpadmin &#x2F;usr&#x2F;local&#x2F;gpdb</span><br><span class="line"></span><br><span class="line">su gpdamin # 切换gpadmin用户,创建数据目录</span><br><span class="line">mkdir -p &#x2F;data&#x2F;gpdata&#x2F;master </span><br><span class="line">mkdir -p &#x2F;data&#x2F;gpdata&#x2F;primary</span><br><span class="line">mkdir -p &#x2F;data&#x2F;gpdata&#x2F;mirror </span><br><span class="line"></span><br><span class="line">vi .bashrc # 设置gpadmin用户的环境变量</span><br><span class="line">source &#x2F;usr&#x2F;local&#x2F;gpdb&#x2F;greenplum_path.sh</span><br><span class="line">export MASTER_DATA_DIRECTORY&#x3D;&#x2F;data&#x2F;gpdata&#x2F;master&#x2F;gpseg-1</span><br><span class="line">export PGPORT&#x3D;5432</span><br><span class="line">export PGUSER&#x3D;gpadmin</span><br><span class="line">export PGDATABASE&#x3D;gpdb</span><br><span class="line"></span><br><span class="line">source .bashrc # 使环境变量生效</span><br><span class="line"></span><br><span class="line">vi &#x2F;home&#x2F;gpadmin&#x2F;seg_hosts # 添加节点服务器文件</span><br><span class="line">master</span><br><span class="line"></span><br><span class="line">ssh-keygen # 配置免密</span><br><span class="line">ssh-copy-id master</span><br><span class="line">gpssh-exkeys -f &#x2F;home&#x2F;gpadmin&#x2F;seg_hosts</span><br><span class="line"></span><br><span class="line">cp &#x2F;usr&#x2F;local&#x2F;gpdb&#x2F;docs&#x2F;cli_help&#x2F;gpconfigs&#x2F;gpinitsystem_config &#x2F;home&#x2F;gpadmin&#x2F;initGreenplum # 复制配置文件</span><br><span class="line"></span><br><span class="line">vi initGreenplum 修改配置文件</span><br><span class="line">declare -a DATA_DIRECTORY&#x3D;(&#x2F;data&#x2F;gpdata&#x2F;primary)</span><br><span class="line">MASTER_HOSTNAME&#x3D;master</span><br><span class="line">MASTER_DIRECTORY&#x3D;&#x2F;data&#x2F;gpdata&#x2F;master</span><br><span class="line">MASTER_PORT&#x3D;5432</span><br><span class="line">MIRROR_PORT_BASE&#x3D;7000</span><br><span class="line">DATABASE_NAME&#x3D;gpdb</span><br><span class="line">declare -a MIRROR_DATA_DIRECTORY&#x3D;(&#x2F;data&#x2F;gpdata&#x2F;mirror)</span><br><span class="line">MACHINE_LIST_FILE&#x3D;&#x2F;home&#x2F;gpadmin&#x2F;seg_hosts</span><br><span class="line"></span><br><span class="line">gpinitsystem -c &#x2F;home&#x2F;gpadmin&#x2F;initGreenplum # 初始化GP数据库</span><br><span class="line">gpstart -a # 启动GP</span><br><span class="line">psql # 进入命令行</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>
