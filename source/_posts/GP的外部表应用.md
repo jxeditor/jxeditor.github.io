@@ -175,7 +175,28 @@ pg_max_external_files用来确定每个外部表中允许有多少个外部文�
 
 ### 使用
 ```
-reate external table test
+# 保证gpadmin用户可以访问hdfs
+# 修改master配置参数
+gpconfig -c gp_hadoop_target_version -v "hadoop2"
+gpconfig -c gp_hadoop_home -v "/home/hadoop/hadoop"
+# 重启后检查配置参数
+gpstop -M fast -ra
+gpconfig -s gp_hadoop_target_version
+gpconfig -s gp_hadoop_home
+
+# 验证
+hdfs dfs -ls /
+
+# 设置权限
+psql gpdb
+#写权限
+GRANT INSERT ON PROTOCOL gphdfs TO gpadmin;
+#读权限
+GRANT SELECT ON PROTOCOL gphdfs TO gpadmin;
+#所有权限
+GRANT ALL ON PROTOCOL gphdfs TO gpadmin;
+
+create external table test
 (
        id int,
        name text
