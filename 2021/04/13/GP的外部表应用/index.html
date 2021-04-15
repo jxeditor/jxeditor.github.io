@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    GP的外部表应用
+  
+</title>
+
+<meta name="description" content="对GP外部表使用做一些整理,以及基于gpfdist,gpfdists以及gphdfs进行演示">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GP的外部表应用">
+<meta property="og:url" content="http://yoursite.com/2021/04/13/GP%E7%9A%84%E5%A4%96%E9%83%A8%E8%A1%A8%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="对GP外部表使用做一些整理,以及基于gpfdist,gpfdists以及gphdfs进行演示">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-13T11:04:29.000Z">
+<meta property="article:modified_time" content="2021-04-14T10:49:04.493Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="greenplum">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">172</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-GP的外部表应用" class="article article-type-post">
+  
+    <h1 class="article-header">
+      GP的外部表应用
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2021-04-13
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>对GP外部表使用做一些整理,以及基于gpfdist,gpfdists以及gphdfs进行演示</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="外部表"><a href="#外部表" class="headerlink" title="外部表"></a>外部表</h2><h3 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">允许用户像访问标准数据库表一样的访问外部表</span><br><span class="line"></span><br><span class="line">GP提供两种类型的外部表</span><br><span class="line">    可读外部表:数据装载,不允许数据修改</span><br><span class="line">    可写外部表:数据卸载,从数据库表中选择记录输出到文件&#x2F;命令管道&#x2F;可执行程序(MR),只允许INSERT操作</span><br><span class="line"></span><br><span class="line">可读外部表分类</span><br><span class="line">    常规:访问静态文件</span><br><span class="line">    WEB:访问动态数据源</span><br><span class="line"></span><br><span class="line">创建外部表定义时,必须指定文件格式和文件位置</span><br><span class="line">    TEXT类型对所有协议有效。</span><br><span class="line">    逗号分隔的CSV对于gpfdist和file协议有效</span><br><span class="line">    自定义格式适合于gphdfs</span><br></pre></td></tr></table></figure>
+
+<h3 id="外部表创建"><a href="#外部表创建" class="headerlink" title="外部表创建"></a>外部表创建</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"># 创建单文件服务的可读外部表</span><br><span class="line">CREATE EXTERNAL TABLE demo (id int,name text)</span><br><span class="line">LOCATION(&#39;gpfdist:&#x2F;&#x2F;hostname:port&#x2F;demo.txt&#39;)</span><br><span class="line">FORMAT &#39;TEXT&#39; (DELIMITER &#39;|&#39; NULL &#39;&#39;);</span><br><span class="line"></span><br><span class="line"># 创建多文件服务的可读外部表</span><br><span class="line">CREATE EXTERNAL TABLE demo (id int,name text)</span><br><span class="line">LOCATION(&#39;gpfdist:&#x2F;&#x2F;hostname:port1&#x2F;demo.txt&#39;,&#39;gpfdist:&#x2F;&#x2F;hostname:port2&#x2F;demo.txt&#39;)</span><br><span class="line">FORMAT &#39;TEXT&#39; (DELIMITER &#39;|&#39; NULL &#39;&#39;);</span><br><span class="line"></span><br><span class="line"># 带错误数据日期的多文件服务</span><br><span class="line">CREATE EXTERNAL TABLE demo (id int,name text)</span><br><span class="line">LOCATION(&#39;gpfdist:&#x2F;&#x2F;hostname:port1&#x2F;demo.txt&#39;,&#39;gpfdist:&#x2F;&#x2F;hostname:port2&#x2F;demo.txt&#39;)</span><br><span class="line">FORMAT &#39;CSV&#39; (DELIMITER &#39;,&#39; )</span><br><span class="line">LOG ERRORS INTO err_customer SEGMENT REJECT LIMIT 2;</span><br><span class="line"># 查看错误日志</span><br><span class="line">select * from err_customer;</span><br><span class="line"></span><br><span class="line"># 创建可写外部表</span><br><span class="line">CREATE WRITABLE EXTERNAL TABLE output (LIKE input)</span><br><span class="line">LOCATION(&#39;gpfdist:&#x2F;&#x2F;localhost:port&#x2F;output.out&#39;)</span><br><span class="line">FORMAT &#39;TEXT&#39; (DELIMITER &#39;|&#39; NULL &#39;&#39;)</span><br><span class="line">DISTRIBUTED BY (id);</span><br><span class="line">insert into output select * from input ;</span><br><span class="line"></span><br><span class="line"># 将外部表装载到数据表</span><br><span class="line">CREATE TABLE new AS SELECT * FROM demo；</span><br><span class="line"></span><br><span class="line"># 创建WEB外部表(有两种方式URL和OS)</span><br><span class="line">查询优化器不允许重复扫描WEB表的数据</span><br><span class="line"></span><br><span class="line"># URL(URL的数量对应并行访问WEB表的segment实例)</span><br><span class="line">CREATE EXTERNAL WEB TABLE demo (name text,date date,amount float4,category text,description text )</span><br><span class="line">LOCATION(</span><br><span class="line">&#39;http:&#x2F;&#x2F;WEB_URL&#x2F;file1.csv&#39;,</span><br><span class="line">&#39;http:&#x2F;&#x2F;WEB_URL&#x2F;file2.csv&#39;</span><br><span class="line">)</span><br><span class="line">FORMAT &#39;CSV&#39; (HEADER);</span><br><span class="line"># OS(在一个或多个segment上指定执行SHELL命令或脚本,输出结果作为WEB表访问的数据)</span><br><span class="line">CREATE EXTERNAL WEB TABLE tb_ext_wb01 (output text)</span><br><span class="line">EXECUTE &#39;hostname&#39;</span><br><span class="line">FORMAT &#39;TEXT&#39;;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="GPFDIST"><a href="#GPFDIST" class="headerlink" title="GPFDIST"></a>GPFDIST</h2><h3 id="介绍-1"><a href="#介绍-1" class="headerlink" title="介绍"></a>介绍</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">在外部表指定文件的所有主机上运行GP文件分发程序</span><br><span class="line">指向一个给定的目录,并行的为所有segment实例提供外部数据文件服务</span><br><span class="line">如果文件使用了gzip或者bzip2压缩,gpfdist会自动解压</span><br><span class="line">可以使用多个gpfdist来提升外部表的扫描性能</span><br><span class="line">可以使用通配符或者C风格的模式匹配多个文件</span><br><span class="line"></span><br><span class="line">注意:</span><br><span class="line">    实际应用中,一般会把gpfdist部署在ETL文件服务器上,在这个服务器上启动一个或者多个gpfdist</span><br><span class="line">    一般指定文件数据的父目录,因为大部分是很多数据文件使用同一个gpfdist,路径细写就不能使用同一个gpfdist(开启gpfdist进程时指定文件根目录,定义外部表时指定子目录)</span><br><span class="line">    gpfdist进程取决于网络带宽</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置参数"><a href="#配置参数" class="headerlink" title="配置参数"></a>配置参数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 控制节点并行度</span><br><span class="line">gp_external_max_segs(最大多少segment实例访问同一个gpfdist文件分发程序)</span><br></pre></td></tr></table></figure>
+
+<h3 id="启动与停止"><a href="#启动与停止" class="headerlink" title="启动与停止"></a>启动与停止</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># 启动gpfdist,必须指定其提供文件服务的目录以及运行的端口(默认8080)</span><br><span class="line">gpfdist -d &#x2F;var&#x2F;load_files -p 9190 -l &#x2F;home&#x2F;gpadmin&#x2F;log &amp;</span><br><span class="line"></span><br><span class="line"># 同一台主机启动多个gpfdist服务,只需要指定不同的目录和端口即可</span><br><span class="line">gpfdist -d &#x2F;var&#x2F;load_files1 -p 9191 -l &#x2F;home&#x2F;gpadmin&#x2F;log &amp;</span><br><span class="line">gpfdist -d &#x2F;var&#x2F;load_files2 -p 9192 -l &#x2F;home&#x2F;gpadmin&#x2F;log2 &amp;</span><br><span class="line"></span><br><span class="line"># 停止gpfdist(通过kill命令)</span><br></pre></td></tr></table></figure>
+
+<h3 id="故障诊断"><a href="#故障诊断" class="headerlink" title="故障诊断"></a>故障诊断</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 确保segment可以访问gpfdist网络(利用wget命令测试连接性)</span><br><span class="line">wget http:&#x2F;&#x2F;hostname:post&#x2F;filename</span><br><span class="line"># 需要确保CREATE EXTERNAL TABLE定义了hostname,port以及gpfdist的文件名</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用操作"><a href="#使用操作" class="headerlink" title="使用操作"></a>使用操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"># 创建文件服务目录</span><br><span class="line">su gpadmin</span><br><span class="line">cd ~</span><br><span class="line">mkdir load_files</span><br><span class="line"># 启动文件服务</span><br><span class="line">gpfdist -d &#x2F;home&#x2F;gpadmin&#x2F;load_files -p 9190 -l &#x2F;home&#x2F;gpadmin&#x2F;log &amp;</span><br><span class="line"></span><br><span class="line"># 准备外部数据</span><br><span class="line">cd &#x2F;home&#x2F;gpadmin&#x2F;load_files</span><br><span class="line">vi demo.txt</span><br><span class="line">1|XS</span><br><span class="line">2|JKS</span><br><span class="line">3|JF</span><br><span class="line"></span><br><span class="line"># 创建单文件服务的可读外部表</span><br><span class="line">psql</span><br><span class="line">CREATE EXTERNAL TABLE demo (id int,name text)</span><br><span class="line">LOCATION(&#39;gpfdist:&#x2F;&#x2F;master:9190&#x2F;demo.txt&#39;)</span><br><span class="line">FORMAT &#39;TEXT&#39; (DELIMITER &#39;|&#39; NULL &#39;&#39;);</span><br><span class="line"></span><br><span class="line"># 查看数据</span><br><span class="line">SELECT * FROM demo;</span><br><span class="line"> id | name</span><br><span class="line">----+------</span><br><span class="line">  1 | XS</span><br><span class="line">  2 | JKS</span><br><span class="line">  3 | JF</span><br><span class="line">(3 rows)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="gpdists"><a href="#gpdists" class="headerlink" title="gpdists"></a>gpdists</h2><h3 id="介绍-2"><a href="#介绍-2" class="headerlink" title="介绍"></a>介绍</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gpfdists是gpfdist的安全版本</span><br><span class="line">开启的加密通信并确保文件与GP之间的安全认证</span><br><span class="line"></span><br><span class="line">使用file:&#x2F;&#x2F;协议,外部文件必须存放在segment主机上</span><br><span class="line">指定符合segment实例数量的URL将并行工作来访问外部表</span><br><span class="line">每个segment主机外部文件数量不能超过segment实例数量</span><br><span class="line">pg_max_external_files用来确定每个外部表中允许有多少个外部文件</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="gphdfs"><a href="#gphdfs" class="headerlink" title="gphdfs"></a>gphdfs</h2><h3 id="介绍-3"><a href="#介绍-3" class="headerlink" title="介绍"></a>介绍</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">该协议指定一个HDFS包含通配符的路径</span><br><span class="line">在GP连接到HDFS文件时,所有数据将从HDFS数据节点被并行读取到GP的segment实例快速处理</span><br><span class="line">每个segment实例只读取一组Hadoop数据块</span><br><span class="line">对于写,每个segment实例只写giant实例包含的数据</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">reate external table test</span><br><span class="line">(</span><br><span class="line">       id int,</span><br><span class="line">       name text</span><br><span class="line">)</span><br><span class="line">LOCATION (&#39;gphdfs:&#x2F;&#x2F;master:9000&#x2F;test.txt&#39;)</span><br><span class="line">FORMAT &#39;TEXT&#39; (delimiter &#39;\t&#39;);</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>
