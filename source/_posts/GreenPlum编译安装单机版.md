@@ -19,6 +19,8 @@ GP_6X_STABLE
 
 ### 环境配置
 ```
+yum install -y net-tools # 需要ifconfig与netstat命令
+
 systemctl stop firewalld # 关闭防火墙
 
 systemctl disable firewalld # 禁用防火墙
@@ -30,6 +32,8 @@ vi /etc/hosts # 配置主机域名
 
 vi /etc/selinux/config # 关闭selinux
 SELINUX=disabled
+
+setenforce 0
 
 vi /etc/sysctl.conf # 修改内核(可不修改) 
 net.ipv4.ip_forward = 0 
@@ -81,7 +85,7 @@ passwd gpadmin
 chown -R gpadmin /usr/local/gpdb
 chgrp -R gpadmin /usr/local/gpdb
 
-su gpdamin # 切换gpadmin用户,创建数据目录
+su gpadmin # 切换gpadmin用户,创建数据目录
 mkdir -p /data/gpdata/master 
 mkdir -p /data/gpdata/primary
 mkdir -p /data/gpdata/mirror 
@@ -117,4 +121,12 @@ MACHINE_LIST_FILE=/home/gpadmin/seg_hosts
 gpinitsystem -c /home/gpadmin/initGreenplum # 初始化GP数据库
 gpstart -a # 启动GP
 psql # 进入命令行
+```
+
+---
+
+## 远程连接GP
+```
+vi /data/gpdata/master/gpseg-1/pg_hba.conf
+# 添加对应的IP地址即可
 ```
