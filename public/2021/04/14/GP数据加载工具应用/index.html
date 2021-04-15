@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    GP数据加载工具应用
+  
+</title>
+
+<meta name="description" content="主要介绍gpload进行数据导入操作流程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GP数据加载工具应用">
+<meta property="og:url" content="http://yoursite.com/2021/04/14/GP%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD%E5%B7%A5%E5%85%B7%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="主要介绍gpload进行数据导入操作流程">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-14T10:51:12.000Z">
+<meta property="article:modified_time" content="2021-04-15T03:16:19.363Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="greenplum">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">172</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">18</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">5</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">27</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">16</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">90</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-GP数据加载工具应用" class="article article-type-post">
+  
+    <h1 class="article-header">
+      GP数据加载工具应用
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2021-04-14
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>主要介绍gpload进行数据导入操作流程</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">gpload是对gpfdist的封装,使用前必须开启gpfdist服务</span><br><span class="line"></span><br><span class="line"># 创建加载数据的表,用于将数据导入到该表</span><br><span class="line">CREATE TABLE demo_load(</span><br><span class="line">    id int,</span><br><span class="line">    name text</span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="使用gpload"><a href="#使用gpload" class="headerlink" title="使用gpload"></a>使用gpload</h2><h3 id="执行命令"><a href="#执行命令" class="headerlink" title="执行命令"></a>执行命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">vi load.yml</span><br><span class="line">VERSION: 1.0.0.1</span><br><span class="line">DATABASE: gpdb</span><br><span class="line">USER: gpadmin</span><br><span class="line">HOST: 192.168.157.128</span><br><span class="line">PORT: 5432</span><br><span class="line">GPLOAD:</span><br><span class="line">   INPUT:</span><br><span class="line">    - SOURCE:</span><br><span class="line">         LOCAL_HOSTNAME:</span><br><span class="line">           - master</span><br><span class="line">         PORT: 5432</span><br><span class="line">         FILE:</span><br><span class="line">           - &#x2F;home&#x2F;gpadmin&#x2F;load_files&#x2F;demo.txt</span><br><span class="line">    - COLUMNS:</span><br><span class="line">               - id: int</span><br><span class="line">               - name: text</span><br><span class="line">    - FORMAT: text</span><br><span class="line">    - DELIMITER: &#39;|&#39;</span><br><span class="line">    - QUOTE: &#39;&quot;&#39;</span><br><span class="line">    - HEADER: false</span><br><span class="line">    - ERROR_LIMIT: 25</span><br><span class="line">    - ERROR_TABLE: public.gpload_err</span><br><span class="line">   OUTPUT:</span><br><span class="line">    - TABLE: public.demo_load</span><br><span class="line">    - MODE: INSERT</span><br><span class="line"></span><br><span class="line"># 加载数据</span><br><span class="line">gpload -f load.yml</span><br></pre></td></tr></table></figure>
+
+<h3 id="参数含义"><a href="#参数含义" class="headerlink" title="参数含义"></a>参数含义</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">VERSION: 1.0.0.1            --指定控制文件schema的版本</span><br><span class="line">DATABASE: db_name           --指定连接数据库的名字,如果没有指定,由环境变量$PGDATABASE,或者通过gpload参数-d指定</span><br><span class="line">USER: db_username           --指定连接目标数据库的用户名,如果不使用超级管理员,服务参数gp_external_grant_privileges必须设置成on</span><br><span class="line">HOST: master_hostname       --指定master主机名,也可以通过gpload的-h选项,或者环境变量$PGHOST指定</span><br><span class="line">PORT: master_port           --指定master的连接端口号,默认是5432,或者通过gpload命令的-p选项或者环境变量$PGPORT指定</span><br><span class="line">GPLOAD:                     --必须指定,表示装载设置部分在它下面必须定义INPUT:和OUTPUT:两个部分</span><br><span class="line">INPUT:                      --必须指定,这部分指定装载数据的格式和位置</span><br><span class="line">- SOURCE:                   --必须指定,定义source文件的位置,每个输入部分可以定义多个source部分, windows路径的指定比较特别,比如c:\要写成c:&#x2F;</span><br><span class="line">LOCAL_HOSTNAME:             --指定gpload运行的主机名称和ip地址,如果有多块网卡,可以同时使用它们,提高装载速度.默认只使用首选主机名和IP</span><br><span class="line">- hostname_or_ip</span><br><span class="line">PORT: http_port             --指定gpfdist使用的端口,也可以选择端口范围,由系统选择,如果同时指定,port设置优先级高</span><br><span class="line">| PORT_RANGE: [start_port_range, end_port_range]</span><br><span class="line">FILE:                       --指定装载数据文件的位置,目录或者命名管道.如果文件使用gpzip或者bzip2进行了压缩,它可以自动解压.可以使用通配符*和C语言风格的关系匹配模式指定多个文件</span><br><span class="line">- &#x2F;path&#x2F;to&#x2F;input_file</span><br><span class="line">- COLUMNS:                    --指定数据源的数据格式,如果没有指定这部分,source表的列顺序,数量,以及数据类型必须与目标表一致</span><br><span class="line">- field_name: data_type</span><br><span class="line">- FORMAT: text | csv          --指定文件格式是text还是csv</span><br><span class="line">- DELIMITER: &#39;delimiter_character&#39;  --指定文本数据域(列)之间的分割符,默认是|</span><br><span class="line">- ESCAPE: &#39;escape_character&#39; | &#39;OFF&#39;  --text定义转义字符,text格式默认是\,在text格式中可以选择off关掉转义字符(web log处理时比较有用)</span><br><span class="line">- NULL_AS: &#39;null_string&#39;       --指定描述空值的字符串,text格式默认是\N,csv格式不使用转义符号的空值</span><br><span class="line">- FORCE_NOT_NULL: true | false --csv格式,强制所有字符默认都用&quot;&quot;括起,因此不能有空值,如果两个分割符之间没有值,被当做0长度字符串,认为值已经丢失</span><br><span class="line">- QUOTE: &#39;csv_quote_character&#39;  --csv指定转义字符,默认是&quot;</span><br><span class="line">- HEADER: true | false          --是否跳过数据文件第一行,当做表头</span><br><span class="line">- ENCODING: database_encoding   --指定数据源的字符集</span><br><span class="line">- ERROR_LIMIT: integer          --指定由于不符合格式数据记录的上限,如果超过该上限,gpload停止装载,否则正确记录可以被装载,错误记录抛出写入错误表.但它仅支持数据格式错误,不支持违背约束的问题</span><br><span class="line">- ERROR_TABLE: schema.table_name --指定不符合格式要求记录的错误表.如果指定的表不存在系统自动创建</span><br><span class="line"></span><br><span class="line">OUTPUT:</span><br><span class="line">- TABLE: schema.table_name       --指定装载的目标表</span><br><span class="line">- MODE: insert | update | merge  --指定操作模式，默认是insert.merge操作不支持使用随机分布策略的表</span><br><span class="line">- MATCH_COLUMNS:                 --为update操作和merge操作指定匹配条件</span><br><span class="line">     - target_column_name            </span><br><span class="line">- UPDATE_COLUMNS:                 --为update操作和merge操作指定更新的列</span><br><span class="line">     - target_column_name</span><br><span class="line">- UPDATE_CONDITION: &#39;boolean_condition&#39;  --指定where条件,目标表中只有满足条件的记录才能更改,(merge情况下,只有满足条件的记录才能insert)</span><br><span class="line">- MAPPING:                        --指定source列和目标列的映射关系</span><br><span class="line">target_column_name: source_column_name | &#39;expression&#39;</span><br><span class="line">PRELOAD:                          --指定load之前的操作</span><br><span class="line">- TRUNCATE: true | false          --如果设置成true,装载之前先删除目标表中所有记录,再装载</span><br><span class="line">- REUSE_TABLES: true | false     --设置成true，不会删除外部表对象会这中间表对象。从而提升性能</span><br><span class="line">SQL:</span><br><span class="line">- BEFORE: &quot;sql_command&quot;         --装载操作开始前执行的SQL，比如写日志表</span><br><span class="line">- AFTER: &quot;sql_command&quot;          --装载操作之后执行的SQL</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">每次gpload之后都会产生一个外部表,查看表是又连接也会失效</span><br><span class="line">did not find an external table to reuse.</span><br><span class="line">需要手动指定新的gpfdist文件服务目录</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>
