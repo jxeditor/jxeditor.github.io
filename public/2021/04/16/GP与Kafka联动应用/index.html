@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    GP与Kafka联动应用
+  
+</title>
+
+<meta name="description" content="利用Greenplum Streaming Server(GPSS)实现kafka到gp的过程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GP与Kafka联动应用">
+<meta property="og:url" content="http://yoursite.com/2021/04/16/GP%E4%B8%8EKafka%E8%81%94%E5%8A%A8%E5%BA%94%E7%94%A8/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="利用Greenplum Streaming Server(GPSS)实现kafka到gp的过程">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-16T09:08:04.000Z">
+<meta property="article:modified_time" content="2021-04-19T06:12:04.426Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="kafka">
+<meta property="article:tag" content="greenplum">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">175</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">19</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">91</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-GP与Kafka联动应用" class="article article-type-post">
+  
+    <h1 class="article-header">
+      GP与Kafka联动应用
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2021-04-16
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/" rel="tag">kafka</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>利用Greenplum Streaming Server(GPSS)实现kafka到gp的过程</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><h3 id="安装GPSS"><a href="#安装GPSS" class="headerlink" title="安装GPSS"></a>安装<a target="_blank" rel="noopener" href="https://network.pivotal.io/products/greenplum-streaming-server#/releases/866955/file_groups/3395">GPSS</a></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"># 安装GPSS插件(GP5.10之后支持)</span><br><span class="line"># 下载GPSS安装包</span><br><span class="line">https:&#x2F;&#x2F;network.pivotal.io&#x2F;products&#x2F;greenplum-streaming-server#&#x2F;releases&#x2F;866955&#x2F;file_groups&#x2F;3395</span><br><span class="line"></span><br><span class="line"># 保证GP数据库启动(下列安装方式3选1)</span><br><span class="line"># 安装GPSS gppkg(安装升级GP数据库集群中所有主机的GPSS)</span><br><span class="line">su gpadmin</span><br><span class="line">gppkg -i gpss-gpdb6-1.3.6-rhel7-x86_64.gppkg</span><br><span class="line"></span><br><span class="line"># 安装GPSS Tarball(用于安装包括GP数据库的单个ETL服务器上安装升级GPSS)</span><br><span class="line">tar xzvf gpss-gpdb6-1.3.6-rhel7-x86_64.tar.gz</span><br><span class="line">cd gpss-gpdb6-1.3.6-rhel7-x86_64</span><br><span class="line">.&#x2F;install_gpdb_component</span><br><span class="line"></span><br><span class="line"># 安装GPSS ETL RPM(用于未安装GP数据库专用ETL服务器上安装升级GPSS)</span><br><span class="line">sudo yum install gpss-gpdb6-1.3.6-rhel7-x86_64.rpm</span><br><span class="line">psql</span><br><span class="line">.&#x2F;usr&#x2F;local&#x2F;gpss&#x2F;gpss_path.sh</span><br><span class="line"></span><br><span class="line"># 加载组件</span><br><span class="line">psql</span><br><span class="line">CREATE EXTENSION gpss;</span><br><span class="line"></span><br><span class="line"># 注意:会报libstdc++.so.6: version &#96;CXXABI_1.3.9&#39; not found</span><br><span class="line">网上下载libstdc++.so.6.0.26,映射到libstdc++.so.6</span><br><span class="line">cp libstdc++.so.6.0.26 &#x2F;usr&#x2F;lib64&#x2F;</span><br><span class="line">cd &#x2F;usr&#x2F;lib64&#x2F;</span><br><span class="line">chmod 755 libstdc++.so.6.0.26</span><br><span class="line">rm -rf libstdc++.so.6</span><br><span class="line">ln -s libstdc++.so.6.0.26 libstdc++.so.6</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置加载文件"><a href="#配置加载文件" class="headerlink" title="配置加载文件"></a>配置加载文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br></pre></td><td class="code"><pre><span class="line"># 加载Kafka CSV数据</span><br><span class="line"># &quot;123&quot;,&quot;09&quot;,&quot;456.78&quot;</span><br><span class="line"></span><br><span class="line">vi firstload_cfg.yaml</span><br><span class="line">DATABASE: testdb</span><br><span class="line">USER: gpadmin</span><br><span class="line">HOST: gpmaster</span><br><span class="line">PORT: 5432</span><br><span class="line">KAFKA:</span><br><span class="line">   INPUT:</span><br><span class="line">     SOURCE:</span><br><span class="line">        BROKERS: localhost:9092</span><br><span class="line">        TOPIC: topic_for_gpkafka</span><br><span class="line">     COLUMNS:</span><br><span class="line">        - NAME: cust_id</span><br><span class="line">          TYPE: int</span><br><span class="line">        - NAME: __IGNORED__</span><br><span class="line">          TYPE: int</span><br><span class="line">        - NAME: expenses</span><br><span class="line">          TYPE: decimal(9,2)</span><br><span class="line">     FORMAT: csv</span><br><span class="line">     ERROR_LIMIT: 125</span><br><span class="line">   OUTPUT:</span><br><span class="line">     TABLE: data_from_kafka</span><br><span class="line">     MAPPING:</span><br><span class="line">        - NAME: customer_id</span><br><span class="line">          EXPRESSION: cust_id</span><br><span class="line">        - NAME: expenses</span><br><span class="line">          EXPRESSION: expenses</span><br><span class="line">        - NAME: tax_due</span><br><span class="line">          EXPRESSION: expenses * .0725</span><br><span class="line">   COMMIT:</span><br><span class="line">     MINIMAL_INTERVAL: 2000</span><br><span class="line"></span><br><span class="line"># 加载Kafka JSON数据</span><br><span class="line"># &#123; &quot;cust_id&quot;: 123, &quot;month&quot;: 9, &quot;amount_paid&quot;:456.78 &#125;</span><br><span class="line"></span><br><span class="line">vi simple_jsonload_cfg.yaml</span><br><span class="line">DATABASE: testdb</span><br><span class="line">USER: gpadmin</span><br><span class="line">HOST: gpmaster</span><br><span class="line">PORT: 5432</span><br><span class="line">KAFKA:</span><br><span class="line">   INPUT:</span><br><span class="line">     SOURCE:</span><br><span class="line">        BROKERS: localhost:9092</span><br><span class="line">        TOPIC: topic_json</span><br><span class="line">     FORMAT: json</span><br><span class="line">     ERROR_LIMIT: 10</span><br><span class="line">   OUTPUT:</span><br><span class="line">     TABLE: single_json_column</span><br><span class="line">   COMMIT:</span><br><span class="line">     MINIMAL_INTERVAL: 1000</span><br><span class="line"></span><br><span class="line"># 加载Kafka JSON数据(带映射)</span><br><span class="line"># &#123; &quot;cust_id&quot;: 123, &quot;month&quot;: 9, &quot;amount_paid&quot;:456.78 &#125;</span><br><span class="line"></span><br><span class="line">vi jsonload_cfg.yaml</span><br><span class="line">DATABASE: testdb</span><br><span class="line">USER: gpadmin</span><br><span class="line">HOST: gpmaster</span><br><span class="line">PORT: 5432</span><br><span class="line">KAFKA:</span><br><span class="line">   INPUT:</span><br><span class="line">     SOURCE:</span><br><span class="line">        BROKERS: localhost:9092</span><br><span class="line">        TOPIC: topic_json_gpkafka</span><br><span class="line">     COLUMNS:</span><br><span class="line">        - NAME: jdata</span><br><span class="line">          TYPE: json</span><br><span class="line">     FORMAT: json</span><br><span class="line">     ERROR_LIMIT: 10</span><br><span class="line">   OUTPUT:</span><br><span class="line">     TABLE: json_from_kafka</span><br><span class="line">     MAPPING:</span><br><span class="line">        - NAME: customer_id</span><br><span class="line">          EXPRESSION: (jdata-&gt;&gt;&#39;cust_id&#39;)::int</span><br><span class="line">        - NAME: month</span><br><span class="line">          EXPRESSION: (jdata-&gt;&gt;&#39;month&#39;)::int</span><br><span class="line">        - NAME: amount_paid</span><br><span class="line">          EXPRESSION: (jdata-&gt;&gt;&#39;expenses&#39;)::decimal</span><br><span class="line">   COMMIT:</span><br><span class="line">     MINIMAL_INTERVAL: 2000</span><br><span class="line">     </span><br><span class="line"># 加载Kafka Avro数据</span><br><span class="line"># 1    &#123; &quot;cust_id&quot;: 123, &quot;year&quot;: 1997, &quot;expenses&quot;:[456.78, 67.89] &#125;</span><br><span class="line"># Avro数据生产者</span><br><span class="line">kafka-avro-console-producer \</span><br><span class="line">    --broker-list localhost:9092 \</span><br><span class="line">    --topic topic_avrokv \</span><br><span class="line">    --property parse.key&#x3D;true --property key.schema&#x3D;&#39;&#123;&quot;type&quot; : &quot;int&quot;, &quot;name&quot; : &quot;id&quot;&#125;&#39; \</span><br><span class="line">    --property value.schema&#x3D;&#39;&#123; &quot;type&quot; : &quot;record&quot;, &quot;name&quot; : &quot;example_schema&quot;, &quot;namespace&quot; : &quot;com.example&quot;, &quot;fields&quot; : [ &#123; &quot;name&quot; : &quot;cust_id&quot;, &quot;type&quot; : &quot;int&quot;, &quot;doc&quot; : &quot;Id of the customer account&quot; &#125;, &#123; &quot;name&quot; : &quot;year&quot;, &quot;type&quot; : &quot;int&quot;, &quot;doc&quot; : &quot;year of expense&quot; &#125;, &#123; &quot;name&quot; : &quot;expenses&quot;, &quot;type&quot; : &#123;&quot;type&quot;: &quot;array&quot;, &quot;items&quot;: &quot;float&quot;&#125;, &quot;doc&quot; : &quot;Expenses for the year&quot; &#125; ], &quot;doc:&quot; : &quot;A basic schema for storing messages&quot; &#125;&#39;</span><br><span class="line"></span><br><span class="line">vi avrokvload_cfg.yaml</span><br><span class="line">DATABASE: testdb</span><br><span class="line">USER: gpadmin</span><br><span class="line">HOST: gpmaster</span><br><span class="line">PORT: 5432</span><br><span class="line">VERSION: 2</span><br><span class="line">KAFKA:</span><br><span class="line">   INPUT:</span><br><span class="line">     SOURCE:</span><br><span class="line">        BROKERS: localhost:9092</span><br><span class="line">        TOPIC: topic_avrokv</span><br><span class="line">     VALUE:</span><br><span class="line">        COLUMNS:</span><br><span class="line">          - NAME: c1</span><br><span class="line">            TYPE: json</span><br><span class="line">        FORMAT: avro</span><br><span class="line">        AVRO_OPTION:</span><br><span class="line">          SCHEMA_REGISTRY_ADDR: http:&#x2F;&#x2F;localhost:8081</span><br><span class="line">     KEY:</span><br><span class="line">        COLUMNS:</span><br><span class="line">          - NAME: id</span><br><span class="line">            TYPE: json</span><br><span class="line">        FORMAT: avro</span><br><span class="line">        AVRO_OPTION:</span><br><span class="line">          SCHEMA_REGISTRY_ADDR: http:&#x2F;&#x2F;localhost:8081</span><br><span class="line">     ERROR_LIMIT: 0</span><br><span class="line">   OUTPUT:</span><br><span class="line">     TABLE: avrokv_from_kafka</span><br><span class="line">     MAPPING:</span><br><span class="line">        - NAME: id</span><br><span class="line">          EXPRESSION: id</span><br><span class="line">        - NAME: customer_id</span><br><span class="line">          EXPRESSION: (c1-&gt;&gt;&#39;cust_id&#39;)::int</span><br><span class="line">        - NAME: year</span><br><span class="line">          EXPRESSION: (c1-&gt;&gt;&#39;year&#39;)::int</span><br><span class="line">        - NAME: expenses</span><br><span class="line">          EXPRESSION: array(select json_array_elements(c1-&gt;&#39;expenses&#39;)::text::float)</span><br><span class="line">   COMMIT:</span><br><span class="line">     MINIMAL_INTERVAL: 2000</span><br></pre></td></tr></table></figure>
+
+<h3 id="Kafka命令"><a href="#Kafka命令" class="headerlink" title="Kafka命令"></a>Kafka命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 创建Topic</span><br><span class="line">kafka-topics.sh --create \</span><br><span class="line">    --zookeeper localhost:2181 --replication-factor 1 --partitions 1 \</span><br><span class="line">    --topic topic_json_gpkafka</span><br><span class="line"></span><br><span class="line"># 启动生产者生产数据</span><br><span class="line">kafka-console-producer.sh \</span><br><span class="line">    --broker-list localhost:9092 \</span><br><span class="line">    --topic topic_json_gpkafka &lt; sample_data.json</span><br><span class="line"></span><br><span class="line"># 启动消费者消费数据</span><br><span class="line">kafka-console-consumer.sh \</span><br><span class="line">    --bootstrap-server localhost:9092 --topic topic_json_gpkafka \</span><br><span class="line">    --from-beginning</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 创建好加载配置文件,以及目标表</span><br><span class="line">gpkafka load --quit-at-eof custom_load_cfg.yml</span><br><span class="line"></span><br><span class="line"># 注意</span><br><span class="line">GP-Kafka集成要求Kafka版本0.11或以上,确保exactly-once</span><br><span class="line">可以利用下面代码,使用低版本Kafka,但是会失去exactly-once</span><br><span class="line">PROPERTIES:</span><br><span class="line">      api.version.request: false</span><br><span class="line">      broker.version.fallback: 0.8.2.1</span><br></pre></td></tr></table></figure>
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

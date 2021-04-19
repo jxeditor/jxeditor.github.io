@@ -150,7 +150,7 @@ SELECT * FROM demo;
 
 ---
 
-## gpdists
+## GPFDISTS
 ### 介绍
 ```
 gpfdists是gpfdist的安全版本
@@ -164,7 +164,7 @@ pg_max_external_files用来确定每个外部表中允许有多少个外部文�
 
 ---
 
-## gphdfs
+## GPHDFS
 ### 介绍
 ```
 该协议指定一个HDFS包含通配符的路径
