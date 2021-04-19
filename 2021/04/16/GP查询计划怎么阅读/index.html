@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    GP查询计划怎么阅读
+  
+</title>
+
+<meta name="description" content="对EXPLAIN执行计划的阅读解释">
+<meta property="og:type" content="article">
+<meta property="og:title" content="GP查询计划怎么阅读">
+<meta property="og:url" content="http://yoursite.com/2021/04/16/GP%E6%9F%A5%E8%AF%A2%E8%AE%A1%E5%88%92%E6%80%8E%E4%B9%88%E9%98%85%E8%AF%BB/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="对EXPLAIN执行计划的阅读解释">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-16T02:47:07.000Z">
+<meta property="article:modified_time" content="2021-04-16T03:18:28.667Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="greenplum">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">175</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">19</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">28</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">19</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">91</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-GP查询计划怎么阅读" class="article article-type-post">
+  
+    <h1 class="article-header">
+      GP查询计划怎么阅读
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2021-04-16
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>对EXPLAIN执行计划的阅读解释</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="查询计划"><a href="#查询计划" class="headerlink" title="查询计划"></a>查询计划</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">描述了GP数据库优化器执行查询时遵循的执行步骤</span><br><span class="line">整体是一个树,阅读时从底向上阅读,每一个节点都会将其结果传递给其直接上层节点</span><br><span class="line">每个节点表示计划的一个步骤,每个节点对应那一行标识了该步骤的执行操作</span><br><span class="line">并且标识了用于执行该操作的方法</span><br><span class="line"></span><br><span class="line">例子:</span><br><span class="line">gpdb&#x3D;# explain select id,count(1) from demo_load group by id;</span><br><span class="line"> Gather Motion 1:1  (slice1; segments: 1)  (cost&#x3D;0.00..431.00 rows&#x3D;1 width&#x3D;12)</span><br><span class="line">   -&gt;  GroupAggregate  (cost&#x3D;0.00..431.00 rows&#x3D;1 width&#x3D;12)</span><br><span class="line">         Group Key: id</span><br><span class="line">         -&gt;  Sort  (cost&#x3D;0.00..431.00 rows&#x3D;1 width&#x3D;4)</span><br><span class="line">               Sort Key: id</span><br><span class="line">               -&gt;  Seq Scan on demo_load  (cost&#x3D;0.00..431.00 rows&#x3D;1 width&#x3D;4)</span><br><span class="line"> Optimizer: Pivotal Optimizer (GPORCA)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="代价估计"><a href="#代价估计" class="headerlink" title="代价估计"></a>代价估计</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">cost - 读取的顺序页面</span><br><span class="line">    一次顺序磁盘页面读取,前面为读取第一行的代价,后面为得到所有行的代价</span><br><span class="line">    </span><br><span class="line">rows - 行数</span><br><span class="line">    计划节点输出的行数,该值可能会小于计划节点实际处理或扫描的行数</span><br><span class="line">    </span><br><span class="line">width - 行宽度</span><br><span class="line">    计划节点输出所有列以字节表示的总宽度</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="操作解释"><a href="#操作解释" class="headerlink" title="操作解释"></a>操作解释</h2><h3 id="扫描操作"><a href="#扫描操作" class="headerlink" title="扫描操作"></a>扫描操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">对表上的Seq Scan — 扫描表中的所有行</span><br><span class="line">Append-only Scan — 扫描行存追加优化表</span><br><span class="line">Append-only Columnar Scan — 扫描列存追加优化表中的行</span><br><span class="line">Index Scan — 遍历一个B-树索引以从表中取得行</span><br><span class="line">Bitmap Append-only Row-oriented Scan — 从索引中收集仅追加表中行的指针并且按照磁盘上的位置进行排序</span><br><span class="line">Dynamic Table Scan — 使用一个分区选择函数来选择分区</span><br><span class="line">    Function Scan节点包含分区选择函数的名称,可以是下列之一:</span><br><span class="line">        gp_partition_expansion — 选择表中的所有分区.不会有分区被消除</span><br><span class="line">        gp_partition_selection — 基于一个等值表达式选择一个分区</span><br><span class="line">        gp_partition_inversion — 基于一个范围表达式选择分区</span><br><span class="line">    Function Scan节点将动态选择的分区列表传递给Result节点,该节点又会被传递给Sequence节点</span><br></pre></td></tr></table></figure>
+
+<h3 id="Join操作"><a href="#Join操作" class="headerlink" title="Join操作"></a>Join操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Hash Join – 从较小的表构建一个哈希表,用连接列作为哈希键</span><br><span class="line">    然后扫描较大的表,为连接列计算哈希键并且探索哈希表寻找具有相同哈希键的行</span><br><span class="line">    哈希连接通常是Greenplum数据库中最快的连接</span><br><span class="line">    解释计划中的Hash Cond标识要被连接的列</span><br><span class="line">Nested Loop – 在较大数据集的行上迭代,在每次迭代时于较小的数据集中扫描行</span><br><span class="line">    嵌套循环连接要求广播其中的一个表,这样一个表中的所有行才能与其他表中的所有行进行比较</span><br><span class="line">    它在较小的表或者通过使用索引约束的表上执行得不错</span><br><span class="line">    它还被用于笛卡尔积和范围连接</span><br><span class="line">    在使用Nested Loop连接大型表时会有性能影响</span><br><span class="line">    对于包含Nested Loop连接操作符的计划节点,应该验证SQL并且确保结果是想要的结果</span><br><span class="line">    设置服务器配置参数enable_nestloop为OFF(默认)能够让优化器更偏爱Hash Join</span><br><span class="line">Merge Join – 排序两个数据集并且将它们合并起来</span><br><span class="line">    归并连接对预排序好的数据很快,但是在现实世界中很少见</span><br><span class="line">    为了更偏爱Merge Join,可把系统配置参数enable_mergejoin设置为ON</span><br></pre></td></tr></table></figure>
+
+<h3 id="Motion操作"><a href="#Motion操作" class="headerlink" title="Motion操作"></a>Motion操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Broadcast motion – 每一个Segment将自己的行发送给所有其他Segment,这样每一个Segment实例都有表的一份完整的本地拷贝</span><br><span class="line">    Broadcast motion可能不如Redistribute motion那么好,因此优化器通常只为小型表选择Broadcast motion</span><br><span class="line">    对大型表来说,Broadcast motion是不可接受的</span><br><span class="line">    在数据没有按照连接键分布的情况下,将把一个表中所需的行动态重分布到另一个Segment</span><br><span class="line">Redistribute motion – 每一个Segment重新哈希数据并且把行发送到对应于哈希键的合适Segment上</span><br><span class="line">Gather motion – 来自所有Segment的结果数据被组装成一个单一的流</span><br></pre></td></tr></table></figure>
+
+<h3 id="其他操作"><a href="#其他操作" class="headerlink" title="其他操作"></a>其他操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Materialize – 规划器将一个子查询物化一次,这样就不用为顶层行重复该工作</span><br><span class="line">InitPlan – 一个预查询,被用在动态分区消除中,当执行时还不知道规划器需要用来标识要扫描分区的值时,会执行这个预查询</span><br><span class="line">Sort – 为另一个要求排序数据的操作(例如Aggregation或者Merge Join)准备排序数据</span><br><span class="line">Group By – 通过一个或者更多列分组行</span><br><span class="line">Group&#x2F;Hash Aggregate – 使用哈希聚集行</span><br><span class="line">Append – 串接数据集,例如在整合从分区表中各分区扫描的行时会用到</span><br><span class="line">Filter – 使用来自于一个WHERE子句的条件选择行</span><br><span class="line">Limit – 限制返回的行数</span><br></pre></td></tr></table></figure>
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>
