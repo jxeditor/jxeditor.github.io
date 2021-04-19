@@ -200,9 +200,24 @@ kafka-console-consumer.sh \
     --from-beginning
 ```
 
+### 创建目标表
+```
+# CSV
+CREATE TABLE data_from_kafka(customer_id int8, expenses decimal(9,2),tax_due decimal(7,2));
+
+# JSON
+CREATE TABLE single_json_column(value json);
+
+# JSON映射
+CREATE TABLE json_from_kafka(customer_id int8,month int4,amount_paid decimal(9,2));
+
+# Avro
+CREATE TABLE avrokv_from_kafka(id json,customer_id int,year int,expenses decimal(9,2)[]);
+```
+
 ---
 
-## 使用
+## 一次性使用
 ```
 # 创建好加载配置文件,以及目标表
 gpkafka load --quit-at-eof custom_load_cfg.yml
@@ -213,4 +228,35 @@ GP-Kafka集成要求Kafka版本0.11或以上,确保exactly-once
 PROPERTIES:
       api.version.request: false
       broker.version.fallback: 0.8.2.1
+```
+
+---
+
+## 启动常驻任务
+```
+# 启动GPSS侦听端口和文件服务端口
+vi gpsscfg_ex.json
+{
+    "ListenAddress": {
+        "Host": "localhost",
+        "Port": 5019
+    },
+    "Gpfdist": {
+        "Host": "localhost",
+        "Port": 8319
+    }
+}
+gpss gpsscfg_ex.json --log-dir ./gpsslogs & 
+
+# 将Kafka数据加载作业提交到在端口号5019上运行的GPSS实例
+gpsscli submit --name kafkademo --gpss-port 5019 ./firstload_cfg.yaml
+
+# 列出所有GPSS作业
+gpsscli list --all --gpss-port 5019
+
+# 开启kafademo任务
+gpsscli start kafkademo --gpss-port 5019
+
+# 停止kafademo任务
+gpsscli stop orders1 --gpss-port 5019
 ```
