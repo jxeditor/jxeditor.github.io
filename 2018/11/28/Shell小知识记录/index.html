@@ -20,7 +20,7 @@
 <meta property="og:description" content="记录一下日常脚本的使用">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2018-11-28T08:32:05.000Z">
-<meta property="article:modified_time" content="2021-03-21T12:33:13.854Z">
+<meta property="article:modified_time" content="2021-04-22T06:53:36.400Z">
 <meta property="article:author" content="X&amp;Z">
 <meta property="article:tag" content="shell">
 <meta name="twitter:card" content="summary">
@@ -197,6 +197,9 @@
 
 <hr>
 <h2 id="readlink的使用"><a href="#readlink的使用" class="headerlink" title="readlink的使用"></a>readlink的使用</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 直接输出java脚本的真正位置</span><br><span class="line">readlink -f &#x2F;usr&#x2F;bin&#x2F;java</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="判断进程是否存在-不在则启动"><a href="#判断进程是否存在-不在则启动" class="headerlink" title="判断进程是否存在,不在则启动"></a>判断进程是否存在,不在则启动</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PIDS&#x3D;&#96;ps -ef |grep command |grep -v grep | awk &#39;&#123;print $2&#125;&#39;&#96;</span><br><span class="line">if [ &quot;$PIDS&quot; !&#x3D; &quot;&quot; ]; then</span><br><span class="line">    echo &quot;command is runing!&quot;</span><br><span class="line">else</span><br><span class="line">    cd &#x2F;root&#x2F;</span><br><span class="line">    .&#x2F;script</span><br><span class="line">    #运行进程</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
   </div>
   <footer class="article-footer">
     
