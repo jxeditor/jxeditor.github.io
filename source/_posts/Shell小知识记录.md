@@ -29,3 +29,17 @@ done
 # 直接输出java脚本的真正位置
 readlink -f /usr/bin/java
 ```
+
+---
+
+## 判断进程是否存在,不在则启动
+```
+PIDS=`ps -ef |grep command |grep -v grep | awk '{print $2}'`
+if [ "$PIDS" != "" ]; then
+    echo "command is runing!"
+else
+    cd /root/
+    ./script
+    #运行进程
+fi
+```
