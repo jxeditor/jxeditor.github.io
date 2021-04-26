@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    Kafka使用Debezium实时同步Oracle数据
+  
+</title>
+
+<meta name="description" content="实时同步Oracle数据到Kafka必要操作,附带connect操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka使用Debezium实时同步Oracle数据">
+<meta property="og:url" content="http://yoursite.com/2021/04/23/Kafka%E4%BD%BF%E7%94%A8Debezium%E5%AE%9E%E6%97%B6%E5%90%8C%E6%AD%A5Oracle%E6%95%B0%E6%8D%AE/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="实时同步Oracle数据到Kafka必要操作,附带connect操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-23T05:03:20.000Z">
+<meta property="article:modified_time" content="2021-04-26T01:45:41.878Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="kafka">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">177</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">4</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">96</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">22</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">91</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-Kafka使用Debezium实时同步Oracle数据" class="article article-type-post">
+  
+    <h1 class="article-header">
+      Kafka使用Debezium实时同步Oracle数据
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2021-04-23
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kafka/" rel="tag">kafka</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>实时同步Oracle数据到Kafka必要操作,附带connect操作</p>
+</blockquote>
+<span id="more"></span>
+<h1 id="LogMiner支持"><a href="#LogMiner支持" class="headerlink" title="LogMiner支持"></a>LogMiner支持</h1><h2 id="准备数据库"><a href="#准备数据库" class="headerlink" title="准备数据库"></a>准备数据库</h2><h3 id="Oracle-LogMiner配置"><a href="#Oracle-LogMiner配置" class="headerlink" title="Oracle LogMiner配置"></a>Oracle LogMiner配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># 默认Oracle数据库已经安装完毕</span><br><span class="line">sqlplus &#x2F; as sysdba</span><br><span class="line">startup;</span><br><span class="line">CONNECT sys&#x2F;top_secret AS SYSDBA</span><br><span class="line">alter system set db_recovery_file_dest_size &#x3D; 10G;</span><br><span class="line"># 注意目录必须存在</span><br><span class="line">alter system set db_recovery_file_dest &#x3D; &#39;&#x2F;opt&#x2F;oracle&#x2F;oradata&#x2F;recovery_area&#39; scope&#x3D;spfile;</span><br><span class="line">shutdown immediate</span><br><span class="line">startup mount</span><br><span class="line">alter database archivelog;</span><br><span class="line">alter database open;</span><br><span class="line">archive log list</span><br><span class="line">exit</span><br><span class="line"># 在特定表进行配置,减少Oracle REDO日志信息量</span><br><span class="line">ALTER TABLE dbname.tablename ADD SUPPLEMENTAL LOG DATA (ALL) COLUMNS;</span><br></pre></td></tr></table></figure>
+<h3 id="创建连接器的LogMiner用户"><a href="#创建连接器的LogMiner用户" class="headerlink" title="创建连接器的LogMiner用户"></a>创建连接器的LogMiner用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">sqlplus &#x2F; as sysdba</span><br><span class="line">CREATE TABLESPACE logminer_tbs DATAFILE &#39;&#x2F;opt&#x2F;oracle&#x2F;oradata&#x2F;ORCLCDB&#x2F;logminer_tbs.dbf&#39; SIZE 25M REUSE AUTOEXTEND ON MAXSIZE UNLIMITED;</span><br><span class="line"># 切换PDB</span><br><span class="line">alter session set container&#x3D;ORCLPDB1;</span><br><span class="line"># 启动PDB</span><br><span class="line">alter pluggable database open;</span><br><span class="line">CREATE TABLESPACE logminer_tbs DATAFILE &#39;&#x2F;opt&#x2F;oracle&#x2F;oradata&#x2F;ORCLCDB&#x2F;ORCLPDB1&#x2F;logminer_tbs.dbf&#39; SIZE 25M REUSE AUTOEXTEND ON MAXSIZE UNLIMITED;</span><br><span class="line">exit;</span><br><span class="line"></span><br><span class="line">sqlplus &#x2F; as sysdba</span><br><span class="line">CREATE USER c##dbzuser IDENTIFIED BY dbz DEFAULT TABLESPACE logminer_tbs QUOTA UNLIMITED ON logminer_tbs CONTAINER&#x3D;ALL;</span><br><span class="line"></span><br><span class="line">GRANT CREATE SESSION TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SET CONTAINER TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT ON V_$DATABASE to c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT FLASHBACK ANY TABLE TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT ANY TABLE TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT_CATALOG_ROLE TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT EXECUTE_CATALOG_ROLE TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT ANY TRANSACTION TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT LOGMINING TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT CREATE TABLE TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT LOCK ANY TABLE TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT ALTER ANY TABLE TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT CREATE SEQUENCE TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT EXECUTE ON DBMS_LOGMNR TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT EXECUTE ON DBMS_LOGMNR_D TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT ON V_$LOG TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT ON V_$LOG_HISTORY TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT ON V_$LOGMNR_LOGS TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT ON V_$LOGMNR_CONTENTS TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT ON V_$LOGMNR_PARAMETERS TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT ON V_$LOGFILE TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT ON V_$ARCHIVED_LOG TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT ON V_$ARCHIVE_DEST_STATUS TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line"></span><br><span class="line"># 开启归档(不开启数据库级别,会报错表定义已修改,读取不到表)</span><br><span class="line">ALTER DATABASE ADD SUPPLEMENTAL LOG DATA (ALL) COLUMNS;</span><br><span class="line">exit;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="部署连接器"><a href="#部署连接器" class="headerlink" title="部署连接器"></a>部署连接器</h2><h3 id="下载Oracle工具Jar"><a href="#下载Oracle工具Jar" class="headerlink" title="下载Oracle工具Jar"></a>下载Oracle工具Jar</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">wget https:&#x2F;&#x2F;download.oracle.com&#x2F;otn_software&#x2F;linux&#x2F;instantclient&#x2F;211000&#x2F;instantclient-basic-linux.x64-21.1.0.0.0.zip</span><br><span class="line"></span><br><span class="line">unzip instantclient-basic-linux.x64-21.1.0.0.0.zip</span><br><span class="line">mv instantclient_21_1 &#x2F;opt&#x2F;instant_client</span><br><span class="line"></span><br><span class="line"># 复制ojdbc.jar和xstreams.jar到Kafka的libs下</span><br><span class="line">cp instant_client&#x2F;ojdbc8.jar &#x2F;opt&#x2F;kafka&#x2F;libs&#x2F;</span><br><span class="line">cp instant_client&#x2F;xstreams.jar &#x2F;opt&#x2F;kafka&#x2F;libs&#x2F;</span><br><span class="line"></span><br><span class="line"># 创建环境变量指向客户端目录</span><br><span class="line">LD_LIBRARY_PATH&#x3D;&#x2F;opt&#x2F;instant_client&#x2F;</span><br></pre></td></tr></table></figure>
+<h3 id="启动KafkaConnect"><a href="#启动KafkaConnect" class="headerlink" title="启动KafkaConnect"></a>启动KafkaConnect</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.&#x2F;bin&#x2F;connect-distributed.sh &#x2F;opt&#x2F;kafka&#x2F;config&#x2F;connect-distributed.properties</span><br><span class="line"></span><br><span class="line"># 访问Web</span><br><span class="line">http:&#x2F;&#x2F;192.168.6.128:8083&#x2F;</span><br></pre></td></tr></table></figure>
+<h3 id="添加Connector"><a href="#添加Connector" class="headerlink" title="添加Connector"></a>添加Connector</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># 查看Oracle的service.name</span><br><span class="line">show parameter service_names;</span><br><span class="line"># 查看Oracle的SID</span><br><span class="line">SELECT instance_name FROM v$instance;</span><br><span class="line"></span><br><span class="line"># Post请求(使用CDB)</span><br><span class="line">curl -i -X POST -H &#39;Content-type&#39;:&#39;application&#x2F;json&#39; -d &#39;&#123;&quot;name&quot;:&quot;test&quot;,&quot;config&quot;:&#123;&quot;connector.class&quot;:&quot;io.debezium.connector.oracle.OracleConnector&quot;,&quot;tasks.max&quot;:&quot;1&quot;,&quot;database.server.name&quot;:&quot;ORCLCDB&quot;,&quot;database.hostname&quot;:&quot;192.168.6.128&quot;,&quot;database.port&quot;:&quot;1521&quot;,&quot;database.user&quot;:&quot;c##dbzuser&quot;,&quot;database.password&quot;:&quot;dbz&quot;,&quot;database.dbname&quot;:&quot;ORCLCDB&quot;,&quot;database.history.kafka.bootstrap.servers&quot;:&quot;localhost:9092&quot;,&quot;database.history.kafka.topic&quot;:&quot;test.schema&quot;,&quot;table.include.list&quot;:&quot;C##XS.test&quot;,&quot;decimal.handling.mode&quot;:&quot;string&quot;&#125;&#125;&#39; http:&#x2F;&#x2F;192.168.6.128:8083&#x2F;connectors</span><br></pre></td></tr></table></figure>
+<h3 id="查看同步数据"><a href="#查看同步数据" class="headerlink" title="查看同步数据"></a>查看同步数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># 创建表的DDL数据</span><br><span class="line">.&#x2F;kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic test --from-beginning</span><br><span class="line"></span><br><span class="line"># 创建table需要指定非系统用户登录</span><br><span class="line">create table test (</span><br><span class="line">    id  varchar2(50) primary key,</span><br><span class="line">    phone number(11) unique</span><br><span class="line">);</span><br><span class="line">ALTER TABLE C##XS.test ADD SUPPLEMENTAL LOG DATA (ALL) COLUMNS</span><br><span class="line"></span><br><span class="line">insert into test(id,phone) values(&#39;XS&#39;,13400000002);</span><br><span class="line"></span><br><span class="line"># 同步到数据后Kafka的topic为ORCLCDB.C__XS.test</span><br><span class="line">.&#x2F;kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic ORCLCDB.C__XS.test --from-beginning</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="XSteam支持"><a href="#XSteam支持" class="headerlink" title="XSteam支持"></a>XSteam支持</h1><h2 id="准备数据库-1"><a href="#准备数据库-1" class="headerlink" title="准备数据库"></a>准备数据库</h2><h3 id="创建连接器的XStream用户"><a href="#创建连接器的XStream用户" class="headerlink" title="创建连接器的XStream用户"></a>创建连接器的XStream用户</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"># Admin用户</span><br><span class="line">sqlplus &#x2F; as sysdba</span><br><span class="line">CREATE TABLESPACE xstream_adm_tbs DATAFILE &#39;&#x2F;opt&#x2F;oracle&#x2F;oradata&#x2F;ORCLCDB&#x2F;xstream_adm_tbs.dbf&#39; SIZE 25M REUSE AUTOEXTEND ON MAXSIZE UNLIMITED;</span><br><span class="line"># 切换PDB</span><br><span class="line">alter session set container&#x3D;ORCLPDB1;</span><br><span class="line"># 启动PDB</span><br><span class="line">alter pluggable database open;</span><br><span class="line">CREATE TABLESPACE xstream_adm_tbs DATAFILE &#39;&#x2F;opt&#x2F;oracle&#x2F;oradata&#x2F;ORCLCDB&#x2F;ORCLPDB1&#x2F;xstream_adm_tbs.dbf&#39; SIZE 25M REUSE AUTOEXTEND ON MAXSIZE UNLIMITED;</span><br><span class="line">exit;</span><br><span class="line"></span><br><span class="line">sqlplus &#x2F; as sysdba</span><br><span class="line">CREATE USER c##dbzadmin IDENTIFIED BY dbz DEFAULT TABLESPACE xstream_adm_tbs QUOTA UNLIMITED ON xstream_adm_tbs CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT CREATE SESSION, SET CONTAINER TO c##dbzadmin CONTAINER&#x3D;ALL;</span><br><span class="line"></span><br><span class="line">BEGIN</span><br><span class="line">    DBMS_XSTREAM_AUTH.GRANT_ADMIN_PRIVILEGE(</span><br><span class="line">        grantee                 &#x3D;&gt; &#39;c##dbzadmin&#39;,</span><br><span class="line">        privilege_type          &#x3D;&gt; &#39;CAPTURE&#39;,</span><br><span class="line">        grant_select_privileges &#x3D;&gt; TRUE,</span><br><span class="line">        container               &#x3D;&gt; &#39;ALL&#39;</span><br><span class="line">    );</span><br><span class="line">END;</span><br><span class="line">&#x2F;</span><br><span class="line"></span><br><span class="line"># 连接用户</span><br><span class="line">CREATE TABLESPACE xstream_tbs DATAFILE &#39;&#x2F;opt&#x2F;oracle&#x2F;oradata&#x2F;ORCLCDB&#x2F;xstream_tbs.dbf&#39; SIZE 25M REUSE AUTOEXTEND ON MAXSIZE UNLIMITED;</span><br><span class="line">alter session set container&#x3D;ORCLPDB1;</span><br><span class="line">CREATE TABLESPACE xstream_tbs DATAFILE &#39;&#x2F;opt&#x2F;oracle&#x2F;oradata&#x2F;ORCLCDB&#x2F;ORCLPDB1&#x2F;xstream_tbs.dbf&#39; SIZE 25M REUSE AUTOEXTEND ON MAXSIZE UNLIMITED;</span><br><span class="line">exit;</span><br><span class="line"></span><br><span class="line">sqlplus &#x2F; as sysdba</span><br><span class="line">CREATE USER c##dbzuser IDENTIFIED BY dbz DEFAULT TABLESPACE xstream_tbs QUOTA UNLIMITED ON xstream_tbs CONTAINER&#x3D;ALL;</span><br><span class="line"></span><br><span class="line">GRANT CREATE SESSION TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SET CONTAINER TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT ON V_$DATABASE to c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT FLASHBACK ANY TABLE TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT SELECT_CATALOG_ROLE TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">GRANT EXECUTE_CATALOG_ROLE TO c##dbzuser CONTAINER&#x3D;ALL;</span><br><span class="line">exit;</span><br></pre></td></tr></table></figure>
+<h3 id="创建XStream出站服务器"><a href="#创建XStream出站服务器" class="headerlink" title="创建XStream出站服务器"></a>创建XStream出站服务器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">sqlplus &#x2F; as sysdba</span><br><span class="line">conn c##dbzadmin&#x2F;dbz</span><br><span class="line">DECLARE</span><br><span class="line">  tables  DBMS_UTILITY.UNCL_ARRAY;</span><br><span class="line">  schemas DBMS_UTILITY.UNCL_ARRAY;</span><br><span class="line">BEGIN</span><br><span class="line">    tables(1)  :&#x3D; NULL;</span><br><span class="line">    schemas(1) :&#x3D; &#39;debezium&#39;;</span><br><span class="line">  DBMS_XSTREAM_ADM.CREATE_OUTBOUND(</span><br><span class="line">    server_name     &#x3D;&gt;  &#39;dbzxout&#39;,</span><br><span class="line">    table_names     &#x3D;&gt;  tables,</span><br><span class="line">    schema_names    &#x3D;&gt;  schemas);</span><br><span class="line">END;</span><br><span class="line">&#x2F;</span><br><span class="line">exit;</span><br><span class="line"></span><br><span class="line"># XStream用户连接到出站服务器(每个连接器需要唯一XStream出站服务器)</span><br><span class="line">sqlplus &#x2F; as sysdba</span><br><span class="line">BEGIN</span><br><span class="line">  DBMS_XSTREAM_ADM.ALTER_OUTBOUND(</span><br><span class="line">    server_name  &#x3D;&gt; &#39;dbzxout&#39;,</span><br><span class="line">    connect_user &#x3D;&gt; &#39;c##dbzuser&#39;);</span><br><span class="line">END;</span><br><span class="line">&#x2F;</span><br><span class="line">exit;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="部署连接器-1"><a href="#部署连接器-1" class="headerlink" title="部署连接器"></a>部署连接器</h2><h3 id="添加Connector-1"><a href="#添加Connector-1" class="headerlink" title="添加Connector"></a>添加Connector</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># Post请求</span><br><span class="line">curl -i -X POST -H &#39;Content-type&#39;:&#39;application&#x2F;json&#39; -d &#39;&#123;&quot;name&quot;:&quot;test&quot;,&quot;config&quot;:&#123;&quot;connector.class&quot;:&quot;io.debezium.connector.oracle.OracleConnector&quot;,&quot;tasks.max&quot;:&quot;1&quot;,&quot;database.server.name&quot;:&quot;ORCLCDB&quot;,&quot;database.hostname&quot;:&quot;192.168.6.128&quot;,&quot;database.port&quot;:&quot;1521&quot;,&quot;database.user&quot;:&quot;c##dbzuser&quot;,&quot;database.password&quot;:&quot;dbz&quot;,&quot;database.dbname&quot;:&quot;ORCLCDB&quot;,&quot;database.pdb.name&quot;:&quot;ORCLPDB1&quot;,&quot;database.history.kafka.bootstrap.servers&quot;:&quot;localhost:9092&quot;,&quot;database.history.kafka.topic&quot;:&quot;test.schema&quot;,&quot;table.include.list&quot;:&quot;C##XS.test&quot;,&quot;decimal.handling.mode&quot;:&quot;string&quot;,&quot;database.connection.adapter&quot;:&quot;xstream&quot;,&quot;database.out.server.name&quot;:&quot;dbzxout&quot;&#125;&#125;&#39; http:&#x2F;&#x2F;192.168.6.128:8083&#x2F;connectors</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><h2 id="启动连接器报表定义已修改-读取失败"><a href="#启动连接器报表定义已修改-读取失败" class="headerlink" title="启动连接器报表定义已修改,读取失败"></a>启动连接器报表定义已修改,读取失败</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># 需要提前开启归档</span><br><span class="line">ALTER DATABASE ADD SUPPLEMENTAL LOG DATA (ALL) COLUMNS;</span><br><span class="line"># 引生问题:如果一开始没有开启归档的表怎么实时同步</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Oracle归档日志过多解决-磁盘很大可以忽略"><a href="#Oracle归档日志过多解决-磁盘很大可以忽略" class="headerlink" title="Oracle归档日志过多解决(磁盘很大可以忽略)"></a>Oracle归档日志过多解决(磁盘很大可以忽略)</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"># 由于连接器是依赖于Oracle的归档日志做的实时同步</span><br><span class="line"># 存在归档日志撑爆磁盘的问题</span><br><span class="line">#! &#x2F;bin&#x2F;bash</span><br><span class="line">exec &gt;&gt; &#x2F;home&#x2F;oracle&#x2F;log&#x2F;del_arch&#96;date +%F-%H&#96;.log #记录脚本日志</span><br><span class="line">$ORACLE_HOME&#x2F;bin&#x2F;rman target &#x2F; &lt;&lt;EOF</span><br><span class="line">#检查归档日志</span><br><span class="line">crosscheck archivelog all;</span><br><span class="line">#删除所有过期日志</span><br><span class="line">delete noprompt expired archivelog all;</span><br><span class="line">#删除一个小时前的归档日志</span><br><span class="line">delete noprompt archivelog until time &#39;sysdate-1&#x2F;24&#39;;</span><br><span class="line">exit;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>
