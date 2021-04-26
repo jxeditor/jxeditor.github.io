@@ -45,6 +45,8 @@ END open_all_pdbs;
 ## 使用操作
 ```
 su oracle
+# 启动监听
+lsnrctl start
 sqlplus / as sysdba
 startup
 
@@ -62,4 +64,35 @@ export NLS_LANG=AMERICAN_AMERICA.ZHS16GBK
 
 使用Navicat登陆时报错,需要下载对应版本的instantclient
 Navicat->工具->选项->环境->OCI环境->指定对应版本的oci.dll
+```
+
+---
+
+## 修改监听端口
+```
+# 默认1521,修改$ORACLE_HOME/network/admin/目录下的listener.ora和tnsnames.ora
+cd /opt/oracle/product/19c/dbhome_1/network/admin
+vi listener.ora
+(ADDRESS = (PROTOCOL = TCP)(HOST = master)(PORT = 2345))
+(ADDRESS = (PROTOCOL = IPC)(KEY = EXTPROC2345))
+
+vi tnsnames.ora
+ORCLCDB =
+  (DESCRIPTION =
+    (ADDRESS = (PROTOCOL = TCP)(HOST = master)(PORT = 2345))
+    (CONNECT_DATA =
+      (SERVER = DEDICATED)
+      (SERVICE_NAME = ORCLCDB)
+    )
+  )
+
+LISTENER_ORCLCDB =
+  (ADDRESS = (PROTOCOL = TCP)(HOST = master)(PORT = 2345))
+  
+sqlplus / as sysdba
+show parameter local_listener;
+alter system set local_listener="(address=(protocol=tcp)(host=master)(port=2345))"
+exit;
+
+lsnrctl start
 ```
