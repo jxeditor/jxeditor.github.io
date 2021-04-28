@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    IceBerg如何集成的Flink
+  
+</title>
+
+<meta name="description" content="再次膜拜SPI机制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IceBerg如何集成的Flink">
+<meta property="og:url" content="http://yoursite.com/2021/04/28/IceBerg%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90%E7%9A%84Flink/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="再次膜拜SPI机制">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-28T03:34:01.000Z">
+<meta property="article:modified_time" content="2021-04-28T05:23:13.627Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="flink">
+<meta property="article:tag" content="iceberg">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">179</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">97</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iceberg/" rel="tag">iceberg</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">25</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">91</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-IceBerg如何集成的Flink" class="article article-type-post">
+  
+    <h1 class="article-header">
+      IceBerg如何集成的Flink
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2021-04-28
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iceberg/" rel="tag">iceberg</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>再次膜拜SPI机制</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="直入主题"><a href="#直入主题" class="headerlink" title="直入主题"></a>直入主题</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Iceberg主要是在Flink中嵌入了一个新的Catalog</span><br><span class="line"># 怎么嵌入?(和嵌入自定义表连接器一样)</span><br><span class="line">Iceberg的iceberg-flink模块中定义了FlinkCatalogFactory</span><br><span class="line">在使用CREATE CATALOG语法时,FLINK会根据WITH子句的参数去discover对应的工厂类进行操作</span><br><span class="line">针对传递的参数将Catalog建立起来</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="怎么读取-写入数据呢"><a href="#怎么读取-写入数据呢" class="headerlink" title="怎么读取/写入数据呢?"></a>怎么读取/写入数据呢?</h2><h3 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"># 各种Catalog&#x2F;Database&#x2F;Table操作对应FlinkCatalog中的各种方法</span><br><span class="line"># 那么表如何被获取到,并进行实例化呢?</span><br><span class="line">FlinkCatalog.getFactory()创建了FlinkDynamicTableFactory</span><br><span class="line"></span><br><span class="line"># 根据表的种类分为Source与Sink(熟悉的Flink自定义表)</span><br><span class="line">@Override</span><br><span class="line">public DynamicTableSource createDynamicTableSource(Context context) &#123;</span><br><span class="line">    # 表路径database.table</span><br><span class="line">    ObjectPath objectPath &#x3D; context.getObjectIdentifier().toObjectPath();</span><br><span class="line">    # 加载器,根据config文件进行构造</span><br><span class="line">    TableLoader tableLoader &#x3D; createTableLoader(objectPath);</span><br><span class="line">    # 获取表结构</span><br><span class="line">    TableSchema tableSchema &#x3D; TableSchemaUtils.getPhysicalSchema(context.getCatalogTable().getSchema());</span><br><span class="line">    # 重头戏</span><br><span class="line">    return new IcebergTableSource(tableLoader, tableSchema, context.getCatalogTable().getOptions(), context.getConfiguration());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public DynamicTableSink createDynamicTableSink(Context context) &#123;</span><br><span class="line">    ObjectPath objectPath &#x3D; context.getObjectIdentifier().toObjectPath();</span><br><span class="line">    TableLoader tableLoader &#x3D; createTableLoader(objectPath);</span><br><span class="line">    TableSchema tableSchema &#x3D; TableSchemaUtils.getPhysicalSchema(context.getCatalogTable().getSchema());</span><br><span class="line">    return new IcebergTableSink(tableLoader, tableSchema);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="读取-转化为DataStream"><a href="#读取-转化为DataStream" class="headerlink" title="读取-转化为DataStream"></a>读取-转化为DataStream</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"># 创建DataStream(怎么创建?)</span><br><span class="line">IcebergTableSource.createDataStream()</span><br><span class="line"></span><br><span class="line"># 获取配置信息构造DataStream</span><br><span class="line">FlinkSource.forRowData().*.build()</span><br><span class="line"></span><br><span class="line">public DataStream&lt;RowData&gt; build() &#123;</span><br><span class="line">  Preconditions.checkNotNull(env, &quot;StreamExecutionEnvironment should not be null&quot;);</span><br><span class="line">  &#x2F;&#x2F; 构造FlinkInputFormat获取输入ScanPlan</span><br><span class="line">  FlinkInputFormat format &#x3D; buildFormat();</span><br><span class="line">  </span><br><span class="line">  ScanContext context &#x3D; contextBuilder.build();</span><br><span class="line">  &#x2F;&#x2F; 获取上下文</span><br><span class="line">  TypeInformation&lt;RowData&gt; typeInfo &#x3D; FlinkCompatibilityUtil.toTypeInfo(FlinkSchemaUtil.convert(context.project()));</span><br><span class="line"></span><br><span class="line">  if (!context.isStreaming()) &#123;</span><br><span class="line">    &#x2F;&#x2F; 批</span><br><span class="line">    int parallelism &#x3D; inferParallelism(format, context);</span><br><span class="line">    return env.createInput(format, typeInfo).setParallelism(parallelism);</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    &#x2F;&#x2F; 流</span><br><span class="line">    &#x2F;&#x2F; 如果是Restore状态会获取之前的SnapshotId</span><br><span class="line">    &#x2F;&#x2F; 如果不是则获取开始的SnapshotId</span><br><span class="line">    StreamingMonitorFunction function &#x3D; new StreamingMonitorFunction(tableLoader, context);</span><br><span class="line"></span><br><span class="line">    String monitorFunctionName &#x3D; String.format(&quot;Iceberg table (%s) monitor&quot;, table);</span><br><span class="line">    String readerOperatorName &#x3D; String.format(&quot;Iceberg table (%s) reader&quot;, table);</span><br><span class="line">    &#x2F;&#x2F; 返回DataStream</span><br><span class="line">    return env.addSource(function, monitorFunctionName)</span><br><span class="line">        .transform(readerOperatorName, typeInfo, StreamingReaderOperator.factory(format));</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="写入-addSink"><a href="#写入-addSink" class="headerlink" title="写入-addSink"></a>写入-addSink</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"># 并行度是个迷,设置了也没有啥用,写死的1</span><br><span class="line">FlinkSink.forRowData().*.build()</span><br><span class="line">public DataStreamSink&lt;RowData&gt; build() &#123;</span><br><span class="line">  Preconditions.checkArgument(rowDataInput !&#x3D; null,</span><br><span class="line">      &quot;Please use forRowData() to initialize the input DataStream.&quot;);</span><br><span class="line">  Preconditions.checkNotNull(tableLoader, &quot;Table loader shouldn&#39;t be null&quot;);</span><br><span class="line"></span><br><span class="line">  if (table &#x3D;&#x3D; null) &#123;</span><br><span class="line">    tableLoader.open();</span><br><span class="line">    try (TableLoader loader &#x3D; tableLoader) &#123;</span><br><span class="line">      this.table &#x3D; loader.loadTable();</span><br><span class="line">    &#125; catch (IOException e) &#123;</span><br><span class="line">      throw new UncheckedIOException(&quot;Failed to load iceberg table from table loader: &quot; + tableLoader, e);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; Find out the equality field id list based on the user-provided equality field column names.</span><br><span class="line">  List&lt;Integer&gt; equalityFieldIds &#x3D; Lists.newArrayList();</span><br><span class="line">  if (equalityFieldColumns !&#x3D; null &amp;&amp; equalityFieldColumns.size() &gt; 0) &#123;</span><br><span class="line">    for (String column : equalityFieldColumns) &#123;</span><br><span class="line">      org.apache.iceberg.types.Types.NestedField field &#x3D; table.schema().findField(column);</span><br><span class="line">      Preconditions.checkNotNull(field, &quot;Missing required equality field column &#39;%s&#39; in table schema %s&quot;,</span><br><span class="line">          column, table.schema());</span><br><span class="line">      equalityFieldIds.add(field.fieldId());</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; Convert the requested flink table schema to flink row type.</span><br><span class="line">  RowType flinkRowType &#x3D; toFlinkRowType(table.schema(), tableSchema);</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; Distribute the records from input data stream based on the write.distribution-mode.</span><br><span class="line">  rowDataInput &#x3D; distributeDataStream(rowDataInput, table.properties(), table.spec(), table.schema(), flinkRowType);</span><br><span class="line"></span><br><span class="line">  &#x2F;&#x2F; Chain the iceberg stream writer and committer operator.</span><br><span class="line">  IcebergStreamWriter&lt;RowData&gt; streamWriter &#x3D; createStreamWriter(table, flinkRowType, equalityFieldIds);</span><br><span class="line">  IcebergFilesCommitter filesCommitter &#x3D; new IcebergFilesCommitter(tableLoader, overwrite);</span><br><span class="line"></span><br><span class="line">  this.writeParallelism &#x3D; writeParallelism &#x3D;&#x3D; null ? rowDataInput.getParallelism() : writeParallelism;</span><br><span class="line"></span><br><span class="line">  DataStream&lt;Void&gt; returnStream &#x3D; rowDataInput</span><br><span class="line">      .transform(ICEBERG_STREAM_WRITER_NAME, TypeInformation.of(WriteResult.class), streamWriter)</span><br><span class="line">      .setParallelism(writeParallelism)</span><br><span class="line">      .transform(ICEBERG_FILES_COMMITTER_NAME, Types.VOID, filesCommitter)</span><br><span class="line">      .setParallelism(1)</span><br><span class="line">      .setMaxParallelism(1);</span><br><span class="line"></span><br><span class="line">  return returnStream.addSink(new DiscardingSink())</span><br><span class="line">      .name(String.format(&quot;IcebergSink %s&quot;, table.name()))</span><br><span class="line">      .setParallelism(1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>

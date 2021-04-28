@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    IceBerg初探
+  
+</title>
+
+<meta name="description" content="整活,去年就有听过之信大佬讲过iceberg,不过当时认为iceberg只是做了一层数据编排的操作,认识还是太过于浅薄">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IceBerg初探">
+<meta property="og:url" content="http://yoursite.com/2021/04/27/IceBerg%E5%88%9D%E6%8E%A2/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="整活,去年就有听过之信大佬讲过iceberg,不过当时认为iceberg只是做了一层数据编排的操作,认识还是太过于浅薄">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-27T01:29:12.000Z">
+<meta property="article:modified_time" content="2021-04-28T02:43:24.817Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="iceberg">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">179</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">97</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iceberg/" rel="tag">iceberg</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">25</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">91</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-IceBerg初探" class="article article-type-post">
+  
+    <h1 class="article-header">
+      IceBerg初探
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2021-04-27
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/iceberg/" rel="tag">iceberg</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>整活,去年就有听过之信大佬讲过iceberg,不过当时认为iceberg只是做了一层数据编排的操作,认识还是太过于浅薄</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"># Flink和Zeppelin环境需要提前部署起来</span><br><span class="line"># 下载Iceberg源码</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;apache&#x2F;iceberg.git</span><br><span class="line">cd iceberg</span><br><span class="line"># 开始编译</span><br><span class="line">.&#x2F;gradlew build -x test</span><br><span class="line"># 对应的运行时依赖包</span><br><span class="line">spark-runtime&#x2F;build&#x2F;libs</span><br><span class="line">spark-runtime&#x2F;build&#x2F;libs</span><br><span class="line">flink-runtime&#x2F;build&#x2F;libs</span><br><span class="line">hive-runtime&#x2F;build&#x2F;libs</span><br><span class="line"></span><br><span class="line"># 在Zeppelin配置Iceberg依赖包</span><br><span class="line">%flink.conf</span><br><span class="line">flink.execution.jars &#x2F;opt&#x2F;iceberg&#x2F;flink-runtime&#x2F;build&#x2F;libs&#x2F;iceberg-flink-runtime-dae6c49.jar</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="创建新Catalog"><a href="#创建新Catalog" class="headerlink" title="创建新Catalog"></a>创建新Catalog</h2><h3 id="HiveCatalog"><a href="#HiveCatalog" class="headerlink" title="HiveCatalog"></a>HiveCatalog</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">%flink.ssql</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">CATALOG</span> hive_catalog <span class="keyword">WITH</span> (</span><br><span class="line"><span class="string">&#x27;type&#x27;</span>=<span class="string">&#x27;iceberg&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;catalog-type&#x27;</span>=<span class="string">&#x27;hive&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;uri&#x27;</span>=<span class="string">&#x27;thrift://mac:9083&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;clients&#x27;</span>=<span class="string">&#x27;5&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;property-version&#x27;</span>=<span class="string">&#x27;1&#x27;</span>,</span><br><span class="line"><span class="string">&#x27;warehouse&#x27;</span>=<span class="string">&#x27;hdfs://user/hive/warehouse&#x27;</span></span><br><span class="line">);</span><br><span class="line"></span><br><span class="line"><span class="comment"># 以我的理解,这里使用的还是Hive的元数据,相当于一个软连接</span></span><br><span class="line"><span class="comment"># 对hive_catalog的操作就是对Hive的元数据进行操作</span></span><br></pre></td></tr></table></figure>
+<h3 id="HadoopCatalog"><a href="#HadoopCatalog" class="headerlink" title="HadoopCatalog"></a>HadoopCatalog</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">CATALOG</span> hadoop_catalog <span class="keyword">WITH</span> (</span><br><span class="line">  <span class="string">&#x27;type&#x27;</span>=<span class="string">&#x27;iceberg&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;catalog-type&#x27;</span>=<span class="string">&#x27;hadoop&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;warehouse&#x27;</span>=<span class="string">&#x27;hdfs://mac:9000/warehouse/test&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;property-version&#x27;</span>=<span class="string">&#x27;1&#x27;</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+<h3 id="CustomCatalog"><a href="#CustomCatalog" class="headerlink" title="CustomCatalog"></a>CustomCatalog</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">CREATE</span> <span class="keyword">CATALOG</span> my_catalog <span class="keyword">WITH</span> (</span><br><span class="line">  <span class="string">&#x27;type&#x27;</span>=<span class="string">&#x27;iceberg&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;catalog-impl&#x27;</span>=<span class="string">&#x27;com.my.custom.CatalogImpl&#x27;</span>,</span><br><span class="line">  <span class="string">&#x27;my-additional-catalog-config&#x27;</span>=<span class="string">&#x27;my-value&#x27;</span></span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="目前支持的SQL操作"><a href="#目前支持的SQL操作" class="headerlink" title="目前支持的SQL操作"></a>目前支持的SQL操作</h2><h3 id="DDL操作"><a href="#DDL操作" class="headerlink" title="DDL操作"></a>DDL操作</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 创建DataBase</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">DATABASE</span> iceberg_db;</span><br><span class="line"><span class="keyword">USE</span> iceberg_db;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 创建表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> hive_catalog.default.sample (</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">BIGINT</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;unique id&#x27;</span>,</span><br><span class="line">    <span class="keyword">data</span> <span class="keyword">STRING</span></span><br><span class="line">);</span><br><span class="line"><span class="comment">-- 不支持计算列,水印,主键</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 分区</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> hive_catalog.default.sample (</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">BIGINT</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;unique id&#x27;</span>,</span><br><span class="line">    <span class="keyword">data</span> <span class="keyword">STRING</span></span><br><span class="line">) PARTITIONED <span class="keyword">BY</span> (<span class="keyword">data</span>);</span><br><span class="line"><span class="comment">-- Iceberg支持隐藏分区,但是FlinkSQL暂不支持</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- Like建表</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> hive_catalog.default.sample (</span><br><span class="line">    <span class="keyword">id</span> <span class="built_in">BIGINT</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;unique id&#x27;</span>,</span><br><span class="line">    <span class="keyword">data</span> <span class="keyword">STRING</span></span><br><span class="line">);</span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span>  hive_catalog.default.sample_like <span class="keyword">LIKE</span> hive_catalog.default.sample;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 修改表</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> hive_catalog.default.sample <span class="keyword">SET</span> (<span class="string">&#x27;write.format.default&#x27;</span>=<span class="string">&#x27;avro&#x27;</span>)</span><br><span class="line"><span class="comment">-- 仅支持flink-1.11</span></span><br><span class="line"></span><br><span class="line"><span class="comment">-- 修改表名</span></span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">TABLE</span> hive_catalog.default.sample <span class="keyword">RENAME</span> <span class="keyword">TO</span> hive_catalog.default.new_sample;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- 删除表</span></span><br><span class="line"><span class="keyword">DROP</span> <span class="keyword">TABLE</span> hive_catalog.default.sample;</span><br></pre></td></tr></table></figure>
+<h3 id="查询操作"><a href="#查询操作" class="headerlink" title="查询操作"></a>查询操作</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- 支持流\批两种模式</span></span><br><span class="line"><span class="keyword">SET</span> execution.type = streaming</span><br><span class="line"><span class="keyword">SET</span> table.dynamic-<span class="keyword">table</span>-options.enabled=<span class="literal">true</span>;</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">sample</span> <span class="comment">/*+ OPTIONS(&#x27;streaming&#x27;=&#x27;true&#x27;, &#x27;monitor-interval&#x27;=&#x27;1s&#x27;)*/</span> ;</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">sample</span> <span class="comment">/*+ OPTIONS(&#x27;streaming&#x27;=&#x27;true&#x27;, &#x27;monitor-interval&#x27;=&#x27;1s&#x27;, &#x27;start-snapshot-id&#x27;=&#x27;3821550127947089987&#x27;)*/</span> ;</span><br><span class="line"><span class="comment">-- monitor-interval 连续监视新提交的数据文件的时间间隔(默认值:&quot;1s&quot;)</span></span><br><span class="line"><span class="comment">-- start-snapshot-id 流作业开始的快照ID</span></span><br><span class="line"><span class="keyword">SET</span> execution.type = batch</span><br><span class="line"><span class="keyword">SELECT</span> * <span class="keyword">FROM</span> <span class="keyword">sample</span>       ;</span><br></pre></td></tr></table></figure>
+<h3 id="插入操作"><a href="#插入操作" class="headerlink" title="插入操作"></a>插入操作</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">-- Append</span></span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> hive_catalog.default.sample <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">&#x27;a&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> <span class="keyword">INTO</span> hive_catalog.default.sample <span class="keyword">SELECT</span> <span class="keyword">id</span>, <span class="keyword">data</span> <span class="keyword">from</span> other_kafka_table;</span><br><span class="line"></span><br><span class="line"><span class="comment">-- Overwrite(流作业不支持)</span></span><br><span class="line"><span class="keyword">INSERT</span> OVERWRITE <span class="keyword">sample</span> <span class="keyword">VALUES</span> (<span class="number">1</span>, <span class="string">&#x27;a&#x27;</span>);</span><br><span class="line"><span class="keyword">INSERT</span> OVERWRITE hive_catalog.default.sample <span class="keyword">PARTITION</span>(<span class="keyword">data</span>=<span class="string">&#x27;a&#x27;</span>) <span class="keyword">SELECT</span> <span class="number">6</span>;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="API操作"><a href="#API操作" class="headerlink" title="API操作"></a>API操作</h2><h3 id="数据读取"><a href="#数据读取" class="headerlink" title="数据读取"></a>数据读取</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">--- Batch</span><br><span class="line">StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironment();</span><br><span class="line">TableLoader tableLoader = TableLoader.fromHadooptable(<span class="string">&quot;hdfs://nn:8020/warehouse/path&quot;</span>);</span><br><span class="line">DataStream&lt;RowData&gt; batch = FlinkSource.forRowData()</span><br><span class="line">     .env(env)</span><br><span class="line">     .tableLoader(loader)</span><br><span class="line">     .streaming(<span class="keyword">false</span>)</span><br><span class="line">     .build();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Print all records to stdout.</span></span><br><span class="line">batch.print();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Submit and execute this batch read job.</span></span><br><span class="line">env.execute(<span class="string">&quot;Test Iceberg Batch Read&quot;</span>);</span><br><span class="line"></span><br><span class="line">--- Stream</span><br><span class="line">StreamExecutionEnvironment env = StreamExecutionEnvironment.createLocalEnvironment();</span><br><span class="line">TableLoader tableLoader = TableLoader.fromHadooptable(<span class="string">&quot;hdfs://nn:8020/warehouse/path&quot;</span>);</span><br><span class="line">DataStream&lt;RowData&gt; stream = FlinkSource.forRowData()</span><br><span class="line">     .env(env)</span><br><span class="line">     .tableLoader(loader)</span><br><span class="line">     .streaming(<span class="keyword">true</span>)</span><br><span class="line">     .startSnapshotId(<span class="number">3821550127947089987</span>)</span><br><span class="line">     .build();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Print all records to stdout.</span></span><br><span class="line">stream.print();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Submit and execute this streaming read job.</span></span><br><span class="line">env.execute(<span class="string">&quot;Test Iceberg Batch Read&quot;</span>);</span><br></pre></td></tr></table></figure>
+<h3 id="数据写入"><a href="#数据写入" class="headerlink" title="数据写入"></a>数据写入</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">--- 追加</span><br><span class="line">StreamExecutionEnvironment env = ...;</span><br><span class="line"></span><br><span class="line">DataStream&lt;RowData&gt; input = ... ;</span><br><span class="line">Configuration hadoopConf = <span class="keyword">new</span> Configuration();</span><br><span class="line">TableLoader tableLoader = TableLoader.fromHadooptable(<span class="string">&quot;hdfs://nn:8020/warehouse/path&quot;</span>);</span><br><span class="line"></span><br><span class="line">FlinkSink.forRowData(input)</span><br><span class="line">    .tableLoader(tableLoader)</span><br><span class="line">    .hadoopConf(hadoopConf)</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line">env.execute(<span class="string">&quot;Test Iceberg DataStream&quot;</span>);</span><br><span class="line"></span><br><span class="line">--- 覆写</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="合并小文件"><a href="#合并小文件" class="headerlink" title="合并小文件"></a>合并小文件</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 原理和Spark的rewriteDataFiles相同</span></span><br><span class="line"><span class="keyword">import</span> org.apache.iceberg.flink.actions.Actions;</span><br><span class="line"></span><br><span class="line">TableLoader tableLoader = TableLoader.fromHadooptable(<span class="string">&quot;hdfs://nn:8020/warehouse/path&quot;</span>);</span><br><span class="line">Table table = tableLoader.loadTable();</span><br><span class="line">RewriteDataFilesActionResult result = Actions.forTable(table)</span><br><span class="line">        .rewriteDataFiles()</span><br><span class="line">        .execute();</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># 由于我使用的版本较高,iceberg目前好像支持到flink-1.11.*,hadoop-2.7.3,hive-2.3.8</span><br><span class="line"># 编译之后会报错,不让强转,翻看源码就有点懵圈了</span><br><span class="line"># 明明HadoopCatalog就是继承BaseMetastoreCatalog抽象类,然后BaseMetastoreCatalog实现Catalog接口</span><br><span class="line">Cannot initialize Catalog, org.apache.iceberg.hadoop.HadoopCatalog does not implement Catalog.</span><br><span class="line"># 通过flink版本降级到1.11.3之后可以使用</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="更多操作传送门"><a href="#更多操作传送门" class="headerlink" title="更多操作传送门"></a>更多操作<a target="_blank" rel="noopener" href="https://iceberg.apache.org/flink/">传送门</a></h2>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>
