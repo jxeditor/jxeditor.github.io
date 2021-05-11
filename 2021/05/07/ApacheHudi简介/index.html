@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+
+
+<title>
+  
+    ApacheHudi简介
+  
+</title>
+
+<meta name="description" content="参考Hudi官网,文章以及知乎回答,只做简单介绍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ApacheHudi简介">
+<meta property="og:url" content="http://yoursite.com/2021/05/07/ApacheHudi%E7%AE%80%E4%BB%8B/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="参考Hudi官网,文章以及知乎回答,只做简单介绍">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-05-07T03:47:36.000Z">
+<meta property="article:modified_time" content="2021-05-11T01:58:26.626Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="hudi">
+<meta name="twitter:card" content="summary">
+
+
+  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+
+
+
+  <link rel="icon" href="/images/favicon.ico">
+
+
+
+<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
+
+
+<link rel="stylesheet" href="/styles/main.css">
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+<body
+  
+    class="monochrome"
+  
+  >
+  <div class="mobile-header">
+  <button class="sidebar-toggle" type="button">
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+    <span class="icon-bar"></span>
+  </button>
+  <a class="title" href="/">BlackC</a>
+</div>
+
+  <div class="main-container">
+    <div class="sidebar">
+  <div class="header">
+    <h1 class="title"><a href="/">BlackC</a></h1>
+    
+    <div class="info">
+      <div class="content">
+        
+        
+          <div class="author">X&amp;Z</div>
+        
+      </div>
+      
+        <div class="avatar">
+          
+            <a href="/about"><img src="/images/avatar.jpg"></a>
+          
+        </div>
+      
+    </div>
+  </div>
+  <div class="body">
+    
+      
+        <ul class="nav">
+          
+            
+              <li class="category-list-container">
+                <a href="javascript:;">分类</a>
+                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">181</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">8</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="tag-list-container">
+                <a href="javascript:;">标签</a>
+                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">97</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hudi/" rel="tag">hudi</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iceberg/" rel="tag">iceberg</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
+              </li>
+            
+          
+            
+              <li class="archive-list-container">
+                <a href="javascript:;">归档</a>
+                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">27</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">91</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="/" title="主页" external="false">主页</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/archives" title="文章" external="false">文章</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/about" title="关于" external="false">关于</a>
+              </li>
+            
+          
+        </ul>
+      
+        <ul class="nav">
+          
+            
+              <li>
+                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
+              </li>
+            
+          
+            
+              <li>
+                <a href="/atom.xml" title="RSS" external="false">RSS</a>
+              </li>
+            
+          
+        </ul>
+      
+    
+  </div>
+</div>
+
+    <div class="main-content">
+      
+        <div style="max-width: 1000px">
+      
+          <article id="post-ApacheHudi简介" class="article article-type-post">
+  
+    <h1 class="article-header">
+      ApacheHudi简介
+    </h1>
+  
+  
+
+  <div class="article-info">
+    <span class="article-date">
+  2021-05-07
+</span>
+
+    
+	<span class="article-category tagcloud">
+	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
+	</span>
+
+
+    
+	<span class="article-tag tagcloud">
+		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hudi/" rel="tag">hudi</a></li></ul>
+	</span>
+
+
+  </div>
+  <div class="article-entry">
+    <blockquote>
+<p>参考Hudi<a target="_blank" rel="noopener" href="https://hudi.apache.org/docs/spark_quick-start-guide.html">官网</a>,<a target="_blank" rel="noopener" href="https://copyfuture.com/blogs-details/20200104193221803maaaqfq9dqvkkhf">文章</a>以及<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/339932084">知乎</a>回答,只做简单介绍</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="Hudi是什么"><a href="#Hudi是什么" class="headerlink" title="Hudi是什么?"></a>Hudi是什么?</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Hadoop Upserts Deletes and Incrementals.</span><br><span class="line">对于我自己的理解就是利用Hadoop存储更新&#x2F;删除&#x2F;变更的记录.</span><br><span class="line">基于时间线对数据进行存储,并保证原子性.</span><br><span class="line">Hudi的关键动作:</span><br><span class="line">    COMMITS - 将一批记录原子写入表中</span><br><span class="line">    CLEANS - 清除表中不再使用的旧版本文件</span><br><span class="line">    DELTA_COMMIT - 将一批记录原子写入MergeOnRead类型表中</span><br><span class="line">    COMPACTION - 压缩,可以看做基于时间线上的特殊提交(从基于行的日志文件移动到列格式)</span><br><span class="line">    ROLLBACK - 表示COMMITS&#x2F;DELTA_COMMIT不成功且已经回滚(删除了写入过程产生的任何文件)</span><br><span class="line">    SAVEPOINT - 将某些文件标记为SAVEPOINT,清理程序不会删除它们,便于将表还原到时间线上的某个快照上</span><br><span class="line"></span><br><span class="line">Hudi的状态:</span><br><span class="line">    REQUESTED - 已安排动作,但未开始</span><br><span class="line">    INFLIGHT - 正在执行该操作</span><br><span class="line">    COMPLETED - 动作完成</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="为什么使用Hudi"><a href="#为什么使用Hudi" class="headerlink" title="为什么使用Hudi?"></a>为什么使用Hudi?</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">对于大数据处理,我们一般分为实时处理与离线处理,数据同理</span><br><span class="line">Hudi可以将MySQL数据以近实时的方式映射到大数据平台中(Hive)</span><br><span class="line">MySQL处理耗时长&#x2F;没法处理&#x2F;跨库的分析可以交由大数据平台来处理</span><br><span class="line">这时候有同学会问,如何只是这样的话,也有其他的组件可以做到,为啥要选择Hudi?</span><br><span class="line">Apache Kudu,需要单独部署集群,Hudi不需要,只需要利用现在的HDFS做数据文件存储,Hive做数据分析即可,更加适合资源受限的环境</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Hudi表数据结构"><a href="#Hudi表数据结构" class="headerlink" title="Hudi表数据结构"></a>Hudi表数据结构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">一般使用HDFS进行数据存储</span><br><span class="line">包含_partition_key的为实际数据文件,按分区存储,_partition_key可以指定</span><br><span class="line"></span><br><span class="line">.hoodie </span><br><span class="line">对应表的元数据信息</span><br><span class="line">由于CRUD的零散性,每一次操作都会生成一个文件,小文件越来越多后会严重影响HDFS的性能,Hudi设计了文件合并机制,.hoodie中存放了对应的文件合并操作相关日志</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Hudi常见配置"><a href="#Hudi常见配置" class="headerlink" title="Hudi常见配置"></a>Hudi常见配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">需要注意必要的配置</span><br><span class="line">TABLE_NAME(表名)</span><br><span class="line">RECORDKEY_FIELD_OPT_KEY(主键字段,用来唯一标识每个分区内的记录,默认值:uuid)</span><br><span class="line">PARTITIONPATH_FIELD_OPT_KEY(用于对表进行分区的列,设置&quot;&quot;可以避免分区,默认值:partitionpath)</span><br><span class="line">PRECOMBINE_FIELD_OPT_KEY(当一批数据中有两个记录具有相同的键时,选择指定字段最大值的记录,默认值:ts)</span><br><span class="line"></span><br><span class="line">非必要配置</span><br><span class="line">OPERATION_OPT_KEY(写操作类型,默认值:UPSERT_OPERATION_OPT_VAL,可选:BULK_INSERT_OPERATION_OPT_VAL,INSERT_OPERATION_OPT_VAL,DELETE_OPERATION_OPT_VAL)</span><br><span class="line">TABLE_TYPE_OPT_KEY(表类型,默认值:COW_TABLE_TYPE_OPT_VAL,可选:MOR_TABLE_TYPE_OPT_VAL)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="COW和MOR表"><a href="#COW和MOR表" class="headerlink" title="COW和MOR表"></a>COW和MOR表</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Copy On Write</span><br><span class="line">写时复制表中的文件片,仅包含基本列文件,每次提交都会生成新版本的基本文件</span><br><span class="line">此存储类型使客户端能够以列式文件格式(当前为parquet)摄取数据</span><br><span class="line">使用COW存储类型时,任何写入Hudi数据集的新数据都将写入新的parquet文件</span><br><span class="line">更新现有的行将导致重写整个parquet文件(这些parquet文件包含要更新的受影响的行)</span><br><span class="line">因此,所有对此类数据集的写入都受parquet写性能的限制,parquet文件越大,摄取数据所花费的时间就越长</span><br><span class="line"></span><br><span class="line">Merge On Read</span><br><span class="line">读时合并表,仅通过最新版本的数据文件来支持读取查询</span><br><span class="line">此存储类型使客户端可以快速将数据摄取为基于行(如avro)的数据格式</span><br><span class="line">使用MOR存储类型时,任何写入Hudi数据集的新数据都将写入新的日志&#x2F;增量文件,这些文件在内部将数据以avro进行编码</span><br><span class="line">压缩(Compaction)过程(配置为嵌入式或异步)将日志文件格式转换为列式文件格式(parquet)</span><br><span class="line"></span><br><span class="line">如果满足以下条件,则选择写时复制(COW)存储:</span><br><span class="line">    寻找一种简单的替换现有的parquet表的方法,而无需实时数据</span><br><span class="line">    当前的工作流是重写整个表&#x2F;分区以处理更新,而每个分区中实际上只有几个文件发生更改</span><br><span class="line">    想使操作更为简单(无需压缩等),并且摄取&#x2F;写入性能仅受parquet文件大小以及受更新影响文件数量限制</span><br><span class="line">    工作流很简单,并且不会突然爆发大量更新或插入到较旧的分区</span><br><span class="line">    COW写入时付出了合并成本,因此,这些突然的更改可能会阻塞摄取,并干扰正常摄取延迟目标</span><br><span class="line"></span><br><span class="line">如果满足以下条件，则选择读时合并(MOR)存储:</span><br><span class="line">    希望数据尽快被摄取并尽可能快地可被查询</span><br><span class="line">    工作负载可能会突然出现模式的峰值&#x2F;变化(例如,对上游数据库中较旧事务的批量更新导致对DFS上旧分区的大量更新)</span><br><span class="line">    异步压缩(Compaction)有助于缓解由这种情况引起的写放大,而正常的提取则需跟上上游流的变化</span><br></pre></td></tr></table></figure>
+  </div>
+  <footer class="article-footer">
+    
+  <div class="cc">
+    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
+      <img src="/images/cc/cc.png">
+      
+          <img src="/images/cc/by.png">
+        
+          <img src="/images/cc/sa.png">
+      
+      <span>
+        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
+      </span>
+    </a>
+  </div>
+
+
+    
+
+  </footer>
+</article>
+
+
+
+
+
+
+
+          <div class="main-footer">
+  
+    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
+  
+</div>
+
+      
+        </div>
+      
+    </div>
+  </div>
+  
+<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+
+  
+<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+
+
+  <!-- Root element of PhotoSwipe. Must have class pswp. -->
+  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <!-- Background of PhotoSwipe.
+             It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+
+      <!-- Container that holds slides.
+                PhotoSwipe keeps only 3 of them in the DOM to save memory.
+                Don't modify these 3 pswp__item elements, data is added later on. -->
+      <div class="pswp__container">
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+        <div class="pswp__item"></div>
+      </div>
+
+      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+      <div class="pswp__ui pswp__ui--hidden">
+
+        <div class="pswp__top-bar">
+
+          <!--  Controls are self-explanatory. Order can be changed. -->
+
+          <div class="pswp__counter"></div>
+
+          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+
+          <button class="pswp__button pswp__button--share" title="Share"></button>
+
+          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+
+          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+
+          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+          <!-- element will get class pswp__preloader--active when preloader is running -->
+          <div class="pswp__preloader">
+            <div class="pswp__preloader__icn">
+              <div class="pswp__preloader__cut">
+                <div class="pswp__preloader__donut"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+          <div class="pswp__share-tooltip"></div>
+        </div>
+
+        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+
+        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+
+        <div class="pswp__caption">
+          <div class="pswp__caption__center"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+<script src="/PhotoSwipe/photoswipe.js"></script>
+
+  
+<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+
+
+
+
+<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
+
+
+<script src="/scripts/main.js"></script>
+
+
+</body>
+</html>
