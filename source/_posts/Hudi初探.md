@@ -56,7 +56,7 @@ CREATE TABLE t1(
   uuid VARCHAR(20), -- 要么给定uuid,要么PRIMARY KEY(field) NOT ENFORCED指定主键,否则会报错
   name VARCHAR(10),
   age INT,
-  ts TIMESTAMP(3), -- ts是必须字段,在前面有介绍过,用来觉得数据的新旧的
+  ts TIMESTAMP(3), -- ts是必须字段,在前面有介绍过,用来决定数据的新旧的
   `partition` VARCHAR(20)
 )
 PARTITIONED BY (`partition`)
