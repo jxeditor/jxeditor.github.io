@@ -42,6 +42,12 @@ InFlightRequest
 
 ## 解决问题
 ```
+# Kafka方向(调参)
+queued.max.requests
+socket.receive.buffer.bytes
+socket.send.buffer.bytes
+
+# Flink方向
 1.问题首先是由峰值引起的,所以进行slot调节,设为Kafka分区数*2
 2.增大TM内存,用于提高网络缓冲区的大小,或者直接调节taskmanager.memory.network.fraction,加大网络缓冲区内存大小
 3.加大CK的间隔,避免频繁CK
