@@ -105,8 +105,8 @@ class MySelectFunction() extends PatternSelectFunction[LoginEvent,Warning]{
 #### 引入相关依赖包
 ```
 <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-cep-scala_2.11</artifactId>
-            <version>1.10.0</version>
-        </dependency>
+    <groupId>org.apache.flink</groupId>
+    <artifactId>flink-cep-scala_2.11</artifactId>
+    <version>1.10.0</version>
+</dependency>
 ```
