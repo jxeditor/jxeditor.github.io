@@ -1,17 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
 
-<title>
-  
-    Flink系列问题
-  
-</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;yoursite.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Muse&quot;,&quot;version&quot;:&quot;8.5.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script><script src="/js/config.js"></script>
 <meta name="description" content="针对Flink的一些知识问答">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Flink系列问题">
@@ -26,169 +34,226 @@
 <meta name="twitter:card" content="summary">
 
 
-  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+<link rel="canonical" href="http://yoursite.com/2019/09/23/Flink%E7%B3%BB%E5%88%97%E9%97%AE%E9%A2%98/">
 
 
 
-  <link rel="icon" href="/images/favicon.ico">
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;09&#x2F;23&#x2F;Flink%E7%B3%BB%E5%88%97%E9%97%AE%E9%A2%98&#x2F;&quot;,&quot;path&quot;:&quot;2019&#x2F;09&#x2F;23&#x2F;Flink系列问题&#x2F;&quot;,&quot;title&quot;:&quot;Flink系列问题&quot;}</script>
 
-
-
-<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
-
-
-<link rel="stylesheet" href="/styles/main.css">
-
-
-
-
-
-
-
-<meta name="generator" content="Hexo 5.4.0"></head>
-<body
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Flink系列问题 | BlackC</title>
   
-    class="monochrome"
-  
-  >
-  <div class="mobile-header">
-  <button class="sidebar-toggle" type="button">
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-  </button>
-  <a class="title" href="/">BlackC</a>
-</div>
 
-  <div class="main-container">
-    <div class="sidebar">
-  <div class="header">
-    <h1 class="title"><a href="/">BlackC</a></h1>
-    
-    <div class="info">
-      <div class="content">
-        
-        
-          <div class="author">X&amp;Z</div>
-        
-      </div>
-      
-        <div class="avatar">
-          
-            <a href="/about"><img src="/images/avatar.jpg"></a>
-          
-        </div>
-      
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
     </div>
   </div>
-  <div class="body">
-    
-      
-        <ul class="nav">
-          
-            
-              <li class="category-list-container">
-                <a href="javascript:;">分类</a>
-                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">187</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
-              </li>
-            
-          
-            
-              <li class="tag-list-container">
-                <a href="javascript:;">标签</a>
-                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">103</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hudi/" rel="tag">hudi</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iceberg/" rel="tag">iceberg</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
-              </li>
-            
-          
-            
-              <li class="archive-list-container">
-                <a href="javascript:;">归档</a>
-                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">91</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
-              </li>
-            
-          
-        </ul>
-      
-        <ul class="nav">
-          
-            
-              <li>
-                <a href="/" title="主页" external="false">主页</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="/archives" title="文章" external="false">文章</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="/about" title="关于" external="false">关于</a>
-              </li>
-            
-          
-        </ul>
-      
-        <ul class="nav">
-          
-            
-              <li>
-                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="/atom.xml" title="RSS" external="false">RSS</a>
-              </li>
-            
-          
-        </ul>
-      
-    
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">BlackC</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
   </div>
 </div>
 
-    <div class="main-content">
-      
-        <div style="max-width: 1000px">
-      
-          <article id="post-Flink系列问题" class="article article-type-post">
-  
-    <h1 class="article-header">
-      Flink系列问题
-    </h1>
-  
-  
-
-  <div class="article-info">
-    <span class="article-date">
-  2019-09-23
-</span>
-
-    
-	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
-	</span>
 
 
-    
-	<span class="article-tag tagcloud">
-		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li></ul>
-	</span>
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
 
 
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
   </div>
-  <div class="article-entry">
-    <blockquote>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8BFlink"><span class="nav-number">1.</span> <span class="nav-text">简单介绍一下Flink</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E7%9B%B8%E6%AF%94%E4%BC%A0%E7%BB%9F%E7%9A%84Spark-Streaming%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9F%E5%92%8CSpark%E4%B8%AD%E7%9A%84Structured-Streaming%E7%9B%B8%E6%AF%94%E5%91%A2%EF%BC%9FFlink%E7%9B%B8%E6%AF%94Spark-Streaming%E5%92%8CStorm%E6%9C%89%E4%BB%80%E4%B9%88%E4%BC%98%E5%8A%BF%EF%BC%9F"><span class="nav-number">2.</span> <span class="nav-text">Flink相比传统的Spark Streaming有什么区别？和Spark中的Structured Streaming相比呢？Flink相比Spark Streaming和Storm有什么优势？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E7%9A%84%E7%BB%84%E4%BB%B6%E6%A0%88%E6%98%AF%E6%80%8E%E4%B9%88%E6%A0%B7%E7%9A%84%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">Flink的组件栈是怎么样的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E7%9A%84%E5%9F%BA%E7%A1%80%E7%BC%96%E7%A8%8B%E6%A8%A1%E5%9E%8B%E4%BA%86%E8%A7%A3%E5%90%97%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">Flink的基础编程模型了解吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B4%E8%AF%B4Flink%E6%9E%B6%E6%9E%84%E4%B8%AD%E7%9A%84%E8%A7%92%E8%89%B2%E5%92%8C%E4%BD%9C%E7%94%A8%EF%BC%9F"><span class="nav-number">5.</span> <span class="nav-text">说说Flink架构中的角色和作用？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B4%E8%AF%B4Flink%E4%B8%AD%E5%B8%B8%E7%94%A8%E7%9A%84%E7%AE%97%E5%AD%90%EF%BC%9F%E7%94%A8%E8%BF%87%E5%93%AA%E4%BA%9B%EF%BC%9F"><span class="nav-number">6.</span> <span class="nav-text">说说Flink中常用的算子？用过哪些？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E4%B8%AD%E7%9A%84%E5%88%86%E5%8C%BA%E7%AD%96%E7%95%A5%E6%9C%89%E5%93%AA%E5%87%A0%E7%A7%8D%EF%BC%9F"><span class="nav-number">7.</span> <span class="nav-text">Flink中的分区策略有哪几种？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E7%9A%84%E5%B9%B6%E8%A1%8C%E5%BA%A6%E6%9C%89%E4%BA%86%E8%A7%A3%E5%90%97%EF%BC%9FFlink%E4%B8%AD%E8%AE%BE%E7%BD%AE%E5%B9%B6%E8%A1%8C%E5%BA%A6%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">8.</span> <span class="nav-text">Flink的并行度有了解吗？Flink中设置并行度需要注意什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E6%94%AF%E6%8C%81%E5%93%AA%E5%87%A0%E7%A7%8D%E9%87%8D%E5%90%AF%E7%AD%96%E7%95%A5%EF%BC%9F%E5%88%86%E5%88%AB%E5%A6%82%E4%BD%95%E9%85%8D%E7%BD%AE%EF%BC%9F"><span class="nav-number">9.</span> <span class="nav-text">Flink支持哪几种重启策略？分别如何配置？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E6%9C%89%E4%BB%80%E4%B9%88%E4%BD%9C%E7%94%A8%EF%BC%9F%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%EF%BC%9F"><span class="nav-number">10.</span> <span class="nav-text">Flink的分布式缓存有什么作用？如何使用？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E4%B8%AD%E7%9A%84%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F%EF%BC%8C%E4%BD%BF%E7%94%A8%E5%B9%BF%E6%92%AD%E5%8F%98%E9%87%8F%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E4%BB%80%E4%B9%88%E4%BA%8B%E9%A1%B9%EF%BC%9F"><span class="nav-number">11.</span> <span class="nav-text">Flink中的广播变量，使用广播变量需要注意什么事项？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E4%B8%AD%E5%AF%B9%E7%AA%97%E5%8F%A3%E7%9A%84%E6%94%AF%E6%8C%81%E5%8C%85%E6%8B%AC%E5%93%AA%E5%87%A0%E7%A7%8D%EF%BC%9F%E8%AF%B4%E8%AF%B4%E4%BB%96%E4%BB%AC%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">12.</span> <span class="nav-text">Flink中对窗口的支持包括哪几种？说说他们的使用场景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink-%E4%B8%AD%E7%9A%84-State-Backends%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E6%9C%89%E4%BB%80%E4%B9%88%E4%BD%9C%E7%94%A8%EF%BC%9F%E5%88%86%E6%88%90%E5%93%AA%E5%87%A0%E7%B1%BB%EF%BC%9F%E8%AF%B4%E8%AF%B4%E4%BB%96%E4%BB%AC%E5%90%84%E8%87%AA%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9%EF%BC%9F"><span class="nav-number">13.</span> <span class="nav-text">Flink 中的 State Backends是什么？有什么作用？分成哪几类？说说他们各自的优缺点？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E4%B8%AD%E7%9A%84%E6%97%B6%E9%97%B4%E7%A7%8D%E7%B1%BB%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F%E5%90%84%E8%87%AA%E4%BB%8B%E7%BB%8D%E4%B8%80%E4%B8%8B%EF%BC%9F"><span class="nav-number">14.</span> <span class="nav-text">Flink中的时间种类有哪些？各自介绍一下？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WaterMark%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F%E6%98%AF%E7%94%A8%E6%9D%A5%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F%E5%A6%82%E4%BD%95%E7%94%9F%E6%88%90%E6%B0%B4%E5%8D%B0%EF%BC%9F%E6%B0%B4%E5%8D%B0%E7%9A%84%E5%8E%9F%E7%90%86%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">15.</span> <span class="nav-text">WaterMark是什么？是用来解决什么问题？如何生成水印？水印的原理是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E7%9A%84table%E5%92%8CSQL%E7%86%9F%E6%82%89%E5%90%97%EF%BC%9FTable-API%E5%92%8CSQL%E4%B8%ADTableEnvironment%E8%BF%99%E4%B8%AA%E7%B1%BB%E6%9C%89%E4%BB%80%E4%B9%88%E4%BD%9C%E7%94%A8%EF%BC%9F"><span class="nav-number">16.</span> <span class="nav-text">Flink的table和SQL熟悉吗？Table API和SQL中TableEnvironment这个类有什么作用？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0SQL%E8%A7%A3%E6%9E%90%E7%9A%84%E5%91%A2%EF%BC%9F"><span class="nav-number">17.</span> <span class="nav-text">Flink如何实现SQL解析的呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E6%98%AF%E5%A6%82%E4%BD%95%E5%81%9A%E5%88%B0%E6%89%B9%E5%A4%84%E7%90%86%E4%B8%8E%E6%B5%81%E5%A4%84%E7%90%86%E7%BB%9F%E4%B8%80%E7%9A%84%EF%BC%9F"><span class="nav-number">18.</span> <span class="nav-text">Flink是如何做到批处理与流处理统一的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E4%B8%AD%E7%9A%84%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%E6%A8%A1%E5%BC%8F%E6%98%AF%E6%80%8E%E4%B9%88%E6%A0%B7%E7%9A%84%EF%BC%9F"><span class="nav-number">19.</span> <span class="nav-text">Flink中的数据传输模式是怎么样的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E7%9A%84%E5%AE%B9%E9%94%99%E6%9C%BA%E5%88%B6%E7%9F%A5%E9%81%93%E5%90%97%EF%BC%9F"><span class="nav-number">20.</span> <span class="nav-text">Flink的容错机制知道吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E4%B8%AD%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E5%BF%AB%E7%85%A7%E6%9C%BA%E5%88%B6%E6%98%AF%E6%80%8E%E4%B9%88%E6%A0%B7%E7%9A%84%EF%BC%9F"><span class="nav-number">21.</span> <span class="nav-text">Flink中的分布式快照机制是怎么样的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0Exactly-once%E7%9A%84%EF%BC%9F"><span class="nav-number">22.</span> <span class="nav-text">Flink是如何实现Exactly-once的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E7%9A%84Kafka-connector%E6%98%AF%E5%A6%82%E4%BD%95%E5%81%9A%E5%88%B0%E5%90%91%E4%B8%8B%E5%85%BC%E5%AE%B9%E7%9A%84%E5%91%A2%EF%BC%9F"><span class="nav-number">23.</span> <span class="nav-text">Flink的Kafka-connector是如何做到向下兼容的呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E4%B8%AD%E7%9A%84%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E6%98%AF%E5%A6%82%E4%BD%95%E5%81%9A%E7%9A%84%EF%BC%9F"><span class="nav-number">24.</span> <span class="nav-text">Flink中的内存管理是如何做的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E4%B8%AD%E7%9A%84%E5%BA%8F%E5%88%97%E5%8C%96%E6%98%AF%E5%A6%82%E4%BD%95%E5%81%9A%E7%9A%84%EF%BC%9F"><span class="nav-number">25.</span> <span class="nav-text">Flink中的序列化是如何做的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E4%B8%AD%E7%9A%84RPC%E6%A1%86%E6%9E%B6%E9%80%89%E5%9E%8B%E6%98%AF%E6%80%8E%E4%B9%88%E6%A0%B7%E7%9A%84%EF%BC%9F"><span class="nav-number">26.</span> <span class="nav-text">Flink中的RPC框架选型是怎么样的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E5%9C%A8%E4%BD%BF%E7%94%A8Window%E6%97%B6%E5%87%BA%E7%8E%B0%E6%95%B0%E6%8D%AE%E5%80%BE%E6%96%9C%EF%BC%8C%E4%BD%A0%E6%9C%89%E4%BB%80%E4%B9%88%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95%EF%BC%9F"><span class="nav-number">27.</span> <span class="nav-text">Flink在使用Window时出现数据倾斜，你有什么解决办法？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink-SQL%E5%9C%A8%E4%BD%BF%E7%94%A8Groupby%E6%97%B6%E5%87%BA%E7%8E%B0%E7%83%AD%E7%82%B9%E6%95%B0%E6%8D%AE%EF%BC%8C%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%EF%BC%9F"><span class="nav-number">28.</span> <span class="nav-text">Flink SQL在使用Groupby时出现热点数据，如何处理？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%B0%E5%9C%A8%E6%88%91%E6%9C%89Flink%E4%BB%BB%E5%8A%A1%EF%BC%8Cdelay%E6%9E%81%E9%AB%98%EF%BC%8C%E8%AF%B7%E9%97%AE%E4%BD%A0%E6%9C%89%E4%BB%80%E4%B9%88%E8%B0%83%E4%BC%98%E7%AD%96%E7%95%A5%EF%BC%9F"><span class="nav-number">29.</span> <span class="nav-text">现在我有Flink任务，delay极高，请问你有什么调优策略？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E6%98%AF%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%8F%8D%E5%8E%8B%E7%9A%84%EF%BC%9F%E5%92%8CSpark%E6%9C%89%E4%BB%80%E4%B9%88%E5%8C%BA%E5%88%AB%EF%BC%9FStorm%E5%91%A2%EF%BC%9F"><span class="nav-number">30.</span> <span class="nav-text">Flink是如何处理反压的？和Spark有什么区别？Storm呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Operator-Chains%EF%BC%88%E7%AE%97%E5%AD%90%E9%93%BE%EF%BC%89%E8%BF%99%E4%B8%AA%E6%A6%82%E5%BF%B5%E4%BD%A0%E4%BA%86%E8%A7%A3%E5%90%97%EF%BC%9FFlink%E6%98%AF%E5%A6%82%E4%BD%95%E4%BC%98%E5%8C%96%E7%9A%84%EF%BC%9F%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8BOperator%E6%89%8D%E4%BC%9Achain%E5%9C%A8%E4%B8%80%E8%B5%B7%EF%BC%9F"><span class="nav-number">31.</span> <span class="nav-text">Operator Chains（算子链）这个概念你了解吗？Flink是如何优化的？什么情况下Operator才会chain在一起？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%B2%E8%AE%B2%E4%B8%80%E4%B8%AAFlink-job%E6%8F%90%E4%BA%A4%E7%9A%84%E6%95%B4%E4%B8%AA%E6%B5%81%E7%A8%8B%E5%90%97%EF%BC%9F"><span class="nav-number">32.</span> <span class="nav-text">讲讲一个Flink job提交的整个流程吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%B2%E8%AE%B2%E4%B8%80%E4%B8%AAFlink-job%E8%B0%83%E5%BA%A6%E5%92%8C%E6%89%A7%E8%A1%8C%E7%9A%84%E6%B5%81%E7%A8%8B%E5%90%97%EF%BC%9F"><span class="nav-number">33.</span> <span class="nav-text">讲讲一个Flink job调度和执行的流程吗？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E6%89%80%E8%B0%93%E2%80%9D%E4%B8%89%E5%B1%82%E5%9B%BE%E2%80%9D%E7%BB%93%E6%9E%84%E6%98%AF%E5%93%AA%E5%87%A0%E4%B8%AA%E2%80%9D%E5%9B%BE%E2%80%9D%EF%BC%9F%E5%AE%83%E4%BB%AC%E4%B9%8B%E9%97%B4%E6%98%AF%E4%BB%80%E4%B9%88%E5%85%B3%E7%B3%BB%EF%BC%9F%E4%BB%96%E4%BB%AC%E4%B9%8B%E9%97%B4%E6%98%AF%E5%A6%82%E4%BD%95%E8%BD%AC%E5%8C%96%E7%9A%84%EF%BC%9F"><span class="nav-number">34.</span> <span class="nav-text">Flink所谓”三层图”结构是哪几个”图”？它们之间是什么关系？他们之间是如何转化的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JobManger%E5%92%8CTaskManager%E5%88%86%E5%88%AB%E5%9C%A8%E9%9B%86%E7%BE%A4%E4%B8%AD%E6%89%AE%E6%BC%94%E4%BA%86%E4%BB%80%E4%B9%88%E8%A7%92%E8%89%B2%EF%BC%8C%E8%AF%B4%E8%AF%B4%E5%AE%83%E4%BB%AC%E9%83%BD%E5%81%9A%E4%BA%86%E4%BA%9B%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-number">35.</span> <span class="nav-text">JobManger和TaskManager分别在集群中扮演了什么角色，说说它们都做了些什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E8%AF%B4%E8%AF%B4Flink%E6%95%B0%E6%8D%AE%E7%9A%84%E6%8A%BD%E8%B1%A1%E5%92%8C%E6%95%B0%E6%8D%AE%E7%9A%84%E4%BA%A4%E6%8D%A2%E8%BF%87%E7%A8%8B"><span class="nav-number">36.</span> <span class="nav-text">简单说说Flink数据的抽象和数据的交换过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E5%BF%AB%E7%85%A7%E6%9C%BA%E5%88%B6%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F"><span class="nav-number">37.</span> <span class="nav-text">Flink的分布式快照机制是如何实现的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink%E7%9A%84%E5%8F%8D%E5%8E%8B%E6%98%AF%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E7%9A%84%EF%BC%9F"><span class="nav-number">38.</span> <span class="nav-text">Flink的反压是如何实现的？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%B4%E8%AF%B4FlinkSQL%E6%98%AF%E5%A6%82%E4%BD%95%E8%BD%AC%E5%8C%96%E7%9A%84%EF%BC%9F%E4%BA%86%E8%A7%A3%E9%80%BB%E8%BE%91%E8%AE%A1%E5%88%92%E5%92%8C%E5%92%8C%E7%89%A9%E7%90%86%E8%AE%A1%E5%88%92%E5%90%97%EF%BC%9FFlinkSQL%E7%9A%84%E7%BB%B4%E8%A1%A8JOIN%E6%98%AF%E5%A6%82%E4%BD%95%E5%81%9A%E7%9A%84%EF%BC%9F%E4%BA%86%E8%A7%A3Async-IO%E5%90%97%EF%BC%9F%E8%A7%A3%E5%86%B3%E4%BA%86%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98%EF%BC%9F"><span class="nav-number">39.</span> <span class="nav-text">说说FlinkSQL是如何转化的？了解逻辑计划和和物理计划吗？FlinkSQL的维表JOIN是如何做的？了解Async IO吗？解决了什么问题？</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">X&Z</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">251</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/09/23/Flink%E7%B3%BB%E5%88%97%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="X&Z">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BlackC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Flink系列问题
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-09-23 09:43:58" itemprop="dateCreated datePublished" datetime="2019-09-23T09:43:58+08:00">2019-09-23</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-03-21 20:33:13" itemprop="dateModified" datetime="2021-03-21T20:33:13+08:00">2021-03-21</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
 <p>针对Flink的一些知识问答</p>
 </blockquote>
 <span id="more"></span>
@@ -258,132 +323,77 @@
 <h3 id="Operator-Chains（算子链）这个概念你了解吗？Flink是如何优化的？什么情况下Operator才会chain在一起？"><a href="#Operator-Chains（算子链）这个概念你了解吗？Flink是如何优化的？什么情况下Operator才会chain在一起？" class="headerlink" title="Operator Chains（算子链）这个概念你了解吗？Flink是如何优化的？什么情况下Operator才会chain在一起？"></a>Operator Chains（算子链）这个概念你了解吗？Flink是如何优化的？什么情况下Operator才会chain在一起？</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">为了更高效地分布式执行，Flink会尽可能地将operator的subtask链接（chain）在一起形成task。每个task在一个线程中执行。将operators链接成task是非常有效的优化：它能减少线程之间的切换，减少消息的序列化&#x2F;反序列化，减少数据在缓冲区的交换，减少了延迟的同时提高整体的吞吐量。</span><br><span class="line">两个operator chain在一起的的条件：</span><br><span class="line">    上下游的并行度一致</span><br><span class="line">    下游节点的入度为1 （也就是说下游节点没有来自其他节点的输入）</span><br><span class="line">    上下游节点都在同一个 slot group 中（下面会解释 slot group）</span><br><span class="line">    下游节点的 chain 策略为 ALWAYS（可以与上下游链接，map、flatmap、filter等默认是ALWAYS）</span><br><span class="line">    上游节点的 chain 策略为 ALWAYS 或 HEAD（只能与下游链接，不能与上游链接，Source默认是HEAD）</span><br><span class="line">    两个节点间数据分区方式是 forward（参考理解数据流的分区）</span><br><span class="line">    用户没有禁用 chain</span><br></pre></td></tr></table></figure>
 
 <h3 id="讲讲一个Flink-job提交的整个流程吗？"><a href="#讲讲一个Flink-job提交的整个流程吗？" class="headerlink" title="讲讲一个Flink job提交的整个流程吗？"></a>讲讲一个Flink job提交的整个流程吗？</h3><h3 id="讲讲一个Flink-job调度和执行的流程吗？"><a href="#讲讲一个Flink-job调度和执行的流程吗？" class="headerlink" title="讲讲一个Flink job调度和执行的流程吗？"></a>讲讲一个Flink job调度和执行的流程吗？</h3><h3 id="Flink所谓”三层图”结构是哪几个”图”？它们之间是什么关系？他们之间是如何转化的？"><a href="#Flink所谓”三层图”结构是哪几个”图”？它们之间是什么关系？他们之间是如何转化的？" class="headerlink" title="Flink所谓”三层图”结构是哪几个”图”？它们之间是什么关系？他们之间是如何转化的？"></a>Flink所谓”三层图”结构是哪几个”图”？它们之间是什么关系？他们之间是如何转化的？</h3><h3 id="JobManger和TaskManager分别在集群中扮演了什么角色，说说它们都做了些什么？"><a href="#JobManger和TaskManager分别在集群中扮演了什么角色，说说它们都做了些什么？" class="headerlink" title="JobManger和TaskManager分别在集群中扮演了什么角色，说说它们都做了些什么？"></a>JobManger和TaskManager分别在集群中扮演了什么角色，说说它们都做了些什么？</h3><h3 id="简单说说Flink数据的抽象和数据的交换过程"><a href="#简单说说Flink数据的抽象和数据的交换过程" class="headerlink" title="简单说说Flink数据的抽象和数据的交换过程"></a>简单说说Flink数据的抽象和数据的交换过程</h3><h3 id="Flink的分布式快照机制是如何实现的？"><a href="#Flink的分布式快照机制是如何实现的？" class="headerlink" title="Flink的分布式快照机制是如何实现的？"></a>Flink的分布式快照机制是如何实现的？</h3><h3 id="Flink的反压是如何实现的？"><a href="#Flink的反压是如何实现的？" class="headerlink" title="Flink的反压是如何实现的？"></a>Flink的反压是如何实现的？</h3><h3 id="说说FlinkSQL是如何转化的？了解逻辑计划和和物理计划吗？FlinkSQL的维表JOIN是如何做的？了解Async-IO吗？解决了什么问题？"><a href="#说说FlinkSQL是如何转化的？了解逻辑计划和和物理计划吗？FlinkSQL的维表JOIN是如何做的？了解Async-IO吗？解决了什么问题？" class="headerlink" title="说说FlinkSQL是如何转化的？了解逻辑计划和和物理计划吗？FlinkSQL的维表JOIN是如何做的？了解Async IO吗？解决了什么问题？"></a>说说FlinkSQL是如何转化的？了解逻辑计划和和物理计划吗？FlinkSQL的维表JOIN是如何做的？了解Async IO吗？解决了什么问题？</h3>
-  </div>
-  <footer class="article-footer">
-    
-  <div class="cc">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
-      <img src="/images/cc/cc.png">
-      
-          <img src="/images/cc/by.png">
-        
-          <img src="/images/cc/sa.png">
-      
-      <span>
-        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
-      </span>
-    </a>
-  </div>
-
-
-    
-
-  </footer>
-</article>
-
-
-
-
-
-
-
-          <div class="main-footer">
-  
-    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
-  
-</div>
-
-      
-        </div>
-      
     </div>
-  </div>
-  
-<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 
+    
+    
+    
 
-  
-<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/flink/" rel="tag"># flink</a>
+          </div>
 
-  
-<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+        
 
-
-  <!-- Root element of PhotoSwipe. Must have class pswp. -->
-  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    <!-- Background of PhotoSwipe.
-             It's a separate element as animating opacity is faster than rgba(). -->
-    <div class="pswp__bg"></div>
-
-    <!-- Slides wrapper with overflow:hidden. -->
-    <div class="pswp__scroll-wrap">
-
-      <!-- Container that holds slides.
-                PhotoSwipe keeps only 3 of them in the DOM to save memory.
-                Don't modify these 3 pswp__item elements, data is added later on. -->
-      <div class="pswp__container">
-        <div class="pswp__item"></div>
-        <div class="pswp__item"></div>
-        <div class="pswp__item"></div>
-      </div>
-
-      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-      <div class="pswp__ui pswp__ui--hidden">
-
-        <div class="pswp__top-bar">
-
-          <!--  Controls are self-explanatory. Order can be changed. -->
-
-          <div class="pswp__counter"></div>
-
-          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-          <button class="pswp__button pswp__button--share" title="Share"></button>
-
-          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
-          <!-- element will get class pswp__preloader--active when preloader is running -->
-          <div class="pswp__preloader">
-            <div class="pswp__preloader__icn">
-              <div class="pswp__preloader__cut">
-                <div class="pswp__preloader__donut"></div>
-              </div>
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/09/23/%E5%9F%BA%E4%BA%8ECentOS7.6%E6%90%AD%E5%BB%BAK8S-%E9%97%AE%E9%A2%98/" rel="prev" title="基于CentOS7.6搭建K8S-问题">
+                  <i class="fa fa-chevron-left"></i> 基于CentOS7.6搭建K8S-问题
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/10/08/Neo4j%E5%9B%BE%E5%BD%A2%E6%95%B0%E6%8D%AE%E5%BA%93%E5%AE%9E%E6%93%8D/" rel="next" title="Neo4j图形数据库实操">
+                  Neo4j图形数据库实操 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
-        </div>
+    </footer>
+  </article>
+</div>
 
-        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-          <div class="pswp__share-tooltip"></div>
-        </div>
 
-        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
 
-        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
 
-        <div class="pswp__caption">
-          <div class="pswp__caption__center"></div>
-        </div>
-      </div>
-    </div>
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">X&Z</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
 
-  
-<script src="/PhotoSwipe/photoswipe.js"></script>
+    </div>
+  </footer>
 
   
-<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
 
 
 
 
-<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
 
 
-<script src="/scripts/main.js"></script>
+  
+
+
+
 
 
 </body>

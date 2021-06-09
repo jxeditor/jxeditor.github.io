@@ -1,17 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
 
-<title>
-  
-    Flink源码解析之四ExecutionGraph生成
-  
-</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;yoursite.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Muse&quot;,&quot;version&quot;:&quot;8.5.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script><script src="/js/config.js"></script>
 <meta name="description" content="介绍JobGraph被提交之后,JobManager如何接收到该请求,以及如何生成ExecutionGraph">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Flink源码解析之四ExecutionGraph生成">
@@ -26,169 +34,226 @@
 <meta name="twitter:card" content="summary">
 
 
-  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+<link rel="canonical" href="http://yoursite.com/2020/05/28/Flink%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E5%9B%9BExecutionGraph%E7%94%9F%E6%88%90/">
 
 
 
-  <link rel="icon" href="/images/favicon.ico">
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;05&#x2F;28&#x2F;Flink%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E5%9B%9BExecutionGraph%E7%94%9F%E6%88%90&#x2F;&quot;,&quot;path&quot;:&quot;2020&#x2F;05&#x2F;28&#x2F;Flink源码解析之四ExecutionGraph生成&#x2F;&quot;,&quot;title&quot;:&quot;Flink源码解析之四ExecutionGraph生成&quot;}</script>
 
-
-
-<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
-
-
-<link rel="stylesheet" href="/styles/main.css">
-
-
-
-
-
-
-
-<meta name="generator" content="Hexo 5.4.0"></head>
-<body
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Flink源码解析之四ExecutionGraph生成 | BlackC</title>
   
-    class="monochrome"
-  
-  >
-  <div class="mobile-header">
-  <button class="sidebar-toggle" type="button">
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-  </button>
-  <a class="title" href="/">BlackC</a>
-</div>
 
-  <div class="main-container">
-    <div class="sidebar">
-  <div class="header">
-    <h1 class="title"><a href="/">BlackC</a></h1>
-    
-    <div class="info">
-      <div class="content">
-        
-        
-          <div class="author">X&amp;Z</div>
-        
-      </div>
-      
-        <div class="avatar">
-          
-            <a href="/about"><img src="/images/avatar.jpg"></a>
-          
-        </div>
-      
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
     </div>
   </div>
-  <div class="body">
-    
-      
-        <ul class="nav">
-          
-            
-              <li class="category-list-container">
-                <a href="javascript:;">分类</a>
-                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">187</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
-              </li>
-            
-          
-            
-              <li class="tag-list-container">
-                <a href="javascript:;">标签</a>
-                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">103</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hudi/" rel="tag">hudi</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iceberg/" rel="tag">iceberg</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
-              </li>
-            
-          
-            
-              <li class="archive-list-container">
-                <a href="javascript:;">归档</a>
-                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">91</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
-              </li>
-            
-          
-        </ul>
-      
-        <ul class="nav">
-          
-            
-              <li>
-                <a href="/" title="主页" external="false">主页</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="/archives" title="文章" external="false">文章</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="/about" title="关于" external="false">关于</a>
-              </li>
-            
-          
-        </ul>
-      
-        <ul class="nav">
-          
-            
-              <li>
-                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="/atom.xml" title="RSS" external="false">RSS</a>
-              </li>
-            
-          
-        </ul>
-      
-    
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">BlackC</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
   </div>
 </div>
 
-    <div class="main-content">
-      
-        <div style="max-width: 1000px">
-      
-          <article id="post-Flink源码解析之四ExecutionGraph生成" class="article article-type-post">
-  
-    <h1 class="article-header">
-      Flink源码解析之四ExecutionGraph生成
-    </h1>
-  
-  
-
-  <div class="article-info">
-    <span class="article-date">
-  2020-05-28
-</span>
-
-    
-	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
-	</span>
 
 
-    
-	<span class="article-tag tagcloud">
-		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li></ul>
-	</span>
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
 
 
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
   </div>
-  <div class="article-entry">
-    <blockquote>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JobManager%E7%9A%84%E5%90%AF%E5%8A%A8"><span class="nav-number">1.</span> <span class="nav-text">JobManager的启动</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JobSubmitHandler"><span class="nav-number">1.1.</span> <span class="nav-text">JobSubmitHandler</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JobManagerRunnerImpl"><span class="nav-number">1.2.</span> <span class="nav-text">JobManagerRunnerImpl</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ExecutionGroup%E7%9A%84%E7%94%9F%E6%88%90"><span class="nav-number">2.</span> <span class="nav-text">ExecutionGroup的生成</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JobMaster"><span class="nav-number">2.1.</span> <span class="nav-text">JobMaster</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SchedulerNGFactory"><span class="nav-number">2.2.</span> <span class="nav-text">SchedulerNGFactory</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DefaultScheduler-gt-SchedulerBase"><span class="nav-number">2.3.</span> <span class="nav-text">DefaultScheduler-&gt;SchedulerBase</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ExecutionGraphBuilder"><span class="nav-number">2.4.</span> <span class="nav-text">ExecutionGraphBuilder</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">X&Z</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">251</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/05/28/Flink%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E5%9B%9BExecutionGraph%E7%94%9F%E6%88%90/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="X&Z">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BlackC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Flink源码解析之四ExecutionGraph生成
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-05-28 14:14:08" itemprop="dateCreated datePublished" datetime="2020-05-28T14:14:08+08:00">2020-05-28</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-03-21 20:33:13" itemprop="dateModified" datetime="2021-03-21T20:33:13+08:00">2021-03-21</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
 <p>介绍JobGraph被提交之后,JobManager如何接收到该请求,以及如何生成ExecutionGraph</p>
 </blockquote>
 <span id="more"></span>
@@ -203,132 +268,77 @@
 <h3 id="DefaultScheduler-gt-SchedulerBase"><a href="#DefaultScheduler-gt-SchedulerBase" class="headerlink" title="DefaultScheduler-&gt;SchedulerBase"></a>DefaultScheduler-&gt;SchedulerBase</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">这里主要是分析其父类SchedulerBase</span><br><span class="line"></span><br><span class="line"><span class="keyword">this</span>.executionGraph = createAndRestoreExecutionGraph(jobManagerJobMetricGroup, checkNotNull(shuffleMaster), checkNotNull(partitionTracker));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建,恢复ExecutionGraph</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> ExecutionGraph <span class="title">createAndRestoreExecutionGraph</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">		JobManagerJobMetricGroup currentJobManagerJobMetricGroup,</span></span></span><br><span class="line"><span class="function"><span class="params">		ShuffleMaster&lt;?&gt; shuffleMaster,</span></span></span><br><span class="line"><span class="function"><span class="params">		JobMasterPartitionTracker partitionTracker)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// 创建ExecutionGraph</span></span><br><span class="line">    ExecutionGraph newExecutionGraph = createExecutionGraph(currentJobManagerJobMetricGroup, shuffleMaster, partitionTracker);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> CheckpointCoordinator checkpointCoordinator = newExecutionGraph.getCheckpointCoordinator();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (checkpointCoordinator != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// check whether we find a valid checkpoint</span></span><br><span class="line">        <span class="keyword">if</span> (!checkpointCoordinator.restoreLatestCheckpointedState(</span><br><span class="line">            <span class="keyword">new</span> HashSet&lt;&gt;(newExecutionGraph.getAllVertices().values()),</span><br><span class="line">            <span class="keyword">false</span>,</span><br><span class="line">            <span class="keyword">false</span>)) &#123;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// check whether we can restore from a savepoint</span></span><br><span class="line">            tryRestoreExecutionGraphFromSavepoint(newExecutionGraph, jobGraph.getSavepointRestoreSettings());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> newExecutionGraph;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> ExecutionGraph <span class="title">createExecutionGraph</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">		JobManagerJobMetricGroup currentJobManagerJobMetricGroup,</span></span></span><br><span class="line"><span class="function"><span class="params">		ShuffleMaster&lt;?&gt; shuffleMaster,</span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="keyword">final</span> JobMasterPartitionTracker partitionTracker)</span> <span class="keyword">throws</span> JobExecutionException, JobException </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 失败策略</span></span><br><span class="line">    <span class="keyword">final</span> FailoverStrategy.Factory failoverStrategy = legacyScheduling ?</span><br><span class="line">        FailoverStrategyLoader.loadFailoverStrategy(jobMasterConfiguration, log) :</span><br><span class="line">        <span class="keyword">new</span> NoOpFailoverStrategy.Factory();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// buildGraph初始化ExecutionGraphBuilder</span></span><br><span class="line">    <span class="keyword">return</span> ExecutionGraphBuilder.buildGraph(</span><br><span class="line">        <span class="keyword">null</span>,</span><br><span class="line">        jobGraph,</span><br><span class="line">        jobMasterConfiguration,</span><br><span class="line">        futureExecutor,</span><br><span class="line">        ioExecutor,</span><br><span class="line">        slotProvider,</span><br><span class="line">        userCodeLoader,</span><br><span class="line">        checkpointRecoveryFactory,</span><br><span class="line">        rpcTimeout,</span><br><span class="line">        restartStrategy,</span><br><span class="line">        currentJobManagerJobMetricGroup,</span><br><span class="line">        blobWriter,</span><br><span class="line">        slotRequestTimeout,</span><br><span class="line">        log,</span><br><span class="line">        shuffleMaster,</span><br><span class="line">        partitionTracker,</span><br><span class="line">        failoverStrategy);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="ExecutionGraphBuilder"><a href="#ExecutionGraphBuilder" class="headerlink" title="ExecutionGraphBuilder"></a>ExecutionGraphBuilder</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 将JobGraph构建成ExecutionGraph</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ExecutionGraph <span class="title">buildGraph</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">		<span class="meta">@Nullable</span> ExecutionGraph prior,</span></span></span><br><span class="line"><span class="function"><span class="params">		JobGraph jobGraph,</span></span></span><br><span class="line"><span class="function"><span class="params">		Configuration jobManagerConfig,</span></span></span><br><span class="line"><span class="function"><span class="params">		ScheduledExecutorService futureExecutor,</span></span></span><br><span class="line"><span class="function"><span class="params">		Executor ioExecutor,</span></span></span><br><span class="line"><span class="function"><span class="params">		SlotProvider slotProvider,</span></span></span><br><span class="line"><span class="function"><span class="params">		ClassLoader classLoader,</span></span></span><br><span class="line"><span class="function"><span class="params">		CheckpointRecoveryFactory recoveryFactory,</span></span></span><br><span class="line"><span class="function"><span class="params">		Time rpcTimeout,</span></span></span><br><span class="line"><span class="function"><span class="params">		RestartStrategy restartStrategy,</span></span></span><br><span class="line"><span class="function"><span class="params">		MetricGroup metrics,</span></span></span><br><span class="line"><span class="function"><span class="params">		BlobWriter blobWriter,</span></span></span><br><span class="line"><span class="function"><span class="params">		Time allocationTimeout,</span></span></span><br><span class="line"><span class="function"><span class="params">		Logger log,</span></span></span><br><span class="line"><span class="function"><span class="params">		ShuffleMaster&lt;?&gt; shuffleMaster,</span></span></span><br><span class="line"><span class="function"><span class="params">		JobMasterPartitionTracker partitionTracker,</span></span></span><br><span class="line"><span class="function"><span class="params">		FailoverStrategy.Factory failoverStrategyFactory)</span> <span class="keyword">throws</span> JobExecutionException, JobException </span>&#123;</span><br><span class="line"></span><br><span class="line">    checkNotNull(jobGraph, <span class="string">&quot;job graph cannot be null&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> String jobName = jobGraph.getName();</span><br><span class="line">    <span class="keyword">final</span> JobID jobId = jobGraph.getJobID();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Job信息</span></span><br><span class="line">    <span class="keyword">final</span> JobInformation jobInformation = <span class="keyword">new</span> JobInformation(</span><br><span class="line">        jobId,</span><br><span class="line">        jobName,</span><br><span class="line">        jobGraph.getSerializedExecutionConfig(),</span><br><span class="line">        jobGraph.getJobConfiguration(),</span><br><span class="line">        jobGraph.getUserJarBlobKeys(),</span><br><span class="line">        jobGraph.getClasspaths());</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 历史记录中保留的先前执行尝试的最大次数。</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> maxPriorAttemptsHistoryLength =</span><br><span class="line">            jobManagerConfig.getInteger(JobManagerOptions.MAX_ATTEMPTS_HISTORY_SIZE);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 中间结果分区</span></span><br><span class="line">    <span class="keyword">final</span> PartitionReleaseStrategy.Factory partitionReleaseStrategyFactory =</span><br><span class="line">        PartitionReleaseStrategyFactoryLoader.loadPartitionReleaseStrategyFactory(jobManagerConfig);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// create a new execution graph, if none exists so far</span></span><br><span class="line">    <span class="keyword">final</span> ExecutionGraph executionGraph;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 创建新的ExecutionGraph</span></span><br><span class="line">        executionGraph = (prior != <span class="keyword">null</span>) ? prior :</span><br><span class="line">            <span class="keyword">new</span> ExecutionGraph(</span><br><span class="line">                jobInformation,</span><br><span class="line">                futureExecutor,</span><br><span class="line">                ioExecutor,</span><br><span class="line">                rpcTimeout,</span><br><span class="line">                restartStrategy,</span><br><span class="line">                maxPriorAttemptsHistoryLength,</span><br><span class="line">                failoverStrategyFactory,</span><br><span class="line">                slotProvider,</span><br><span class="line">                classLoader,</span><br><span class="line">                blobWriter,</span><br><span class="line">                allocationTimeout,</span><br><span class="line">                partitionReleaseStrategyFactory,</span><br><span class="line">                shuffleMaster,</span><br><span class="line">                partitionTracker,</span><br><span class="line">                jobGraph.getScheduleMode());</span><br><span class="line">    &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> JobException(<span class="string">&quot;Could not create the ExecutionGraph.&quot;</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// set the basic properties</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">// 解析JobGraph生成Json形式的执行计划</span></span><br><span class="line">        executionGraph.setJsonPlan(JsonPlanGenerator.generatePlan(jobGraph));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">        log.warn(<span class="string">&quot;Cannot create JSON plan for job&quot;</span>, t);</span><br><span class="line">        <span class="comment">// give the graph an empty plan</span></span><br><span class="line">        executionGraph.setJsonPlan(<span class="string">&quot;&#123;&#125;&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// initialize the vertices that have a master initialization hook</span></span><br><span class="line">    <span class="comment">// file output formats create directories here, input formats create splits</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">long</span> initMasterStart = System.nanoTime();</span><br><span class="line">    log.info(<span class="string">&quot;Running initialization on master for job &#123;&#125; (&#123;&#125;).&quot;</span>, jobName, jobId);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取JobVertex,并在Master初始化</span></span><br><span class="line">    <span class="keyword">for</span> (JobVertex vertex : jobGraph.getVertices()) &#123;</span><br><span class="line">        String executableClass = vertex.getInvokableClassName();</span><br><span class="line">        <span class="keyword">if</span> (executableClass == <span class="keyword">null</span> || executableClass.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> JobSubmissionException(jobId,</span><br><span class="line">                    <span class="string">&quot;The vertex &quot;</span> + vertex.getID() + <span class="string">&quot; (&quot;</span> + vertex.getName() + <span class="string">&quot;) has no invokable class.&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            vertex.initializeOnMaster(classLoader);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Throwable t) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> JobExecutionException(jobId,</span><br><span class="line">                        <span class="string">&quot;Cannot initialize task &#x27;&quot;</span> + vertex.getName() + <span class="string">&quot;&#x27;: &quot;</span> + t.getMessage(), t);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    log.info(<span class="string">&quot;Successfully ran initialization on master in &#123;&#125; ms.&quot;</span>,</span><br><span class="line">            (System.nanoTime() - initMasterStart) / <span class="number">1_000_000</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// topologically sort the job vertices and attach the graph to the existing one</span></span><br><span class="line">    <span class="comment">// 获取从Source开始排序完成的DAG拓扑</span></span><br><span class="line">    List&lt;JobVertex&gt; sortedTopology = jobGraph.getVerticesSortedTopologicallyFromSources();</span><br><span class="line">    <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">        log.debug(<span class="string">&quot;Adding &#123;&#125; vertices from job graph &#123;&#125; (&#123;&#125;).&quot;</span>, sortedTopology.size(), jobName, jobId);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将JobGraph转化为ExecutionGraph操作</span></span><br><span class="line">    executionGraph.attachJobGraph(sortedTopology);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (log.isDebugEnabled()) &#123;</span><br><span class="line">        log.debug(<span class="string">&quot;Successfully created execution graph from job graph &#123;&#125; (&#123;&#125;).&quot;</span>, jobName, jobId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// configure the state checkpointing</span></span><br><span class="line">    <span class="comment">// 配置CK</span></span><br><span class="line">    JobCheckpointingSettings snapshotSettings = jobGraph.getCheckpointingSettings();</span><br><span class="line">    <span class="keyword">if</span> (snapshotSettings != <span class="keyword">null</span>) &#123;</span><br><span class="line">        List&lt;ExecutionJobVertex&gt; triggerVertices =</span><br><span class="line">                idToVertex(snapshotSettings.getVerticesToTrigger(), executionGraph);</span><br><span class="line"></span><br><span class="line">        List&lt;ExecutionJobVertex&gt; ackVertices =</span><br><span class="line">                idToVertex(snapshotSettings.getVerticesToAcknowledge(), executionGraph);</span><br><span class="line"></span><br><span class="line">        List&lt;ExecutionJobVertex&gt; confirmVertices =</span><br><span class="line">                idToVertex(snapshotSettings.getVerticesToConfirm(), executionGraph);</span><br><span class="line"></span><br><span class="line">        CompletedCheckpointStore completedCheckpoints;</span><br><span class="line">        CheckpointIDCounter checkpointIdCounter;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">int</span> maxNumberOfCheckpointsToRetain = jobManagerConfig.getInteger(</span><br><span class="line">                    CheckpointingOptions.MAX_RETAINED_CHECKPOINTS);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (maxNumberOfCheckpointsToRetain &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">// warning and use 1 as the default value if the setting in</span></span><br><span class="line">                <span class="comment">// state.checkpoints.max-retained-checkpoints is not greater than 0.</span></span><br><span class="line">                log.warn(<span class="string">&quot;The setting for &#x27;&#123;&#125; : &#123;&#125;&#x27; is invalid. Using default value of &#123;&#125;&quot;</span>,</span><br><span class="line">                        CheckpointingOptions.MAX_RETAINED_CHECKPOINTS.key(),</span><br><span class="line">                        maxNumberOfCheckpointsToRetain,</span><br><span class="line">                        CheckpointingOptions.MAX_RETAINED_CHECKPOINTS.defaultValue());</span><br><span class="line"></span><br><span class="line">                maxNumberOfCheckpointsToRetain = CheckpointingOptions.MAX_RETAINED_CHECKPOINTS.defaultValue();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            completedCheckpoints = recoveryFactory.createCheckpointStore(jobId, maxNumberOfCheckpointsToRetain, classLoader);</span><br><span class="line">            checkpointIdCounter = recoveryFactory.createCheckpointIDCounter(jobId);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> JobExecutionException(jobId, <span class="string">&quot;Failed to initialize high-availability checkpoint handler&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Maximum number of remembered checkpoints</span></span><br><span class="line">        <span class="keyword">int</span> historySize = jobManagerConfig.getInteger(WebOptions.CHECKPOINTS_HISTORY_SIZE);</span><br><span class="line"></span><br><span class="line">        CheckpointStatsTracker checkpointStatsTracker = <span class="keyword">new</span> CheckpointStatsTracker(</span><br><span class="line">                historySize,</span><br><span class="line">                ackVertices,</span><br><span class="line">                snapshotSettings.getCheckpointCoordinatorConfiguration(),</span><br><span class="line">                metrics);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// load the state backend from the application settings</span></span><br><span class="line">        <span class="keyword">final</span> StateBackend applicationConfiguredBackend;</span><br><span class="line">        <span class="keyword">final</span> SerializedValue&lt;StateBackend&gt; serializedAppConfigured = snapshotSettings.getDefaultStateBackend();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (serializedAppConfigured == <span class="keyword">null</span>) &#123;</span><br><span class="line">            applicationConfiguredBackend = <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                applicationConfiguredBackend = serializedAppConfigured.deserializeValue(classLoader);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException | ClassNotFoundException e) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> JobExecutionException(jobId,</span><br><span class="line">                        <span class="string">&quot;Could not deserialize application-defined state backend.&quot;</span>, e);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> StateBackend rootBackend;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            rootBackend = StateBackendLoader.fromApplicationOrConfigOrDefault(</span><br><span class="line">                    applicationConfiguredBackend, jobManagerConfig, classLoader, log);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (IllegalConfigurationException | IOException | DynamicCodeLoadingException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> JobExecutionException(jobId, <span class="string">&quot;Could not instantiate configured state backend&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// instantiate the user-defined checkpoint hooks</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> SerializedValue&lt;MasterTriggerRestoreHook.Factory[]&gt; serializedHooks = snapshotSettings.getMasterHooks();</span><br><span class="line">        <span class="keyword">final</span> List&lt;MasterTriggerRestoreHook&lt;?&gt;&gt; hooks;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (serializedHooks == <span class="keyword">null</span>) &#123;</span><br><span class="line">            hooks = Collections.emptyList();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> MasterTriggerRestoreHook.Factory[] hookFactories;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                hookFactories = serializedHooks.deserializeValue(classLoader);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">catch</span> (IOException | ClassNotFoundException e) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> JobExecutionException(jobId, <span class="string">&quot;Could not instantiate user-defined checkpoint hooks&quot;</span>, e);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">final</span> Thread thread = Thread.currentThread();</span><br><span class="line">            <span class="keyword">final</span> ClassLoader originalClassLoader = thread.getContextClassLoader();</span><br><span class="line">            thread.setContextClassLoader(classLoader);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                hooks = <span class="keyword">new</span> ArrayList&lt;&gt;(hookFactories.length);</span><br><span class="line">                <span class="keyword">for</span> (MasterTriggerRestoreHook.Factory factory : hookFactories) &#123;</span><br><span class="line">                    hooks.add(MasterHooks.wrapHook(factory.create(), classLoader));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">finally</span> &#123;</span><br><span class="line">                thread.setContextClassLoader(originalClassLoader);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> CheckpointCoordinatorConfiguration chkConfig = snapshotSettings.getCheckpointCoordinatorConfiguration();</span><br><span class="line"></span><br><span class="line">        executionGraph.enableCheckpointing(</span><br><span class="line">            chkConfig,</span><br><span class="line">            triggerVertices,</span><br><span class="line">            ackVertices,</span><br><span class="line">            confirmVertices,</span><br><span class="line">            hooks,</span><br><span class="line">            checkpointIdCounter,</span><br><span class="line">            completedCheckpoints,</span><br><span class="line">            rootBackend,</span><br><span class="line">            checkpointStatsTracker);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// create all the metrics for the Execution Graph</span></span><br><span class="line">    <span class="comment">// 创建监控指标</span></span><br><span class="line">    metrics.gauge(RestartTimeGauge.METRIC_NAME, <span class="keyword">new</span> RestartTimeGauge(executionGraph));</span><br><span class="line">    metrics.gauge(DownTimeGauge.METRIC_NAME, <span class="keyword">new</span> DownTimeGauge(executionGraph));</span><br><span class="line">    metrics.gauge(UpTimeGauge.METRIC_NAME, <span class="keyword">new</span> UpTimeGauge(executionGraph));</span><br><span class="line">    <span class="comment">// 注册监控</span></span><br><span class="line">    executionGraph.getFailoverStrategy().registerMetrics(metrics);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> executionGraph;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">attachJobGraph</span><span class="params">(List&lt;JobVertex&gt; topologiallySorted)</span> <span class="keyword">throws</span> JobException </span>&#123;</span><br><span class="line"></span><br><span class="line">    assertRunningInJobMasterMainThread();</span><br><span class="line"></span><br><span class="line">    LOG.debug(<span class="string">&quot;Attaching &#123;&#125; topologically sorted vertices to existing job graph with &#123;&#125; &quot;</span> +</span><br><span class="line">            <span class="string">&quot;vertices and &#123;&#125; intermediate results.&quot;</span>,</span><br><span class="line">        topologiallySorted.size(),</span><br><span class="line">        tasks.size(),</span><br><span class="line">        intermediateResults.size());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> ArrayList&lt;ExecutionJobVertex&gt; newExecJobVertices = <span class="keyword">new</span> ArrayList&lt;&gt;(topologiallySorted.size());</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">long</span> createTimestamp = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历JobVertex</span></span><br><span class="line">    <span class="keyword">for</span> (JobVertex jobVertex : topologiallySorted) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (jobVertex.isInputVertex() &amp;&amp; !jobVertex.isStoppable()) &#123;</span><br><span class="line">            <span class="keyword">this</span>.isStoppable = <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// create the execution job vertex and attach it to the graph</span></span><br><span class="line">        ExecutionJobVertex ejv = <span class="keyword">new</span> ExecutionJobVertex(</span><br><span class="line">                <span class="keyword">this</span>,</span><br><span class="line">                jobVertex, <span class="comment">// JobVertex</span></span><br><span class="line">                <span class="number">1</span>, <span class="comment">// 并行度</span></span><br><span class="line">                maxPriorAttemptsHistoryLength, <span class="comment">// 历史记录中保留的先前执行尝试的最大次数</span></span><br><span class="line">                rpcTimeout, <span class="comment">// RPC通信的超时时间</span></span><br><span class="line">                globalModVersion, <span class="comment">// 全局恢复版本,每次全局恢复时都会递增</span></span><br><span class="line">                createTimestamp); <span class="comment">// 创建时间</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 处理JobEdge,对每个JobEdge,获取对应的intermediateResults,并记录到本节点的输入上</span></span><br><span class="line">        <span class="comment">// 最后把每个ExecutorVertex和对应的intermediateResults关联起来</span></span><br><span class="line">        ejv.connectToPredecessors(<span class="keyword">this</span>.intermediateResults);</span><br><span class="line"></span><br><span class="line">        ExecutionJobVertex previousTask = <span class="keyword">this</span>.tasks.putIfAbsent(jobVertex.getID(), ejv);</span><br><span class="line">        <span class="keyword">if</span> (previousTask != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> JobException(String.format(<span class="string">&quot;Encountered two job vertices with ID %s : previous=[%s] / new=[%s]&quot;</span>,</span><br><span class="line">                jobVertex.getID(), ejv, previousTask));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (IntermediateResult res : ejv.getProducedDataSets()) &#123;</span><br><span class="line">            IntermediateResult previousDataSet = <span class="keyword">this</span>.intermediateResults.putIfAbsent(res.getId(), res);</span><br><span class="line">            <span class="keyword">if</span> (previousDataSet != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> JobException(String.format(<span class="string">&quot;Encountered two intermediate data set with ID %s : previous=[%s] / new=[%s]&quot;</span>,</span><br><span class="line">                    res.getId(), res, previousDataSet));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>.verticesInCreationOrder.add(ejv);</span><br><span class="line">        <span class="keyword">this</span>.numVerticesTotal += ejv.getParallelism();</span><br><span class="line">        newExecJobVertices.add(ejv);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// the topology assigning should happen before notifying new vertices to failoverStrategy</span></span><br><span class="line">    executionTopology = <span class="keyword">new</span> DefaultExecutionTopology(<span class="keyword">this</span>);</span><br><span class="line"></span><br><span class="line">    failoverStrategy.notifyNewVertices(newExecJobVertices);</span><br><span class="line"></span><br><span class="line">    partitionReleaseStrategy = partitionReleaseStrategyFactory.createInstance(getSchedulingTopology());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-  </div>
-  <footer class="article-footer">
-    
-  <div class="cc">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
-      <img src="/images/cc/cc.png">
-      
-          <img src="/images/cc/by.png">
-        
-          <img src="/images/cc/sa.png">
-      
-      <span>
-        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
-      </span>
-    </a>
-  </div>
-
-
-    
-
-  </footer>
-</article>
-
-
-
-
-
-
-
-          <div class="main-footer">
-  
-    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
-  
-</div>
-
-      
-        </div>
-      
     </div>
-  </div>
-  
-<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 
+    
+    
+    
 
-  
-<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/flink/" rel="tag"># flink</a>
+          </div>
 
-  
-<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+        
 
-
-  <!-- Root element of PhotoSwipe. Must have class pswp. -->
-  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    <!-- Background of PhotoSwipe.
-             It's a separate element as animating opacity is faster than rgba(). -->
-    <div class="pswp__bg"></div>
-
-    <!-- Slides wrapper with overflow:hidden. -->
-    <div class="pswp__scroll-wrap">
-
-      <!-- Container that holds slides.
-                PhotoSwipe keeps only 3 of them in the DOM to save memory.
-                Don't modify these 3 pswp__item elements, data is added later on. -->
-      <div class="pswp__container">
-        <div class="pswp__item"></div>
-        <div class="pswp__item"></div>
-        <div class="pswp__item"></div>
-      </div>
-
-      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-      <div class="pswp__ui pswp__ui--hidden">
-
-        <div class="pswp__top-bar">
-
-          <!--  Controls are self-explanatory. Order can be changed. -->
-
-          <div class="pswp__counter"></div>
-
-          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-          <button class="pswp__button pswp__button--share" title="Share"></button>
-
-          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
-          <!-- element will get class pswp__preloader--active when preloader is running -->
-          <div class="pswp__preloader">
-            <div class="pswp__preloader__icn">
-              <div class="pswp__preloader__cut">
-                <div class="pswp__preloader__donut"></div>
-              </div>
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2020/05/28/Flink%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E4%B8%89JobGraph%E6%8F%90%E4%BA%A4/" rel="prev" title="Flink源码解析之三JobGraph提交">
+                  <i class="fa fa-chevron-left"></i> Flink源码解析之三JobGraph提交
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2020/05/29/Flink%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90%E4%B9%8B%E4%BA%94%E8%AF%BB%E5%8F%96Hive%E6%B5%81%E7%A8%8B/" rel="next" title="Flink源码解析之五读取Hive流程">
+                  Flink源码解析之五读取Hive流程 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
-        </div>
+    </footer>
+  </article>
+</div>
 
-        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-          <div class="pswp__share-tooltip"></div>
-        </div>
 
-        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
 
-        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
 
-        <div class="pswp__caption">
-          <div class="pswp__caption__center"></div>
-        </div>
-      </div>
-    </div>
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">X&Z</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
 
-  
-<script src="/PhotoSwipe/photoswipe.js"></script>
+    </div>
+  </footer>
 
   
-<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
 
 
 
 
-<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
 
 
-<script src="/scripts/main.js"></script>
+  
+
+
+
 
 
 </body>
