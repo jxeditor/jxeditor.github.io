@@ -1,10 +1,7 @@
 ---
 title: ELK安装搭建以及常见问题
 date: 2019-02-21 08:32:49
-categories: 
-    - 搭建
-    - 大数据
-    - 运维
+categories: 搭建
 tags: elk
 ---
 
