@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;yoursite.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Muse&quot;,&quot;version&quot;:&quot;8.5.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Presto技术内幕学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Presto笔录">
+<meta property="og:url" content="http://yoursite.com/2021/06/09/Presto%E7%AC%94%E5%BD%95/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="Presto技术内幕学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-09T06:31:16.000Z">
+<meta property="article:modified_time" content="2021-06-09T10:20:54.222Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="presto">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://yoursite.com/2021/06/09/Presto%E7%AC%94%E5%BD%95/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;yoursite.com&#x2F;2021&#x2F;06&#x2F;09&#x2F;Presto%E7%AC%94%E5%BD%95&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;06&#x2F;09&#x2F;Presto笔录&#x2F;&quot;,&quot;title&quot;:&quot;Presto笔录&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Presto笔录 | BlackC</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">BlackC</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">概述</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.2.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84"><span class="nav-number">1.3.</span> <span class="nav-text">整体架构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E7%BB%93%E6%9E%84%E8%AF%B4%E6%98%8E"><span class="nav-number">2.</span> <span class="nav-text">源码结构说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RESTful%E6%A1%86%E6%9E%B6"><span class="nav-number">3.</span> <span class="nav-text">RESTful框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Statement%E6%9C%8D%E5%8A%A1%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.1.</span> <span class="nav-text">Statement服务接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Query%E6%9C%8D%E5%8A%A1%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.2.</span> <span class="nav-text">Query服务接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Stage%E6%9C%8D%E5%8A%A1%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.3.</span> <span class="nav-text">Stage服务接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Task%E6%9C%8D%E5%8A%A1%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.4.</span> <span class="nav-text">Task服务接口</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90"><span class="nav-number">4.</span> <span class="nav-text">源码解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E4%BA%A4%E6%9F%A5%E8%AF%A2"><span class="nav-number">4.1.</span> <span class="nav-text">提交查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E6%88%90%E6%9F%A5%E8%AF%A2%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92"><span class="nav-number">4.2.</span> <span class="nav-text">生成查询执行计划</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="X&Z"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">X&Z</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">253</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jxeditor" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jxeditor" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/06/09/Presto%E7%AC%94%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="X&Z">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BlackC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Presto笔录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-06-09 14:31:16 / 修改时间：18:20:54" itemprop="dateCreated datePublished" datetime="2021-06-09T14:31:16+08:00">2021-06-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>Presto技术内幕学习笔记</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><h3 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">多数据源</span><br><span class="line">支持SQL</span><br><span class="line">扩展性</span><br><span class="line">混合计算</span><br><span class="line">高性能</span><br><span class="line">流水线</span><br></pre></td></tr></table></figure>
+<h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"># 服务进程</span><br><span class="line">1.Coordinator(所有工作通过StatementResource类提供)</span><br><span class="line">    接收查询请求</span><br><span class="line">    解析查询语句</span><br><span class="line">    生成查询执行计划</span><br><span class="line">    任务调度</span><br><span class="line">    Worker管理</span><br><span class="line"></span><br><span class="line">2.Worker</span><br><span class="line">    数据处理</span><br><span class="line">    Task的执行</span><br><span class="line"></span><br><span class="line"># Presto模型</span><br><span class="line">1.Connector</span><br><span class="line">    Presto通过多样的Connector访问不同的数据源</span><br><span class="line">    每种Connector都实现了Presto中标准的SPI接口</span><br><span class="line">2.Catalog</span><br><span class="line">    Catalog类似于MySQL中的数据库实例,Schema类似于DataBase</span><br><span class="line">    属于比较常见的元数据管理类</span><br><span class="line">3.Schema</span><br><span class="line">    一个Catalog和一个Schema确定了表的集合</span><br><span class="line">4.Table</span><br><span class="line">    与传统数据库中的Table含义一致</span><br><span class="line"></span><br><span class="line"># Presto查询执行模型</span><br><span class="line">1.Statement</span><br><span class="line">    指我们输入的SQL语句,支持符合ANSI标准的SQL语句</span><br><span class="line">    为啥要和Query区分开来?</span><br><span class="line">        Statement是用户输入的SQL语句,Presto执行输入的SQL语句时</span><br><span class="line">        会根据SQL语句生成查询执行计划,进而生成可以执行的Query</span><br><span class="line">        Query才是分布到所有Worker之间执行的实际查询操作</span><br><span class="line">2.Query</span><br><span class="line">    查询执行,一个查询执行可以在Presto集群中运行的查询</span><br><span class="line">    由运行在各个Worker上且各自关联的Stage组成的</span><br><span class="line">    一个查询由Stage,Task,Driver,Split,Operator和DataSource组成</span><br><span class="line">3.Stage</span><br><span class="line">    查询执行阶段,一个Stage代表Query的一部分,不会在Presto集群中实际运行</span><br><span class="line">    Stage种类</span><br><span class="line">        Coordinator_Only: 执行DDL&#x2F;DML语句中最终的表结构创建或更改</span><br><span class="line">        Single: 聚合子Stage的输出数据,并将最终数据输出给终端用户</span><br><span class="line">        Fixed: 接受其子Stage产生的数据并在集群中对这些数据进行分布式聚合或分组计算</span><br><span class="line">        Source: 这种类型的Stage用于直接连接数据源,从数据源读取数据</span><br><span class="line">4.Exchange</span><br><span class="line">    Presto的Stage通过Exchange来连接另一个Stage</span><br><span class="line">    用于完成上下游Stage之间的数据交换</span><br><span class="line">    Exchange种类</span><br><span class="line">        OutputBuffer: 流向下游</span><br><span class="line">        ExchangeClient: 读取上游</span><br><span class="line">    注意,如果是Source类型的Stage,是直接通过SourceOperator来获取数据</span><br><span class="line">5.Task</span><br><span class="line">    Stage被分解为多个Task,每个Task处理一个或多个Split</span><br><span class="line">6.Driver</span><br><span class="line">    一个Task包含一个或多个Driver,一个Driver只处理一个Split,并生成相应的输出</span><br><span class="line">    输出由Task收集并传给下游Stage的一个Task</span><br><span class="line">7.Operator</span><br><span class="line">    对一个Split的一种操作,过滤,加权,转换等</span><br><span class="line">    Operator以Page为最小处理单位读取&#x2F;产生数据</span><br><span class="line">8.Split</span><br><span class="line">    大数据集的一个小集</span><br><span class="line">9.Page</span><br><span class="line">    Presto处理中的最小数据单元</span><br><span class="line">    一个Page对象包含多个Block对象</span><br><span class="line">    多个Block横切的一行,是一行真实数据</span><br></pre></td></tr></table></figure>
+<h3 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">执行查询步骤</span><br><span class="line">    1.客户端通过Http协议发送查询语句给Coordinator</span><br><span class="line">    2.Coordinator接到SQL,对其进行解析</span><br><span class="line">        生成查询计划,并根据查询计划依次生成</span><br><span class="line">            SqlQueryExecution</span><br><span class="line">            SqlStageExecution</span><br><span class="line">            HttpRemoteTask</span><br><span class="line">        Coordinator根据数据本地性生成对应的HttpRemoteTask</span><br><span class="line">    3.Coordinator将Task分发到其需要处理的数据所在Worker上进行执行</span><br><span class="line">        此过程中,HttpRemoteTask中HttpClient将创建&#x2F;更新Task的请求发送给数据所在节点上TaskResource提供的RestFul接口</span><br><span class="line">        接收到请求后在对应的Worker上启动SqlTaskExecution对象或更新对应的SqlTaskExecution对象需要处理的Split</span><br><span class="line">    4.执行处于上游的SourceStage的Task,通过Connector从相应的数据源读取数据</span><br><span class="line">    5.下游Stage的Task会读取上游输出结果,并在所在Worker的内存中进行后续计算</span><br><span class="line">    6.Coordinator从分发Task之后,会持续从SingleStage中的Task获取计算结果</span><br><span class="line">        缓存到Buffer中,直到计算结束</span><br><span class="line">    7.Client从提交查询语句之后,会不停的从Coordinator中获取本次查询的计算结果</span><br><span class="line">        每产生一部分,就会显示一部分结果</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="源码结构说明"><a href="#源码结构说明" class="headerlink" title="源码结构说明"></a>源码结构说明</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">presto-base-jdbc: 提供访问各种RDBMS数据源数据的途径</span><br><span class="line">presto-cassandra: 提供对Cassandra中数据的查询和分析</span><br><span class="line">presto-cli: 通过命令行访问Presto集群的途径</span><br><span class="line">presto-client: 提供提交查询时使用的客户端,Session参数等</span><br><span class="line">presto-docs: Presto的相关文档</span><br><span class="line">presto-example-http: 读取通过Http发送以逗号分隔的数据</span><br><span class="line">presto-hive: 读取Hive数据的连接器</span><br><span class="line">presto-hive-*: 读取不同版本的hive数据</span><br><span class="line">presto-jdbc: 提供presto jdbc驱动,Java程序通过该JDBC驱动访问Presto集群,进行数据查询计算</span><br><span class="line">presto-kafka: 访问Kafka数据的连接器</span><br><span class="line">presto-server: 说明子工程的依赖关系</span><br><span class="line">presto-ml: 机器学习计算</span><br><span class="line">presto-mysql: 访问MySQL的连接器</span><br><span class="line">presto-orc: ORC文件读取的优化</span><br><span class="line">presto-parser: 提供SQL语句的文法和语法分析</span><br><span class="line">presto-postgresql: 提供访问PostgreSQL的连接器</span><br><span class="line">presto-raptor: 提供访问每台节点操作系统中数据的连接器</span><br><span class="line">presto-main: Presto集群各节点Presto服务启动所需要的jar包</span><br><span class="line">presto-spi: 面向模块工程</span><br><span class="line">presto-tests: Presto测试类</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="RESTful框架"><a href="#RESTful框架" class="headerlink" title="RESTful框架"></a>RESTful框架</h2><h3 id="Statement服务接口"><a href="#Statement服务接口" class="headerlink" title="Statement服务接口"></a>Statement服务接口</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">处理与SQL语句相关的请求</span><br><span class="line">    接受提交的SQL语句createQuery()</span><br><span class="line">    获取查询执行结果getQueryResults()</span><br><span class="line">    取消查询cancelQuery()</span><br><span class="line">实现类</span><br><span class="line">    StatementResource</span><br></pre></td></tr></table></figure>
+<h3 id="Query服务接口"><a href="#Query服务接口" class="headerlink" title="Query服务接口"></a>Query服务接口</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">处理查询执行请求</span><br><span class="line">    SQL语句的提交createQuery()</span><br><span class="line">    获取查询执行的结果getQueryInfo()</span><br><span class="line">    取消查询cancelQuery()</span><br><span class="line">实现类</span><br><span class="line">    QueryResource</span><br></pre></td></tr></table></figure>
+<h3 id="Stage服务接口"><a href="#Stage服务接口" class="headerlink" title="Stage服务接口"></a>Stage服务接口</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">处理Stage相关的请求</span><br><span class="line">    取消或结束一个指定的Stage,cancelStage()</span><br><span class="line">实现类</span><br><span class="line">    StageResource</span><br></pre></td></tr></table></figure>
+<h3 id="Task服务接口"><a href="#Task服务接口" class="headerlink" title="Task服务接口"></a>Task服务接口</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">处理Task相关的请求</span><br><span class="line">    Task创建,更新createOrUpdateTask()</span><br><span class="line">    状态查询getTaskInfo()</span><br><span class="line">    结果查询getResults()</span><br><span class="line">实现类</span><br><span class="line">    TaskResource</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h2><h3 id="提交查询"><a href="#提交查询" class="headerlink" title="提交查询"></a>提交查询</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Presto客户端启动类com.facebook.presto.cli.Presto</span><br><span class="line">没有使用--help等参数,则运行console.run()</span><br><span class="line">根据是否指定execute或file参数,有两种处理方式</span><br><span class="line">    直接提交SQL</span><br><span class="line">    启动Cli终端解析用户输入,提交SQL</span><br><span class="line">com.facebook.presto.Console中的executeCommand()方法对输入SQL解析并执行</span><br><span class="line">    初始执行com.facebook.presto.cli.QueryRunner.startQuery()</span><br><span class="line">    后续循环发送请求从而分批获取查询结果com.facebook.presto.cli.Query.renderOutput()</span><br><span class="line">怎么循环获取查询结果</span><br><span class="line">    com.facebook.presto.cli.Query.renderQueryOutput()</span><br><span class="line">    com.facebook.presto.cli.Query.printInitialStatusUpdates()</span><br><span class="line">    com.facebook.presto.cli.Query.waitForData()</span><br><span class="line">    最终调用StatementClient的advance方法,向Coordinator发起nextResultUri的请求</span><br></pre></td></tr></table></figure>
+<h3 id="生成查询执行计划"><a href="#生成查询执行计划" class="headerlink" title="生成查询执行计划"></a>生成查询执行计划</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"># 基础概念</span><br><span class="line">Node</span><br><span class="line">    Approximate: 近似查询</span><br><span class="line">    ExplainOption: Explain语句的可选参数</span><br><span class="line">        ExplainFormat: Explain语句输出结果的格式</span><br><span class="line">        ExplainType: Explain语句的类型</span><br><span class="line">            LOGICAL: 逻辑执行计划</span><br><span class="line">            DISTRIBUTED: 分布式执行计划</span><br><span class="line">    Expression: SQL语句中的表达式</span><br><span class="line">    FrameBound: 窗口函数中滑动窗口的可选参数</span><br><span class="line">    Relation: 多个节点间的关系</span><br><span class="line">        Join</span><br><span class="line">        Union</span><br><span class="line">        ......</span><br><span class="line">    Select: 查询语句Select部分</span><br><span class="line">    SelectItem: Select语句中的列类型</span><br><span class="line">        AllColumns: 选取所有列</span><br><span class="line">        SingleColumn: 单一列</span><br><span class="line">    SortItem: 排序的某一列及其类型</span><br><span class="line">    Statement: Presto能使用的所有类型的SQL语句</span><br><span class="line">        CreateTable</span><br><span class="line">        CreateView</span><br><span class="line">        Insert</span><br><span class="line">        ......</span><br><span class="line">    TableElement: 建表语句中描述表的每一列,列名与类型</span><br><span class="line">    Window: 窗口函数</span><br><span class="line">    WindowFrame: 窗口函数中滑动窗口的可选参数</span><br><span class="line">    With: 一个查询中所有的With语句</span><br><span class="line"></span><br><span class="line">MetaData API</span><br><span class="line"></span><br><span class="line">StatementResource.createQuery()</span><br><span class="line">SQLQueryManager.createQuery()</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/presto/" rel="tag"># presto</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/09/ClickHouse%E7%AC%94%E5%BD%95/" rel="prev" title="ClickHouse笔录">
+                  <i class="fa fa-chevron-left"></i> ClickHouse笔录
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">X&Z</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
