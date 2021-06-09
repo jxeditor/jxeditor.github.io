@@ -1,17 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
 
-<title>
-  
-    Hudi如何集成Flink
-  
-</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;yoursite.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Muse&quot;,&quot;version&quot;:&quot;8.5.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script><script src="/js/config.js"></script>
 <meta name="description" content="直接看看hudi源码究竟做了些什么">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Hudi如何集成Flink">
@@ -27,169 +35,220 @@
 <meta name="twitter:card" content="summary">
 
 
-  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+<link rel="canonical" href="http://yoursite.com/2021/05/11/Hudi%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90Flink/">
 
 
 
-  <link rel="icon" href="/images/favicon.ico">
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;yoursite.com&#x2F;2021&#x2F;05&#x2F;11&#x2F;Hudi%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90Flink&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;05&#x2F;11&#x2F;Hudi如何集成Flink&#x2F;&quot;,&quot;title&quot;:&quot;Hudi如何集成Flink&quot;}</script>
 
-
-
-<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
-
-
-<link rel="stylesheet" href="/styles/main.css">
-
-
-
-
-
-
-
-<meta name="generator" content="Hexo 5.4.0"></head>
-<body
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>Hudi如何集成Flink | BlackC</title>
   
-    class="monochrome"
-  
-  >
-  <div class="mobile-header">
-  <button class="sidebar-toggle" type="button">
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-  </button>
-  <a class="title" href="/">BlackC</a>
-</div>
 
-  <div class="main-container">
-    <div class="sidebar">
-  <div class="header">
-    <h1 class="title"><a href="/">BlackC</a></h1>
-    
-    <div class="info">
-      <div class="content">
-        
-        
-          <div class="author">X&amp;Z</div>
-        
-      </div>
-      
-        <div class="avatar">
-          
-            <a href="/about"><img src="/images/avatar.jpg"></a>
-          
-        </div>
-      
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
     </div>
   </div>
-  <div class="body">
-    
-      
-        <ul class="nav">
-          
-            
-              <li class="category-list-container">
-                <a href="javascript:;">分类</a>
-                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">187</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
-              </li>
-            
-          
-            
-              <li class="tag-list-container">
-                <a href="javascript:;">标签</a>
-                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">103</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hudi/" rel="tag">hudi</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iceberg/" rel="tag">iceberg</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
-              </li>
-            
-          
-            
-              <li class="archive-list-container">
-                <a href="javascript:;">归档</a>
-                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">91</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
-              </li>
-            
-          
-        </ul>
-      
-        <ul class="nav">
-          
-            
-              <li>
-                <a href="/" title="主页" external="false">主页</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="/archives" title="文章" external="false">文章</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="/about" title="关于" external="false">关于</a>
-              </li>
-            
-          
-        </ul>
-      
-        <ul class="nav">
-          
-            
-              <li>
-                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="/atom.xml" title="RSS" external="false">RSS</a>
-              </li>
-            
-          
-        </ul>
-      
-    
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">BlackC</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
   </div>
 </div>
 
-    <div class="main-content">
-      
-        <div style="max-width: 1000px">
-      
-          <article id="post-Hudi如何集成Flink" class="article article-type-post">
-  
-    <h1 class="article-header">
-      Hudi如何集成Flink
-    </h1>
-  
-  
-
-  <div class="article-info">
-    <span class="article-date">
-  2021-05-11
-</span>
-
-    
-	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a></li></ul>
-	</span>
 
 
-    
-	<span class="article-tag tagcloud">
-		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/flink/" rel="tag">flink</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hudi/" rel="tag">hudi</a></li></ul>
-	</span>
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
 
 
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
   </div>
-  <div class="article-entry">
-    <blockquote>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E7%9A%84%E4%BA%86%E8%A7%A3"><span class="nav-number">1.</span> <span class="nav-text">配置参数的了解</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%86%E6%88%90%E5%BC%80%E5%A7%8B%E5%A4%84"><span class="nav-number">2.</span> <span class="nav-text">集成开始处</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E5%85%A5%E5%81%9A%E4%BA%86%E4%BA%9B%E4%BB%80%E4%B9%88"><span class="nav-number">2.1.</span> <span class="nav-text">写入做了些什么</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E5%8F%96%E5%81%9A%E4%BA%86%E4%BA%9B%E4%BB%80%E4%B9%88"><span class="nav-number">2.2.</span> <span class="nav-text">读取做了些什么</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">X&Z</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">251</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/05/11/Hudi%E5%A6%82%E4%BD%95%E9%9B%86%E6%88%90Flink/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="X&Z">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BlackC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Hudi如何集成Flink
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-05-11 10:33:17 / 修改时间：15:06:20" itemprop="dateCreated datePublished" datetime="2021-05-11T10:33:17+08:00">2021-05-11</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
 <p>直接看看hudi源码究竟做了些什么</p>
 </blockquote>
 <span id="more"></span>
@@ -201,132 +260,78 @@
 
 <h3 id="写入做了些什么"><a href="#写入做了些什么" class="headerlink" title="写入做了些什么"></a>写入做了些什么</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br></pre></td><td class="code"><pre><span class="line"># 先看下整体流程</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> SinkRuntimeProvider <span class="title">getSinkRuntimeProvider</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (DataStreamSinkProvider) dataStream -&gt; &#123;</span><br><span class="line">      <span class="comment">// 获取RowType</span></span><br><span class="line">      RowType rowType = (RowType) schema.toRowDataType().notNull().getLogicalType();</span><br><span class="line">      <span class="comment">// 获取WITH配置,决定着Sink的并行度</span></span><br><span class="line">      <span class="keyword">int</span> numWriteTasks = conf.getInteger(FlinkOptions.WRITE_TASKS);</span><br><span class="line">      StreamWriteOperatorFactory&lt;HoodieRecord&gt; operatorFactory = <span class="keyword">new</span> StreamWriteOperatorFactory&lt;&gt;(conf);</span><br><span class="line">      </span><br><span class="line">      <span class="comment">// DataStream中的RowData转换HoodieRecord</span></span><br><span class="line">      DataStream&lt;Object&gt; pipeline = dataStream</span><br><span class="line">          <span class="comment">// 转化函数</span></span><br><span class="line">          .map(<span class="keyword">new</span> RowDataToHoodieFunction&lt;&gt;(rowType, conf), TypeInformation.of(HoodieRecord.class))</span><br><span class="line">          <span class="comment">// 避免多个子任务写入一个bucket</span></span><br><span class="line">          .keyBy(HoodieRecord::getRecordKey)</span><br><span class="line">          <span class="comment">// 分配给不同的fileId</span></span><br><span class="line">          .transform(</span><br><span class="line">              <span class="string">&quot;bucket_assigner&quot;</span>,</span><br><span class="line">              TypeInformation.of(HoodieRecord.class),</span><br><span class="line">              <span class="keyword">new</span> KeyedProcessOperator&lt;&gt;(<span class="keyword">new</span> BucketAssignFunction&lt;&gt;(conf)))</span><br><span class="line">          .uid(<span class="string">&quot;uid_bucket_assigner&quot;</span>)</span><br><span class="line">          <span class="comment">// shuffle by fileId(bucket id)</span></span><br><span class="line">          .keyBy(record -&gt; record.getCurrentLocation().getFileId())</span><br><span class="line">          <span class="comment">// 写入hoodie</span></span><br><span class="line">          .transform(<span class="string">&quot;hoodie_stream_write&quot;</span>, TypeInformation.of(Object.class), operatorFactory)</span><br><span class="line">          .uid(<span class="string">&quot;uid_hoodie_stream_write&quot;</span>)</span><br><span class="line">          .setParallelism(numWriteTasks);</span><br><span class="line">      <span class="comment">// 看是否需要开启压缩合并,压缩合并自带清除操作</span></span><br><span class="line">      <span class="keyword">if</span> (StreamerUtil.needsScheduleCompaction(conf)) &#123;</span><br><span class="line">        <span class="keyword">return</span> pipeline.transform(<span class="string">&quot;compact_plan_generate&quot;</span>,</span><br><span class="line">            TypeInformation.of(CompactionPlanEvent.class),</span><br><span class="line">            <span class="keyword">new</span> CompactionPlanOperator(conf))</span><br><span class="line">            .uid(<span class="string">&quot;uid_compact_plan_generate&quot;</span>)</span><br><span class="line">            .setParallelism(<span class="number">1</span>) <span class="comment">// plan generate must be singleton</span></span><br><span class="line">            .keyBy(event -&gt; event.getOperation().hashCode())</span><br><span class="line">            .transform(<span class="string">&quot;compact_task&quot;</span>,</span><br><span class="line">                TypeInformation.of(CompactionCommitEvent.class),</span><br><span class="line">                <span class="keyword">new</span> KeyedProcessOperator&lt;&gt;(<span class="keyword">new</span> CompactFunction(conf)))</span><br><span class="line">            .setParallelism(conf.getInteger(FlinkOptions.COMPACTION_TASKS))</span><br><span class="line">            .addSink(<span class="keyword">new</span> CompactionCommitSink(conf))</span><br><span class="line">            .name(<span class="string">&quot;compact_commit&quot;</span>)</span><br><span class="line">            .setParallelism(<span class="number">1</span>); <span class="comment">// compaction commit should be singleton</span></span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 不开启则使用clean</span></span><br><span class="line">        <span class="keyword">return</span> pipeline.addSink(<span class="keyword">new</span> CleanFunction&lt;&gt;(conf))</span><br><span class="line">            .setParallelism(<span class="number">1</span>)</span><br><span class="line">            .name(<span class="string">&quot;clean_commits&quot;</span>).uid(<span class="string">&quot;uid_clean_commits&quot;</span>);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># RowDataToHoodieFunction</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">(Configuration parameters)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.open(parameters);</span><br><span class="line">    <span class="comment">// Avro Schema</span></span><br><span class="line">    <span class="keyword">this</span>.avroSchema = StreamerUtil.getSourceSchema(<span class="keyword">this</span>.config);</span><br><span class="line">    <span class="comment">// 创建RowData转换Hudi的GenericRecord的converter</span></span><br><span class="line">    <span class="keyword">this</span>.converter = RowDataToAvroConverters.createConverter(<span class="keyword">this</span>.rowType);</span><br><span class="line">    <span class="comment">// 主键生成器</span></span><br><span class="line">    <span class="keyword">this</span>.keyGenerator = StreamerUtil.createKeyGenerator(FlinkOptions.flatOptions(<span class="keyword">this</span>.config));</span><br><span class="line">    <span class="comment">// 数据加载</span></span><br><span class="line">    <span class="keyword">this</span>.payloadCreation = PayloadCreation.instance(config);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 每来一条数据都会执行map方法,进行转换成HoodieRecord</span></span><br><span class="line"><span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> O <span class="title">map</span><span class="params">(I i)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> (O) toHoodieRecord(i);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SuppressWarnings(&quot;rawtypes&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> HoodieRecord <span class="title">toHoodieRecord</span><span class="params">(I record)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    </span><br><span class="line">    GenericRecord gr = (GenericRecord) <span class="keyword">this</span>.converter.convert(<span class="keyword">this</span>.avroSchema, record);</span><br><span class="line">    <span class="keyword">final</span> HoodieKey hoodieKey = keyGenerator.getKey(gr);</span><br><span class="line">    <span class="comment">// 是否删除数据</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> isDelete = record.getRowKind() == RowKind.DELETE;</span><br><span class="line">    <span class="comment">// 创建Payload</span></span><br><span class="line">    HoodieRecordPayload payload = payloadCreation.createPayload(gr, isDelete);</span><br><span class="line">    <span class="comment">// Key+Payload组装成HoodieRecord</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> HoodieRecord&lt;&gt;(hoodieKey, payload);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> HoodieRecordPayload&lt;?&gt; createPayload(GenericRecord record, <span class="keyword">boolean</span> isDelete) <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">// 是否合并,由write.insert.drop.duplicates,write.operation决定</span></span><br><span class="line">    <span class="keyword">if</span> (shouldCombine) &#123;</span><br><span class="line">        ValidationUtils.checkState(preCombineField != <span class="keyword">null</span>);</span><br><span class="line">        <span class="comment">// 将重复数据进行合并,根据时间字段进行合并</span></span><br><span class="line">        Comparable&lt;?&gt; orderingVal = (Comparable&lt;?&gt;) HoodieAvroUtils.getNestedFieldVal(record,</span><br><span class="line">            preCombineField, <span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">return</span> (HoodieRecordPayload&lt;?&gt;) constructor.newInstance(</span><br><span class="line">            isDelete ? <span class="keyword">null</span> : record, orderingVal);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> (HoodieRecordPayload&lt;?&gt;) <span class="keyword">this</span>.constructor.newInstance(Option.of(record));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># BucketAssignFunction</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">open</span><span class="params">(Configuration parameters)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.open(parameters);</span><br><span class="line">    HoodieWriteConfig writeConfig = StreamerUtil.getHoodieClientConfig(<span class="keyword">this</span>.conf);</span><br><span class="line">    <span class="keyword">this</span>.hadoopConf = StreamerUtil.getHadoopConf();</span><br><span class="line">    <span class="comment">// Hadoop+FlinkRuntimeContext</span></span><br><span class="line">    <span class="keyword">this</span>.context = <span class="keyword">new</span> HoodieFlinkEngineContext(</span><br><span class="line">        <span class="keyword">new</span> SerializableConfiguration(<span class="keyword">this</span>.hadoopConf),</span><br><span class="line">        <span class="keyword">new</span> FlinkTaskContextSupplier(getRuntimeContext()));</span><br><span class="line">    <span class="comment">// Bucket分配器</span></span><br><span class="line">    <span class="keyword">this</span>.bucketAssigner = BucketAssigners.create(</span><br><span class="line">        getRuntimeContext().getIndexOfThisSubtask(), <span class="comment">// 当前子任务</span></span><br><span class="line">        getRuntimeContext().getNumberOfParallelSubtasks(), <span class="comment">// 子任务并行度</span></span><br><span class="line">        WriteOperationType.isOverwrite(WriteOperationType.fromValue(conf.getString(FlinkOptions.OPERATION))),</span><br><span class="line">        HoodieTableType.valueOf(conf.getString(FlinkOptions.TABLE_TYPE)),</span><br><span class="line">        context,</span><br><span class="line">        writeConfig);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BucketAssigner <span class="title">create</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">int</span> taskID,</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">int</span> numTasks,</span></span></span><br><span class="line"><span class="function"><span class="params">  <span class="keyword">boolean</span> isOverwrite,</span></span></span><br><span class="line"><span class="function"><span class="params">  HoodieTableType tableType,</span></span></span><br><span class="line"><span class="function"><span class="params">  HoodieFlinkEngineContext context,</span></span></span><br><span class="line"><span class="function"><span class="params">  HoodieWriteConfig config)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (isOverwrite) &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="keyword">new</span> OverwriteBucketAssigner(taskID, numTasks, context, config);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">switch</span> (tableType) &#123;</span><br><span class="line">      <span class="comment">// 不同表类型</span></span><br><span class="line">      <span class="keyword">case</span> COPY_ON_WRITE:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> BucketAssigner(taskID, numTasks, context, config);</span><br><span class="line">      <span class="keyword">case</span> MERGE_ON_READ:</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DeltaBucketAssigner(taskID, numTasks, context, config);</span><br><span class="line">      <span class="keyword">default</span>:</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">processElement</span><span class="params">(I value, Context ctx, Collector&lt;O&gt; out)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    <span class="comment">// 1. 将Record给BucketAssigner</span></span><br><span class="line">    <span class="comment">// 2. 查看Location的状态,有Location,发送</span></span><br><span class="line">    <span class="comment">// 3. 如果是INSERT,则BuckerAssigner确定位置,然后发送</span></span><br><span class="line">    HoodieRecord&lt;?&gt; record = (HoodieRecord&lt;?&gt;) value;</span><br><span class="line">    <span class="keyword">final</span> HoodieKey hoodieKey = record.getKey();</span><br><span class="line">    <span class="keyword">final</span> BucketInfo bucketInfo;</span><br><span class="line">    <span class="keyword">final</span> HoodieRecordLocation location;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 数据集可能很大,处理会阻塞,默认情况下禁用</span></span><br><span class="line">    <span class="keyword">if</span> (bootstrapIndex &amp;&amp; !partitionLoadState.contains(hoodieKey.getPartitionPath())) &#123;</span><br><span class="line">      <span class="comment">// 如果从未加载分区记录,先加载记录</span></span><br><span class="line">      loadRecords(hoodieKey.getPartitionPath());</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 只有更改的记录才需要查找位置的索引,仅追加的记录始终被识别为插入</span></span><br><span class="line">    <span class="keyword">if</span> (isChangingRecords &amp;&amp; <span class="keyword">this</span>.indexState.contains(hoodieKey)) &#123;</span><br><span class="line">      <span class="comment">// 设置Instant为U,bucket标记为更新</span></span><br><span class="line">      location = <span class="keyword">new</span> HoodieRecordLocation(<span class="string">&quot;U&quot;</span>, <span class="keyword">this</span>.indexState.get(hoodieKey).getFileId());</span><br><span class="line">      <span class="keyword">this</span>.bucketAssigner.addUpdate(record.getPartitionPath(), location.getFileId());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      bucketInfo = <span class="keyword">this</span>.bucketAssigner.addInsert(hoodieKey.getPartitionPath());</span><br><span class="line">      <span class="keyword">switch</span> (bucketInfo.getBucketType()) &#123;</span><br><span class="line">        <span class="keyword">case</span> INSERT:</span><br><span class="line">          <span class="comment">// INSERT bucket,Instant为I,下游操作可以检查Instant,知道是否是INSERT bucket.</span></span><br><span class="line">          location = <span class="keyword">new</span> HoodieRecordLocation(<span class="string">&quot;I&quot;</span>, bucketInfo.getFileIdPrefix());</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> UPDATE:</span><br><span class="line">          location = <span class="keyword">new</span> HoodieRecordLocation(<span class="string">&quot;U&quot;</span>, bucketInfo.getFileIdPrefix());</span><br><span class="line">          <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">          <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">if</span> (isChangingRecords) &#123;</span><br><span class="line">        <span class="keyword">this</span>.indexState.put(hoodieKey, location);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    record.unseal();</span><br><span class="line">    record.setCurrentLocation(location);</span><br><span class="line">    record.seal();</span><br><span class="line">    out.collect((O) record);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># DeltaBucketAssigner---&gt;BucketAssigner</span><br><span class="line">主要还是看父类操作,子类只是获取小文件列表</span><br><span class="line"><span class="function"><span class="keyword">public</span> BucketInfo <span class="title">addUpdate</span><span class="params">(String partitionPath, String fileIdHint)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> String key = StreamerUtil.generateBucketKey(partitionPath, fileIdHint);</span><br><span class="line">    <span class="keyword">if</span> (!bucketInfoMap.containsKey(key)) &#123;</span><br><span class="line">      BucketInfo bucketInfo = <span class="keyword">new</span> BucketInfo(BucketType.UPDATE, fileIdHint, partitionPath);</span><br><span class="line">      bucketInfoMap.put(key, bucketInfo);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> bucketInfoMap.get(key);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> BucketInfo <span class="title">addInsert</span><span class="params">(String partitionPath)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 对于新的插入,根据每个分区有多少条记录来计算Bucket</span></span><br><span class="line">    List&lt;SmallFile&gt; smallFiles = getSmallFilesForPartition(partitionPath);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 先插入到小文件中</span></span><br><span class="line">    <span class="keyword">for</span> (SmallFile smallFile : smallFiles) &#123;</span><br><span class="line">      <span class="keyword">final</span> String key = StreamerUtil.generateBucketKey(partitionPath, smallFile.location.getFileId());</span><br><span class="line">      SmallFileAssignState assignState = smallFileAssignStates.get(key);</span><br><span class="line">      <span class="keyword">assert</span> assignState != <span class="keyword">null</span>;</span><br><span class="line">      <span class="keyword">if</span> (assignState.canAssign()) &#123;</span><br><span class="line">        assignState.assign();</span><br><span class="line">        <span class="comment">// 创建新的Bucket,或者重用现有Bucket</span></span><br><span class="line">        BucketInfo bucketInfo;</span><br><span class="line">        <span class="keyword">if</span> (bucketInfoMap.containsKey(key)) &#123;</span><br><span class="line">          <span class="comment">// 向现有UpdateBucket分配插入</span></span><br><span class="line">          bucketInfo = bucketInfoMap.get(key);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          bucketInfo = addUpdate(partitionPath, smallFile.location.getFileId());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> bucketInfo;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 创建新的InsertBucket</span></span><br><span class="line">    <span class="keyword">if</span> (newFileAssignStates.containsKey(partitionPath)) &#123;</span><br><span class="line">      NewFileAssignState newFileAssignState = newFileAssignStates.get(partitionPath);</span><br><span class="line">      <span class="keyword">if</span> (newFileAssignState.canAssign()) &#123;</span><br><span class="line">        newFileAssignState.assign();</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">final</span> String key = StreamerUtil.generateBucketKey(partitionPath, newFileAssignState.fileId);</span><br><span class="line">      <span class="keyword">return</span> bucketInfoMap.get(key);</span><br><span class="line">    &#125;</span><br><span class="line">    BucketInfo bucketInfo = <span class="keyword">new</span> BucketInfo(BucketType.INSERT, FSUtils.createNewFileIdPfx(), partitionPath);</span><br><span class="line">    <span class="keyword">final</span> String key = StreamerUtil.generateBucketKey(partitionPath, bucketInfo.getFileIdPrefix());</span><br><span class="line">    bucketInfoMap.put(key, bucketInfo);</span><br><span class="line">    newFileAssignStates.put(partitionPath, <span class="keyword">new</span> NewFileAssignState(bucketInfo.getFileIdPrefix(), insertRecordsPerBucket));</span><br><span class="line">    <span class="keyword">return</span> bucketInfo;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># StreamWriteOperatorFactory</span><br><span class="line"><span class="comment">// 创建StreamWriteOperator</span></span><br><span class="line"><span class="comment">// 提供StreamWriteOperatorCoordinator</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line"><span class="keyword">public</span> &lt;T extends StreamOperator&lt;Object&gt;&gt; <span class="function">T <span class="title">createStreamOperator</span><span class="params">(StreamOperatorParameters&lt;Object&gt; parameters)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">final</span> OperatorID operatorID = parameters.getStreamConfig().getOperatorID();</span><br><span class="line">    <span class="keyword">final</span> OperatorEventDispatcher eventDispatcher = parameters.getOperatorEventDispatcher();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">this</span>.operator.setOperatorEventGateway(eventDispatcher.getOperatorEventGateway(operatorID));</span><br><span class="line">    <span class="keyword">this</span>.operator.setup(parameters.getContainingTask(), parameters.getStreamConfig(), parameters.getOutput());</span><br><span class="line">    <span class="keyword">this</span>.operator.setProcessingTimeService(<span class="keyword">this</span>.processingTimeService);</span><br><span class="line">    eventDispatcher.registerEventHandler(operatorID, operator);</span><br><span class="line">    <span class="keyword">return</span> (T) operator;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> OperatorCoordinator.<span class="function">Provider <span class="title">getCoordinatorProvider</span><span class="params">(String s, OperatorID operatorID)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> StreamWriteOperatorCoordinator.Provider(operatorID, <span class="keyword">this</span>.conf);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># StreamWriteOperator</span><br><span class="line"><span class="comment">// 指定StreamWriteFunction</span></span><br><span class="line"><span class="comment">// 设置OperatorEventGateway</span></span><br><span class="line"></span><br><span class="line"># StreamWriteFunction</span><br><span class="line"><span class="comment">// 处理数据,缓存数据,写出数据,完成后发送事件给OperatorCoordinator</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">bufferRecord</span><span class="params">(I value)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 计算BucketID</span></span><br><span class="line">    <span class="keyword">final</span> String bucketID = getBucketID(value);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取Bucket</span></span><br><span class="line">    DataBucket bucket = <span class="keyword">this</span>.buckets.computeIfAbsent(bucketID,</span><br><span class="line">        k -&gt; <span class="keyword">new</span> DataBucket(<span class="keyword">this</span>.config.getDouble(FlinkOptions.WRITE_BATCH_SIZE)));</span><br><span class="line">    <span class="keyword">boolean</span> flushBucket = bucket.detector.detect(value);</span><br><span class="line">    <span class="keyword">boolean</span> flushBuffer = <span class="keyword">this</span>.tracer.trace(bucket.detector.lastRecordSize);</span><br><span class="line">    <span class="comment">// 判断是否需要Flush数据</span></span><br><span class="line">    <span class="keyword">if</span> (flushBucket) &#123;</span><br><span class="line">      flushBucket(bucket);</span><br><span class="line">      <span class="keyword">this</span>.tracer.countDown(bucket.detector.totalSize);</span><br><span class="line">      bucket.reset();</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (flushBuffer) &#123;</span><br><span class="line">      <span class="comment">// 找到缓存数据最多的Bucket</span></span><br><span class="line">      List&lt;DataBucket&gt; sortedBuckets = <span class="keyword">this</span>.buckets.values().stream()</span><br><span class="line">          .sorted((b1, b2) -&gt; Long.compare(b2.detector.totalSize, b1.detector.totalSize))</span><br><span class="line">          .collect(Collectors.toList());</span><br><span class="line">      <span class="keyword">final</span> DataBucket bucketToFlush = sortedBuckets.get(<span class="number">0</span>);</span><br><span class="line">      <span class="comment">// 写入文件</span></span><br><span class="line">      flushBucket(bucketToFlush);</span><br><span class="line">      <span class="keyword">this</span>.tracer.countDown(bucketToFlush.detector.totalSize);</span><br><span class="line">      bucketToFlush.reset();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 都不满足则缓存起来</span></span><br><span class="line">    bucket.records.add((HoodieRecord&lt;?&gt;) value);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SuppressWarnings(&quot;unchecked, rawtypes&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">flushBucket</span><span class="params">(DataBucket bucket)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取PendingInstant</span></span><br><span class="line">    <span class="keyword">final</span> String instant = <span class="keyword">this</span>.writeClient.getLastPendingInstant(<span class="keyword">this</span>.actionType);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (instant == <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="comment">// in case there are empty checkpoints that has no input data</span></span><br><span class="line">      LOG.info(<span class="string">&quot;No inflight instant when flushing data, cancel.&quot;</span>);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// if we are waiting for the checkpoint notification, shift the write instant time.</span></span><br><span class="line">    <span class="keyword">boolean</span> shift = confirming &amp;&amp; StreamerUtil.equal(instant, <span class="keyword">this</span>.currentInstant);</span><br><span class="line">    <span class="keyword">final</span> String flushInstant = shift ? StreamerUtil.instantTimePlus(instant, <span class="number">1</span>) : instant;</span><br><span class="line"></span><br><span class="line">    List&lt;HoodieRecord&gt; records = bucket.records;</span><br><span class="line">    ValidationUtils.checkState(records.size() &gt; <span class="number">0</span>, <span class="string">&quot;Data bucket to flush has no buffering records&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> (config.getBoolean(FlinkOptions.INSERT_DROP_DUPS)) &#123;</span><br><span class="line">      records = FlinkWriteHelper.newInstance().deduplicateRecords(records, (HoodieIndex) <span class="keyword">null</span>, -<span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 写入文件</span></span><br><span class="line">    <span class="keyword">final</span> List&lt;WriteStatus&gt; writeStatus = <span class="keyword">new</span> ArrayList&lt;&gt;(writeFunction.apply(records, flushInstant));</span><br><span class="line">    <span class="keyword">final</span> BatchWriteSuccessEvent event = BatchWriteSuccessEvent.builder()</span><br><span class="line">        .taskID(taskID)</span><br><span class="line">        .instantTime(instant) <span class="comment">// the write instant may shift but the event still use the currentInstant.</span></span><br><span class="line">        .writeStatus(writeStatus)</span><br><span class="line">        .isLastBatch(<span class="keyword">false</span>)</span><br><span class="line">        .isEndInput(<span class="keyword">false</span>)</span><br><span class="line">        .build();</span><br><span class="line">    <span class="comment">// 发送成功事件给StreamWriteOperatorCoordinator</span></span><br><span class="line">    <span class="keyword">this</span>.eventGateway.sendEventToCoordinator(event);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># StreamWriteOperatorCoordinator</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleEventFromOperator</span><span class="params">(<span class="keyword">int</span> i, OperatorEvent operatorEvent)</span> </span>&#123;</span><br><span class="line">    executor.execute(</span><br><span class="line">        () -&gt; &#123;</span><br><span class="line">          <span class="comment">// no event to handle</span></span><br><span class="line">          ValidationUtils.checkState(operatorEvent <span class="keyword">instanceof</span> BatchWriteSuccessEvent,</span><br><span class="line">              <span class="string">&quot;The coordinator can only handle BatchWriteSuccessEvent&quot;</span>);</span><br><span class="line">          BatchWriteSuccessEvent event = (BatchWriteSuccessEvent) operatorEvent;</span><br><span class="line">          <span class="comment">// the write task does not block after checkpointing(and before it receives a checkpoint success event),</span></span><br><span class="line">          <span class="comment">// if it it checkpoints succeed then flushes the data buffer again before this coordinator receives a checkpoint</span></span><br><span class="line">          <span class="comment">// success event, the data buffer would flush with an older instant time.</span></span><br><span class="line">          ValidationUtils.checkState(</span><br><span class="line">              HoodieTimeline.compareTimestamps(instant, HoodieTimeline.GREATER_THAN_OR_EQUALS, event.getInstantTime()),</span><br><span class="line">              String.format(<span class="string">&quot;Receive an unexpected event for instant %s from task %d&quot;</span>,</span><br><span class="line">                  event.getInstantTime(), event.getTaskID()));</span><br><span class="line">          <span class="keyword">if</span> (<span class="keyword">this</span>.eventBuffer[event.getTaskID()] != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.eventBuffer[event.getTaskID()].mergeWith(event);</span><br><span class="line">          &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">this</span>.eventBuffer[event.getTaskID()] = event;</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// 是EndInput且所有事件都被接受</span></span><br><span class="line">          <span class="keyword">if</span> (event.isEndInput() &amp;&amp; allEventsReceived()) &#123;</span><br><span class="line">            <span class="comment">// 提交当前Instant</span></span><br><span class="line">            commitInstant();</span><br><span class="line">            <span class="comment">// no compaction scheduling for batch mode</span></span><br><span class="line">          &#125;</span><br><span class="line">        &#125;, <span class="string">&quot;handle write success event for instant %s&quot;</span>, <span class="keyword">this</span>.instant</span><br><span class="line">    );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="读取做了些什么"><a href="#读取做了些什么" class="headerlink" title="读取做了些什么"></a>读取做了些什么</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> ScanRuntimeProvider <span class="title">getScanRuntimeProvider</span><span class="params">(ScanContext scanContext)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> DataStreamScanProvider() &#123;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isBounded</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 是否有界</span></span><br><span class="line">        <span class="keyword">return</span> !conf.getBoolean(FlinkOptions.READ_AS_STREAMING);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="meta">@Override</span></span><br><span class="line">      <span class="function"><span class="keyword">public</span> DataStream&lt;RowData&gt; <span class="title">produceDataStream</span><span class="params">(StreamExecutionEnvironment execEnv)</span> </span>&#123;</span><br><span class="line">        <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">        <span class="comment">// 数据类型</span></span><br><span class="line">        TypeInformation&lt;RowData&gt; typeInfo =</span><br><span class="line">            (TypeInformation&lt;RowData&gt;) TypeInfoDataTypeConverter.fromDataTypeToTypeInfo(getProducedDataType());</span><br><span class="line">        <span class="keyword">if</span> (conf.getBoolean(FlinkOptions.READ_AS_STREAMING)) &#123;</span><br><span class="line">          <span class="comment">// 流读,很眼熟哟,IceBerg也见过</span></span><br><span class="line">          StreamReadMonitoringFunction monitoringFunction = <span class="keyword">new</span> StreamReadMonitoringFunction(</span><br><span class="line">              conf, FilePathUtils.toFlinkPath(path), metaClient, maxCompactionMemoryInBytes);</span><br><span class="line">          InputFormat&lt;RowData, ?&gt; inputFormat = getInputFormat(<span class="keyword">true</span>);</span><br><span class="line">          <span class="keyword">if</span> (!(inputFormat <span class="keyword">instanceof</span> MergeOnReadInputFormat)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> HoodieException(<span class="string">&quot;No successful commits under path &quot;</span> + path);</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="comment">// InputFormat转换DataStream</span></span><br><span class="line">          OneInputStreamOperatorFactory&lt;MergeOnReadInputSplit, RowData&gt; factory = StreamReadOperator.factory((MergeOnReadInputFormat) inputFormat);</span><br><span class="line">          SingleOutputStreamOperator&lt;RowData&gt; source = execEnv.addSource(monitoringFunction, <span class="string">&quot;streaming_source&quot;</span>)</span><br><span class="line">              .setParallelism(<span class="number">1</span>)</span><br><span class="line">              .uid(<span class="string">&quot;uid_streaming_source&quot;</span>)</span><br><span class="line">              .transform(<span class="string">&quot;split_reader&quot;</span>, typeInfo, factory)</span><br><span class="line">              .setParallelism(conf.getInteger(FlinkOptions.READ_TASKS))</span><br><span class="line">              .uid(<span class="string">&quot;uid_split_reader&quot;</span>);</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">new</span> DataStreamSource&lt;&gt;(source);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">          <span class="comment">// 有界</span></span><br><span class="line">          InputFormatSourceFunction&lt;RowData&gt; func = <span class="keyword">new</span> InputFormatSourceFunction&lt;&gt;(getInputFormat(), typeInfo);</span><br><span class="line">          DataStreamSource&lt;RowData&gt; source = execEnv.addSource(func, asSummaryString(), typeInfo);</span><br><span class="line">          <span class="keyword">return</span> source.name(<span class="string">&quot;bounded_source&quot;</span>)</span><br><span class="line">              .setParallelism(conf.getInteger(FlinkOptions.READ_TASKS))</span><br><span class="line">              .uid(<span class="string">&quot;uid_bounded_source&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># StreamReadMonitoringFunction</span><br><span class="line"><span class="comment">// 监听用户提供的Hoodie表路径</span></span><br><span class="line"><span class="comment">// 决定读取和处理哪些文件</span></span><br><span class="line"><span class="comment">// 创建与这些文件对应的MergeOnReadInputSplit</span></span><br><span class="line"><span class="comment">// 将他们分配给下游任务进行处理</span></span><br><span class="line"><span class="meta">@VisibleForTesting</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">monitorDirAndForwardSplits</span><span class="params">(SourceContext&lt;MergeOnReadInputSplit&gt; context)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 已完成的Instant</span></span><br><span class="line">    metaClient.reloadActiveTimeline();</span><br><span class="line">    HoodieTimeline commitTimeline = metaClient.getCommitsAndCompactionTimeline().filterCompletedInstants();</span><br><span class="line">    <span class="keyword">if</span> (commitTimeline.empty()) &#123;</span><br><span class="line">      LOG.warn(<span class="string">&quot;No splits found for the table under path &quot;</span> + path);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    List&lt;HoodieInstant&gt; instants = filterInstantsWithStart(commitTimeline, <span class="keyword">this</span>.issuedInstant);</span><br><span class="line">    <span class="comment">// 获取满足条件的最新Instant</span></span><br><span class="line">    <span class="keyword">final</span> HoodieInstant instantToIssue = instants.size() == <span class="number">0</span> ? <span class="keyword">null</span> : instants.get(instants.size() - <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">final</span> InstantRange instantRange;</span><br><span class="line">    <span class="keyword">if</span> (instantToIssue != <span class="keyword">null</span>) &#123;</span><br><span class="line">      <span class="keyword">if</span> (<span class="keyword">this</span>.issuedInstant != <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// had already consumed an instant</span></span><br><span class="line">        instantRange = InstantRange.getInstance(<span class="keyword">this</span>.issuedInstant, instantToIssue.getTimestamp(),</span><br><span class="line">            InstantRange.RangeType.OPEN_CLOSE);</span><br><span class="line">      &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="keyword">this</span>.conf.getOptional(FlinkOptions.READ_STREAMING_START_COMMIT).isPresent()) &#123;</span><br><span class="line">        <span class="comment">// first time consume and has a start commit</span></span><br><span class="line">        <span class="keyword">final</span> String specifiedStart = <span class="keyword">this</span>.conf.getString(FlinkOptions.READ_STREAMING_START_COMMIT);</span><br><span class="line">        instantRange = InstantRange.getInstance(specifiedStart, instantToIssue.getTimestamp(),</span><br><span class="line">            InstantRange.RangeType.CLOSE_CLOSE);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// first time consume and no start commit,</span></span><br><span class="line">        <span class="comment">// would consume all the snapshot data PLUS incremental data set</span></span><br><span class="line">        instantRange = <span class="keyword">null</span>;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      LOG.info(<span class="string">&quot;No new instant found for the table under path &quot;</span> + path + <span class="string">&quot;, skip reading&quot;</span>);</span><br><span class="line">      <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 生成InputSplit:</span></span><br><span class="line">    <span class="comment">// 1. 获取元数据;</span></span><br><span class="line">    <span class="comment">// 2. 过滤相对分区路径</span></span><br><span class="line">    <span class="comment">// 3. 筛选完整文件路径</span></span><br><span class="line">    <span class="comment">// 4. 使用步骤3文件路径作为文件系统视图的备份</span></span><br><span class="line">    List&lt;HoodieCommitMetadata&gt; metadataList = instants.stream()</span><br><span class="line">        .map(instant -&gt; getCommitMetadata(instant, commitTimeline)).collect(Collectors.toList());</span><br><span class="line">    Set&lt;String&gt; writePartitions = getWritePartitionPaths(metadataList);</span><br><span class="line">    FileStatus[] fileStatuses = getWritePathsOfInstants(metadataList);</span><br><span class="line">    <span class="keyword">if</span> (fileStatuses.length == <span class="number">0</span>) &#123;</span><br><span class="line">      <span class="keyword">throw</span> <span class="keyword">new</span> HoodieException(<span class="string">&quot;No files found for reading in user provided path.&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    HoodieTableFileSystemView fsView = <span class="keyword">new</span> HoodieTableFileSystemView(metaClient, commitTimeline, fileStatuses);</span><br><span class="line">    <span class="keyword">final</span> String commitToIssue = instantToIssue.getTimestamp();</span><br><span class="line">    <span class="keyword">final</span> AtomicInteger cnt = <span class="keyword">new</span> AtomicInteger(<span class="number">0</span>);</span><br><span class="line">    <span class="keyword">final</span> String mergeType = <span class="keyword">this</span>.conf.getString(FlinkOptions.MERGE_TYPE);</span><br><span class="line">    List&lt;MergeOnReadInputSplit&gt; inputSplits = writePartitions.stream()</span><br><span class="line">        .map(relPartitionPath -&gt; fsView.getLatestMergedFileSlicesBeforeOrOn(relPartitionPath, commitToIssue)</span><br><span class="line">        .map(fileSlice -&gt; &#123;</span><br><span class="line">          Option&lt;List&lt;String&gt;&gt; logPaths = Option.ofNullable(fileSlice.getLogFiles()</span><br><span class="line">              .sorted(HoodieLogFile.getLogFileComparator())</span><br><span class="line">              .map(logFile -&gt; logFile.getPath().toString())</span><br><span class="line">              .collect(Collectors.toList()));</span><br><span class="line">          String basePath = fileSlice.getBaseFile().map(BaseFile::getPath).orElse(<span class="keyword">null</span>);</span><br><span class="line">          <span class="keyword">return</span> <span class="keyword">new</span> MergeOnReadInputSplit(cnt.getAndAdd(<span class="number">1</span>),</span><br><span class="line">              basePath, logPaths, commitToIssue,</span><br><span class="line">              metaClient.getBasePath(), maxCompactionMemoryInBytes, mergeType, instantRange);</span><br><span class="line">        &#125;).collect(Collectors.toList()))</span><br><span class="line">        .flatMap(Collection::stream)</span><br><span class="line">        .collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (MergeOnReadInputSplit split : inputSplits) &#123;</span><br><span class="line">      context.collect(split);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// update the issues instant time</span></span><br><span class="line">    <span class="keyword">this</span>.issuedInstant = commitToIssue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"># StreamReadOperator</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">processElement</span><span class="params">(StreamRecord&lt;MergeOnReadInputSplit&gt; element)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 接受到InputSplit就放入队列</span></span><br><span class="line">    splits.add(element.getValue());</span><br><span class="line">    enqueueProcessSplits();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">enqueueProcessSplits</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (currentSplitState == SplitState.IDLE &amp;&amp; !splits.isEmpty()) &#123;</span><br><span class="line">      currentSplitState = SplitState.RUNNING;</span><br><span class="line">      <span class="comment">// MailboxExecutor读取InputSplit的实际数据</span></span><br><span class="line">      executor.execute(<span class="keyword">this</span>::processSplits, <span class="string">&quot;process input split&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-  </div>
-  <footer class="article-footer">
-    
-  <div class="cc">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
-      <img src="/images/cc/cc.png">
-      
-          <img src="/images/cc/by.png">
-        
-          <img src="/images/cc/sa.png">
-      
-      <span>
-        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
-      </span>
-    </a>
-  </div>
-
-
-    
-
-  </footer>
-</article>
-
-
-
-
-
-
-
-          <div class="main-footer">
-  
-    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
-  
-</div>
-
-      
-        </div>
-      
     </div>
-  </div>
-  
-<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 
+    
+    
+    
 
-  
-<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hudi/" rel="tag"># hudi</a>
+              <a href="/tags/flink/" rel="tag"># flink</a>
+          </div>
 
-  
-<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+        
 
-
-  <!-- Root element of PhotoSwipe. Must have class pswp. -->
-  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    <!-- Background of PhotoSwipe.
-             It's a separate element as animating opacity is faster than rgba(). -->
-    <div class="pswp__bg"></div>
-
-    <!-- Slides wrapper with overflow:hidden. -->
-    <div class="pswp__scroll-wrap">
-
-      <!-- Container that holds slides.
-                PhotoSwipe keeps only 3 of them in the DOM to save memory.
-                Don't modify these 3 pswp__item elements, data is added later on. -->
-      <div class="pswp__container">
-        <div class="pswp__item"></div>
-        <div class="pswp__item"></div>
-        <div class="pswp__item"></div>
-      </div>
-
-      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-      <div class="pswp__ui pswp__ui--hidden">
-
-        <div class="pswp__top-bar">
-
-          <!--  Controls are self-explanatory. Order can be changed. -->
-
-          <div class="pswp__counter"></div>
-
-          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-          <button class="pswp__button pswp__button--share" title="Share"></button>
-
-          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
-          <!-- element will get class pswp__preloader--active when preloader is running -->
-          <div class="pswp__preloader">
-            <div class="pswp__preloader__icn">
-              <div class="pswp__preloader__cut">
-                <div class="pswp__preloader__donut"></div>
-              </div>
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/05/07/Hudi%E5%88%9D%E6%8E%A2/" rel="prev" title="Hudi初探">
+                  <i class="fa fa-chevron-left"></i> Hudi初探
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/05/13/Flink%E8%BF%9E%E6%8E%A5%E5%99%A8%E8%A7%A3%E6%9E%90UpsertKafka/" rel="next" title="Flink连接器解析UpsertKafka">
+                  Flink连接器解析UpsertKafka <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
-        </div>
+    </footer>
+  </article>
+</div>
 
-        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-          <div class="pswp__share-tooltip"></div>
-        </div>
 
-        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
 
-        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
 
-        <div class="pswp__caption">
-          <div class="pswp__caption__center"></div>
-        </div>
-      </div>
-    </div>
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">X&Z</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
 
-  
-<script src="/PhotoSwipe/photoswipe.js"></script>
+    </div>
+  </footer>
 
   
-<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
 
 
 
 
-<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
 
 
-<script src="/scripts/main.js"></script>
+  
+
+
+
 
 
 </body>

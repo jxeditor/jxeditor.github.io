@@ -1,17 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
 
 
 
-<title>
-  
-    KMeans算法实现逻辑及代码
-  
-</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;yoursite.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Muse&quot;,&quot;version&quot;:&quot;8.5.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script><script src="/js/config.js"></script>
 <meta name="description" content="将KMeans算法整个逻辑梳理出来,容易理解,并实现代码">
 <meta property="og:type" content="article">
 <meta property="og:title" content="KMeans算法实现逻辑及代码">
@@ -26,169 +34,226 @@
 <meta name="twitter:card" content="summary">
 
 
-  <link rel="alternative" href="/atom.xml" title="BlackC" type="application/atom+xml">
+<link rel="canonical" href="http://yoursite.com/2019/11/29/KMeans%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0%E9%80%BB%E8%BE%91%E5%8F%8A%E4%BB%A3%E7%A0%81/">
 
 
 
-  <link rel="icon" href="/images/favicon.ico">
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;11&#x2F;29&#x2F;KMeans%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0%E9%80%BB%E8%BE%91%E5%8F%8A%E4%BB%A3%E7%A0%81&#x2F;&quot;,&quot;path&quot;:&quot;2019&#x2F;11&#x2F;29&#x2F;KMeans算法实现逻辑及代码&#x2F;&quot;,&quot;title&quot;:&quot;KMeans算法实现逻辑及代码&quot;}</script>
 
-
-
-<link rel="stylesheet" href="/perfect-scrollbar/css/perfect-scrollbar.min.css">
-
-
-<link rel="stylesheet" href="/styles/main.css">
-
-
-
-
-
-
-
-<meta name="generator" content="Hexo 5.4.0"></head>
-<body
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>KMeans算法实现逻辑及代码 | BlackC</title>
   
-    class="monochrome"
-  
-  >
-  <div class="mobile-header">
-  <button class="sidebar-toggle" type="button">
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-    <span class="icon-bar"></span>
-  </button>
-  <a class="title" href="/">BlackC</a>
-</div>
 
-  <div class="main-container">
-    <div class="sidebar">
-  <div class="header">
-    <h1 class="title"><a href="/">BlackC</a></h1>
-    
-    <div class="info">
-      <div class="content">
-        
-        
-          <div class="author">X&amp;Z</div>
-        
-      </div>
-      
-        <div class="avatar">
-          
-            <a href="/about"><img src="/images/avatar.jpg"></a>
-          
-        </div>
-      
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
     </div>
   </div>
-  <div class="body">
-    
-      
-        <ul class="nav">
-          
-            
-              <li class="category-list-container">
-                <a href="javascript:;">分类</a>
-                <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/">大数据</a><span class="category-list-count">187</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%90%AD%E5%BB%BA/">搭建</a><span class="category-list-count">20</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%99%E7%A8%8B/">教程</a><span class="category-list-count">9</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%9D%82%E8%AE%B0/">杂记</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a><span class="category-list-count">10</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%B3%BB%E7%BB%9F/">系统</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%AF%91/">编译</a><span class="category-list-count">5</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E7%BC%96%E8%BE%91%E5%99%A8/">编辑器</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E8%BF%90%E7%BB%B4/">运维</a><span class="category-list-count">10</span></li></ul>
-              </li>
-            
-          
-            
-              <li class="tag-list-container">
-                <a href="javascript:;">标签</a>
-                <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/alibaba/" rel="tag">alibaba</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cas/" rel="tag">cas</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/cdh/" rel="tag">cdh</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/docker/" rel="tag">docker</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/doris/" rel="tag">doris</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/edit/" rel="tag">edit</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/elk/" rel="tag">elk</a><span class="tag-list-count">7</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/flink/" rel="tag">flink</a><span class="tag-list-count">103</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/" rel="tag">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/grafana/" rel="tag">grafana</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/greenplum/" rel="tag">greenplum</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hbase/" rel="tag">hbase</a><span class="tag-list-count">9</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hexo/" rel="tag">hexo</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hive/" rel="tag">hive</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hudi/" rel="tag">hudi</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/iceberg/" rel="tag">iceberg</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/interview/" rel="tag">interview</a><span class="tag-list-count">14</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kafka/" rel="tag">kafka</a><span class="tag-list-count">30</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/kylin/" rel="tag">kylin</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/learn/" rel="tag">learn</a><span class="tag-list-count">11</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/maven/" rel="tag">maven</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/miscellany/" rel="tag">miscellany</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mr/" rel="tag">mr</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/mysql/" rel="tag">mysql</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/neo4j/" rel="tag">neo4j</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oracle/" rel="tag">oracle</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/os/" rel="tag">os</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/oss/" rel="tag">oss</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/profile/" rel="tag">profile</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/prometheus/" rel="tag">prometheus</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/" rel="tag">python</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/redis/" rel="tag">redis</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/sbt/" rel="tag">sbt</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/shell/" rel="tag">shell</a><span class="tag-list-count">6</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/spark/" rel="tag">spark</a><span class="tag-list-count">18</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tomcat/" rel="tag">tomcat</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/tools/" rel="tag">tools</a><span class="tag-list-count">8</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/xwiki/" rel="tag">xwiki</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/zk/" rel="tag">zk</a><span class="tag-list-count">1</span></li></ul>
-              </li>
-            
-          
-            
-              <li class="archive-list-container">
-                <a href="javascript:;">归档</a>
-                <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2021/">2021</a><span class="archive-list-count">35</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2020/">2020</a><span class="archive-list-count">91</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/">2019</a><span class="archive-list-count">80</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/">2018</a><span class="archive-list-count">17</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2017/">2017</a><span class="archive-list-count">18</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2016/">2016</a><span class="archive-list-count">10</span></li></ul>
-              </li>
-            
-          
-        </ul>
-      
-        <ul class="nav">
-          
-            
-              <li>
-                <a href="/" title="主页" external="false">主页</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="/archives" title="文章" external="false">文章</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="/about" title="关于" external="false">关于</a>
-              </li>
-            
-          
-        </ul>
-      
-        <ul class="nav">
-          
-            
-              <li>
-                <a href="https://github.com/denjones/hexo-theme-chan" title="样式" target="_blank" rel="noopener">样式</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="https://github.com/jxeditor" title="Github" target="_blank" rel="noopener">Github</a>
-              </li>
-            
-          
-            
-              <li>
-                <a href="/atom.xml" title="RSS" external="false">RSS</a>
-              </li>
-            
-          
-        </ul>
-      
-    
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">BlackC</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
   </div>
 </div>
 
-    <div class="main-content">
-      
-        <div style="max-width: 1000px">
-      
-          <article id="post-KMeans算法实现逻辑及代码" class="article article-type-post">
-  
-    <h1 class="article-header">
-      KMeans算法实现逻辑及代码
-    </h1>
-  
-  
-
-  <div class="article-info">
-    <span class="article-date">
-  2019-11-29
-</span>
-
-    
-	<span class="article-category tagcloud">
-	<ul class="article-category-list"><li class="article-category-list-item"><a class="article-category-list-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a></li></ul>
-	</span>
 
 
-    
-	<span class="article-tag tagcloud">
-		<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/algorithm/" rel="tag">algorithm</a></li></ul>
-	</span>
+<nav class="site-nav">
+  <ul class="main-menu menu">
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
 
 
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
   </div>
-  <div class="article-entry">
-    <blockquote>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFKMeans"><span class="nav-number">1.</span> <span class="nav-text">什么是KMeans</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">实现步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81"><span class="nav-number">3.</span> <span class="nav-text">实现代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Point%E7%B1%BB-%E6%95%B0%E6%8D%AE%E7%82%B9"><span class="nav-number">3.1.</span> <span class="nav-text">Point类(数据点)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Cluster%E7%B1%BB-%E7%B1%BB%E4%B8%AD%E5%BF%83"><span class="nav-number">3.2.</span> <span class="nav-text">Cluster类(类中心)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#DistanceCompute%E7%B1%BB-%E6%B1%82%E8%B7%9D%E7%A6%BB%E5%B7%A5%E5%85%B7"><span class="nav-number">3.3.</span> <span class="nav-text">DistanceCompute类(求距离工具)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#KMeansRun%E7%B1%BB-%E7%AE%97%E6%B3%95%E6%89%A7%E8%A1%8C%E7%B1%BB"><span class="nav-number">3.4.</span> <span class="nav-text">KMeansRun类(算法执行类)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Main%E7%B1%BB-%E4%B8%BB%E5%87%BD%E6%95%B0"><span class="nav-number">3.5.</span> <span class="nav-text">Main类(主函数)</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">X&Z</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">251</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/11/29/KMeans%E7%AE%97%E6%B3%95%E5%AE%9E%E7%8E%B0%E9%80%BB%E8%BE%91%E5%8F%8A%E4%BB%A3%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="X&Z">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BlackC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          KMeans算法实现逻辑及代码
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2019-11-29 10:58:09" itemprop="dateCreated datePublished" datetime="2019-11-29T10:58:09+08:00">2019-11-29</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">更新于</span>
+        <time title="修改时间：2021-03-21 20:33:13" itemprop="dateModified" datetime="2021-03-21T20:33:13+08:00">2021-03-21</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">算法</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
 <p>将KMeans算法整个逻辑梳理出来,容易理解,并实现代码</p>
 </blockquote>
 <span id="more"></span>
@@ -209,132 +274,77 @@
 <h3 id="KMeansRun类-算法执行类"><a href="#KMeansRun类-算法执行类" class="headerlink" title="KMeansRun类(算法执行类)"></a>KMeansRun类(算法执行类)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test.algorithm.kmeans;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">KMeansRun</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> kNum;                             <span class="comment">//类中心的个数</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> iterNum = <span class="number">10</span>;                     <span class="comment">//迭代次数</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> iterMaxTimes = <span class="number">100000</span>;            <span class="comment">//单次迭代最大运行次数</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> iterRunTimes = <span class="number">0</span>;                 <span class="comment">//单次迭代实际运行次数</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">float</span> disDiff = (<span class="keyword">float</span>) <span class="number">0.01</span>;         <span class="comment">//单次迭代终止条件，两次运行中类中心的距离差</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> List&lt;<span class="keyword">float</span>[]&gt; original_data = <span class="keyword">null</span>;    <span class="comment">//用于存放，原始数据集</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> List&lt;Point&gt; pointList = <span class="keyword">null</span>;  <span class="comment">//用于存放，原始数据集所构建的点集</span></span><br><span class="line">    <span class="keyword">private</span> DistanceCompute disC = <span class="keyword">new</span> DistanceCompute();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> len = <span class="number">0</span>;                          <span class="comment">//用于记录每个数据点的维度</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">KMeansRun</span><span class="params">(<span class="keyword">int</span> k, List&lt;<span class="keyword">float</span>[]&gt; original_data)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.kNum = k;</span><br><span class="line">        <span class="keyword">this</span>.original_data = original_data;</span><br><span class="line">        <span class="keyword">this</span>.len = original_data.get(<span class="number">0</span>).length;</span><br><span class="line">        <span class="comment">//检查规范</span></span><br><span class="line">        check();</span><br><span class="line">        <span class="comment">//初始化点集</span></span><br><span class="line">        init();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 检查规范</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">check</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (kNum == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;k must be the number &gt; 0&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (original_data == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">&quot;program can&#x27;t get real data&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化数据集，把数组转化为Point类型。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        pointList = <span class="keyword">new</span> ArrayList&lt;Point&gt;();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>, j = original_data.size(); i &lt; j; i++) &#123;</span><br><span class="line">            pointList.add(<span class="keyword">new</span> Point(i, original_data.get(i)));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 随机选取中心点，构建成中心类。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Set&lt;Cluster&gt; <span class="title">chooseCenterCluster</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Set&lt;Cluster&gt; clusterSet = <span class="keyword">new</span> HashSet&lt;Cluster&gt;();</span><br><span class="line">        Random random = <span class="keyword">new</span> Random();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> id = <span class="number">0</span>; id &lt; kNum; ) &#123;</span><br><span class="line">            Point point = pointList.get(random.nextInt(pointList.size()));</span><br><span class="line">            <span class="comment">// 用于标记是否已经选择过该数据</span></span><br><span class="line">            <span class="keyword">boolean</span> flag = <span class="keyword">true</span>;</span><br><span class="line">            <span class="keyword">for</span> (Cluster cluster : clusterSet) &#123;</span><br><span class="line">                <span class="keyword">if</span> (cluster.getCenter().equals(point)) &#123;</span><br><span class="line">                    flag = <span class="keyword">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 如果随机选取的点没有被选中过，则生成一个类中心</span></span><br><span class="line">            <span class="keyword">if</span> (flag) &#123;</span><br><span class="line">                Cluster cluster = <span class="keyword">new</span> Cluster(id, point);</span><br><span class="line">                clusterSet.add(cluster);</span><br><span class="line">                id++;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> clusterSet;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 为每个点分配一个类！</span></span><br><span class="line"><span class="comment">     * 为每个点选择最近的中心点,以及到中心点的位置</span></span><br><span class="line"><span class="comment">     * 然后为中心点设置成员,成员就是那些选择了该中心点的点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">cluster</span><span class="params">(Set&lt;Cluster&gt; clusterSet)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 计算每个点到K个中心的距离，并且为每个点标记类别号</span></span><br><span class="line">        <span class="keyword">for</span> (Point point : pointList) &#123;</span><br><span class="line">            <span class="keyword">float</span> min_dis = Integer.MAX_VALUE;</span><br><span class="line">            <span class="keyword">for</span> (Cluster cluster : clusterSet) &#123;</span><br><span class="line">                <span class="keyword">float</span> tmp_dis = (<span class="keyword">float</span>) Math.min(disC.getEuclideanDis(point, cluster.getCenter()), min_dis);</span><br><span class="line">                <span class="keyword">if</span> (tmp_dis != min_dis) &#123;</span><br><span class="line">                    min_dis = tmp_dis;</span><br><span class="line">                    point.setClusterId(cluster.getId());</span><br><span class="line">                    point.setDist(min_dis);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 新清除原来所有的类中成员。把所有的点，分别加入每个类别</span></span><br><span class="line">        <span class="keyword">for</span> (Cluster cluster : clusterSet) &#123;</span><br><span class="line">            cluster.getMembers().clear();</span><br><span class="line">            <span class="keyword">for</span> (Point point : pointList) &#123;</span><br><span class="line">                <span class="keyword">if</span> (point.getClusterid() == cluster.getId()) &#123;</span><br><span class="line">                    cluster.addPoint(point);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 计算每个类的中心位置！</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">calculateCenter</span><span class="params">(Set&lt;Cluster&gt; clusterSet)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> ifNeedIter = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">for</span> (Cluster cluster : clusterSet) &#123;</span><br><span class="line">            List&lt;Point&gt; point_list = cluster.getMembers();</span><br><span class="line">            <span class="keyword">float</span>[] sumAll = <span class="keyword">new</span> <span class="keyword">float</span>[len];</span><br><span class="line">            <span class="comment">// 所有点，对应各个维度进行求和</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; len; i++) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>; j &lt; point_list.size(); j++) &#123;</span><br><span class="line">                    sumAll[i] += point_list.get(j).getlocalArray()[i];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 计算平均值</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; sumAll.length; i++) &#123;</span><br><span class="line">                sumAll[i] = (<span class="keyword">float</span>) sumAll[i] / point_list.size();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 计算两个新、旧中心的距离，如果任意一个类中心移动的距离大于dis_diff则继续迭代。</span></span><br><span class="line">            <span class="keyword">if</span> (disC.getEuclideanDis(cluster.getCenter(), <span class="keyword">new</span> Point(sumAll)) &gt; disDiff) &#123;</span><br><span class="line">                ifNeedIter = <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 设置新的类中心位置</span></span><br><span class="line">            cluster.setCenter(<span class="keyword">new</span> Point(sumAll));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ifNeedIter;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 运行 k-means</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Set&lt;Cluster&gt; <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Set&lt;Cluster&gt; clusterSet = chooseCenterCluster();</span><br><span class="line">        <span class="keyword">boolean</span> ifNeedIter = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">while</span> (ifNeedIter) &#123;</span><br><span class="line">            cluster(clusterSet);</span><br><span class="line">            ifNeedIter = calculateCenter(clusterSet);</span><br><span class="line">            iterRunTimes++;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> clusterSet;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回实际运行次数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getIterTimes</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> iterRunTimes;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="Main类-主函数"><a href="#Main类-主函数" class="headerlink" title="Main类(主函数)"></a>Main类(主函数)</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.test.algorithm.kmeans;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        ArrayList&lt;<span class="keyword">float</span>[]&gt; dataSet = <span class="keyword">new</span> ArrayList&lt;<span class="keyword">float</span>[]&gt;();</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;);</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>&#125;);</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">3</span>, <span class="number">4</span>, <span class="number">4</span>&#125;);</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">5</span>, <span class="number">6</span>, <span class="number">5</span>&#125;);</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">8</span>, <span class="number">9</span>, <span class="number">6</span>&#125;);</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">4</span>, <span class="number">5</span>, <span class="number">4</span>&#125;);</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">6</span>, <span class="number">4</span>, <span class="number">2</span>&#125;);</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">3</span>, <span class="number">9</span>, <span class="number">7</span>&#125;);</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">5</span>, <span class="number">9</span>, <span class="number">8</span>&#125;);</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">4</span>, <span class="number">2</span>, <span class="number">10</span>&#125;);</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">1</span>, <span class="number">9</span>, <span class="number">12</span>&#125;);</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">7</span>, <span class="number">8</span>, <span class="number">112</span>&#125;);</span><br><span class="line">        dataSet.add(<span class="keyword">new</span> <span class="keyword">float</span>[]&#123;<span class="number">7</span>, <span class="number">8</span>, <span class="number">4</span>&#125;);</span><br><span class="line"></span><br><span class="line">        KMeansRun kRun = <span class="keyword">new</span> KMeansRun(<span class="number">3</span>, dataSet);</span><br><span class="line">        Set&lt;Cluster&gt; clusterSet = kRun.run();</span><br><span class="line">        System.out.println(<span class="string">&quot;单次迭代运行次数：&quot;</span> + kRun.getIterTimes());</span><br><span class="line">        <span class="keyword">for</span> (Cluster cluster : clusterSet) &#123;</span><br><span class="line">            System.out.println(cluster);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-  </div>
-  <footer class="article-footer">
-    
-  <div class="cc">
-    <a href="http://creativecommons.org/licenses/by-sa/4.0/deed.z" target="_blank" title="署名-相同方式共享">
-      <img src="/images/cc/cc.png">
-      
-          <img src="/images/cc/by.png">
-        
-          <img src="/images/cc/sa.png">
-      
-      <span>
-        本作品采用知识共享 署名-相同方式共享 4.0 国际许可协议进行许可。
-      </span>
-    </a>
-  </div>
-
-
-    
-
-  </footer>
-</article>
-
-
-
-
-
-
-
-          <div class="main-footer">
-  
-    © 2021 BlackC - Powered by <a href="http://hexo.io" target="_blank">Hexo</a> - Theme <a href="https://github.com/denjones/hexo-theme-chan" target="_blank">Chan</a>
-  
-</div>
-
-      
-        </div>
-      
     </div>
-  </div>
-  
-<script src="//apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 
+    
+    
+    
 
-  
-<link rel="stylesheet" href="/PhotoSwipe/photoswipe.css">
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/algorithm/" rel="tag"># algorithm</a>
+          </div>
 
-  
-<link rel="stylesheet" href="/PhotoSwipe/default-skin/default-skin.css">
+        
 
-
-  <!-- Root element of PhotoSwipe. Must have class pswp. -->
-  <div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
-
-    <!-- Background of PhotoSwipe.
-             It's a separate element as animating opacity is faster than rgba(). -->
-    <div class="pswp__bg"></div>
-
-    <!-- Slides wrapper with overflow:hidden. -->
-    <div class="pswp__scroll-wrap">
-
-      <!-- Container that holds slides.
-                PhotoSwipe keeps only 3 of them in the DOM to save memory.
-                Don't modify these 3 pswp__item elements, data is added later on. -->
-      <div class="pswp__container">
-        <div class="pswp__item"></div>
-        <div class="pswp__item"></div>
-        <div class="pswp__item"></div>
-      </div>
-
-      <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
-      <div class="pswp__ui pswp__ui--hidden">
-
-        <div class="pswp__top-bar">
-
-          <!--  Controls are self-explanatory. Order can be changed. -->
-
-          <div class="pswp__counter"></div>
-
-          <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
-
-          <button class="pswp__button pswp__button--share" title="Share"></button>
-
-          <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
-
-          <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
-
-          <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
-          <!-- element will get class pswp__preloader--active when preloader is running -->
-          <div class="pswp__preloader">
-            <div class="pswp__preloader__icn">
-              <div class="pswp__preloader__cut">
-                <div class="pswp__preloader__donut"></div>
-              </div>
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/11/29/%E5%A4%A7%E6%95%B0%E6%8D%AE%E7%90%86%E8%AE%BA%E7%9F%A5%E8%AF%86%E5%90%88%E9%9B%86/" rel="prev" title="大数据理论知识合集">
+                  <i class="fa fa-chevron-left"></i> 大数据理论知识合集
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/11/29/Win10%E7%B3%BB%E7%BB%9F%E4%B8%93%E4%B8%9A%E7%89%88%E6%BF%80%E6%B4%BB%E4%BB%A5%E5%8F%8A%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5/" rel="next" title="Win10系统专业版激活">
+                  Win10系统专业版激活 <i class="fa fa-chevron-right"></i>
+                </a>
             </div>
           </div>
-        </div>
+    </footer>
+  </article>
+</div>
 
-        <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
-          <div class="pswp__share-tooltip"></div>
-        </div>
 
-        <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
 
-        <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
 
-        <div class="pswp__caption">
-          <div class="pswp__caption__center"></div>
-        </div>
-      </div>
-    </div>
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">X&Z</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
   </div>
 
-  
-<script src="/PhotoSwipe/photoswipe.js"></script>
+    </div>
+  </footer>
 
   
-<script src="/PhotoSwipe/photoswipe-ui-default.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
 
 
 
 
-<script src="/perfect-scrollbar/js/min/perfect-scrollbar.min.js"></script>
 
 
-<script src="/scripts/main.js"></script>
+  
+
+
+
 
 
 </body>
