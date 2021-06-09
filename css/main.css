@@ -2722,7 +2722,7 @@ mark.search-keyword {
   vertical-align: middle;
 }
 .links-of-author a::before {
-  background: #4f9db6;
+  background: #c3ff0f;
   display: inline-block;
   margin-right: 3px;
   transform: translateY(-2px);
