@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/favicon.ico" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css" integrity="sha256-2H3fkXt6FEmrReK448mDVGKb3WW2ZZw35gI7vqHOE4Y=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{&quot;hostname&quot;:&quot;yoursite.com&quot;,&quot;root&quot;:&quot;&#x2F;&quot;,&quot;images&quot;:&quot;&#x2F;images&quot;,&quot;scheme&quot;:&quot;Muse&quot;,&quot;version&quot;:&quot;8.5.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;搜索...&quot;,&quot;empty&quot;:&quot;没有找到任何搜索结果：${query}&quot;,&quot;hits_time&quot;:&quot;找到 ${hits} 个搜索结果（用时 ${time} 毫秒）&quot;,&quot;hits&quot;:&quot;找到 ${hits} 个搜索结果&quot;},&quot;path&quot;:&quot;&#x2F;search.xml&quot;,&quot;localsearch&quot;:{&quot;enable&quot;:true,&quot;trigger&quot;:&quot;auto&quot;,&quot;top_n_per_article&quot;:1,&quot;unescape&quot;:false,&quot;preload&quot;:false}}</script><script src="/js/config.js"></script>
+<meta name="description" content="Everything is table(万物皆为表)">
+<meta property="og:type" content="article">
+<meta property="og:title" content="ClickHouse笔录">
+<meta property="og:url" content="http://yoursite.com/2021/06/09/ClickHouse%E7%AC%94%E5%BD%95/index.html">
+<meta property="og:site_name" content="BlackC">
+<meta property="og:description" content="Everything is table(万物皆为表)">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-09T06:01:23.000Z">
+<meta property="article:modified_time" content="2021-06-09T06:19:18.972Z">
+<meta property="article:author" content="X&amp;Z">
+<meta property="article:tag" content="clickhouse">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://yoursite.com/2021/06/09/ClickHouse%E7%AC%94%E5%BD%95/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;zh-CN&quot;,&quot;comments&quot;:true,&quot;permalink&quot;:&quot;http:&#x2F;&#x2F;yoursite.com&#x2F;2021&#x2F;06&#x2F;09&#x2F;ClickHouse%E7%AC%94%E5%BD%95&#x2F;&quot;,&quot;path&quot;:&quot;2021&#x2F;06&#x2F;09&#x2F;ClickHouse笔录&#x2F;&quot;,&quot;title&quot;:&quot;ClickHouse笔录&quot;}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">&quot;&quot;</script>
+<title>ClickHouse笔录 | BlackC</title>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">BlackC</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.</span> <span class="nav-text">基础类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-number">2.</span> <span class="nav-text">数据库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%A1%A8"><span class="nav-number">2.1.</span> <span class="nav-text">创建表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%8C%BA%E8%A1%A8"><span class="nav-number">2.2.</span> <span class="nav-text">分区表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%86%E5%9B%BE"><span class="nav-number">2.3.</span> <span class="nav-text">视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%A1%A8%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C"><span class="nav-number">2.4.</span> <span class="nav-text">数据表的基本操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E5%B8%83%E5%BC%8FDDL%E6%89%A7%E8%A1%8C"><span class="nav-number">2.5.</span> <span class="nav-text">分布式DDL执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%AD%97%E5%85%B8"><span class="nav-number">2.6.</span> <span class="nav-text">数据字典</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">执行过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MergeTree%E8%A1%A8%E5%BC%95%E6%93%8E"><span class="nav-number">3.1.</span> <span class="nav-text">MergeTree表引擎</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E5%85%A5%E8%BF%87%E7%A8%8B"><span class="nav-number">3.2.</span> <span class="nav-text">写入过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E8%AF%A2%E8%BF%87%E7%A8%8B"><span class="nav-number">3.3.</span> <span class="nav-text">查询过程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%A0%87%E8%AE%B0%E4%B8%8E%E5%8E%8B%E7%BC%A9%E6%95%B0%E6%8D%AE%E5%9D%97%E7%9A%84%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB"><span class="nav-number">3.4.</span> <span class="nav-text">数据标记与压缩数据块的对应关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%95%B0%E6%8D%AETTL"><span class="nav-number">3.5.</span> <span class="nav-text">数据TTL</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReplacingMergeTree"><span class="nav-number">3.6.</span> <span class="nav-text">ReplacingMergeTree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SummingMergeTree"><span class="nav-number">3.7.</span> <span class="nav-text">SummingMergeTree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AggregatingMergeTree"><span class="nav-number">3.8.</span> <span class="nav-text">AggregatingMergeTree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CollapsingMergeTree"><span class="nav-number">3.9.</span> <span class="nav-text">CollapsingMergeTree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VersionedCollapsingMergeTree"><span class="nav-number">3.10.</span> <span class="nav-text">VersionedCollapsingMergeTree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ReplicatedMergeTree"><span class="nav-number">3.11.</span> <span class="nav-text">ReplicatedMergeTree</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C"><span class="nav-number">4.</span> <span class="nav-text">数据操作</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Join"><span class="nav-number">4.1.</span> <span class="nav-text">Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Array-Join"><span class="nav-number">4.2.</span> <span class="nav-text">Array Join</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#With-RollUP%E4%B8%8EWith-Totals"><span class="nav-number">4.3.</span> <span class="nav-text">With RollUP与With Totals</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%89%AF%E6%9C%AC%E4%B8%8E%E5%88%86%E7%89%87"><span class="nav-number">4.4.</span> <span class="nav-text">副本与分片</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ReplicatedMergeTree%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90"><span class="nav-number">5.1.</span> <span class="nav-text">ReplicatedMergeTree原理解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Distributed%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90"><span class="nav-number">5.2.</span> <span class="nav-text">Distributed原理解析</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="X&Z"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">X&Z</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">252</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">41</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/jxeditor" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;jxeditor" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2021/06/09/ClickHouse%E7%AC%94%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="X&Z">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="BlackC">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          ClickHouse笔录
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-06-09 14:01:23 / 修改时间：14:19:18" itemprop="dateCreated datePublished" datetime="2021-06-09T14:01:23+08:00">2021-06-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" itemprop="url" rel="index"><span itemprop="name">大数据</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <blockquote>
+<p>Everything is table(万物皆为表)</p>
+</blockquote>
+<span id="more"></span>
+
+<h2 id="基础类型"><a href="#基础类型" class="headerlink" title="基础类型"></a>基础类型</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">int8 -&gt; tinyint</span><br><span class="line">int16 -&gt; smallint</span><br><span class="line">int32 -&gt; int</span><br><span class="line">int64 -&gt; bigint</span><br><span class="line">uint8 -&gt; tinyint unsigned</span><br><span class="line">float32 -&gt; float</span><br><span class="line">float64 -&gt; double</span><br><span class="line">decimal(16,4) -&gt; decimal(16,4)</span><br><span class="line">string -&gt; string</span><br><span class="line">fixedstring -&gt; string指定位数</span><br><span class="line">UUID -&gt; 32 位8-4-4-4-12</span><br><span class="line">datetime-&gt; 包含时分秒信息,精准到秒</span><br><span class="line">datetime64 -&gt; 可以记录亚秒,增加了精度的设置</span><br><span class="line">date -&gt;  不包含具体的时间信息,只精准到天</span><br><span class="line">array(T) -&gt; 类型需要指定</span><br><span class="line">array(nullable(uint8)) </span><br><span class="line">tuple -&gt; 由1~n个元素组成,每个元素之间允许设置不同的数据类型,不要求兼容</span><br><span class="line">enum -&gt; 枚举类型</span><br><span class="line">nested -&gt; 定义任意多个嵌套类型字段;嵌套类型本质是一种多维数组的结构</span><br><span class="line">nullable -&gt; 只能和基础类型搭配使用,不能用于数组和元组这些复合类型,不能作为索引字段,少用,不然会使查询和写入性能变慢</span><br><span class="line">原因:(正常情况下,每个列字段的数据会被存储在对应的[column].bin)文件中;如果一个列字段被nullable类型修饰后,会额外生成一个[column].null.bin文件专门保存它的null值;这意味着在读取和写入数据时,需要一倍的额外文件操作</span><br><span class="line">domain -&gt; 域名类型分为ipv4(UInt32)和IPv6(fixedstring),本质上是对整型和字符串的进一步封装</span><br><span class="line">与字符串区别:</span><br><span class="line">1.出于便捷,格式错误的ip数据是无法被写入的</span><br><span class="line">2.出于性能,相比string,ipv4使用的uint32存储,更加紧凑,占用的空间更快</span><br><span class="line">注意:domain类型不是字符串,不支持隐私的自动类型转换,需要返回ip的字符串形式,则需要显式调用ipv4NumToString或IPv6NumToString</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">起到命名空间的作用,可以有效规避命名冲突的问题,也为后续的数据隔离提供了支撑</span><br><span class="line">目前支持5种引擎:</span><br><span class="line">1.Ordinary:默认引擎,在此数据库下可以使用任意类型的表引擎</span><br><span class="line">2.Dictionary:字典引擎,会自动为所有数据字典创建它们的数据表</span><br><span class="line">3.memory:内存引擎,用于存放临时数据,此类数据库下的数据表只会停留在内存中,不会涉及任何磁盘操作,当服务重启后数据会被清除</span><br><span class="line">4.Lazy:日志引擎,只能使用Log系列的表引擎</span><br><span class="line">5.mysql:mysql引擎,会自动拉取远端mysql中的数据,并为它们创建mysql表引擎的数据表</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">create table user_info(</span><br><span class="line">id int32,</span><br><span class="line">age int8,</span><br><span class="line">name string</span><br><span class="line">) engine&#x3D;memory;</span><br><span class="line">在默认的数据库下创建一张内存表,末尾engine参数,被用于指定数据表的引擎;表引擎决定了数据表的特性,也决定了数据将会被如何存储及加载</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建表"><a href="#创建表" class="headerlink" title="创建表"></a>创建表</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">复制其他表的结构(default.table复制到db1.table1):</span><br><span class="line">eg:create table if not exists db1.table1 as default.table [engine&#x3D;memory] </span><br><span class="line"></span><br><span class="line">engine也可以与原表不一样</span><br><span class="line">eg:create table if not exists db1.table1 engine&#x3D;mysql as select * from default.table</span><br><span class="line"></span><br><span class="line">临时表:</span><br><span class="line">create temporary table if not exists table1</span><br><span class="line"></span><br><span class="line">相对普通表,优势:</span><br><span class="line">1.它的生命周期时会话绑定的,只支持memory表引擎,如果会话结束,数据表就会销毁</span><br><span class="line">2.临时表不属于任何数据库,所以在它的建表语句中,既没有数据库参数也没有表引擎参数</span><br><span class="line">临时表的优先级时大于普通表[验证创建同一表名,不同的内容]</span><br></pre></td></tr></table></figure>
+
+<h3 id="分区表"><a href="#分区表" class="headerlink" title="分区表"></a>分区表</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">数据分区对于一款OLAP数据库而言意义非凡,借助数据分区,在后续的查询过程中能够跳过不必要的数据目录,从而提升查询的性能;合理的利用分区特性,还可以变相数据的更新操作,因为数据分区支持删除、替换和重置操作;</span><br><span class="line">目前只有合并树(mergeTree)家族系列的表引擎才支持数据分区</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">create table user_info(</span><br><span class="line">id int32,</span><br><span class="line">age int8,</span><br><span class="line">name string,</span><br><span class="line">create_time Date</span><br><span class="line">) engine&#x3D;MergeTree()</span><br><span class="line">partition by toYYYYMM(create_time)</span><br><span class="line">order by id;</span><br><span class="line"></span><br><span class="line">注意:分区数量增长会导致性能下降</span><br></pre></td></tr></table></figure>
+
+<h3 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">分为普通和物化两种试图</span><br><span class="line">1.物化视图拥有独立的存储,支持表引擎,数据保存形式由它的表引擎决定</span><br><span class="line">eg: create metarialized view if not exists db2.table1 engine&#x3D;mysql [populate] as select ....</span><br><span class="line"></span><br><span class="line">物化视图创建好之后,如果源表被写入新数据,那么物化视图也会同步更新;populate修饰符决定了物化视图的初始化策略,会连带将源表中已存在的数据一并导入</span><br><span class="line"></span><br><span class="line">2.普通视图只是一层简单的查询代理,不会存储任何数据,只是单纯的select查询映射</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据表的基本操作"><a href="#数据表的基本操作" class="headerlink" title="数据表的基本操作"></a>数据表的基本操作</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">支持alter查询的表引擎:</span><br><span class="line">MergeTree:</span><br><span class="line">Merge:</span><br><span class="line">Distributed:</span><br><span class="line"></span><br><span class="line">追加新字段:</span><br><span class="line">1.在数据表的末尾增加新字段</span><br><span class="line">alter table user_info add column address string default &#39;杭州&#39;</span><br><span class="line"></span><br><span class="line">2.通过after修饰符,在指定字段的后面增加新字段</span><br><span class="line">alter table user_info add column ip string after id</span><br><span class="line"></span><br><span class="line">修改数据类型:</span><br><span class="line">修改某个字段的数据类型,实质上会调用相应的toType转型方法;如果当前的类型与期望的类型不能兼容,则修改失败</span><br><span class="line">eg: alter table user_info modify column address uint32</span><br><span class="line"></span><br><span class="line">修改备注:</span><br><span class="line">alter table user_info comment column id &#39;主键id&#39;</span><br><span class="line"></span><br><span class="line">删除已有字段:</span><br><span class="line">alter table user_info drop column ip</span><br><span class="line"></span><br><span class="line">移动数据表:</span><br><span class="line">rename table a.a_v1 to b.a_v1</span><br><span class="line">数据表的移动只能在单个节点的范围内;换言之,数据表移动的目标数据库和原始数据库必须同一个服务节点内,而不能是集群中的远程节点</span><br><span class="line"></span><br><span class="line">清除数据表:</span><br><span class="line">truncate table a.a_v1</span><br><span class="line"></span><br><span class="line">复制分区数据: 不懂可看p59页</span><br><span class="line">alter table user_info replace partition 202106 from a</span><br><span class="line">需要满足两个条件:</span><br><span class="line">1.两张表需要拥有相同的分区键</span><br><span class="line">2.他们的表结构完全相同</span><br><span class="line"></span><br><span class="line">重置分区数据:</span><br><span class="line">数据表某一列的数据有误,需要将其重置为初始化</span><br><span class="line">alter table user_info clear column ip in partition 202106</span><br><span class="line"></span><br><span class="line">卸载和装载分区:</span><br><span class="line">常用于分区数据的迁移和备份</span><br><span class="line">卸载:(移动到detached目录)</span><br><span class="line">alter table user_info detach partition 202106</span><br><span class="line">一旦分区被移动到detached子目录,就代表它已经脱离了clickhouse的管理,clickhouse并不会主动清理这些文件,除非主动删除</span><br><span class="line">装载:</span><br><span class="line">alter table user_info attach partition 202106</span><br></pre></td></tr></table></figure>
+
+<h3 id="分布式DDL执行"><a href="#分布式DDL执行" class="headerlink" title="分布式DDL执行"></a>分布式DDL执行</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">eg:</span><br><span class="line">create table c_v1 on cluster 集群名 (</span><br><span class="line"> id string,</span><br><span class="line"> url string,</span><br><span class="line"> eventtime date</span><br><span class="line">) engine&#x3D;mergetree()</span><br><span class="line">partition by toYYYYMM(eventtime)</span><br><span class="line">order by id</span><br><span class="line"></span><br><span class="line">数据删除与修改:</span><br><span class="line">delete和update的能力,被称为Mutation查询,看作alter的变种;</span><br><span class="line">与常用的OLTP操作不同:</span><br><span class="line">1.更适用于批量数据的修改和删除</span><br><span class="line">2.不支持事务,一旦语句被提交执行,就会立刻对现有数据产生影响,无法回滚</span><br><span class="line">3.Mutation语句的执行是一个异步的后台过程,语句被提交之后就会立即返回;所以这并不代表具体逻辑已经执行完毕,具体执行进度需要通过system.mutations系统表查询</span><br><span class="line"></span><br><span class="line">删除:</span><br><span class="line">alter table c_v1 delete where id&#x3D;&#39;a33&#39;</span><br><span class="line"></span><br><span class="line">查询执行进度:</span><br><span class="line">select database,table,mutation_id,block_numbers.number as num ,is_done from system.mutations</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据字典"><a href="#数据字典" class="headerlink" title="数据字典"></a>数据字典</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">数据字典,以键值和属性映射的形式定义数据;字典中的数据会主动或被动加载(启动时主动加载,首次查询时惰性加载由参数设置决定)到内存,并支持动态更新;适用于保存常量或经常使用的维表数据,以避免不必要的join查询</span><br><span class="line">分为内置字典和外部扩展字典</span><br><span class="line">外部扩展字典:由用户自定义数据模式记数据来源,支撑7种类型和4种数据来源(参数配置)  具体内容可参考p69</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="执行过程"><a href="#执行过程" class="headerlink" title="执行过程"></a>执行过程</h2><h3 id="MergeTree表引擎"><a href="#MergeTree表引擎" class="headerlink" title="MergeTree表引擎"></a>MergeTree表引擎</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line">只有合并树系列的表引擎才支持主键索引、数据分区、数据副本和数据采样这些特征,同时也只有此系列的表引擎支持alter相关操作</span><br><span class="line">replacingMergeTree表引擎:具有删除重复数据的特征</span><br><span class="line">SummingMergeTree:按照排序键自动聚合数据</span><br><span class="line">给合并树系列的表引擎加上replicated前缀,又会得到一组支持数据副本的引擎</span><br><span class="line"></span><br><span class="line">MergeTree在写入一批数据时,数据总会以数据片段的形式写入磁盘,且数据片段不可修改,clickhouse会通过后台线程,定期合并这些数据片段,属于相同分区的数据片段会被合成一个新的片段</span><br><span class="line"></span><br><span class="line">一级索引</span><br><span class="line">1.稠密索引:每一行索引标记都会对应到一行具体的数据记录</span><br><span class="line">2.稀疏索引:每一行索引标记对应的是一段数据,而不是一行</span><br><span class="line"></span><br><span class="line">索引粒度:如同标尺一般,会丈量整个数据的长度,并依照刻度对数据进行标注,最终将数据标记成多个间隔的小段</span><br><span class="line"></span><br><span class="line">索引查询过程:</span><br><span class="line">MergeTree通过递归的形式持续向下拆分区间,最终将MarkRange定位到最细的粒度,以帮助在后续读取数据的时候,能够最小化扫描数据的范围;如果取的内容是范围边的,因为MarkRange转换的树枝区间是闭区间,所以会额外匹配到临近的一个区间</span><br><span class="line"></span><br><span class="line">二级索引:</span><br><span class="line">又称跳级索引,由数据的聚合信息构建而成;granularity参数设置</span><br><span class="line">MergeTree支持4种跳数索引:</span><br><span class="line">1.minmax:索引记录了一段数据内的最大和最小极值,能够快速跳过无用的数据区间</span><br><span class="line">2.set:直接记录了声明字段或表达式的取值(唯一值、无重复),其完整形式为set(max_rows),其中max_rows是一个阈值,表示在一个index_granularity内,索引最多记录的数据行数</span><br><span class="line">3.ngrambf_v1:数据短语的布隆表过滤器,只支持string和fixedString数据类型</span><br><span class="line">4.tokenbf_v1:也是一种布隆过滤器索引,会自动按照非字符的、数字的字符串分割token</span><br><span class="line">一张数据表支持同时声明多个跳数索引</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">create table skip_test(</span><br><span class="line">id string,</span><br><span class="line">url string,</span><br><span class="line">code string,</span><br><span class="line">eventtime date,</span><br><span class="line">index a id type minmax GRANULARITY 5,</span><br><span class="line">index b (length(id) * 8) type set(2) GRANULARITY 5,</span><br><span class="line">index c (id,code) type ngrambf_v1(3,256,2,0) GRANULARITY 5,</span><br><span class="line">index d id type tokenbf_v1(256,2,0) GRANULARITY 5</span><br><span class="line">) engine&#x3D;MergeTree()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">MergeTree在读取数据时,必须通过标记数据的位置信息才能够找到所需要的数据,整个查找过程大致可以氛围读取压缩数据块和读取数据两个步骤</span><br></pre></td></tr></table></figure>
+
+<h3 id="写入过程"><a href="#写入过程" class="headerlink" title="写入过程"></a>写入过程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">数据写入的第一步是生成分区目录,伴随着每一批数据的写入,都会生成一个新的分区目录;</span><br><span class="line">在后续的操作里,属于相同分区的目录会依照规则合并在一起;</span><br><span class="line">接着按照index_granularity索引粒度,会分别生成primary.idx一级索引(如果声明了二级索引,还会创建二级索引文件)、每一列字段的.mrk数据标记和.bin压缩数据文件</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询过程"><a href="#查询过程" class="headerlink" title="查询过程"></a>查询过程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">数据查询的本质,可以看作一个不断减小数据范围的过程;</span><br><span class="line">在最理想的情况下,MergeTree首先可以依次借助分区索引、一级索引和二级索引,将数据扫描范围缩至最小;</span><br><span class="line">然后再借助数据标记,将需要解压与计算的数据范围缩至最小</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据标记与压缩数据块的对应关系"><a href="#数据标记与压缩数据块的对应关系" class="headerlink" title="数据标记与压缩数据块的对应关系"></a>数据标记与压缩数据块的对应关系</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">1.多个数据标记对应一个压缩数据块,当一个间隔(index_granularity)内的数据未压缩大小size小于64kb</span><br><span class="line">2.一个数据标记对应一个压缩数据块,当一个间隔内的数据未压缩大小size大于等于64kb且小于等于1MB</span><br><span class="line">3.一对多,当一个间隔内的数据未压缩大小size直接大于1MB</span><br></pre></td></tr></table></figure>
+
+<h3 id="数据TTL"><a href="#数据TTL" class="headerlink" title="数据TTL"></a>数据TTL</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">表示数据的存活时间;如果是列字段级别的TTL,则会删除这一列的数据;如果是表级别的TTL,则会删除整张表的数据;如果同时设置了列级别和表级别的TTL,则会以先到期的哪个为主</span><br><span class="line"></span><br><span class="line">列级别:</span><br><span class="line">create table ttl_a1 (</span><br><span class="line">id string,</span><br><span class="line">create_time DateTime,</span><br><span class="line">code string TTL create_time + INTERVAL 10 SECOND,</span><br><span class="line">type UInt8 TTL create_time + INTERVAL 10 SECOND</span><br><span class="line">)</span><br><span class="line">ENGINE&#x3D;MergeTree()</span><br><span class="line">PARTITION BY toYYYYMM(create_time)</span><br><span class="line">order by id;</span><br><span class="line"></span><br><span class="line">执行optimize命令强制触发TTL清理</span><br><span class="line">optimize table ttl_a1 final</span><br><span class="line"></span><br><span class="line">修改列字段TTL,或是为已有字段添加TTL</span><br><span class="line">alter table ttl_a1 modify column code string TTL create_time + INVERVAL 1 DAY</span><br><span class="line"></span><br><span class="line">注意: clickhouse没有提供取消列级别TTL的方法</span><br><span class="line"></span><br><span class="line">表级别:</span><br><span class="line">如果想要为整张数据表设置TTL,需要再MergeTree的表</span><br><span class="line">eg:</span><br><span class="line">create table ttl_a1 (</span><br><span class="line">id string,</span><br><span class="line">create_time DateTime,</span><br><span class="line">code string TTL create_time + INTERVAL 10 SECOND,</span><br><span class="line">type UInt8 TTL create_time + INTERVAL 10 SECOND</span><br><span class="line">)</span><br><span class="line">ENGINE&#x3D;MergeTree()</span><br><span class="line">PARTITION BY toYYYYMM(create_time)</span><br><span class="line">order by create_time</span><br><span class="line">TTL create_time + INVTERVAL 1 DAY;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ReplacingMergeTree"><a href="#ReplacingMergeTree" class="headerlink" title="ReplacingMergeTree"></a>ReplacingMergeTree</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">eg:</span><br><span class="line">create table replace_table(</span><br><span class="line">id string,</span><br><span class="line">code string,</span><br><span class="line">create_time datetime</span><br><span class="line">) engine&#x3D;ReplacingMergeTree()</span><br><span class="line">partition by toYYYYMM(create_time)</span><br><span class="line">order by (id,code)</span><br><span class="line">primary key id</span><br><span class="line"></span><br><span class="line">order by 是去重复数据的关键,排序键order by 所声明的表达式是后续作为判断数据是否重复的依据;数据会基于id和code两个字段去重复</span><br><span class="line"></span><br><span class="line">在执行optimize强制触发合并后,会按照id和code分组,保留分组内的最后一条</span><br><span class="line">optimize table replace_table final</span><br><span class="line"></span><br><span class="line">注意:replacingMergeTree是以分区为单位删除重复数据的,而不同数据分区之间的重复数据依然不能被剔除</span><br><span class="line"></span><br><span class="line">处理逻辑:</span><br><span class="line">1.使用order by排序键作为判断重复数据的唯一键</span><br><span class="line">2.只有再合并分区的时候才会触发删除重复数据的逻辑</span><br><span class="line">3.以数据分区为单位删除重复数据;当分区合并时,同一个分区的重复数据会被删除,不同分区之间的重复数据不会删除</span><br><span class="line">4.在进行数据去重时,因为分区内的数据已经基于order by 进行了排序,所以能够找到那些相邻的重复数据</span><br><span class="line">5.数据去重策略有两种:</span><br><span class="line">1) 如果没有设置ver版本号,则保留同一组重复数据中的最后一行</span><br><span class="line">2) 如果设置了ver版本号,则保留同一组重复数据中ver字段取值最大的那一行</span><br></pre></td></tr></table></figure>
+
+<h3 id="SummingMergeTree"><a href="#SummingMergeTree" class="headerlink" title="SummingMergeTree"></a>SummingMergeTree</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">终端用户只需要查询数据的汇总结果,不关心明细数据,并且数据的汇总条件是预先明确的(group by 条件明确)</span><br><span class="line"></span><br><span class="line">eg:</span><br><span class="line">create table summing_table(</span><br><span class="line">id string,</span><br><span class="line">nestMap Nested(</span><br><span class="line">    id Uint32,</span><br><span class="line">    key Uint32,</span><br><span class="line">    val UInt64</span><br><span class="line">  ),</span><br><span class="line">create_time DateTime</span><br><span class="line">)engine &#x3D; SummingMergeTree()</span><br><span class="line">partition by toYYYYMM(create_time)</span><br><span class="line">order by id </span><br><span class="line"></span><br><span class="line">处理逻辑:</span><br><span class="line">1.用order by 排序键作为聚合数据的条件key</span><br><span class="line">2.只有在合并分区的时候才会触发汇总的逻辑</span><br><span class="line">3.以数据分区为单位来聚合数据;当分区合并时,同一数据分区内聚合key相同的数据会被合并汇总,而不同分区之间的数据则不会被汇总</span><br><span class="line">4.如果在定义引擎时指定了columns汇总列(非主键的数值类型字段),则sum汇总这些列字;如果未指定,则聚合所有非主键的数值类型字段</span><br><span class="line">5.在进行数据汇总时,因为分区内的数据已经基于order by 排序,所以能够找到相邻且拥有相同聚合key的数据</span><br><span class="line">6.在汇总数据时,同一分区内,相同聚合key的多行数据会合并成一行;其中,汇总字段会进行sum计算;对于那些非汇总字段,则会使用第一行数据的取值</span><br><span class="line">7.支持嵌套结构,但列字段名称必须以map后缀结尾;嵌套类型中,默认以第一个字段作为聚合key;除第一个字段外,任何名称以key、ID或type为后缀结尾的字段,都将和第一个字段一起组合成复合key</span><br></pre></td></tr></table></figure>
+
+<h3 id="AggregatingMergeTree"><a href="#AggregatingMergeTree" class="headerlink" title="AggregatingMergeTree"></a>AggregatingMergeTree</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">通过以空间换时间的方法提升查询性能,将需要聚合的数据预先计算出来,并将结果保存起来</span><br><span class="line">eg:</span><br><span class="line">create table agg_table(</span><br><span class="line">id string,</span><br><span class="line">city string,</span><br><span class="line">code AggregateFunction(uniq,string),</span><br><span class="line">value AggregateFunction(sum,UInt32),</span><br><span class="line">create_time DateTime</span><br><span class="line">) engine&#x3D;AggregatingMergeTree()</span><br><span class="line">order by (id,city)</span><br><span class="line">primary key id</span><br><span class="line"></span><br><span class="line">AggregateFunction 是clickhouse提供的一种特殊的数据类型,它能够以二进制的形式存储中间状态结果;在写入数据时,需要调用*State函数;而在查询数据时,则需要调用相应的*Merge函数;</span><br><span class="line">*表示定义时使用的聚合函数 比如uniq和sum</span><br><span class="line"></span><br><span class="line">写入数据</span><br><span class="line">eg:</span><br><span class="line">insert into table agg_table</span><br><span class="line">select &#39;a000&#39;,&#39;dan&#39;,uniqState(&#39;code1&#39;),sumState(toUInt32(100)),&#39;2021-06-05 10:00:00&#39;</span><br><span class="line"></span><br><span class="line">查询数据</span><br><span class="line">eg:</span><br><span class="line">select id,city,uniqMerge(code),summerge(value) from agg_table group by id,city</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">更为常见的应用方式是结合物化视图使用,将它作为物化视图的表引擎</span><br><span class="line"></span><br><span class="line">首先建立明细数据表,俗称的底表</span><br><span class="line">eg:</span><br><span class="line">create table agg_table_basic(</span><br><span class="line">id string,</span><br><span class="line">city string,</span><br><span class="line">code string,</span><br><span class="line">value UInt32</span><br><span class="line">)engine&#x3D;MergeTree()</span><br><span class="line">partition by city</span><br><span class="line">order by (id,city)</span><br><span class="line"></span><br><span class="line">通常会使用MergeTree作为底表,用于存储全量的明细数据,并以此对外提供实时查询</span><br><span class="line">eg:</span><br><span class="line">create metarialized view agg_view</span><br><span class="line">engine &#x3D; AggregatingMergeTree()</span><br><span class="line">partition by city</span><br><span class="line">order by (id,city)</span><br><span class="line">as select</span><br><span class="line">id,city,uniqState(code) as code,</span><br><span class="line">sumState(value) as value</span><br><span class="line">from agg_table_basic</span><br><span class="line">group by id,city</span><br><span class="line"></span><br><span class="line">处理逻辑:</span><br><span class="line">1.用order by排序键作为聚合数据的条件key</span><br><span class="line">2.使用AggregateFunction字段类型定义聚合函数的类型以及聚合字段</span><br><span class="line">3.只有在合并分区的时候才会触发聚合计算的逻辑</span><br><span class="line">4.以数据分区为单位来聚合数据,当分区合并时,同一数据分区内聚合key相同的数据会被合并计算,而不同分区之间的数据则不会被计算</span><br><span class="line">5.在进行数据计算时,因为分区内的数据已经基于order by排序,所以能够找到那些相邻且拥有相同聚合key的数据</span><br><span class="line">6.在聚合数据时,同一分区内,相同聚合key的多行数据会合并成一行;对于那些非主键、非AggregateFunction类型字段,则会使用第一行数据的取值</span><br><span class="line">7.AggregateFunction类型的字段使用二进制存储,在写入数据时,需要调用*State函数;而在查询数据时,则需要调用相应的*Merge函数;其中*表示定义时使用的聚合函数</span><br><span class="line">8.AggregatingMergeTree通常作为物化视图的表引擎,与普通MergeTree搭配使用</span><br></pre></td></tr></table></figure>
+
+<h3 id="CollapsingMergeTree"><a href="#CollapsingMergeTree" class="headerlink" title="CollapsingMergeTree"></a>CollapsingMergeTree</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">一种通过以增代删的思路,支持行级数据修改和删除的表引擎;</span><br><span class="line">通过定义一个sign标记位字段,记录数据行的状态;如果sign标记1,则表示这是一行有效的数据;标记为-1,则表示这行数据需要被删除</span><br><span class="line">eg:</span><br><span class="line">create table collpase_table(</span><br><span class="line">id string,</span><br><span class="line">code Int32,</span><br><span class="line">create_time DateTime,</span><br><span class="line">sign Int8</span><br><span class="line">)engine&#x3D;CollapsingMergeTree(sign)</span><br><span class="line">partition by toYYYYMM(create_time)</span><br><span class="line">order by id</span><br><span class="line"></span><br><span class="line">1.折叠数据并不是实时触发的,在查询数据之前,使用optimize table tab2 final 命令强制分区合并,但是这种方法效率极低,在实际生产环境中慎用</span><br><span class="line">2.需要改变我们的查询方式</span><br><span class="line">原始sql:</span><br><span class="line">select id,sum(code),count(code),avg(code),uniq(code) from collpase_table group by id</span><br><span class="line">修改后sql:</span><br><span class="line">select id,sum(code*sign),count(code*sign),avg(code*sign),uniq(code* sign) from collpase_table group by id having sum(sign) &gt;0</span><br><span class="line"></span><br><span class="line">2.只有相同分区的数据才有可能被折叠;这项限制对于折叠合并树不是问题,因为修改或者删除数据的时候,这些数据的分区规则通常都是一致的,并不会改变</span><br><span class="line"></span><br><span class="line">3.命门所在:对于写入的数据顺序有着严格要求;先写入sign&#x3D;-1,再写入sign&#x3D;1.则不能够折叠;</span><br><span class="line">数据的写入程序通常时多线程执行的,那么不能完全保障数据的写入顺序</span><br></pre></td></tr></table></figure>
+
+<h3 id="VersionedCollapsingMergeTree"><a href="#VersionedCollapsingMergeTree" class="headerlink" title="VersionedCollapsingMergeTree"></a>VersionedCollapsingMergeTree</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">表引擎于CollapsingMergeTree完全相同,只是它对数据的写入顺序没有要求,在同一个分区内,任意顺序的数据都能够完全折叠操作</span><br><span class="line">eg:</span><br><span class="line">create table ver_collapse_table(</span><br><span class="line">id string,</span><br><span class="line">code Int32,</span><br><span class="line">create_time DateTime,</span><br><span class="line">sign Int8,</span><br><span class="line">ver Int8</span><br><span class="line">)engine&#x3D;VersionedCollapsingMerge(sign,ver)</span><br><span class="line">partition by toYYYYMM(create_time)</span><br><span class="line">order by id</span><br><span class="line"></span><br><span class="line">会自动将ver作为排序条件并增加到order by的末端;在每个分区内,数据会按照order by id ver desc排序;所以无论写入时数据的顺序如何,在折叠处理时,都能回到正确的顺序</span><br></pre></td></tr></table></figure>
+
+<h3 id="ReplicatedMergeTree"><a href="#ReplicatedMergeTree" class="headerlink" title="ReplicatedMergeTree"></a>ReplicatedMergeTree</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">在MergeTree能力的基础之上增加了分布式协同的能力,其借助zookeeper的消息日志广播功能,实现了副本实例之间的数据同步功能</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="数据操作"><a href="#数据操作" class="headerlink" title="数据操作"></a>数据操作</h2><h3 id="Join"><a href="#Join" class="headerlink" title="Join"></a>Join</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">join表引擎为join查询而生,等同于将join查询进行了一层简单封装;</span><br><span class="line">engine&#x3D;Join(join_stricyness,join_type,key1...)</span><br><span class="line"></span><br><span class="line">1.join_stricyness:连接精度,决定了join查询在连接数据时所使用的策略,支持ALL、ANY和ASOF三种类型</span><br><span class="line">ALL:如果左表内的一行数据,在右表中有多行数据与之连接匹配,则返回右表中全部连接的数据</span><br><span class="line">eg:</span><br><span class="line">select a.id,a.name,b.rate from join_tb1 as a all inner join join_tb2 on a.id&#x3D;b.id</span><br><span class="line">ANY:如果左表内的一行数据,在右表中有多行数据与之连接匹配,则仅返回右表中第一行连接的数据</span><br><span class="line">eg:</span><br><span class="line">select a.id,a.name,b.rate from join_tb1 as a any inner join join_tb2 on a.id&#x3D;b.id</span><br><span class="line">ASOF:是一种模糊连接,允许在连接键之后追加定义一个模糊连接的匹配条件asof_column</span><br><span class="line">eg:</span><br><span class="line">select a.id,a.name,b.rate,a.time,b.time from join_tb1 as a asfo inner join join_tb2 as b on a.id&#x3D;b.id and a.time&#x3D;b.time</span><br><span class="line">这条语句的语义等同于:</span><br><span class="line">a.id&#x3D;b.id and a.time&gt;&#x3D;b.time</span><br><span class="line"></span><br><span class="line">支持使用using的简写形式,using后声明的最后一个字段会被自动转换成asof_column模糊连接条件</span><br><span class="line">eg:</span><br><span class="line">select a.id,a.name.b.rate,a.time,b.time from join_tb1 as a asof inner join join_tb2 as b using (id,time)</span><br><span class="line"></span><br><span class="line">注意:asof_column必须是整数、浮点数和日期型这类有序序列的数据类型;asof_column不能是数据表内的唯一字段,连接键join_key和asof_column不能是同一个字段</span><br><span class="line"></span><br><span class="line">2.join_type:连接类型,决定了join查询组合左右两个数据集合的策略,形成的结果是交集、并集、笛卡尔积或其他形式,支持INNER(只会返回左表与右表两个数据集合中交集的部分,其余部分都会被排除)、OUTER(left、right、full)和CROSS(会返回左表与右表两个数据集合的笛卡尔积)三种类型;被设置为ANY,在数据写入时,join_key重复数据会被自动忽略</span><br><span class="line">3.join_key:连接键,决定了使用哪个列字段进行关联</span><br><span class="line">eg:</span><br><span class="line">create table join_tb1(</span><br><span class="line">id UInt8,</span><br><span class="line">name string,</span><br><span class="line">time DateTime</span><br><span class="line">)engine&#x3D;log</span><br><span class="line"></span><br><span class="line">create table id_join_tab1(</span><br><span class="line">id UInt8,</span><br><span class="line">price UInt32,</span><br><span class="line">time DateTime</span><br><span class="line">)ENGINE&#x3D;Join(ANY,LEFT,id)</span><br><span class="line"></span><br><span class="line">select id,name,price from join_tb1 LEFT JOIN id_join_tb1 USING (id)</span><br><span class="line"></span><br><span class="line">注意事项:</span><br><span class="line">1.遵循左大右小的原则,即将数据量小的表放在右侧;因为无论使用的是哪种连接方式,右表都会被全部加载到内存中与左表进行比较</span><br><span class="line">2.join查询目前没有缓存的支撑,这意味着每一次join查询,即便是连续执行的相同的sql,也都会生成一次全新的执行计划</span><br><span class="line">3.如果是在大量维表属性补全的查询场景中,则建议使用字典代替join查询</span><br></pre></td></tr></table></figure>
+<h3 id="Array-Join"><a href="#Array-Join" class="headerlink" title="Array Join"></a>Array Join</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">array join 在默认情况下,使用的时inner join策略</span><br><span class="line">eg:</span><br><span class="line">create table query_v1(</span><br><span class="line">title string,</span><br><span class="line">value Array(UInt8)</span><br><span class="line">)ENGINE&#x3D;Log</span><br><span class="line"></span><br><span class="line">select title,value from query_v1 array join value</span><br><span class="line"></span><br><span class="line">最终的数据基于value数组被展开成了多行,并且排除掉了空数组;在使用array join时,如果为原有的数组字段添加一个别名,则能够访问展开前的数组字段</span><br><span class="line">select title,value,v from query_v1 array join value as v</span><br><span class="line"></span><br><span class="line">left array join:</span><br><span class="line">在改为left连接查询后,在inner join中被排除掉的空数组出现在了返回的结果集中</span><br></pre></td></tr></table></figure>
+
+<h3 id="With-RollUP与With-Totals"><a href="#With-RollUP与With-Totals" class="headerlink" title="With RollUP与With Totals"></a>With RollUP与With Totals</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">rollup 能够按照聚合键从右向左上卷数据,基于聚合函数依次生成分组小计和总计</span><br><span class="line">eg:</span><br><span class="line">select table,name,sum(bytes_on_disk) from system.parts</span><br><span class="line">group by table,name</span><br><span class="line">with rollup</span><br><span class="line">order by table</span><br><span class="line">结果中会附加返回显示名称为空的小计汇总行,包括所有表分区磁盘大小的汇总合计以及每张table内所有分区大小的合计信息</span><br><span class="line"></span><br><span class="line">totals会基于聚合函数对所有数据进行总计</span><br><span class="line">eg:select database, sum(bytes_on_disk),count(table) from system.parts group by database with totals</span><br></pre></td></tr></table></figure>
+
+<h3 id="副本与分片"><a href="#副本与分片" class="headerlink" title="副本与分片"></a>副本与分片</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">区别:</span><br><span class="line">1.从数据层面区分,假设clickhouse的N个节点组成了一个集群,在集群的各个节点上,都有一张结构相同的数据表Y;</span><br><span class="line">如果N1的Y和N2的Y中的数据完全不同,则N1和N2互为分片;</span><br><span class="line">如果它们的数据完全相同,则互为副本</span><br><span class="line">2.从功能作用层面区分,使用副本的主要目的时防止数据丢失,增加数据存储的冗余;</span><br><span class="line">而使用分片的主要目的时实现数据的水平切分</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><h3 id="ReplicatedMergeTree原理解析"><a href="#ReplicatedMergeTree原理解析" class="headerlink" title="ReplicatedMergeTree原理解析"></a>ReplicatedMergeTree原理解析</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">在核心逻辑中,大量运用了zookeeper的能力,以实现多个replicatedMergeTree副本实例之间的协同,包括主副本选举、副本状态感知、操作日志分布、任务队列和blockID去重判断等;</span><br><span class="line">在执行insert数据写入、merge分区和mutation操作的时候,都会涉及与zk的通信,但是不涉及任何表数据的传输,不必担心zk的承载压力</span><br><span class="line"></span><br><span class="line">初始化操作:</span><br><span class="line">1.根据zk_path初始化所有的zk节点</span><br><span class="line">2.在&#x2F;replicas&#x2F;节点下注册自己的副本实例ch5.nauu.com</span><br><span class="line">3.启动监听任务,监听&#x2F;log日志节点</span><br><span class="line">4.参与副本选举,选举出主副本,选举的方式是向&#x2F;leader_election插入子节点,第一个插入成功的副本就是主副本</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">创建第二个ReplicatedMergeTree初始化操作:</span><br><span class="line">1.在&#x2F;replicas&#x2F;节点下注册自己的副本实例ch6.nauu.com</span><br><span class="line">2.启动监听任务,监听&#x2F;log日志节点</span><br><span class="line">3.参与副本选举,选举出主副本</span><br></pre></td></tr></table></figure>
+
+<h3 id="Distributed原理解析"><a href="#Distributed原理解析" class="headerlink" title="Distributed原理解析"></a>Distributed原理解析</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Distributed表引擎是分布式表的代名词,它自身不存储任何数据,而是作为数据分片的透明代理,能够自动路由数据至集群中的各个节点,所以Distributed表引擎需要和其他数据表引擎一起协同工作</span><br><span class="line"></span><br><span class="line">一张分片表由两部分组成:</span><br><span class="line">1.本地表:通常以_local为后缀进行命名;本地表是承接数据的载体,可以使用非distributed的任意表引擎,一张本地表对应了一个数据分片</span><br><span class="line">2.分布式表:通常以_all为后缀进行命名;分布式表只能使用distributed表引擎,它与本地表形成一对多的映射关系,日后将通过分布式表代理操作多张本地表</span><br><span class="line"></span><br><span class="line">定义形式:</span><br><span class="line">engine &#x3D; distributed(cluster,database,table[,sharding_key])</span><br><span class="line"></span><br><span class="line">cluster:集群名称,与集群配置中的自定义名称相对应;在对分布式表执行写入和查询的过程中,会使用集群的配置信息来找到对应的host节点</span><br><span class="line">database和table:分别对应数据库和表的名称,分布式使用这组配置映射到本地表</span><br><span class="line">sharding_key:分片键,选填参数;在数据写入的过程中,分布式表会依据分片键的规则,将数据分布到各个host节点的本地表</span><br><span class="line">eg:</span><br><span class="line">create table test_shard2_all on cluster sharding_simple(</span><br><span class="line">id UInt64</span><br><span class="line">)engine&#x3D;Distriuted(default_cluster,default,test_shard_local,rand())</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/clickhouse/" rel="tag"># clickhouse</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/06/02/Flink%E5%8A%A8%E6%80%81CEP%E5%AE%9E%E4%BE%8B/" rel="prev" title="Flink动态CEP实例">
+                  <i class="fa fa-chevron-left"></i> Flink动态CEP实例
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">X&Z</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
