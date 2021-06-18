@@ -219,11 +219,202 @@ Node
     Window: 窗口函数
     WindowFrame: 窗口函数中滑动窗口的可选参数
     With: 一个查询中所有的With语句
-
+    WithQuery: 一个With语句
+    
 MetaData API
+    提供对元数据操作的接口
+    不同的Connector对其元数据操作抽象成了统一的接口ConnectorMetadata
 
-StatementResource.createQuery()
-SQLQueryManager.createQuery()
+词法与语法分析
+    利用ANTLR4编写SQL语法,语义规则定在presto-parser的SqlBase.g4文件(IDEA可以利用ANTLR插件查看语法图)
+    SQLQueryManager.createQuery()
+    SQLParser.createStatement().invokeParser()
+    SqlBaseLexer和SqlBaseParser
+        通过ANTLR4编译SqlBase.g4生成的的类
+    CaseInsensitiveStream
+        使SQL语句大小写不敏感
+    parser.addParserListener(new PostProcessor())
+        解析时异常处理
+            exitUnquotedIdentifier
+                未用引号括起来的标识符有@或:等符号则抛出异常
+            exitBackQuotedIdentifier
+                如果标识符用反引号括起来则抛出异常
+            exitDigitIdentifier
+                如果标识符是以数字开头则抛出异常
+            exitQuotedIdentifier
+                对于双引号引起来的标识符,去除双引号
+            exitNonReserved
+                将非保留关键字替换成标识符
+    lexer和parser的removeErrorListeners和addErrorListener
+        重写错误发生时的处理
+    parser.getInterpreter().setPredictionMode(PredictionMode.SLL)
+    tree=parseFunction.apply(parser)
+        首先使用SLL模式进行语法预策,不保证对语法错误SQL的正确处理
+    parser.getInterpreter().setPredictionMode(PredictionMode.LL)
+    tree=parseFunction.apply(parser)
+        抛出异常时使用LL模式进行语法预策,确保SQL解析结果是正确的
+    AstBuilder
+        语法分析(访问者设计模式)
+    visit(context.statement())
+        根据SQL类型调用对应的visit*方法
 
+获取QueryExecution
+    QueryExecutionFactory
+        DataDefinitionExecutionFactory(DDL操作)
+            CreateTable
+            RenameTable
+            RenameColumn
+            DropTable
+            CreateView
+            DropView
+            SetSession
+            ResetSession
+        SQLQueryExecutionFactory(非DDL操作)
+            Query
+            Explain
+            ShowColumns
+            ShowPartitions
+            ShowFunctions
+            ShowTables
+            ShowSchemas
+            ShowCatalogs
+            Use
+            ShowSession
+            CreateTableAsSelect
+            Insert
+            Delete
+    QueryExecution
+        DataDefinitionExecution
+        SqlQueryExecution
+    SqlQueryQueueManager.submit
+        将QueryExecution与配置的查询队列规则进行匹配
+        匹配成功且队列未满,则加入
+        查询队列按FIFO规则调度查询
+    start()
+        DataDefinitionExecution
+            调用绑定的DataDefinitionTask的execute方法
+        SqlQueryExecution
+            analyzeQuery() 生成查询执行计划
+            doAnalyzeQuery()
+            analyzer.analyze(statement) SQL语义分析
+            logicalPlanner.plan(analysis) 语义分析结构生成查询执行计划
 
+语义分析
+    Analyzer(同样的访问者设计模式)
+        构造StatementAnalyzer对Statement进行分析
+        分析结构存入Analysis中并返回
+    StatementAnalyzer
+        针对不同的Statement实现类进行语义分析
+    TupleDescriptor
+        列描述符,包含一系列的Field,一个Field表示对一个字段的描述
+        每个Field包含字段名name,字段别名relationAlias,字段类型type,字段是否隐藏hidden
+        Select/Show语句,返回取到的每一列,Insert/Delete/CreateTableAs语句返回只有列,表示操作行数
+    TupleAnalyzer
+        对Query中的Relation进行分析
+        Unnest: 将Array和Map展开
+        Table: 对Table进行分析,是否With,是否View,是否Table存在,构造TupleDescriptor
+        AliasedRelation: 带别名的Relation
+        SampledRelation: 对表进行抽样
+        TableSubquery: 子查询操作
+        QuerySpecification: 
+            分析From子语句
+            分析Where子语句
+            分析Select子语句
+            分析GroupBy子语句
+            分析OrderBy子语句
+            分析Having子语句
+            分析聚合操作
+            分析窗口函数
+            获取输出的列描述符
+        Union: 合并操作
+        Intersect: 暂不支持
+        Except: 暂不支持
+        Join: 连接操作
+        Values: 获取元素类型,最终返回列描述符
+    ExpressionAnalyzer
+        表达式进行分析
+
+执行计划生成
+    LogicalPlanner
+        针对上述的SQL语句分析结果,生成逻辑执行计划
+    执行计划节点
+        AggregationNode: 聚合操作
+        DeleteNode: DELETE操作
+        DistinctLimitNode: 处理去重限制行操作
+        ExchangeNode: 不同Stage之间交换数据的节点
+        FilterNode: 过滤操作
+        IndexJoinNode: Index Join操作
+        IndexSourceNode: 与IndexJoin配和使用执行数据源读取操作
+        JoinNode: Join操作
+        LimitNode: Limit操作
+        MarkDistinctNode: 聚合内去重操作
+        OutputNode: 输出最终结果
+        ProjectNode: 列映射操作
+        RemoteSourceNode: 分布式执行计划中不同Stage之间交换数据
+        RowNumberNode: 窗口函数row_number
+        SampleNode: 抽样函数
+        SemiJoinNode: 处理执行计划生成过程中的SemiJoin
+        SortNode: 排序
+        TableCommitNode: 对CreateTableAs/Insert/Delete操作进行commit
+        TableScanNode: 读取表数据
+        TableWriterNode: 向目的表写入数据
+        TopNNode:采用高效TopN算法(orderby limit)
+        TopNRowNumberNode: row_number后取前N条数据
+        UnionNode: 合并
+        UnnestNode: Unnest操作
+        ValuesNode: 处理Values语句
+        WindowNode: 窗口函数
+    RelationPlanner
+        处理Relation类型的SQL语句生成的执行计划
+    QueryPlanner
+        Query
+        QuerySpecification
+
+执行计划优化
+    ImplementSampleAsFilter
+        将BERNOULLI抽样的SampleNode改写为FilterNode
+    CanonicalizeExpressions
+        将表达式进行标准化
+    SimplifyExpressions
+        将表达式进行简化和优化处理
+    UnaliasSymbolReferences
+        去除ProjectNode中无意义映射
+    PruneRedundantProjections
+        去除多余的ProjectNode
+    SetFlatteningOptimizer
+        合并能合并的UnionNode
+    LimitPushDown
+        将Limit条件进行下推
+    PredicatePushDown
+        将过滤条件进行下推
+    MergeProjections
+        将连续的ProjectNode进行合并
+    ProjectionPushDown
+        将UnionNode之上的ProjectNode下推到UnionNode之下
+    IndexJoinOptimizer
+        将Join优化成IndexJoin
+    CountConstantOptimizer
+        将count(constant)改写为count(*),Presto中,count(constant)和count(*)等效,count(*)取表行数更容易根据不同数据源进行优化
+    WindowFilterPushDown
+        处理row_number排序取N条结果
+    HashGenerationOptimizer
+        提前对Hash值进行计算
+    PruneUnreferencedOutputs
+        去除ProjectNode中不在最终输出的列
+    MetadataQueryOptimizer
+        分区字段进行聚合操作,改为表元数据的查询
+    SingleDistinctOptimizer
+        将单一的Distinct聚合优化为GroupBy
+    BeginTableWrite
+        根据SQL语句类型构造CreateHandle/InsertHandle,用于TableWriterNode后续操作
+    AddExchanges
+        生成分布式执行计划
+    PickLayout
+        选取最适合的TableLayout(表的组织结构)
+    
+执行计划分段
+    Source: 读取数据
+    Fixed: 分散到多个节点处理
+    Single: 汇总所有处理结果
+    Coordinator_only: 对Insert和CreateTable进行commit
 ```
