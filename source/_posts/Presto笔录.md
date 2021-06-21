@@ -418,3 +418,116 @@ MetaData API
     Single: 汇总所有处理结果
     Coordinator_only: 对Insert和CreateTable进行commit
 ```
+
+### 查询调度
+```
+生成调度执行器
+    SqlQueryExecution.analyzeQuery方法生成subPlan
+    根据subPlan,SqlQueryExecution.planDistribution调用DistributedExecutionPlanner.plan获得Stage执行计划:StageExecutionPlan
+        StageExecutionPlan维护了子Stage执行计划集合
+        最上层为outputStage,用于最终结果输出
+    outputStage及其他参数共同组成SqlStageExecution所需的成员变量
+    SqlStageExecution本身的构造方法中,通过递归的方式构造子Stage对象
+
+查询调度过程
+    NodeScheduler: 分配Task给Node
+        NodeManager: 获取存活的节点列表
+            com.facebook.presto.server.CoordinatorModule进行注册和绑定
+            InternalNodeManager: 新增获取所有节点列表,刷新节点信息
+        NodeMap: 存储Presto的节点信息
+            NodeManager.getActiveDatasourceNodes获取
+        NodeSchedulerConfig: 配置了调度的相关参数
+        NodeSelector: 提供各个Stage中Task分配节点的算法
+            SingleStage节点选择策略:随机从存活节点列表中选择一个
+            FixedStage节点选择策略:
+                在所有存活节点列表中获取参数query.initial-hash-partitions值指定的节点个数(候选节点Candidates)
+                总活跃节点小于指定节点个数,获选节点与总活跃节点数一致
+                根据是否允许计算节点可分配多个Task任务(node-scheduler.multiple-tasks-per-node-enabled),允许则从获选节点中再次选取,直到达到指定值,否则只能是活跃节点数
+            SourceStage节点选择策略
+                选择节点个数根据Table的Split数决定
+                SqlStageExecution.scheduleSourcePartitionedNodes获取SourceSplit
+                计算出当前阶段每个节点的排队Split个数
+                判断是否本地性调度策略(node-scheduler.location-aware-scheduling-enabled)
+                是,根据本地性进行节点选择,否则随机选取
+                开不开本地,都将先选出一批候选节点(node-scheduler.min-candidates决定个数)
+    NodeTaskMap: 保存当前Stage分配的Task和Node的映射列表
+        并且对每个Task注册状态监听器,确保Task完成后移除
+    RemoteTaskFactory: 生成RemoteTask的工厂类
+    StageStateMachine: Stage状态监听器       
+```
+
+### 查询执行
+```
+提交查询阶段
+    提交查询
+    生成查询执行计划
+    查询调度
+    查询执行
+
+查询执行逻辑
+    SqlQueryExecution(Query)
+    SqlStageExecution(Stage)
+    SqlTaskExecution(Task)
+
+Task调度
+    SourceTask调度(assignSplits)
+        根据Split的本地性,生成Node与Split的对应关系
+        根据对应关系,在指定的Node上启动SourceTask处理Splits
+    FixedTask调度(scheduleFixedNodeCount)
+        将Join操作两边数据集分解成initial-hash-partitions个数的数据子集
+        将Hash值相同的行分布相同的Worker上进行Join计算
+    SingleTask调度(scheduleFixedNodeCount)
+        将上游Stage所有输出汇集到一个Worker节点进行汇总计算
+        与FixedTask调度逻辑一致,只是Task只有一个
+    Coordinator_OnlyTask调度
+        执行DDL/DML/CreateTableAsSelect,运行Task在Coordinator上
+        只有一个Task,和SingleTask的区别,SingleTask选取随机节点,Coordinator_OnlyTask选取Coordinator节点
+
+Task执行
+    创建Task
+        scheduleTask,HttpRemoteTask->start()->HttpClient--发送RESTful请求-->TaskResource-->SQLTaskExecution
+    更新Task
+        SqlStageExecution.assignSplits() 根据TaskId查找对应的addSplits方法
+        SqlTaskManager.updateTask() RESTful服务更新Task请求
+     运行Task
+         TaskExecutor
+             启动多个线程,并加入线程池,每个Split处理都由Runner类完成
+         PrioritizedSplitRunner
+             调用时间片处理Split
+         DriverSplitRunner
+             接收运行时间段限制
+         Driver
+             封装了对Split的所有操作
+```
+
+### 队列
+```
+配置
+    $PRESTO_HOME/etc/queues.json
+    query.queue-config-file=etc/queues.json
+
+队列定义
+   queues
+       queuename: 队列名称
+       maxConcurrent: 队列最大并发数量
+       maxQueued: 队列同时接收提交查询请求的最大数量
+   rules
+       user: 用户名
+       source: SQL来源
+       session: session参数定义
+       queues: 队列列表,可多个
+
+队列加载
+    com.facebook.presto.execution.QueryQueueManager
+    com.facebook.presto.execution.SqlQueryQueueManager
+    在CoordinatorModule中绑定
+    未配置队列,系统自动构建global和big队列
+        big: 最大并发度10,最大排队并发度500
+        global: 最大并发度1000,最大排队并发度5000
+    QueryQueueRule: 规则信息组装
+
+队列匹配
+    SqlQueryQueueManager.submit() 获取查询请求的session,匹配规则信息,满足则返回队列
+    getOrCreateQueues() 获取或创建QueryQueue对象列表
+    QueryQueue 负责异步提交查询并维护该队列的容量值
+```
